@@ -1,0 +1,9 @@
+///
+/// [Author] Alex (https://github.com/AlexVincent525)
+/// [Date] 2020/3/31 16:02
+///
+import 'package:flutter/painting.dart';
+
+class C {
+  static const Color themeColor = Color(0xff44b549); // WeChat
+}
