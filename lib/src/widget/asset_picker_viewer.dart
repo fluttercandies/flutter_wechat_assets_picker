@@ -215,6 +215,7 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
               );
               break;
             case LoadState.completed:
+              loader = FadeImageBuilder(child: state.completedWidget);
               break;
             case LoadState.failed:
               loader = _failedItem;

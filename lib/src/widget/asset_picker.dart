@@ -460,8 +460,14 @@ class AssetPicker extends StatelessWidget {
                         if (imageProvider.imageFileType == ImageFileType.gif) {
                           type = SpecialAssetType.gif;
                         }
-                        loader = _succeedItem(context, index, state.completedWidget,
-                            specialAssetType: type);
+                        loader = FadeImageBuilder(
+                          child: _succeedItem(
+                            context,
+                            index,
+                            state.completedWidget,
+                            specialAssetType: type,
+                          ),
+                        );
                         break;
                       case LoadState.failed:
                         loader = _failedItem;
