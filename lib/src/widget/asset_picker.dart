@@ -503,7 +503,7 @@ class AssetPicker extends StatelessWidget {
                   final Set<AssetEntity> result = await AssetPickerViewer.pushToViewer(
                     context,
                     currentIndex: 0,
-                    assets: provider.currentAssets,
+                    assets: provider.selectedAssets,
                     selectedAssets: provider.selectedAssets,
                     selectorProvider: provider,
                     themeData: theme,
