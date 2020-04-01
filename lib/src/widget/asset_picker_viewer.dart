@@ -126,7 +126,7 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
 
   /// Height for bottom detail widget.
   /// 底部详情部件的高度
-  double get bottomDetailHeight => 150.0;
+  double get bottomDetailHeight => 140.0;
 
   @override
   void initState() {
@@ -250,7 +250,11 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
                 builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
                   return Text(
                     '${snapshot.data + 1}/${widget.assets.length}',
-                    style: TextStyle(color: Colors.grey[200], fontSize: 20.0),
+                    style: TextStyle(
+                      color: Colors.grey[200],
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   );
                 },
               ),
@@ -275,15 +279,13 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
   Widget confirmButton(BuildContext context) => Consumer<AssetPickerViewerProvider>(
         builder: (BuildContext _, AssetPickerViewerProvider provider, Widget __) {
           return MaterialButton(
-            minWidth: provider.isSelectedNotEmpty ? 50.0 : 20.0,
-            height: 38.0,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
+            height: 32.0,
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             color: provider.isSelectedNotEmpty
                 ? widget.themeData.buttonColor
                 : widget.themeData.dividerColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
             child: Text(
               provider.isSelectedNotEmpty
                   ? '确认(${provider.currentlySelectedAssets.length}'
@@ -292,8 +294,8 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
                   : '确认',
               style: TextStyle(
                 color: provider.isSelectedNotEmpty ? Colors.white : Colors.grey[600],
-                fontSize: 18.0,
-                height: 1.25,
+                fontSize: 17.0,
+                fontWeight: FontWeight.normal,
               ),
             ),
             onPressed: () {
@@ -418,10 +420,10 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
             child: Column(
               children: <Widget>[
                 SizedBox(
-                  height: 100.0,
+                  height: 90.0,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: EdgeInsets.zero,
                     itemCount: widget.selectedAssets.length,
                     itemBuilder: (BuildContext _, int index) => _bottomDetailItem(index),
                   ),

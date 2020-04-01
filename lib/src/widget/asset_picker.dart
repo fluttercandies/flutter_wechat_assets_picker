@@ -126,9 +126,9 @@ class AssetPicker extends StatelessWidget {
               child: Container(
                 height: appBarItemHeight,
                 constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
-                padding: const EdgeInsets.only(left: 15.0, right: 8.0),
+                padding: const EdgeInsets.only(left: 12.0, right: 6.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(999),
                   color: theme.dividerColor,
                 ),
                 child: Row(
@@ -138,7 +138,10 @@ class AssetPicker extends StatelessWidget {
                       Flexible(
                         child: Text(
                           '${provider.currentPathEntity.name}',
-                          style: const TextStyle(fontSize: 18.0),
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.normal,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -172,7 +175,7 @@ class AssetPicker extends StatelessWidget {
         splashFactory: InkSplash.splashFactory,
         onTap: () => provider.switchPath(pathEntity),
         child: SizedBox(
-          height: 80.0,
+          height: 50.0,
           child: Row(
             children: <Widget>[
               RepaintBoundary(
@@ -200,7 +203,7 @@ class AssetPicker extends StatelessWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: const EdgeInsets.only(left: 15.0, right: 20.0),
                   child: Row(
                     children: <Widget>[
                       Flexible(
@@ -208,7 +211,7 @@ class AssetPicker extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 10.0),
                           child: Text(
                             '${pathEntity.name}',
-                            style: const TextStyle(fontSize: 20.0, height: 1.25),
+                            style: const TextStyle(fontSize: 18.0),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -216,7 +219,7 @@ class AssetPicker extends StatelessWidget {
                       ),
                       Text(
                         '(${pathEntity.assetCount})',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 20.0),
+                        style: TextStyle(color: Colors.grey[600], fontSize: 18.0),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -231,7 +234,7 @@ class AssetPicker extends StatelessWidget {
                   if (currentPathEntity == pathEntity) {
                     return AspectRatio(
                       aspectRatio: 1.0,
-                      child: Icon(Icons.check, color: themeColor, size: 32.0),
+                      child: Icon(Icons.check, color: themeColor, size: 26.0),
                     );
                   } else {
                     return const SizedBox.shrink();
@@ -270,8 +273,9 @@ class AssetPicker extends StatelessWidget {
                     return pathEntityWidget(pathEntityList.keys.elementAt(index));
                   },
                   separatorBuilder: (BuildContext _, int __) => Container(
+                    margin: const EdgeInsets.only(left: 60.0),
                     height: 1.0,
-                    color: const Color(0xff4e4e4e),
+                    color: theme.canvasColor,
                   ),
                 );
               },
@@ -294,17 +298,15 @@ class AssetPicker extends StatelessWidget {
             height: appBarItemHeight,
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             color: provider.isSelectedNotEmpty ? themeColor : theme.dividerColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
             child: Text(
               provider.isSelectedNotEmpty
                   ? '确认(${provider.selectedAssets.length}/${provider.maxAssets})'
                   : '确认',
               style: TextStyle(
                 color: provider.isSelectedNotEmpty ? Colors.white : Colors.grey[600],
-                fontSize: 18.0,
-                height: 1.25,
+                fontSize: 17.0,
+                fontWeight: FontWeight.normal,
               ),
             ),
             onPressed: () {
@@ -332,7 +334,7 @@ class AssetPicker extends StatelessWidget {
             '动图',
             style: TextStyle(
               color: theme.iconTheme.color,
-              fontSize: 14.0,
+              fontSize: 10.0,
             ),
           ),
         ),
@@ -386,9 +388,9 @@ class AssetPicker extends StatelessWidget {
                 },
                 child: AnimatedContainer(
                   duration: kThemeAnimationDuration,
-                  width: 25.0,
-                  height: 25.0,
-                  margin: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(6.0),
+                  width: 20.0,
+                  height: 20.0,
                   decoration: BoxDecoration(
                     border: !selected ? Border.all(color: Colors.white, width: 2.0) : null,
                     color: selected ? themeColor : null,
@@ -400,7 +402,7 @@ class AssetPicker extends StatelessWidget {
                     child: selected
                         ? Text(
                             '${selectedAssets.toList().indexOf(item) + 1}',
-                            style: TextStyle(color: Colors.white, fontSize: 18.0),
+                            style: TextStyle(color: Colors.white, fontSize: 14.0),
                           )
                         : const SizedBox.shrink(),
                   ),
@@ -572,7 +574,7 @@ class AssetPicker extends StatelessWidget {
                         : Center(
                             child: PlatformProgressIndicator(
                               color: theme.iconTheme.color,
-                              size: Screens.width / gridCount / 6,
+                              size: Screens.width / gridCount / 3,
                             ),
                           ),
                   );
