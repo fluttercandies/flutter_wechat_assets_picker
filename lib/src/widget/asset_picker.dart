@@ -12,11 +12,12 @@ import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:wechat_assets_picker/src/widget/platform_progress_indicator.dart';
-
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-import 'package:wechat_assets_picker/src/constants/constants.dart';
-import 'package:wechat_assets_picker/src/widget/fixed_appbar.dart';
+
+import '../constants/constants.dart';
+import '../widget/fade_image_builder.dart';
+import '../widget/fixed_appbar.dart';
+import '../widget/platform_progress_indicator.dart';
 
 class AssetPicker extends StatelessWidget {
   const AssetPicker({
@@ -44,18 +45,33 @@ class AssetPicker extends StatelessWidget {
   /// Static method to push with navigator.
   /// 跳转至选择器的静态方法
   static Future<Set<AssetEntity>> pickAssets(
-    BuildContext context,
-    AssetPickerProvider provider, {
+    BuildContext context, {
+    int maxAssets = 9,
+    int pathThumbSize = 80,
     int gridCount = 4,
+    Set<AssetEntity> selectedAssets,
+    Color themeColor = C.themeColor,
   }) async {
-    final WidgetBuilder picker =
-        (BuildContext _) => AssetPicker(provider: provider, gridCount: gridCount);
-    final Set<AssetEntity> result = await Navigator.of(context).push<Set<AssetEntity>>(
-      Platform.isAndroid
-          ? MaterialPageRoute<Set<AssetEntity>>(builder: picker)
-          : CupertinoPageRoute<Set<AssetEntity>>(builder: picker),
-    );
-    return result;
+    final bool isPermissionGranted = await PhotoManager.requestPermission();
+    if (isPermissionGranted) {
+      final AssetPickerProvider provider = AssetPickerProvider(
+        maxAssets: maxAssets,
+        pathThumbSize: pathThumbSize,
+        selectedAssets: selectedAssets,
+      );
+      final WidgetBuilder picker = (BuildContext _) => AssetPicker(
+            provider: provider,
+            gridCount: gridCount,
+          );
+      final Set<AssetEntity> result = await Navigator.of(context).push<Set<AssetEntity>>(
+        Platform.isAndroid
+            ? MaterialPageRoute<Set<AssetEntity>>(builder: picker)
+            : CupertinoPageRoute<Set<AssetEntity>>(builder: picker),
+      );
+      return result;
+    } else {
+      return null;
+    }
   }
 
   /// Space between asset item widget [_succeedItem].
