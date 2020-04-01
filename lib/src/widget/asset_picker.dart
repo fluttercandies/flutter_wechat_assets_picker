@@ -539,6 +539,13 @@ class AssetPicker extends StatelessWidget {
         child: Row(children: <Widget>[previewButton(context)]),
       );
 
+  /// Back button.
+  /// 返回按钮
+  Widget backButton(BuildContext context) => IconButton(
+        onPressed: Navigator.of(context).maybePop,
+        icon: Icon(Icons.close),
+      );
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -554,7 +561,8 @@ class AssetPicker extends StatelessWidget {
                 backgroundColor: theme.primaryColor,
                 centerTitle: false,
                 title: pathEntitySelector,
-                actionsPadding: const EdgeInsets.only(right: 20.0),
+                leading: backButton(context),
+                actionsPadding: const EdgeInsets.only(right: 14.0),
                 actions: <Widget>[confirmButton(context)],
               ),
               body: Selector<AssetPickerProvider, bool>(
