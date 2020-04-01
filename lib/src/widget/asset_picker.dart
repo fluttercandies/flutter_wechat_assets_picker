@@ -147,14 +147,20 @@ class AssetPicker extends StatelessWidget {
                         ),
                       ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 6.0),
-                      child: Transform.rotate(
-                        angle: provider.isSwitchingPath ? math.pi : 0.0,
-                        alignment: Alignment.center,
-                        child: const Icon(
-                          Icons.keyboard_arrow_down,
-                          color: Colors.white54,
-                          size: 24.0,
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: theme.dividerColor.withAlpha(150),
+                        ),
+                        child: Transform.rotate(
+                          angle: provider.isSwitchingPath ? math.pi : 0.0,
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.black,
+                            size: 20.0,
+                          ),
                         ),
                       ),
                     ),
