@@ -533,7 +533,7 @@ class AssetPicker extends StatelessWidget {
   /// Action bar widget aligned to bottom.
   /// 底部操作栏部件
   Widget bottomActionBar(BuildContext context) => Container(
-        height: kToolbarHeight / 1.4,
+        height: kToolbarHeight / 1.1,
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         color: theme.primaryColor,
         child: Row(children: <Widget>[previewButton(context)]),
@@ -558,7 +558,7 @@ class AssetPicker extends StatelessWidget {
             color: theme.canvasColor,
             child: FixedAppBarWrapper(
               appBar: FixedAppBar(
-                backgroundColor: theme.primaryColor,
+                backgroundColor: theme.canvasColor,
                 centerTitle: false,
                 title: pathEntitySelector,
                 leading: backButton(context),
