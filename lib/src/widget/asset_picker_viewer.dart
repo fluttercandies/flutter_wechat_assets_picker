@@ -488,7 +488,7 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
                   ),
                 ),
               ),
-              appBar,
+              appBar(context),
               if (widget.selectedAssets != null) bottomDetail,
             ],
           ),
