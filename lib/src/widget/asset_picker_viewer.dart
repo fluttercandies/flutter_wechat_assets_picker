@@ -12,11 +12,12 @@ import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-import 'package:wechat_assets_picker/src/constants/constants.dart';
-import 'package:wechat_assets_picker/src/widget/rounded_check_box.dart';
-import 'package:wechat_assets_picker/src/widget/platform_progress_indicator.dart';
+
+import '../constants/constants.dart';
+import '../widget/fade_image_builder.dart';
+import '../widget/platform_progress_indicator.dart';
+import '../widget/rounded_check_box.dart';
 
 class AssetPickerViewer extends StatefulWidget {
   const AssetPickerViewer({
@@ -231,7 +232,7 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
 
   /// AppBar widget.
   /// 顶栏部件
-  Widget get appBar => AnimatedPositioned(
+  Widget appBar(BuildContext context) => AnimatedPositioned(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
         top: isDisplayingDetail ? 0.0 : -(Screens.topSafeHeight + kToolbarHeight),
