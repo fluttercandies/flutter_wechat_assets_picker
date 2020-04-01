@@ -5,5 +5,5 @@
 import 'package:flutter/painting.dart';
 
 class C {
-  static const Color themeColor = Color(0xff44b549); // WeChat
+  static const Color themeColor = Color(0xff00bc56); // WeChat
 }
