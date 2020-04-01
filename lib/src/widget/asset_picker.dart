@@ -450,9 +450,11 @@ class AssetPicker extends StatelessWidget {
                     Widget loader;
                     switch (state.extendedImageLoadState) {
                       case LoadState.loading:
-                        loader = PlatformProgressIndicator(
-                          color: theme.iconTheme.color,
-                          size: Screens.width / gridCount / 6,
+                        loader = Center(
+                          child: PlatformProgressIndicator(
+                            color: theme.iconTheme.color,
+                            size: Screens.width / gridCount / 6,
+                          ),
                         );
                         break;
                       case LoadState.completed:

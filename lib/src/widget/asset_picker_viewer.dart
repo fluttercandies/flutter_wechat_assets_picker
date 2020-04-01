@@ -209,9 +209,11 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = PlatformProgressIndicator(
-                color: widget.themeData.primaryColor,
-                size: Screens.width / 10,
+              loader = Center(
+                child: PlatformProgressIndicator(
+                  color: widget.themeData.buttonColor,
+                  size: Screens.width / 10,
+                ),
               );
               break;
             case LoadState.completed:
