@@ -112,27 +112,6 @@ class AssetPicker extends StatelessWidget {
         textSelectionHandleColor: themeColor,
         indicatorColor: themeColor,
         appBarTheme: const AppBarTheme(brightness: Brightness.dark, elevation: 0),
-        iconTheme: IconThemeData(color: Colors.grey[350]),
-        primaryIconTheme: IconThemeData(color: Colors.grey[350]),
-        tabBarTheme: TabBarTheme(
-          indicatorSize: TabBarIndicatorSize.tab,
-          labelColor: Colors.grey[200],
-          unselectedLabelColor: Colors.grey[200],
-        ),
-        textTheme: TextTheme(
-          title: TextStyle(color: Colors.grey[350]),
-          body1: TextStyle(color: Colors.grey[350]),
-          body2: TextStyle(color: Colors.grey[500]),
-          button: TextStyle(color: Colors.grey[350]),
-          caption: TextStyle(color: Colors.grey[500]),
-          subhead: TextStyle(color: Colors.grey[500]),
-          display4: TextStyle(color: Colors.grey[500]),
-          display3: TextStyle(color: Colors.grey[500]),
-          display2: TextStyle(color: Colors.grey[500]),
-          display1: TextStyle(color: Colors.grey[500]),
-          headline: TextStyle(color: Colors.grey[350]),
-          overline: TextStyle(color: Colors.grey[350]),
-        ),
       );
 
   /// Path entity select widget.
