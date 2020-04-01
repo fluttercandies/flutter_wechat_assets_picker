@@ -78,6 +78,10 @@ class AssetPicker extends StatelessWidget {
   /// 资源部件之间的间隔
   double get itemSpacing => 2.0;
 
+  /// Item's height in app bar.
+  /// 顶栏内各个组件的统一高度
+  double get appBarItemHeight => 32.0;
+
   /// [Curve] when triggering path switching.
   /// 切换路径时的动画曲线
   Curve get switchingPathCurve => Curves.easeInOut;
@@ -141,7 +145,7 @@ class AssetPicker extends StatelessWidget {
                 provider.isSwitchingPath = !provider.isSwitchingPath;
               },
               child: Container(
-                height: 38.0,
+                height: appBarItemHeight,
                 constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
                 padding: const EdgeInsets.only(left: 15.0, right: 8.0),
                 decoration: BoxDecoration(
@@ -307,9 +311,9 @@ class AssetPicker extends StatelessWidget {
   Widget confirmButton(BuildContext context) => Consumer<AssetPickerProvider>(
         builder: (BuildContext _, AssetPickerProvider provider, Widget __) {
           return MaterialButton(
-            minWidth: provider.isSelectedNotEmpty ? 50.0 : 20.0,
-            height: 38.0,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
+            height: appBarItemHeight,
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             color: provider.isSelectedNotEmpty ? themeColor : theme.dividerColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
