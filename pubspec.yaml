@@ -1,10 +1,10 @@
 name: wechat_assets_picker
-description: An assets picker which looks like the one in WeChat, based on `photo_manager` and `extended_image`.
+description: An assets picker which looks like the one in WeChat, based on `photo_manager` `extended_image` `provider`.
 version: 1.0.0
 homepage: https://github.com/fluttercandies/flutter_wechat_assets_picker
 
 environment:
-  sdk: ">=2.5.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
   flutter: ">=1.12.13"
 
 dependencies:
