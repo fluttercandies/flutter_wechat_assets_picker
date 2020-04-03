@@ -13,11 +13,22 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   AssetEntityImageProvider(
     this.entity, {
     this.scale = 1.0,
+    this.thumbSize = 150,
     this.isOriginal = true,
   });
 
   final AssetEntity entity;
+
+  /// Scale for image provider.
+  /// 缩放
   final double scale;
+
+  /// Size for thumb data.
+  /// 缩略图的大小
+  final int thumbSize;
+
+  /// Choose if original data or thumb data should be loaded.
+  /// 选择载入原数据还是缩略图数据
   final bool isOriginal;
 
   ImageFileType _imageFileType;
@@ -49,11 +60,17 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     if (isOriginal ?? false) {
       data = await key.entity.originBytes;
     } else {
-      data = await key.entity.thumbData;
+      data = await key.entity.thumbDataWithSize(thumbSize, thumbSize);
     }
     return decode(data);
   }
 
+  /// Get image type by reading the file extension.
+  /// 从图片后缀判断图片类型
+  ///
+  /// ⚠ Not all the system version support read file name from the entity, so this method might not
+  /// working sometime.
+  /// 并非所有的系统版本都支持读取文件名，所以该方法有时无法返回正确的type。
   ImageFileType _getType() {
     ImageFileType type;
     final String extension = entity.title?.split('.')?.last;
