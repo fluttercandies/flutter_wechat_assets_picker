@@ -53,8 +53,9 @@ class AssetPickerProvider extends ChangeNotifier {
 
   set isAssetsEmpty(bool value) {
     assert(value != null);
-    if (value == _isAssetsEmpty)
+    if (value == _isAssetsEmpty) {
       return;
+    }
     _isAssetsEmpty = value;
     notifyListeners();
   }
@@ -67,8 +68,9 @@ class AssetPickerProvider extends ChangeNotifier {
 
   set hasAssetsToDisplay(bool value) {
     assert(value != null);
-    if (value == _hasAssetsToDisplay)
+    if (value == _hasAssetsToDisplay) {
       return;
+    }
     _hasAssetsToDisplay = value;
     notifyListeners();
   }
@@ -81,8 +83,9 @@ class AssetPickerProvider extends ChangeNotifier {
 
   set isSwitchingPath(bool value) {
     assert(value != null);
-    if (value == _isSwitchingPath)
+    if (value == _isSwitchingPath) {
       return;
+    }
     _isSwitchingPath = value;
     notifyListeners();
   }
@@ -92,7 +95,8 @@ class AssetPickerProvider extends ChangeNotifier {
   ///
   /// Using [Map] in order to save the thumb data for the first asset under the path.
   /// 使用[Map]来保存路径下第一个资源的缩略数据。
-  final Map<AssetPathEntity, Uint8List> _pathEntityList = <AssetPathEntity, Uint8List>{};
+  final Map<AssetPathEntity, Uint8List> _pathEntityList =
+      <AssetPathEntity, Uint8List>{};
 
   Map<AssetPathEntity, Uint8List> get pathEntityList => _pathEntityList;
 
@@ -104,8 +108,9 @@ class AssetPickerProvider extends ChangeNotifier {
 
   set currentPathEntity(AssetPathEntity value) {
     assert(value != null);
-    if (value == _currentPathEntity)
+    if (value == _currentPathEntity) {
       return;
+    }
     _currentPathEntity = value;
     notifyListeners();
   }
@@ -118,8 +123,9 @@ class AssetPickerProvider extends ChangeNotifier {
 
   set currentAssets(Set<AssetEntity> value) {
     assert(value != null);
-    if (value == _currentAssets)
+    if (value == _currentAssets) {
       return;
+    }
     _currentAssets = value;
     notifyListeners();
   }
@@ -132,8 +138,9 @@ class AssetPickerProvider extends ChangeNotifier {
 
   set selectedAssets(Set<AssetEntity> value) {
     assert(value != null);
-    if (value == _selectedAssets)
+    if (value == _selectedAssets) {
       return;
+    }
     _selectedAssets = value;
     notifyListeners();
   }
@@ -145,9 +152,10 @@ class AssetPickerProvider extends ChangeNotifier {
   /// 获取所有的资源路径
   Future<void> getAssetList() async {
     final List<AssetPathEntity> _list =
-    await PhotoManager.getAssetPathList(type: RequestType.image);
+        await PhotoManager.getAssetPathList(type: RequestType.image);
     for (final AssetPathEntity pathEntity in _list) {
-      _pathEntityList[pathEntity] = await getFirstThumbFromPathEntity(pathEntity);
+      _pathEntityList[pathEntity] =
+          await getFirstThumbFromPathEntity(pathEntity);
     }
     if (_pathEntityList.isNotEmpty) {
       _currentPathEntity = pathEntityList.keys.elementAt(0);
@@ -161,24 +169,29 @@ class AssetPickerProvider extends ChangeNotifier {
   /// Get assets under the specific path entity.
   /// 获取指定路径下的资源
   Future<void> getAssetsFromEntity(AssetPathEntity pathEntity) async {
-    _currentAssets = (await pathEntity.getAssetListPaged(0, pathEntity.assetCount)).toSet();
+    _currentAssets =
+        (await pathEntity.getAssetListPaged(0, pathEntity.assetCount)).toSet();
     _hasAssetsToDisplay = currentAssets?.isNotEmpty ?? false;
     notifyListeners();
   }
 
   /// Get thumb data from the first asset under the specific path entity.
   /// 获取指定路径下的第一个资源的缩略数据
-  Future<Uint8List> getFirstThumbFromPathEntity(AssetPathEntity pathEntity) async {
-    final AssetEntity asset = (await pathEntity.getAssetListRange(start: 0, end: 1)).elementAt(0);
-    final Uint8List assetData = await asset.thumbDataWithSize(pathThumbSize, pathThumbSize);
+  Future<Uint8List> getFirstThumbFromPathEntity(
+      AssetPathEntity pathEntity) async {
+    final AssetEntity asset =
+        (await pathEntity.getAssetListRange(start: 0, end: 1)).elementAt(0);
+    final Uint8List assetData =
+        await asset.thumbDataWithSize(pathThumbSize, pathThumbSize);
     return assetData;
   }
 
   /// Select asset.
   /// 选中资源
   void selectAsset(AssetEntity item) {
-    if (selectedAssets.length == maxAssets)
+    if (selectedAssets.length == maxAssets) {
       return;
+    }
     final Set<AssetEntity> _set = Set<AssetEntity>.from(selectedAssets);
     _set.add(item);
     selectedAssets = _set;

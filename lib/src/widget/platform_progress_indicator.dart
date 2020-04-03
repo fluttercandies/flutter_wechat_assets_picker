@@ -38,7 +38,8 @@ class PlatformProgressIndicator extends StatelessWidget {
             )
           : CircularProgressIndicator(
               strokeWidth: strokeWidth,
-              valueColor: color != null ? AlwaysStoppedAnimation<Color>(color) : null,
+              valueColor:
+                  color != null ? AlwaysStoppedAnimation<Color>(color) : null,
               value: value,
             ),
     );

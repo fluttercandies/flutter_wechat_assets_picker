@@ -148,7 +148,8 @@ class RoundedCheckbox extends StatefulWidget {
   _RoundedCheckboxState createState() => _RoundedCheckboxState();
 }
 
-class _RoundedCheckboxState extends State<RoundedCheckbox> with TickerProviderStateMixin {
+class _RoundedCheckboxState extends State<RoundedCheckbox>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
@@ -156,7 +157,8 @@ class _RoundedCheckboxState extends State<RoundedCheckbox> with TickerProviderSt
     Size size;
     switch (widget.materialTapTargetSize ?? themeData.materialTapTargetSize) {
       case MaterialTapTargetSize.padded:
-        size = const Size(2 * kRadialReactionRadius + 8.0, 2 * kRadialReactionRadius + 8.0);
+        size = const Size(
+            2 * kRadialReactionRadius + 8.0, 2 * kRadialReactionRadius + 8.0);
         break;
       case MaterialTapTargetSize.shrinkWrap:
         size = const Size(2 * kRadialReactionRadius, 2 * kRadialReactionRadius);
@@ -169,7 +171,9 @@ class _RoundedCheckboxState extends State<RoundedCheckbox> with TickerProviderSt
       activeColor: widget.activeColor ?? themeData.toggleableActiveColor,
       checkColor: widget.checkColor ?? const Color(0xFFFFFFFF),
       inactiveColor: widget.inactiveColor ??
-          (widget.onChanged != null ? themeData.unselectedWidgetColor : themeData.disabledColor),
+          (widget.onChanged != null
+              ? themeData.unselectedWidgetColor
+              : themeData.disabledColor),
       onChanged: widget.onChanged,
       additionalConstraints: additionalConstraints,
       vsync: this,
@@ -280,7 +284,8 @@ class _RenderCheckbox extends RenderToggleable {
   RRect _outerRectAt(Offset origin, double t) {
     final double inset = 1.0 - (t - 0.5).abs() * 2.0;
     final double size = _kEdgeSize - inset * _kStrokeWidth;
-    final Rect rect = Rect.fromLTWH(origin.dx + inset, origin.dy + inset, size, size);
+    final Rect rect =
+        Rect.fromLTWH(origin.dx + inset, origin.dy + inset, size, size);
     return RRect.fromRectAndRadius(rect, _kEdgeRadius);
   }
 
@@ -290,7 +295,9 @@ class _RenderCheckbox extends RenderToggleable {
     // As t goes from 0.0 to 0.25, animate from the inactiveColor to activeColor.
     return onChanged == null
         ? inactiveColor
-        : (t >= 0.25 ? activeColor : Color.lerp(inactiveColor, activeColor, t * 4.0));
+        : (t >= 0.25
+            ? activeColor
+            : Color.lerp(inactiveColor, activeColor, t * 4.0));
   }
 
   // White stroke used to paint the check and dash.
@@ -305,7 +312,8 @@ class _RenderCheckbox extends RenderToggleable {
     assert(t >= 0.0 && t <= 0.5);
     final double size = outer.width;
     // As t goes from 0.0 to 1.0, gradually fill the outer RRect.
-    final RRect inner = outer.deflate(math.min(size / 2.0, _kStrokeWidth + size * t));
+    final RRect inner =
+        outer.deflate(math.min(size / 2.0, _kStrokeWidth + size * t));
     canvas.drawDRRect(outer, inner, paint);
   }
 
@@ -349,7 +357,8 @@ class _RenderCheckbox extends RenderToggleable {
     final Canvas canvas = context.canvas;
     paintRadialReaction(canvas, offset, size.center(Offset.zero));
 
-    final Offset origin = offset + (size / 2.0 - const Size.square(_kEdgeSize) / 2.0 as Offset);
+    final Offset origin =
+        offset + (size / 2.0 - const Size.square(_kEdgeSize) / 2.0 as Offset);
     final AnimationStatus status = position.status;
     final double tNormalized =
         status == AnimationStatus.forward || status == AnimationStatus.completed

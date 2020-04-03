@@ -36,7 +36,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   ImageFileType get imageFileType => _imageFileType ?? _getType();
 
   @override
-  ImageStreamCompleter load(AssetEntityImageProvider key, DecoderCallback decode) {
+  ImageStreamCompleter load(
+      AssetEntityImageProvider key, DecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -54,7 +55,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     return SynchronousFuture<AssetEntityImageProvider>(this);
   }
 
-  Future<ui.Codec> _loadAsync(AssetEntityImageProvider key, DecoderCallback decode) async {
+  Future<ui.Codec> _loadAsync(
+      AssetEntityImageProvider key, DecoderCallback decode) async {
     assert(key == this);
     Uint8List data;
     if (isOriginal ?? false) {
@@ -102,15 +104,15 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   @override
   bool operator ==(dynamic other) {
-    if (other is! AssetEntityImageProvider) {
+    if (other.runtimeType != runtimeType) {
       return false;
-    } else {
-      final AssetEntityImageProvider typedOther = other as AssetEntityImageProvider;
-      final bool result = entity == typedOther.entity &&
-          scale == typedOther.scale &&
-          isOriginal == typedOther.isOriginal;
-      return result;
     }
+    final AssetEntityImageProvider typedOther =
+        // ignore: test_types_in_equals
+        other as AssetEntityImageProvider;
+    return entity == typedOther.entity &&
+        scale == typedOther.scale &&
+        isOriginal == typedOther.isOriginal;
   }
 
   @override

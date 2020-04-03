@@ -176,7 +176,7 @@ linter:
     - sort_constructors_first
     - sort_pub_dependencies
     - sort_unnamed_constructors_first
-    # - test_types_in_equals
+    - test_types_in_equals
     - throw_in_finally
     # - type_annotate_public_apis # subset of always_specify_types
     - type_init_formals

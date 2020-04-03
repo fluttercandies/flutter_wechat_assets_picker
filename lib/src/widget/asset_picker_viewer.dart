@@ -69,7 +69,8 @@ class AssetPickerViewer extends StatefulWidget {
           selectorProvider: selectorProvider,
           themeData: themeData,
         );
-    final Set<AssetEntity> result = await Navigator.of(context).push<Set<AssetEntity>>(
+    final Set<AssetEntity> result =
+        await Navigator.of(context).push<Set<AssetEntity>>(
       Platform.isAndroid
           ? MaterialPageRoute<Set<AssetEntity>>(builder: viewer)
           : CupertinoPageRoute<Set<AssetEntity>>(builder: viewer),
@@ -87,7 +88,8 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
   /// widely [setState] and causing other widgets rebuild.
   /// 使用 [StreamController] 的主要目的是缩小页码变化时构建组件的范围，
   /// 防止滥用 [setState] 导致其他部件重新构建。
-  final StreamController<int> pageStreamController = StreamController<int>.broadcast();
+  final StreamController<int> pageStreamController =
+      StreamController<int>.broadcast();
 
   /// [AnimationController] for double tap animation.
   /// 双击缩放的动画控制器
@@ -235,7 +237,9 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
   Widget appBar(BuildContext context) => AnimatedPositioned(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        top: isDisplayingDetail ? 0.0 : -(Screens.topSafeHeight + kToolbarHeight),
+        top: isDisplayingDetail
+            ? 0.0
+            : -(Screens.topSafeHeight + kToolbarHeight),
         left: 0.0,
         right: 0.0,
         height: Screens.topSafeHeight + kToolbarHeight,
@@ -277,8 +281,10 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
   /// The [PhotoSelector] will recognize and pop too.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   /// 资源选择器将识别并一同返回。
-  Widget confirmButton(BuildContext context) => Consumer<AssetPickerViewerProvider>(
-        builder: (BuildContext _, AssetPickerViewerProvider provider, Widget __) {
+  Widget confirmButton(BuildContext context) =>
+      Consumer<AssetPickerViewerProvider>(
+        builder:
+            (BuildContext _, AssetPickerViewerProvider provider, Widget __) {
           return MaterialButton(
             minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
             height: 32.0,
@@ -286,7 +292,8 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
             color: provider.isSelectedNotEmpty
                 ? widget.themeData.buttonColor
                 : widget.themeData.dividerColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.0)),
             child: Text(
               provider.isSelectedNotEmpty
                   ? '确认(${provider.currentlySelectedAssets.length}'
@@ -294,7 +301,9 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
                       '${widget.selectorProvider.maxAssets})'
                   : '确认',
               style: TextStyle(
-                color: provider.isSelectedNotEmpty ? Colors.white : Colors.grey[600],
+                color: provider.isSelectedNotEmpty
+                    ? Colors.white
+                    : Colors.grey[600],
                 fontSize: 17.0,
                 fontWeight: FontWeight.normal,
               ),
@@ -329,10 +338,13 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
                 }
               },
               child: Selector<AssetPickerViewerProvider, Set<AssetEntity>>(
-                selector: (BuildContext _, AssetPickerViewerProvider provider) =>
-                    provider.currentlySelectedAssets,
-                builder: (BuildContext _, Set<AssetEntity> currentlySelectedAssets, Widget __) {
-                  final bool isSelected = currentlySelectedAssets.contains(asset);
+                selector:
+                    (BuildContext _, AssetPickerViewerProvider provider) =>
+                        provider.currentlySelectedAssets,
+                builder: (BuildContext _,
+                    Set<AssetEntity> currentlySelectedAssets, Widget __) {
+                  final bool isSelected =
+                      currentlySelectedAssets.contains(asset);
                   return Stack(
                     children: <Widget>[
                       Positioned.fill(
@@ -351,7 +363,9 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
                         curve: Curves.easeInOut,
                         decoration: BoxDecoration(
                           border: isViewing
-                              ? Border.all(color: widget.themeData.buttonColor, width: 2.0)
+                              ? Border.all(
+                                  color: widget.themeData.buttonColor,
+                                  width: 2.0)
                               : null,
                           color: isSelected ? null : Colors.white54,
                         ),
@@ -380,10 +394,13 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
             stream: pageStreamController.stream,
             builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
               return Selector<AssetPickerViewerProvider, Set<AssetEntity>>(
-                selector: (BuildContext _, AssetPickerViewerProvider provider) =>
-                    provider.currentlySelectedAssets,
-                builder: (BuildContext _, Set<AssetEntity> currentlySelectedAssets, Widget __) {
-                  final AssetEntity asset = widget.assets.elementAt(snapshot.data);
+                selector:
+                    (BuildContext _, AssetPickerViewerProvider provider) =>
+                        provider.currentlySelectedAssets,
+                builder: (BuildContext _,
+                    Set<AssetEntity> currentlySelectedAssets, Widget __) {
+                  final AssetEntity asset =
+                      widget.assets.elementAt(snapshot.data);
                   final bool selected = currentlySelectedAssets.contains(asset);
                   return RoundedCheckbox(
                     value: selected,
@@ -409,7 +426,9 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
   Widget get bottomDetail => AnimatedPositioned(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        bottom: isDisplayingDetail ? 0.0 : -(Screens.bottomSafeHeight + bottomDetailHeight),
+        bottom: isDisplayingDetail
+            ? 0.0
+            : -(Screens.bottomSafeHeight + bottomDetailHeight),
         left: 0.0,
         right: 0.0,
         height: Screens.bottomSafeHeight + bottomDetailHeight,
@@ -426,7 +445,8 @@ class _AssetPickerViewerState extends State<AssetPickerViewer>
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.zero,
                     itemCount: widget.selectedAssets.length,
-                    itemBuilder: (BuildContext _, int index) => _bottomDetailItem(index),
+                    itemBuilder: (BuildContext _, int index) =>
+                        _bottomDetailItem(index),
                   ),
                 ),
                 Container(

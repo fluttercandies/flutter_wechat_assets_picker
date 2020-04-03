@@ -22,8 +22,9 @@ class AssetPickerViewerProvider extends ChangeNotifier {
 
   set currentlySelectedAssets(Set<AssetEntity> value) {
     assert(value != null);
-    if (value == _currentlySelectedAssets)
+    if (value == _currentlySelectedAssets) {
       return;
+    }
     _currentlySelectedAssets = value;
     notifyListeners();
   }

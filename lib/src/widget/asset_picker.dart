@@ -25,7 +25,8 @@ class AssetPicker extends StatelessWidget {
     @required this.provider,
     int gridCount = 4,
     Color themeColor = C.themeColor,
-  })  : assert(provider != null, 'AssetPickerProvider must be provided and not null.'),
+  })  : assert(provider != null,
+            'AssetPickerProvider must be provided and not null.'),
         gridCount = gridCount ?? 4,
         themeColor = themeColor ?? C.themeColor,
         super(key: key);
@@ -63,7 +64,8 @@ class AssetPicker extends StatelessWidget {
             provider: provider,
             gridCount: gridCount,
           );
-      final Set<AssetEntity> result = await Navigator.of(context).push<Set<AssetEntity>>(
+      final Set<AssetEntity> result =
+          await Navigator.of(context).push<Set<AssetEntity>>(
         Platform.isAndroid
             ? MaterialPageRoute<Set<AssetEntity>>(builder: picker)
             : CupertinoPageRoute<Set<AssetEntity>>(builder: picker),
@@ -111,7 +113,8 @@ class AssetPicker extends StatelessWidget {
         textSelectionColor: themeColor.withAlpha(100),
         textSelectionHandleColor: themeColor,
         indicatorColor: themeColor,
-        appBarTheme: const AppBarTheme(brightness: Brightness.dark, elevation: 0),
+        appBarTheme:
+            const AppBarTheme(brightness: Brightness.dark, elevation: 0),
       );
 
   /// Path entity select widget.
@@ -187,10 +190,12 @@ class AssetPicker extends StatelessWidget {
               RepaintBoundary(
                 child: AspectRatio(
                   aspectRatio: 1.0,
-                  child: Selector<AssetPickerProvider, Map<AssetPathEntity, Uint8List>>(
+                  child: Selector<AssetPickerProvider,
+                      Map<AssetPathEntity, Uint8List>>(
                     selector: (BuildContext _, AssetPickerProvider provider) =>
                         provider.pathEntityList,
-                    builder: (BuildContext _, Map<AssetPathEntity, Uint8List> pathEntityList,
+                    builder: (BuildContext _,
+                        Map<AssetPathEntity, Uint8List> pathEntityList,
                         Widget __) {
                       /// The reason that the `thumbData` should be checked at here to see if it is
                       /// null is that even the image file is not exist, the `File` can still
@@ -199,7 +204,8 @@ class AssetPicker extends StatelessWidget {
                       /// 仍然存在，使得返回的数据为空。
                       final Uint8List thumbData = pathEntityList[pathEntity];
                       if (thumbData != null) {
-                        return Image.memory(pathEntityList[pathEntity], fit: BoxFit.cover);
+                        return Image.memory(pathEntityList[pathEntity],
+                            fit: BoxFit.cover);
                       } else {
                         return Container(color: Colors.white12);
                       }
@@ -225,7 +231,8 @@ class AssetPicker extends StatelessWidget {
                       ),
                       Text(
                         '(${pathEntity.assetCount})',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 18.0),
+                        style:
+                            TextStyle(color: Colors.grey[600], fontSize: 18.0),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -236,7 +243,8 @@ class AssetPicker extends StatelessWidget {
               Selector<AssetPickerProvider, AssetPathEntity>(
                 selector: (BuildContext _, AssetPickerProvider provider) =>
                     provider.currentPathEntity,
-                builder: (BuildContext _, AssetPathEntity currentPathEntity, Widget __) {
+                builder: (BuildContext _, AssetPathEntity currentPathEntity,
+                    Widget __) {
                   if (currentPathEntity == pathEntity) {
                     return AspectRatio(
                       aspectRatio: 1.0,
@@ -259,7 +267,8 @@ class AssetPicker extends StatelessWidget {
   Widget get pathEntityListWidget {
     final double maxHeight = Screens.height * 0.75;
     return Selector<AssetPickerProvider, bool>(
-      selector: (BuildContext _, AssetPickerProvider provider) => provider.isSwitchingPath,
+      selector: (BuildContext _, AssetPickerProvider provider) =>
+          provider.isSwitchingPath,
       builder: (BuildContext _, bool isSwitchingPath, Widget __) {
         return AnimatedPositioned(
           duration: switchingPathDuration,
@@ -269,14 +278,18 @@ class AssetPicker extends StatelessWidget {
             width: Screens.width,
             height: maxHeight,
             decoration: BoxDecoration(color: theme.primaryColor),
-            child: Selector<AssetPickerProvider, Map<AssetPathEntity, Uint8List>>(
-              selector: (BuildContext _, AssetPickerProvider provider) => provider.pathEntityList,
-              builder: (BuildContext _, Map<AssetPathEntity, Uint8List> pathEntityList, Widget __) {
+            child:
+                Selector<AssetPickerProvider, Map<AssetPathEntity, Uint8List>>(
+              selector: (BuildContext _, AssetPickerProvider provider) =>
+                  provider.pathEntityList,
+              builder: (BuildContext _,
+                  Map<AssetPathEntity, Uint8List> pathEntityList, Widget __) {
                 return ListView.separated(
                   padding: const EdgeInsets.only(top: 1.0),
                   itemCount: pathEntityList.length,
                   itemBuilder: (BuildContext _, int index) {
-                    return pathEntityWidget(pathEntityList.keys.elementAt(index));
+                    return pathEntityWidget(
+                        pathEntityList.keys.elementAt(index));
                   },
                   separatorBuilder: (BuildContext _, int __) => Container(
                     margin: const EdgeInsets.only(left: 60.0),
@@ -303,14 +316,18 @@ class AssetPicker extends StatelessWidget {
             minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
             height: appBarItemHeight,
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            color: provider.isSelectedNotEmpty ? themeColor : theme.dividerColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+            color:
+                provider.isSelectedNotEmpty ? themeColor : theme.dividerColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.0)),
             child: Text(
               provider.isSelectedNotEmpty
                   ? '确认(${provider.selectedAssets.length}/${provider.maxAssets})'
                   : '确认',
               style: TextStyle(
-                color: provider.isSelectedNotEmpty ? Colors.white : Colors.grey[600],
+                color: provider.isSelectedNotEmpty
+                    ? Colors.white
+                    : Colors.grey[600],
                 fontSize: 17.0,
                 fontWeight: FontWeight.normal,
               ),
@@ -356,7 +373,8 @@ class AssetPicker extends StatelessWidget {
   }) {
     final AssetEntity item = provider.currentAssets.elementAt(index);
     return Selector<AssetPickerProvider, Set<AssetEntity>>(
-      selector: (BuildContext _, AssetPickerProvider provider) => provider.selectedAssets,
+      selector: (BuildContext _, AssetPickerProvider provider) =>
+          provider.selectedAssets,
       builder: (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
         final bool selected = provider.selectedAssets.contains(item);
         return Stack(
@@ -374,7 +392,8 @@ class AssetPicker extends StatelessWidget {
                 },
                 child: AnimatedContainer(
                   duration: kThemeAnimationDuration,
-                  color: selected ? Colors.black45 : Colors.black.withOpacity(0.1),
+                  color:
+                      selected ? Colors.black45 : Colors.black.withOpacity(0.1),
                 ),
               ), // 点击预览同目录下所有资源
             ),
@@ -398,7 +417,9 @@ class AssetPicker extends StatelessWidget {
                   width: 20.0,
                   height: 20.0,
                   decoration: BoxDecoration(
-                    border: !selected ? Border.all(color: Colors.white, width: 2.0) : null,
+                    border: !selected
+                        ? Border.all(color: Colors.white, width: 2.0)
+                        : null,
                     color: selected ? themeColor : null,
                     shape: BoxShape.circle,
                   ),
@@ -408,7 +429,8 @@ class AssetPicker extends StatelessWidget {
                     child: selected
                         ? Text(
                             '${selectedAssets.toList().indexOf(item) + 1}',
-                            style: TextStyle(color: Colors.white, fontSize: 14.0),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 14.0),
                           )
                         : const SizedBox.shrink(),
                   ),
@@ -433,8 +455,10 @@ class AssetPicker extends StatelessWidget {
 
   /// [GridView] for assets under [AssetPickerProvider.currentPathEntity].
   /// 正在查看的目录下的资源网格部件
-  Widget assetsGrid(BuildContext context) => Selector<AssetPickerProvider, Set<AssetEntity>>(
-        selector: (BuildContext _, AssetPickerProvider provider) => provider.currentAssets,
+  Widget assetsGrid(BuildContext context) =>
+      Selector<AssetPickerProvider, Set<AssetEntity>>(
+        selector: (BuildContext _, AssetPickerProvider provider) =>
+            provider.currentAssets,
         builder: (BuildContext _, Set<AssetEntity> currentAssets, Widget __) {
           return GridView.builder(
             padding: EdgeInsets.zero,
@@ -445,7 +469,8 @@ class AssetPicker extends StatelessWidget {
             ),
             itemCount: currentAssets.length,
             itemBuilder: (BuildContext _, int index) {
-              final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
+              final AssetEntityImageProvider imageProvider =
+                  AssetEntityImageProvider(
                 currentAssets.elementAt(index),
                 isOriginal: false,
               );
@@ -468,7 +493,8 @@ class AssetPicker extends StatelessWidget {
                         SpecialAssetType type;
                         if (imageProvider.imageFileType == ImageFileType.gif) {
                           type = SpecialAssetType.gif;
-                        } else if (imageProvider.imageFileType == ImageFileType.heic) {
+                        } else if (imageProvider.imageFileType ==
+                            ImageFileType.heic) {
                           type = SpecialAssetType.heic;
                         }
                         if (type != SpecialAssetType.heic) {
@@ -503,12 +529,14 @@ class AssetPicker extends StatelessWidget {
   /// 预览已选资源的按钮
   Widget previewButton(BuildContext context) {
     return Selector<AssetPickerProvider, bool>(
-      selector: (BuildContext _, AssetPickerProvider provider) => provider.isSelectedNotEmpty,
+      selector: (BuildContext _, AssetPickerProvider provider) =>
+          provider.isSelectedNotEmpty,
       builder: (BuildContext _, bool isSelectedNotEmpty, Widget __) {
         return GestureDetector(
           onTap: isSelectedNotEmpty
               ? () async {
-                  final Set<AssetEntity> result = await AssetPickerViewer.pushToViewer(
+                  final Set<AssetEntity> result =
+                      await AssetPickerViewer.pushToViewer(
                     context,
                     currentIndex: 0,
                     assets: provider.selectedAssets,
@@ -522,10 +550,14 @@ class AssetPicker extends StatelessWidget {
                 }
               : null,
           child: Selector<AssetPickerProvider, Set<AssetEntity>>(
-            selector: (BuildContext _, AssetPickerProvider provider) => provider.selectedAssets,
-            builder: (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
+            selector: (BuildContext _, AssetPickerProvider provider) =>
+                provider.selectedAssets,
+            builder:
+                (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
               return Text(
-                isSelectedNotEmpty ? '预览(${provider.selectedAssets.length})' : '预览',
+                isSelectedNotEmpty
+                    ? '预览(${provider.selectedAssets.length})'
+                    : '预览',
                 style: TextStyle(
                   color: isSelectedNotEmpty ? null : Colors.grey[600],
                   fontSize: 18.0,
@@ -595,11 +627,14 @@ class AssetPicker extends StatelessWidget {
                           )
                         : Center(
                             child: Selector<AssetPickerProvider, bool>(
-                              selector: (BuildContext _, AssetPickerProvider provider) =>
+                              selector: (BuildContext _,
+                                      AssetPickerProvider provider) =>
                                   provider.isAssetsEmpty,
-                              builder: (BuildContext _, bool isAssetsEmpty, Widget __) {
+                              builder: (BuildContext _, bool isAssetsEmpty,
+                                  Widget __) {
                                 if (isAssetsEmpty) {
-                                  return const Text('There\'s nothing to see...');
+                                  return const Text(
+                                      'There\'s nothing to see...');
                                 } else {
                                   return PlatformProgressIndicator(
                                     color: theme.iconTheme.color,
