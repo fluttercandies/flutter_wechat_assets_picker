@@ -80,6 +80,9 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider>
         case 'tiff':
           type = ImageFileType.tiff;
           break;
+        case 'heic':
+          type = ImageFileType.heic;
+          break;
         default:
           type = ImageFileType.other;
           break;
@@ -108,6 +111,6 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider>
   int get hashCode => hashValues(entity, scale, isOriginal);
 }
 
-enum ImageFileType { jpg, png, gif, tiff, other }
+enum ImageFileType { jpg, png, gif, tiff, heic, other }
 
-enum SpecialAssetType { video, audio, gif }
+enum SpecialAssetType { video, audio, gif, heic }

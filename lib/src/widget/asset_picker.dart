@@ -468,15 +468,23 @@ class AssetPicker extends StatelessWidget {
                         SpecialAssetType type;
                         if (imageProvider.imageFileType == ImageFileType.gif) {
                           type = SpecialAssetType.gif;
+                        } else if (imageProvider.imageFileType == ImageFileType.heic) {
+                          type = SpecialAssetType.heic;
                         }
-                        loader = FadeImageBuilder(
-                          child: _succeedItem(
-                            context,
-                            index,
-                            state.completedWidget,
-                            specialAssetType: type,
-                          ),
-                        );
+                        if (type != SpecialAssetType.heic) {
+                          loader = FadeImageBuilder(
+                            child: _succeedItem(
+                              context,
+                              index,
+                              state.completedWidget,
+                              specialAssetType: type,
+                            ),
+                          );
+                        } else {
+                          loader = const Center(
+                            child: Text('HEIC not supported'),
+                          );
+                        }
                         break;
                       case LoadState.failed:
                         loader = _failedItem;
@@ -586,9 +594,19 @@ class AssetPicker extends StatelessWidget {
                             ],
                           )
                         : Center(
-                            child: PlatformProgressIndicator(
-                              color: theme.iconTheme.color,
-                              size: Screens.width / gridCount / 3,
+                            child: Selector<AssetPickerProvider, bool>(
+                              selector: (BuildContext _, AssetPickerProvider provider) =>
+                                  provider.isAssetsEmpty,
+                              builder: (BuildContext _, bool isAssetsEmpty, Widget __) {
+                                if (isAssetsEmpty) {
+                                  return const Text('There\'s nothing to see...');
+                                } else {
+                                  return PlatformProgressIndicator(
+                                    color: theme.iconTheme.color,
+                                    size: Screens.width / gridCount / 3,
+                                  );
+                                }
+                              },
                             ),
                           ),
                   );
