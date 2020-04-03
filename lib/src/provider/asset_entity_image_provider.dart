@@ -7,11 +7,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider>
-    with ExtendedImageProvider {
+class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   AssetEntityImageProvider(
     this.entity, {
     this.scale = 1.0,
@@ -25,12 +23,6 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider>
   ImageFileType _imageFileType;
 
   ImageFileType get imageFileType => _imageFileType ?? _getType();
-
-  @override
-  Future<ui.Codec> instantiateImageCodec(Uint8List data, DecoderCallback decode) async {
-    rawImageData = data;
-    return await decode(data);
-  }
 
   @override
   ImageStreamCompleter load(AssetEntityImageProvider key, DecoderCallback decode) {
@@ -59,7 +51,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider>
     } else {
       data = await key.entity.thumbData;
     }
-    return instantiateImageCodec(data, decode);
+    return decode(data);
   }
 
   ImageFileType _getType() {
@@ -100,9 +92,6 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider>
       final bool result = entity == typedOther.entity &&
           scale == typedOther.scale &&
           isOriginal == typedOther.isOriginal;
-      if (result) {
-        rawImageData ??= typedOther.rawImageData;
-      }
       return result;
     }
   }
