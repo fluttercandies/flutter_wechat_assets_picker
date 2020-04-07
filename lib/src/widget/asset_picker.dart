@@ -15,9 +15,9 @@ import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/constants.dart';
-import '../widget/fade_image_builder.dart';
-import '../widget/fixed_appbar.dart';
-import '../widget/platform_progress_indicator.dart';
+import 'builder/fade_image_builder.dart';
+import 'fixed_appbar.dart';
+import 'platform_progress_indicator.dart';
 
 class AssetPicker extends StatelessWidget {
   const AssetPicker({

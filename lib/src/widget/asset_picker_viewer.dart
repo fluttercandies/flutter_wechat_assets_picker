@@ -15,11 +15,11 @@ import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/constants.dart';
-import '../widget/builder/image_page_builder.dart';
-import '../widget/builder/video_page_builder.dart';
-import '../widget/fade_image_builder.dart';
-import '../widget/platform_progress_indicator.dart';
-import '../widget/rounded_check_box.dart';
+import 'builder/fade_image_builder.dart';
+import 'builder/image_page_builder.dart';
+import 'builder/video_page_builder.dart';
+import 'platform_progress_indicator.dart';
+import 'rounded_check_box.dart';
 
 class AssetPickerViewer extends StatefulWidget {
   const AssetPickerViewer({
