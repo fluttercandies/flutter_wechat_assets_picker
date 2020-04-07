@@ -125,6 +125,10 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 详情部件是否显示
   bool isDisplayingDetail = true;
 
+  /// Whether the [PageView] can switch between pages. Provide for video play.
+  /// 是否允许[PageView]切换页面，用于播放视频时设置。
+  bool isAllowSwitchPage = true;
+
   /// Getter for current asset.
   /// 当前资源的Getter
   AssetEntity get currentAsset => widget.assets.elementAt(currentIndex);
@@ -491,9 +495,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
       );
 
   @override
-  @mustCallSuper
   Widget build(BuildContext context) {
-    super.build(context);
     return Theme(
       data: widget.themeData,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -503,18 +505,18 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
           child: Stack(
             children: <Widget>[
               Positioned.fill(
-                child: RepaintBoundary(
-                  child: ExtendedImageGesturePageView.builder(
-                    physics: const CustomScrollPhysics(),
-                    controller: pageController,
-                    itemCount: widget.assets.length,
-                    itemBuilder: pageBuilder,
-                    onPageChanged: (int index) {
-                      currentIndex = index;
-                      pageStreamController.add(index);
-                    },
-                    scrollDirection: Axis.horizontal,
-                  ),
+                child: PageView.builder(
+                  physics: isAllowSwitchPage
+                      ? const CustomScrollPhysics()
+                      : const NeverScrollableScrollPhysics(),
+                  controller: pageController,
+                  itemCount: widget.assets.length,
+                  itemBuilder: assetPageBuilder,
+                  onPageChanged: (int index) {
+                    currentIndex = index;
+                    pageStreamController.add(index);
+                  },
+                  scrollDirection: Axis.horizontal,
                 ),
               ),
               appBar(context),
@@ -525,7 +527,4 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
