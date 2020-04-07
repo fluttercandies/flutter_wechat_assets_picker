@@ -25,10 +25,12 @@ class AssetPicker extends StatelessWidget {
     @required this.provider,
     int gridCount = 4,
     Color themeColor = C.themeColor,
+    TextDelegate textDelegate,
   })  : assert(provider != null,
             'AssetPickerProvider must be provided and not null.'),
         gridCount = gridCount ?? 4,
         themeColor = themeColor ?? C.themeColor,
+        _textDelegate = textDelegate,
         super(key: key);
 
   /// [ChangeNotifier] for asset picker.
@@ -43,6 +45,14 @@ class AssetPicker extends StatelessWidget {
   /// 选择器的主题色
   final Color themeColor;
 
+  /// Passed [TextDelegate].
+  /// 传入的文本构建
+  final TextDelegate _textDelegate;
+
+  /// [TextDelegate] that the picker and the viewer would use.
+  /// 选择器和预览会最终会使用的文本构建
+  TextDelegate get textDelegate => _textDelegate ?? DefaultTextDelegate();
+
   /// Static method to push with navigator.
   /// 跳转至选择器的静态方法
   static Future<Set<AssetEntity>> pickAssets(
@@ -53,6 +63,7 @@ class AssetPicker extends StatelessWidget {
     RequestType requestType = RequestType.image,
     Set<AssetEntity> selectedAssets,
     Color themeColor = C.themeColor,
+    TextDelegate textDelegate,
   }) async {
     final bool isPermissionGranted = await PhotoManager.requestPermission();
     if (isPermissionGranted) {
@@ -65,6 +76,7 @@ class AssetPicker extends StatelessWidget {
       final WidgetBuilder picker = (BuildContext _) => AssetPicker(
             provider: provider,
             gridCount: gridCount,
+            textDelegate: textDelegate,
           );
       final Set<AssetEntity> result =
           await Navigator.of(context).push<Set<AssetEntity>>(
@@ -324,8 +336,8 @@ class AssetPicker extends StatelessWidget {
                 borderRadius: BorderRadius.circular(3.0)),
             child: Text(
               provider.isSelectedNotEmpty
-                  ? '确认(${provider.selectedAssets.length}/${provider.maxAssets})'
-                  : '确认',
+                  ? '${textDelegate.confirm}(${provider.selectedAssets.length}/${provider.maxAssets})'
+                  : textDelegate.confirm,
               style: TextStyle(
                 color: provider.isSelectedNotEmpty
                     ? Colors.white
@@ -369,7 +381,7 @@ class AssetPicker extends StatelessWidget {
                 color: theme.iconTheme.color.withOpacity(0.75),
               ),
               child: Text(
-                'GIF',
+                textDelegate.gifIndicator,
                 style: TextStyle(color: theme.primaryColor, fontSize: 12.0),
               ),
             ),
@@ -380,7 +392,6 @@ class AssetPicker extends StatelessWidget {
   /// Video asset type indicator.
   /// 视频类型资源指示
   Widget videoIndicator(AssetEntity asset) {
-    final Duration duration = Duration(seconds: asset.duration);
     return Align(
       alignment: AlignmentDirectional.bottomStart,
       child: Container(
@@ -400,9 +411,8 @@ class AssetPicker extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Text(
-                '${(duration.inMinutes).toString().padLeft(2, '0')}'
-                ':'
-                '${((duration - Duration(minutes: duration.inMinutes)).inSeconds).toString().padLeft(2, '0')}',
+                textDelegate
+                    .videoIndicatorBuilder(Duration(seconds: asset.duration)),
                 style: const TextStyle(fontSize: 16.0),
               ),
             ),
@@ -437,6 +447,7 @@ class AssetPicker extends StatelessWidget {
                     currentIndex: index,
                     assets: provider.currentAssets,
                     themeData: theme,
+                    textDelegate: textDelegate,
                   );
                 },
                 child: AnimatedContainer(
@@ -498,7 +509,7 @@ class AssetPicker extends StatelessWidget {
   /// 资源缩略数据加载失败时使用的部件
   Widget get _failedItem => Center(
         child: Text(
-          '加载失败',
+          textDelegate.loadFailed,
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.white, fontSize: 18.0),
         ),
@@ -563,9 +574,8 @@ class AssetPicker extends StatelessWidget {
                             ),
                           );
                         } else {
-                          loader = const Center(
-                            child: Text('HEIC not supported'),
-                          );
+                          loader = Center(
+                              child: Text(textDelegate.heicNotSupported));
                         }
                         break;
                       case LoadState.failed:
@@ -599,6 +609,7 @@ class AssetPicker extends StatelessWidget {
                     selectedAssets: provider.selectedAssets,
                     selectorProvider: provider,
                     themeData: theme,
+                    textDelegate: textDelegate,
                   );
                   if (result != null) {
                     Navigator.of(context).pop(result);
@@ -612,8 +623,8 @@ class AssetPicker extends StatelessWidget {
                 (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
               return Text(
                 isSelectedNotEmpty
-                    ? '预览(${provider.selectedAssets.length})'
-                    : '预览',
+                    ? '${textDelegate.preview}(${provider.selectedAssets.length})'
+                    : textDelegate.preview,
                 style: TextStyle(
                   color: isSelectedNotEmpty ? null : Colors.grey[600],
                   fontSize: 18.0,
@@ -689,8 +700,7 @@ class AssetPicker extends StatelessWidget {
                               builder: (BuildContext _, bool isAssetsEmpty,
                                   Widget __) {
                                 if (isAssetsEmpty) {
-                                  return const Text(
-                                      'There\'s nothing to see...');
+                                  return Text(textDelegate.emptyPlaceHolder);
                                 } else {
                                   return PlatformProgressIndicator(
                                     color: theme.iconTheme.color,

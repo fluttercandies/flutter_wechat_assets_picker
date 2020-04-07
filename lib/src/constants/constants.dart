@@ -5,3 +5,4 @@
 export 'colors.dart';
 export 'custom_scroll_physics.dart';
 export 'screens.dart';
+export 'text_delegate.dart';
