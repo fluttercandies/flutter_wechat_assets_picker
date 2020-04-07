@@ -13,7 +13,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   AssetEntityImageProvider(
     this.entity, {
     this.scale = 1.0,
-    this.thumbSize = 150,
+    this.thumbSize = 200,
     this.isOriginal = true,
   });
 
@@ -112,6 +112,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
         other as AssetEntityImageProvider;
     return entity == typedOther.entity &&
         scale == typedOther.scale &&
+        thumbSize == typedOther.thumbSize &&
         isOriginal == typedOther.isOriginal;
   }
 
