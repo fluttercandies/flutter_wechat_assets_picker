@@ -24,7 +24,7 @@ An assets picker which looks like the one in WeChat, based on `photo_manager` fo
 
 - [x] Image asset support
   - [ ] Image editing (Cut/Rotate/Draw)
-- [ ] Video asset support
+- [x] Video asset support
   - [ ] Video editing support
 - [ ] Single asset mode
 - [ ] i18n support
@@ -47,11 +47,23 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-You need at lease two permissions: `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`.
+You need at lease three permissions: `INTERNET` `READ_EXTERNAL_STORAGE` `WRITE_EXTERNAL_STORAGE`.
 
 ### iOS
 
-Set `NSPhotoLibraryUsageDescription` in your `info.plist`.
+Add following content to `info.plist`.
+
+```
+<key>NSAppTransportSecurity</key>
+<dict>
+	<key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Replace with your permission description.</string>
+```
+
+
 
 ## Usage 📖
 
@@ -61,6 +73,7 @@ Set `NSPhotoLibraryUsageDescription` in your `info.plist`.
 | maxAssets      | `int`              | Maximum asset that the picker can pick.                      | 9                   |
 | pageThumbSize  | `int`              | The size of thumb data in picker.                            | 80                  |
 | gridCount      | `int`              | Grid count in picker.                                        | 4                   |
+| requestType    | `RequestType`      | Request type for picker.                                     | RequestType.image   |
 | selectedAssets | `Set<AssetEntity>` | Selected assets. Using `Set` to prevent dulplicate selection. | `null`              |
 | themeColor     | `Color`            | Main theme color for the picker                              | `Color(0xff00bc56)` |
 
@@ -87,6 +100,7 @@ final Set<AssetEntity> result = await AssetPicker.pickAssets(
   maxAssets: 9,
   pageThumbSize: 80,
   gridCount: 4,
+  requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
 );
@@ -102,6 +116,7 @@ AssetPicker.pickAssets(
   maxAssets: 9,
   pageThumbSize: 80,
   gridCount: 4,
+  requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
 ).then((Set<AssetEntity> assets) {

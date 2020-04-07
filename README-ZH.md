@@ -25,7 +25,7 @@ Language: [English](README.md) | 中文简体
 
 - [x] 图片资源支持
   - [ ] 图片编辑（裁剪/旋转/涂鸦）
-- [ ] 视频资源支持
+- [x] 视频资源支持
   - [ ] 视频编辑
 - [ ] 单资源模式
 - [ ] 国际化支持
@@ -51,22 +51,35 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-应用至少需要声明两个权限：`READ_EXTERNAL_STORAGE`和`WRITE_EXTERNAL_STORAGE`。
+应用至少需要声明三个权限：`INTERNET` `READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE`
 
 ### iOS
 
-将`NSPhotoLibraryUsageDescription`添加至`info.plist`。
+将以下内容添加至`info.plist`。
+
+```
+<key>NSAppTransportSecurity</key>
+<dict>
+	<key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>替换为你的相册权限描述</string>
+```
+
+
 
 ## 使用方法 📖
 
 | 参数名           | 类型               | 描述                                      | 默认值             |
 | -------------- | ------------------ | ------------------------------------------------ | ------------------- |
-| context        | `BuildContext`     | 用于路由的上下文。                      | `null`              |
-| maxAssets      | `int`              | 最多选择的图片数量          | 9                   |
-| pageThumbSize  | `int`              | 选择器的缩略图大小                | 80                  |
-| gridCount      | `int`              | 选择器网格数量                            | 4                   |
-| selectedAssets | `Set<AssetEntity>` | 已选的资源。使用 `Set` 以确保不重复选择。 | `null`              |
-| themeColor     | `Color`            | 选择器的主题色。  | `Color(0xff00bc56)` |
+| context        | `BuildContext`     | 用于路由的上下文                      | `null`              |
+| maxAssets      | `int`              | 最多选择的图片数量                      | 9                   |
+| pageThumbSize  | `int`              | 选择器的缩略图大小                      | 80                  |
+| gridCount      | `int`              | 选择器网格数量                        | 4                   |
+| requestType    | `RequestType`      | 选择器选择资源的类型                    | `RequestType.image` |
+| selectedAssets | `Set<AssetEntity>` | 已选的资源。使用 `Set` 以确保不重复选择 | `null`              |
+| themeColor     | `Color`            | 选择器的主题色  | `Color(0xff00bc56)` |
 
 ### 简单的使用方法
 
@@ -92,6 +105,7 @@ final Set<AssetEntity> result = await AssetPicker.pickAssets(
   maxAssets: 9,
   pageThumbSize: 80,
   gridCount: 4,
+  requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
 );
@@ -107,6 +121,7 @@ AssetPicker.pickAssets(
   maxAssets: 9,
   pageThumbSize: 80,
   gridCount: 4,
+  requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
 ).then((Set<AssetEntity> assets) {
