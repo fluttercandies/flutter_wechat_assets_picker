@@ -11,15 +11,24 @@ Language: [English](README.md) | 中文简体
 
 对标微信的资源选择器，基于`photo_manager`实现资源相关功能，`extended_image`用于查看图片，`provider`用于协助管理选择器的状态。
 
+## 目录 🗂
+
+* [特性](#特性-)
+* [截图](#截图-)
+* [目标TODO](#目标todo-)
+* [准备工作](#准备工作-)
+  * [Flutter](#flutter)
+  * [Android](#android)
+  * [iOS](#ios)
+* [使用方法](#使用方法-)
+  * [简单的使用方法](#简单的使用方法)
+  * [完整参数的使用方法](#完整参数的使用方法)
+
 ## 特性 ✨
 
 - 💚 99%的微信风格
 - 🌠 支持同时选择多个资源
-- 🔍 支持资源预览
-
-## 截图 📸
-
-![1.png](screenshots/1.png)![2.png](screenshots/2.png)![3.png](screenshots/3.png)
+- 🔍 支持资源预览（图片、视频）
 
 ## 目标TODO 📅
 
@@ -27,10 +36,16 @@ Language: [English](README.md) | 中文简体
   - [ ] 图片编辑（裁剪/旋转/涂鸦）
 - [x] 视频资源支持
   - [ ] 视频编辑
+- [ ] 音频资源支持
 - [ ] 单资源模式
-- [ ] 国际化支持
-- [ ] 自定义文本支持
+- [x] 国际化支持
+- [x] 自定义文本支持
 - [ ] FFW支持
+
+## 截图 📸
+
+![1.png](screenshots/1.png)![2.png](screenshots/2.png)![3.png](screenshots/3.png)
+
 
 ## 准备工作 🍭
 
@@ -64,7 +79,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
   <true/>
 </dict>
 <key>NSPhotoLibraryUsageDescription</key>
-<string>替换为你的相册权限描述</string>
+<string>你的相册权限描述</string>
 ```
 
 
@@ -80,6 +95,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 | requestType    | `RequestType`      | 选择器选择资源的类型                    | `RequestType.image` |
 | selectedAssets | `Set<AssetEntity>` | 已选的资源。使用 `Set` 以确保不重复选择 | `null`              |
 | themeColor     | `Color`            | 选择器的主题色  | `Color(0xff00bc56)` |
+| textDelegate | `TextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
 
 ### 简单的使用方法
 
@@ -108,6 +124,7 @@ final Set<AssetEntity> result = await AssetPicker.pickAssets(
   requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
+  textDelegate: DefaultTextDelegate(),
 );
 ```
 
@@ -124,6 +141,7 @@ AssetPicker.pickAssets(
   requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
+  textDelegate: DefaultTextDelegate(),
 ).then((Set<AssetEntity> assets) {
   /.../
 });

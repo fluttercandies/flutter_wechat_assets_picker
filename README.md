@@ -10,15 +10,24 @@ Language: English | [中文简体](README-ZH.md)
 
 An assets picker which looks like the one in WeChat, based on `photo_manager` for asset implementation, `extended_image` for image preview, `provider` to help controlling the state of the picker.
 
+## Category 🗂
+
+* [Features](#features-)
+* [Screenshots](#screenshots-)
+* [TODO](#todo-)
+* [Preparing for use](#preparing-for-use-)
+  * [Flutter](#flutter)
+  * [Android](#android)
+  * [iOS](#ios)
+* [Usage](#usage-)
+  * [Simple usage](#simple-usage)
+  * [Complete param usage](#complete-param-usage)
+
 ## Features ✨
 
 - 💚 99% simillar to WeChat style.
 - 🌠 Support multi assets pick.
-- 🔍 Support asset preview.
-
-## Screenshots 📸
-
-![1.png](screenshots/1.png)![2.png](screenshots/2.png)![3.png](screenshots/3.png)
+- 🔍 Support asset preview. (Image / Video)
 
 ## TODO 📅
 
@@ -26,10 +35,16 @@ An assets picker which looks like the one in WeChat, based on `photo_manager` fo
   - [ ] Image editing (Cut/Rotate/Draw)
 - [x] Video asset support
   - [ ] Video editing support
+- [ ] Audio asset support
 - [ ] Single asset mode
-- [ ] i18n support
-- [ ] Custom text delegate support
+- [x] i18n support
+- [x] Custom text delegate support
 - [ ] Flutter For the Web support
+
+## Screenshots 📸
+
+![1.png](screenshots/1.png)![2.png](screenshots/2.png)![3.png](screenshots/3.png)
+
 
 ## Preparing for use 🍭
 
@@ -67,15 +82,16 @@ Add following content to `info.plist`.
 
 ## Usage 📖
 
-| Name           | Type               | Description                                                  | Default             |
-| -------------- | ------------------ | ------------------------------------------------------------ | ------------------- |
-| context        | `BuildContext`     | Context for navigator push.                                  | `null`              |
-| maxAssets      | `int`              | Maximum asset that the picker can pick.                      | 9                   |
-| pageThumbSize  | `int`              | The size of thumb data in picker.                            | 80                  |
-| gridCount      | `int`              | Grid count in picker.                                        | 4                   |
-| requestType    | `RequestType`      | Request type for picker.                                     | RequestType.image   |
-| selectedAssets | `Set<AssetEntity>` | Selected assets. Using `Set` to prevent dulplicate selection. | `null`              |
-| themeColor     | `Color`            | Main theme color for the picker                              | `Color(0xff00bc56)` |
+| Name           | Type               | Description                                                  | Default                 |
+| -------------- | ------------------ | ------------------------------------------------------------ | ----------------------- |
+| context        | `BuildContext`     | Context for navigator push.                                  | `null`                  |
+| maxAssets      | `int`              | Maximum asset that the picker can pick.                      | 9                       |
+| pageThumbSize  | `int`              | The size of thumb data in picker.                            | 80                      |
+| gridCount      | `int`              | Grid count in picker.                                        | 4                       |
+| requestType    | `RequestType`      | Request type for picker.                                     | RequestType.image       |
+| selectedAssets | `Set<AssetEntity>` | Selected assets. Using `Set` to prevent dulplicate selection. | `null`                  |
+| themeColor     | `Color`            | Main theme color for the picker                              | `Color(0xff00bc56)`     |
+| textDelegate   | `TextDelegate`     | Text delegate for the picker, for customize the texts.       | `DefaultTextDelegate()` |
 
 ### Simple usage
 ```dart
@@ -103,6 +119,7 @@ final Set<AssetEntity> result = await AssetPicker.pickAssets(
   requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
+  textDelegate: DefaultTextDelegate(),
 );
 ```
 
@@ -119,6 +136,7 @@ AssetPicker.pickAssets(
   requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
+  textDelegate: DefaultTextDelegate(),
 ).then((Set<AssetEntity> assets) {
   /.../
 });
