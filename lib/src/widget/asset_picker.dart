@@ -344,24 +344,71 @@ class AssetPicker extends StatelessWidget {
 
   /// GIF image type indicator.
   /// GIF类型图片指示
-  Widget get gifIndicator => Positioned(
-        bottom: 6.0,
-        right: 6.0,
+  Widget get gifIndicator => Align(
+        alignment: AlignmentDirectional.bottomStart,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+          width: double.maxFinite,
+          height: 26.0,
+          padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4.0),
-            color: theme.primaryColor.withOpacity(0.75),
+            gradient: LinearGradient(
+              begin: AlignmentDirectional.bottomCenter,
+              end: AlignmentDirectional.topCenter,
+              colors: <Color>[Colors.black45, Colors.transparent],
+            ),
           ),
-          child: Text(
-            '动图',
-            style: TextStyle(
-              color: theme.iconTheme.color,
-              fontSize: 10.0,
+          child: Align(
+            alignment: const FractionalOffset(0.1, 0.1),
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2.0),
+                color: theme.iconTheme.color.withOpacity(0.75),
+              ),
+              child: Text(
+                'GIF',
+                style: TextStyle(color: theme.primaryColor, fontSize: 12.0),
+              ),
             ),
           ),
         ),
       );
+
+  /// Video asset type indicator.
+  /// 视频类型资源指示
+  Widget videoIndicator(AssetEntity asset) {
+    final Duration duration = Duration(seconds: asset.duration);
+    return Align(
+      alignment: AlignmentDirectional.bottomStart,
+      child: Container(
+        width: double.maxFinite,
+        height: 26.0,
+        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: AlignmentDirectional.bottomCenter,
+            end: AlignmentDirectional.topCenter,
+            colors: <Color>[Colors.black45, Colors.transparent],
+          ),
+        ),
+        child: Row(
+          children: <Widget>[
+            Icon(Icons.videocam, size: 24.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 4.0),
+              child: Text(
+                '${(duration.inMinutes).toString().padLeft(2, '0')}'
+                ':'
+                '${((duration - Duration(minutes: duration.inMinutes)).inSeconds).toString().padLeft(2, '0')}',
+                style: const TextStyle(fontSize: 16.0),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   /// Item widget when [AssetEntity.thumbData] loaded successfully.
   /// 资源缩略数据加载成功时使用的部件
@@ -371,12 +418,12 @@ class AssetPicker extends StatelessWidget {
     Widget completedWidget, {
     SpecialAssetType specialAssetType,
   }) {
-    final AssetEntity item = provider.currentAssets.elementAt(index);
+    final AssetEntity asset = provider.currentAssets.elementAt(index);
     return Selector<AssetPickerProvider, Set<AssetEntity>>(
       selector: (BuildContext _, AssetPickerProvider provider) =>
           provider.selectedAssets,
       builder: (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
-        final bool selected = provider.selectedAssets.contains(item);
+        final bool selected = provider.selectedAssets.contains(asset);
         return Stack(
           children: <Widget>[
             Positioned.fill(child: RepaintBoundary(child: completedWidget)),
@@ -391,14 +438,16 @@ class AssetPicker extends StatelessWidget {
                   );
                 },
                 child: AnimatedContainer(
-                  duration: kThemeAnimationDuration,
+                  duration: switchingPathDuration,
                   color:
                       selected ? Colors.black45 : Colors.black.withOpacity(0.1),
                 ),
               ), // 点击预览同目录下所有资源
             ),
-            if (specialAssetType == SpecialAssetType.gif)
+            if (specialAssetType == SpecialAssetType.gif) // 如果为GIF则显示标识
               gifIndicator,
+            if (specialAssetType == SpecialAssetType.video) // 如果为视频则显示标识
+              videoIndicator(asset),
             Positioned(
               top: 0.0,
               right: 0.0,
@@ -406,13 +455,13 @@ class AssetPicker extends StatelessWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   if (selected) {
-                    provider.unSelectAsset(item);
+                    provider.unSelectAsset(asset);
                   } else {
-                    provider.selectAsset(item);
+                    provider.selectAsset(asset);
                   }
                 },
                 child: AnimatedContainer(
-                  duration: kThemeAnimationDuration,
+                  duration: switchingPathDuration,
                   margin: const EdgeInsets.all(6.0),
                   width: 20.0,
                   height: 20.0,
@@ -424,11 +473,11 @@ class AssetPicker extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: AnimatedSwitcher(
-                    duration: kThemeAnimationDuration,
-                    reverseDuration: kThemeAnimationDuration,
+                    duration: switchingPathDuration,
+                    reverseDuration: switchingPathDuration,
                     child: selected
                         ? Text(
-                            '${selectedAssets.toList().indexOf(item) + 1}',
+                            '${selectedAssets.toList().indexOf(asset) + 1}',
                             style:
                                 TextStyle(color: Colors.white, fontSize: 14.0),
                           )
@@ -469,9 +518,10 @@ class AssetPicker extends StatelessWidget {
             ),
             itemCount: currentAssets.length,
             itemBuilder: (BuildContext _, int index) {
+              final AssetEntity asset = currentAssets.elementAt(index);
               final AssetEntityImageProvider imageProvider =
                   AssetEntityImageProvider(
-                currentAssets.elementAt(index),
+                asset,
                 isOriginal: false,
               );
               return RepaintBoundary(
@@ -496,6 +546,10 @@ class AssetPicker extends StatelessWidget {
                         } else if (imageProvider.imageFileType ==
                             ImageFileType.heic) {
                           type = SpecialAssetType.heic;
+                        } else if (asset.type == AssetType.audio) {
+                          type = SpecialAssetType.audio;
+                        } else if (asset.type == AssetType.video) {
+                          type = SpecialAssetType.video;
                         }
                         if (type != SpecialAssetType.heic) {
                           loader = FadeImageBuilder(
@@ -610,7 +664,7 @@ class AssetPicker extends StatelessWidget {
                     provider.hasAssetsToDisplay,
                 builder: (BuildContext _, bool hasAssetsToDisplay, Widget __) {
                   return AnimatedSwitcher(
-                    duration: kThemeAnimationDuration,
+                    duration: switchingPathDuration,
                     child: hasAssetsToDisplay
                         ? Stack(
                             children: <Widget>[
