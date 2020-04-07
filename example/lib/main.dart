@@ -60,20 +60,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget get textField => Expanded(
-    child: TextField(
-      autofocus: true,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 16.0,
+        child: TextField(
+          autofocus: true,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.all(16.0),
+            isDense: true,
+          ),
+          style: const TextStyle(fontSize: 18.0),
+          maxLines: null,
         ),
-        isDense: true,
-      ),
-      style: const TextStyle(fontSize: 18.0),
-      maxLines: null,
-    ),
-  );
+      );
 
   Widget assetItemBuilder(BuildContext _, int index) {
     return Container(
@@ -159,7 +156,8 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Select Asset',
         child: Icon(Icons.photo_library),
       ),
-      floatingActionButtonLocation: CustomFloatingActionButtonLocation(assets.isNotEmpty),
+      floatingActionButtonLocation:
+          CustomFloatingActionButtonLocation(assets.isNotEmpty),
     );
   }
 }
@@ -169,21 +167,24 @@ class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
 
   final bool isAssetNotEmpty;
 
-  double _leftOffset(ScaffoldPrelayoutGeometry scaffoldGeometry, {double offset = 0.0}) {
-    return kFloatingActionButtonMargin
-        + scaffoldGeometry.minInsets.left
-        - offset;
+  double _leftOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
+      {double offset = 0.0}) {
+    return kFloatingActionButtonMargin +
+        scaffoldGeometry.minInsets.left -
+        offset;
   }
 
-  double _rightOffset(ScaffoldPrelayoutGeometry scaffoldGeometry, {double offset = 0.0}) {
-    return scaffoldGeometry.scaffoldSize.width
-        - kFloatingActionButtonMargin
-        - scaffoldGeometry.minInsets.right
-        - scaffoldGeometry.floatingActionButtonSize.width
-        + offset;
+  double _rightOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
+      {double offset = 0.0}) {
+    return scaffoldGeometry.scaffoldSize.width -
+        kFloatingActionButtonMargin -
+        scaffoldGeometry.minInsets.right -
+        scaffoldGeometry.floatingActionButtonSize.width +
+        offset;
   }
 
-  double _endOffset(ScaffoldPrelayoutGeometry scaffoldGeometry, {double offset = 0.0}) {
+  double _endOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
+      {double offset = 0.0}) {
     assert(scaffoldGeometry.textDirection != null);
     switch (scaffoldGeometry.textDirection) {
       case TextDirection.rtl:
@@ -207,11 +208,16 @@ class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
 
     double fabY = contentBottom - fabHeight - kFloatingActionButtonMargin;
     if (snackBarHeight > 0.0)
-      fabY = math.min(fabY, contentBottom - snackBarHeight - fabHeight - kFloatingActionButtonMargin);
+      fabY = math.min(
+          fabY,
+          contentBottom -
+              snackBarHeight -
+              fabHeight -
+              kFloatingActionButtonMargin);
     if (bottomSheetHeight > 0.0)
-      fabY = math.min(fabY, contentBottom - bottomSheetHeight - fabHeight / 2.0);
-    if (isAssetNotEmpty)
-      fabY -= 100.0;
+      fabY =
+          math.min(fabY, contentBottom - bottomSheetHeight - fabHeight / 2.0);
+    if (isAssetNotEmpty) fabY -= 100.0;
 
     return Offset(fabX, fabY);
   }
