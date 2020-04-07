@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/constants.dart';
+import '../widget/builder/image_page_builder.dart';
+import '../widget/builder/video_page_builder.dart';
 import '../widget/fade_image_builder.dart';
 import '../widget/platform_progress_indicator.dart';
 import '../widget/rounded_check_box.dart';
@@ -50,7 +52,7 @@ class AssetPickerViewer extends StatefulWidget {
   final ThemeData themeData;
 
   @override
-  _AssetPickerViewerState createState() => _AssetPickerViewerState();
+  AssetPickerViewerState createState() => AssetPickerViewerState();
 
   /// Static method to push with navigator.
   /// 跳转至选择预览的静态方法
@@ -79,8 +81,8 @@ class AssetPickerViewer extends StatefulWidget {
   }
 }
 
-class _AssetPickerViewerState extends State<AssetPickerViewer>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+class AssetPickerViewerState extends State<AssetPickerViewer>
+    with TickerProviderStateMixin {
   /// [StreamController] for viewing page index update.
   /// 用于更新当前正在浏览的资源页码的流控制器
   ///
