@@ -136,6 +136,12 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   @override
   void initState() {
     super.initState();
+
+    /// Hide system status bar automatically on iOS.
+    /// 在iOS设备上自动隐藏状态栏
+    if (Platform.isIOS) {
+      SystemChrome.setEnabledSystemUIOverlays(<SystemUiOverlay>[]);
+    }
     _doubleTapAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -153,6 +159,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     _doubleTapAnimationController?.dispose();
     pageStreamController?.close();
     super.dispose();
