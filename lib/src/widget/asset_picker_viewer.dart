@@ -195,54 +195,76 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
     _doubleTapAnimationController.forward();
   }
 
-  /// Builder for assets preview page.
-  /// 预览单页构建部件
-  Widget pageBuilder(BuildContext context, int index) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        setState(() {
-          isDisplayingDetail = !isDisplayingDetail;
-        });
-      },
-      child: ExtendedImage(
-        image: AssetEntityImageProvider(widget.assets.elementAt(index)),
-        fit: BoxFit.contain,
-        mode: ExtendedImageMode.gesture,
-        onDoubleTap: updateAnimation,
-        initGestureConfigHandler: (ExtendedImageState state) {
-          return GestureConfig(
-            initialScale: 1.0,
-            minScale: 1.0,
-            maxScale: 3.0,
-            animationMinScale: 0.6,
-            animationMaxScale: 4.0,
-            cacheGesture: false,
-            inPageView: true,
-          );
-        },
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = Center(
-                child: PlatformProgressIndicator(
-                  color: widget.themeData.buttonColor,
-                  size: Screens.width / 10,
-                ),
-              );
-              break;
-            case LoadState.completed:
-              loader = FadeImageBuilder(child: state.completedWidget);
-              break;
-            case LoadState.failed:
-              loader = _failedItem;
-              break;
-          }
-          return loader;
-        },
-      ),
-    );
+  /// Method to switch [isDisplayingDetail].
+  /// 切换显示详情状态的方法
+  void switchDisplayingDetail() {
+    isDisplayingDetail = !isDisplayingDetail;
+    if (!Platform.isIOS) {
+      SystemChrome.setEnabledSystemUIOverlays(
+        isDisplayingDetail ? SystemUiOverlay.values : <SystemUiOverlay>[],
+      );
+    }
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  /// Methods to set [isAllowSwitchPage].
+  /// 设置是否允许切换页面的方法
+  void allowSwitchPages(bool value) {
+    if (value == isAllowSwitchPage) {
+      return;
+    }
+    isAllowSwitchPage = value;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  /// Split page builder according to type of asset.
+  /// 根据资源类型使用不同的构建页
+  Widget assetPageBuilder(BuildContext context, int index) {
+    final AssetEntity asset = widget.assets.elementAt(index);
+    Widget builder;
+    switch (asset.type) {
+      case AssetType.audio:
+//        builder = audioPageBuilder(context, index);
+        builder = const SizedBox.shrink();
+        break;
+      case AssetType.image:
+        builder = ImagePageBuilder(asset: asset, state: this);
+        break;
+      case AssetType.video:
+        builder = VideoPageBuilder(asset: asset, state: this);
+        break;
+      case AssetType.other:
+        builder = const Center(child: Text('Un-supported asset type.'));
+        break;
+    }
+    return builder;
+  }
+
+  /// Common image load state changed callback with [Widget].
+  /// 图片加载状态的部件回调
+  Widget previewWidgetLoadStateChanged(ExtendedImageState state) {
+    Widget loader;
+    switch (state.extendedImageLoadState) {
+      case LoadState.loading:
+        loader = Center(
+          child: PlatformProgressIndicator(
+            color: widget.themeData.buttonColor,
+            size: Screens.width / 10,
+          ),
+        );
+        break;
+      case LoadState.completed:
+        loader = FadeImageBuilder(child: state.completedWidget);
+        break;
+      case LoadState.failed:
+        loader = _failedItem;
+        break;
+    }
+    return loader;
   }
 
   /// AppBar widget.
