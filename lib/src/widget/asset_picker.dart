@@ -50,6 +50,7 @@ class AssetPicker extends StatelessWidget {
     int maxAssets = 9,
     int pathThumbSize = 80,
     int gridCount = 4,
+    RequestType requestType = RequestType.image,
     Set<AssetEntity> selectedAssets,
     Color themeColor = C.themeColor,
   }) async {
@@ -59,6 +60,7 @@ class AssetPicker extends StatelessWidget {
         maxAssets: maxAssets,
         pathThumbSize: pathThumbSize,
         selectedAssets: selectedAssets,
+        requestType: requestType,
       );
       final WidgetBuilder picker = (BuildContext _) => AssetPicker(
             provider: provider,
