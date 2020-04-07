@@ -1,3 +1,7 @@
+## [1.2.0]
+
+* Add text delegate support. (Also with i18n support using delegate).
+
 ## [1.1.0]
 
 * Support video assets. You can use `requestType` to select video or video+image.
