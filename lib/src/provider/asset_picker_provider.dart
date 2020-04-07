@@ -5,8 +5,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:pedantic/pedantic.dart' show unawaited;
 import 'package:photo_manager/photo_manager.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 /// [ChangeNotifier] for assets picker.
 /// 资源选择器的 provider model
@@ -16,6 +16,7 @@ class AssetPickerProvider extends ChangeNotifier {
   AssetPickerProvider({
     this.maxAssets = 9,
     this.pathThumbSize = 80,
+    this.requestType = RequestType.image,
     Set<AssetEntity> selectedAssets,
   }) {
     if (selectedAssets?.isNotEmpty ?? false) {
@@ -31,6 +32,10 @@ class AssetPickerProvider extends ChangeNotifier {
   /// Thumb size for path selector.
   /// 路径选择器中缩略图的大小
   final int pathThumbSize;
+
+  /// Request assets type.
+  /// 请求的资源类型
+  final RequestType requestType;
 
   /// Clear all fields when dispose.
   /// 销毁时重置所有内容
@@ -151,8 +156,14 @@ class AssetPickerProvider extends ChangeNotifier {
   /// Get assets path entities.
   /// 获取所有的资源路径
   Future<void> getAssetList() async {
-    final List<AssetPathEntity> _list =
-        await PhotoManager.getAssetPathList(type: RequestType.image);
+    final List<AssetPathEntity> _list = await PhotoManager.getAssetPathList(
+      type: requestType,
+      filterOption: FilterOptionGroup()
+        ..setOption(
+          AssetType.image,
+          const FilterOption(needTitle: true),
+        ),
+    );
     for (final AssetPathEntity pathEntity in _list) {
       _pathEntityList[pathEntity] =
           await getFirstThumbFromPathEntity(pathEntity);
@@ -160,7 +171,7 @@ class AssetPickerProvider extends ChangeNotifier {
     if (_pathEntityList.isNotEmpty) {
       _currentPathEntity = pathEntityList.keys.elementAt(0);
       await _currentPathEntity.refreshPathProperties();
-      unawaited(getAssetsFromEntity(currentPathEntity));
+      getAssetsFromEntity(currentPathEntity);
     } else {
       isAssetsEmpty = true;
     }
