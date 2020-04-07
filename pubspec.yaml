@@ -1,6 +1,6 @@
 name: wechat_assets_picker
-description: An assets picker which looks like the one in WeChat, support multi asset pick from device.
-version: 1.0.0
+description: An assets picker in pure dart which looks like the one in WeChat, support multi asset pick from device.
+version: 1.1.0
 homepage: https://github.com/fluttercandies/flutter_wechat_assets_picker
 
 environment:
@@ -10,14 +10,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   extended_image: ^0.7.1
-  pedantic: ^1.8.0+1
-  photo_manager: ^0.5.0
+  photo_manager: ^0.5.1-dev.3
   provider: ^4.0.2
+  video_player: ^0.10.8+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-flutter:
-  uses-material-design: true
