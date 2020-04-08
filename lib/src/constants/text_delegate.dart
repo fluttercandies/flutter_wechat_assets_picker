@@ -7,6 +7,10 @@ abstract class TextDelegate {
   /// 确认按钮的字段
   String confirm;
 
+  /// Cancel string for back button.
+  /// 返回按钮的字段
+  String cancel;
+
   /// Edit string for edit button.
   /// 编辑按钮的字段
   String edit;
@@ -51,6 +55,9 @@ abstract class TextDelegate {
 class DefaultTextDelegate implements TextDelegate {
   @override
   String confirm = '确认';
+
+  @override
+  String cancel = '取消';
 
   @override
   String edit = '编辑';
