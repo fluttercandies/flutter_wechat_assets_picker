@@ -1,3 +1,8 @@
+## [1.2.1]
+
+* Fix missing aspect ratio for video player.
+* Using common request type in example.
+
 ## [1.2.0]
 
 * Add text delegate support. (Also with i18n support using delegate).
