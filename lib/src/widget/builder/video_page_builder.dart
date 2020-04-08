@@ -2,14 +2,9 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020/4/6 18:58
 ///
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
-import '../../constants/constants.dart';
 
 class VideoPageBuilder extends StatefulWidget {
   const VideoPageBuilder({Key key, this.asset, this.state}) : super(key: key);
@@ -105,17 +100,6 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Positioned.fill(
-          child: ExtendedImage(
-            image: AssetEntityImageProvider(
-              widget.asset,
-              thumbSize: math.min(Screens.widthPixels, widget.asset.width),
-              isOriginal: false,
-            ),
-            fit: BoxFit.contain,
-            loadStateChanged: widget.state.previewWidgetLoadStateChanged,
-          ),
-        ),
         if (_controller != null)
           Positioned.fill(
             child: Center(
