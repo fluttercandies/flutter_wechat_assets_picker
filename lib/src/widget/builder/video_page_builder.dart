@@ -117,7 +117,14 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           ),
         ),
         if (_controller != null)
-          Positioned.fill(child: VideoPlayer(_controller)),
+          Positioned.fill(
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              ),
+            ),
+          ),
         if (_controller != null)
           GestureDetector(
             behavior: HitTestBehavior.opaque,
