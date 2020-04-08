@@ -47,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
       pathThumbSize: 84,
       gridCount: 4,
       selectedAssets: assets,
+      requestType: RequestType.common,
     );
     if (result != null) {
       assets = Set<AssetEntity>.from(result);
