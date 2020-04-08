@@ -5,6 +5,7 @@
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -90,6 +91,10 @@ class AssetPicker extends StatelessWidget {
     }
   }
 
+  /// Whether the current platform is iOS.
+  /// 当前平台是否iOS
+  bool get isIOS => Platform.isIOS;
+
   /// Space between asset item widget [_succeedItem].
   /// 资源部件之间的间隔
   double get itemSpacing => 2.0;
@@ -97,6 +102,14 @@ class AssetPicker extends StatelessWidget {
   /// Item's height in app bar.
   /// 顶栏内各个组件的统一高度
   double get appBarItemHeight => 32.0;
+
+  /// Height for bottom action bar.
+  /// 底部操作栏的高度
+  double get bottomActionBarHeight => kToolbarHeight / 1.1;
+
+  /// Blur radius in iOS layout mode.
+  /// iOS布局方式下的模糊度
+  double get iOSBlurRadius => 15.0;
 
   /// [Curve] when triggering path switching.
   /// 切换路径时的动画曲线
@@ -279,7 +292,9 @@ class AssetPicker extends StatelessWidget {
   /// List widget for path entities.
   /// 路径选择列表组件
   Widget get pathEntityListWidget {
-    final double maxHeight = Screens.height * 0.75;
+    final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
+    final double maxHeight =
+        isIOS ? Screens.height - appBarHeight : Screens.height * 0.75;
     return Selector<AssetPickerProvider, bool>(
       selector: (BuildContext _, AssetPickerProvider provider) =>
           provider.isSwitchingPath,
@@ -287,31 +302,38 @@ class AssetPicker extends StatelessWidget {
         return AnimatedPositioned(
           duration: switchingPathDuration,
           curve: switchingPathCurve,
-          top: -(!isSwitchingPath ? maxHeight : 1.0),
-          child: Container(
-            width: Screens.width,
-            height: maxHeight,
-            decoration: BoxDecoration(color: theme.primaryColor),
-            child:
-                Selector<AssetPickerProvider, Map<AssetPathEntity, Uint8List>>(
-              selector: (BuildContext _, AssetPickerProvider provider) =>
-                  provider.pathEntityList,
-              builder: (BuildContext _,
-                  Map<AssetPathEntity, Uint8List> pathEntityList, Widget __) {
-                return ListView.separated(
-                  padding: const EdgeInsets.only(top: 1.0),
-                  itemCount: pathEntityList.length,
-                  itemBuilder: (BuildContext _, int index) {
-                    return pathEntityWidget(
-                        pathEntityList.keys.elementAt(index));
-                  },
-                  separatorBuilder: (BuildContext _, int __) => Container(
-                    margin: const EdgeInsets.only(left: 60.0),
-                    height: 1.0,
-                    color: theme.canvasColor,
-                  ),
-                );
-              },
+          top: isIOS
+              ? !isSwitchingPath ? -maxHeight : appBarHeight
+              : -(!isSwitchingPath ? maxHeight : 1.0),
+          child: AnimatedOpacity(
+            duration: switchingPathDuration,
+            curve: switchingPathCurve,
+            opacity: !isIOS || isSwitchingPath ? 1.0 : 0.0,
+            child: Container(
+              width: Screens.width,
+              height: maxHeight,
+              decoration: BoxDecoration(color: theme.primaryColor),
+              child: Selector<AssetPickerProvider,
+                  Map<AssetPathEntity, Uint8List>>(
+                selector: (BuildContext _, AssetPickerProvider provider) =>
+                    provider.pathEntityList,
+                builder: (BuildContext _,
+                    Map<AssetPathEntity, Uint8List> pathEntityList, Widget __) {
+                  return ListView.separated(
+                    padding: const EdgeInsets.only(top: 1.0),
+                    itemCount: pathEntityList.length,
+                    itemBuilder: (BuildContext _, int index) {
+                      return pathEntityWidget(
+                          pathEntityList.keys.elementAt(index));
+                    },
+                    separatorBuilder: (BuildContext _, int __) => Container(
+                      margin: const EdgeInsets.only(left: 60.0),
+                      height: 1.0,
+                      color: theme.canvasColor,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         );
@@ -523,7 +545,12 @@ class AssetPicker extends StatelessWidget {
             provider.currentAssets,
         builder: (BuildContext _, Set<AssetEntity> currentAssets, Widget __) {
           return GridView.builder(
-            padding: EdgeInsets.zero,
+            padding: isIOS
+                ? EdgeInsets.only(
+                    top: Screens.topSafeHeight + kToolbarHeight,
+                    bottom: bottomActionBarHeight,
+                  )
+                : EdgeInsets.zero,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: gridCount,
               mainAxisSpacing: itemSpacing,
@@ -639,19 +666,169 @@ class AssetPicker extends StatelessWidget {
 
   /// Action bar widget aligned to bottom.
   /// 底部操作栏部件
-  Widget bottomActionBar(BuildContext context) => Container(
-        height: kToolbarHeight / 1.1,
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        color: theme.primaryColor,
-        child: Row(children: <Widget>[previewButton(context)]),
+  Widget bottomActionBar(BuildContext context) {
+    Widget child = Container(
+      width: Screens.width,
+      height: bottomActionBarHeight,
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      color: theme.primaryColor.withOpacity(isIOS ? 0.90 : 1.0),
+      child: Row(children: <Widget>[
+        previewButton(context),
+        if (isIOS) const Spacer(),
+        if (isIOS) confirmButton(context),
+      ]),
+    );
+    if (isIOS) {
+      child = ClipRect(
+        child: BackdropFilter(
+          filter:
+              ui.ImageFilter.blur(sigmaX: iOSBlurRadius, sigmaY: iOSBlurRadius),
+          child: child,
+        ),
       );
+    }
+    return child;
+  }
 
   /// Back button.
   /// 返回按钮
-  Widget backButton(BuildContext context) => IconButton(
-        onPressed: Navigator.of(context).maybePop,
-        icon: Icon(Icons.close),
+  Widget backButton(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: isIOS
+            ? GestureDetector(
+                onTap: Navigator.of(context).maybePop,
+                child: SizedBox(
+                  width: 60.0,
+                  child: Center(
+                    child: Text(
+                      textDelegate.cancel,
+                      style: const TextStyle(fontSize: 18.0),
+                    ),
+                  ),
+                ),
+              )
+            : IconButton(
+                onPressed: Navigator.of(context).maybePop,
+                icon: Icon(Icons.close),
+              ),
       );
+
+  /// Layout for iOS devices.
+  /// iOS设备的选择器布局
+  Widget iOSLayout(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: Selector<AssetPickerProvider, bool>(
+            selector: (BuildContext _, AssetPickerProvider provider) =>
+                provider.hasAssetsToDisplay,
+            builder: (BuildContext _, bool hasAssetsToDisplay, Widget __) {
+              return AnimatedSwitcher(
+                duration: switchingPathDuration,
+                child: hasAssetsToDisplay
+                    ? Stack(
+                        children: <Widget>[
+                          RepaintBoundary(
+                            child: Stack(
+                              children: <Widget>[
+                                Positioned.fill(child: assetsGrid(context)),
+                                PositionedDirectional(
+                                    bottom: 0.0,
+                                    child: bottomActionBar(context)),
+                              ],
+                            ),
+                          ),
+                          pathEntityListWidget,
+                        ],
+                      )
+                    : Center(
+                        child: Selector<AssetPickerProvider, bool>(
+                          selector:
+                              (BuildContext _, AssetPickerProvider provider) =>
+                                  provider.isAssetsEmpty,
+                          builder:
+                              (BuildContext _, bool isAssetsEmpty, Widget __) {
+                            if (isAssetsEmpty) {
+                              return Text(textDelegate.emptyPlaceHolder);
+                            } else {
+                              return PlatformProgressIndicator(
+                                color: theme.iconTheme.color,
+                                size: Screens.width / gridCount / 3,
+                              );
+                            }
+                          },
+                        ),
+                      ),
+              );
+            },
+          ),
+        ),
+        FixedAppBar(
+          backgroundColor: theme.canvasColor,
+          centerTitle: true,
+          title: pathEntitySelector,
+          leading: backButton(context),
+          actionsPadding: const EdgeInsets.only(right: 14.0),
+          blurRadius: iOSBlurRadius,
+        ),
+      ],
+    );
+  }
+
+  /// Layout for Android devices.
+  /// Android设备的选择器布局
+  Widget androidLayout(BuildContext context) {
+    return FixedAppBarWrapper(
+      appBar: FixedAppBar(
+        backgroundColor: theme.canvasColor,
+        centerTitle: false,
+        title: pathEntitySelector,
+        leading: backButton(context),
+        actionsPadding: const EdgeInsets.only(right: 14.0),
+        actions: <Widget>[confirmButton(context)],
+      ),
+      body: Selector<AssetPickerProvider, bool>(
+        selector: (BuildContext _, AssetPickerProvider provider) =>
+            provider.hasAssetsToDisplay,
+        builder: (BuildContext _, bool hasAssetsToDisplay, Widget __) {
+          return AnimatedSwitcher(
+            duration: switchingPathDuration,
+            child: hasAssetsToDisplay
+                ? Stack(
+                    children: <Widget>[
+                      RepaintBoundary(
+                        child: Column(
+                          children: <Widget>[
+                            Expanded(child: assetsGrid(context)),
+                            bottomActionBar(context),
+                          ],
+                        ),
+                      ),
+                      pathEntityListWidget,
+                    ],
+                  )
+                : Center(
+                    child: Selector<AssetPickerProvider, bool>(
+                      selector:
+                          (BuildContext _, AssetPickerProvider provider) =>
+                              provider.isAssetsEmpty,
+                      builder: (BuildContext _, bool isAssetsEmpty, Widget __) {
+                        if (isAssetsEmpty) {
+                          return Text(textDelegate.emptyPlaceHolder);
+                        } else {
+                          return PlatformProgressIndicator(
+                            color: theme.iconTheme.color,
+                            size: Screens.width / gridCount / 3,
+                          );
+                        }
+                      },
+                    ),
+                  ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -663,57 +840,7 @@ class AssetPicker extends StatelessWidget {
           value: provider,
           child: Material(
             color: theme.canvasColor,
-            child: FixedAppBarWrapper(
-              appBar: FixedAppBar(
-                backgroundColor: theme.canvasColor,
-                centerTitle: false,
-                title: pathEntitySelector,
-                leading: backButton(context),
-                actionsPadding: const EdgeInsets.only(right: 14.0),
-                actions: <Widget>[confirmButton(context)],
-              ),
-              body: Selector<AssetPickerProvider, bool>(
-                selector: (BuildContext _, AssetPickerProvider provider) =>
-                    provider.hasAssetsToDisplay,
-                builder: (BuildContext _, bool hasAssetsToDisplay, Widget __) {
-                  return AnimatedSwitcher(
-                    duration: switchingPathDuration,
-                    child: hasAssetsToDisplay
-                        ? Stack(
-                            children: <Widget>[
-                              RepaintBoundary(
-                                child: Column(
-                                  children: <Widget>[
-                                    Expanded(child: assetsGrid(context)),
-                                    bottomActionBar(context),
-                                  ],
-                                ),
-                              ),
-                              pathEntityListWidget,
-                            ],
-                          )
-                        : Center(
-                            child: Selector<AssetPickerProvider, bool>(
-                              selector: (BuildContext _,
-                                      AssetPickerProvider provider) =>
-                                  provider.isAssetsEmpty,
-                              builder: (BuildContext _, bool isAssetsEmpty,
-                                  Widget __) {
-                                if (isAssetsEmpty) {
-                                  return Text(textDelegate.emptyPlaceHolder);
-                                } else {
-                                  return PlatformProgressIndicator(
-                                    color: theme.iconTheme.color,
-                                    size: Screens.width / gridCount / 3,
-                                  );
-                                }
-                              },
-                            ),
-                          ),
-                  );
-                },
-              ),
-            ),
+            child: isIOS ? iOSLayout(context) : androidLayout(context),
           ),
         ),
       ),
