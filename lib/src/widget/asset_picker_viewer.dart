@@ -38,11 +38,11 @@ class AssetPickerViewer extends StatefulWidget {
 
   /// Assets provided to preview.
   /// 提供预览的资源
-  final Set<AssetEntity> assets;
+  final List<AssetEntity> assets;
 
   /// Selected assets.
   /// 已选的资源
-  final Set<AssetEntity> selectedAssets;
+  final List<AssetEntity> selectedAssets;
 
   /// Provider for [AssetPicker].
   /// 资源选择器的状态保持
@@ -61,12 +61,12 @@ class AssetPickerViewer extends StatefulWidget {
 
   /// Static method to push with navigator.
   /// 跳转至选择预览的静态方法
-  static Future<Set<AssetEntity>> pushToViewer(
+  static Future<List<AssetEntity>> pushToViewer(
     BuildContext context, {
     int currentIndex = 0,
-    @required Set<AssetEntity> assets,
+    @required List<AssetEntity> assets,
     @required ThemeData themeData,
-    Set<AssetEntity> selectedAssets,
+    List<AssetEntity> selectedAssets,
     AssetPickerProvider selectorProvider,
     TextDelegate textDelegate,
   }) async {
@@ -78,11 +78,11 @@ class AssetPickerViewer extends StatefulWidget {
           selectorProvider: selectorProvider,
           textDelegate: textDelegate,
         );
-    final Set<AssetEntity> result =
-        await Navigator.of(context).push<Set<AssetEntity>>(
+    final List<AssetEntity> result =
+        await Navigator.of(context).push<List<AssetEntity>>(
       Platform.isAndroid
-          ? MaterialPageRoute<Set<AssetEntity>>(builder: viewer)
-          : CupertinoPageRoute<Set<AssetEntity>>(builder: viewer),
+          ? MaterialPageRoute<List<AssetEntity>>(builder: viewer)
+          : CupertinoPageRoute<List<AssetEntity>>(builder: viewer),
     );
     return result;
   }
@@ -150,9 +150,9 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
 
     /// Hide system status bar automatically on iOS.
     /// 在iOS设备上自动隐藏状态栏
-    if (Platform.isIOS) {
-      SystemChrome.setEnabledSystemUIOverlays(<SystemUiOverlay>[]);
-    }
+//    if (Platform.isIOS) {
+//      SystemChrome.setEnabledSystemUIOverlays(<SystemUiOverlay>[]);
+//    }
     _doubleTapAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -170,7 +170,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+//    SystemChrome.restoreSystemUIOverlays();
     _doubleTapAnimationController?.dispose();
     pageStreamController?.close();
     super.dispose();
@@ -206,11 +206,11 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 切换显示详情状态的方法
   void switchDisplayingDetail() {
     isDisplayingDetail = !isDisplayingDetail;
-    if (!Platform.isIOS) {
-      SystemChrome.setEnabledSystemUIOverlays(
-        isDisplayingDetail ? SystemUiOverlay.values : <SystemUiOverlay>[],
-      );
-    }
+//    if (!Platform.isIOS) {
+//      SystemChrome.setEnabledSystemUIOverlays(
+//        isDisplayingDetail ? SystemUiOverlay.values : <SystemUiOverlay>[],
+//      );
+//    }
     if (mounted) {
       setState(() {});
     }
@@ -379,12 +379,12 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                   pageController.jumpToPage(index);
                 }
               },
-              child: Selector<AssetPickerViewerProvider, Set<AssetEntity>>(
+              child: Selector<AssetPickerViewerProvider, List<AssetEntity>>(
                 selector:
                     (BuildContext _, AssetPickerViewerProvider provider) =>
                         provider.currentlySelectedAssets,
                 builder: (BuildContext _,
-                    Set<AssetEntity> currentlySelectedAssets, Widget __) {
+                    List<AssetEntity> currentlySelectedAssets, Widget __) {
                   final bool isSelected =
                       currentlySelectedAssets.contains(asset);
                   return Stack(
@@ -438,12 +438,12 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
             initialData: currentIndex,
             stream: pageStreamController.stream,
             builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
-              return Selector<AssetPickerViewerProvider, Set<AssetEntity>>(
+              return Selector<AssetPickerViewerProvider, List<AssetEntity>>(
                 selector:
                     (BuildContext _, AssetPickerViewerProvider provider) =>
                         provider.currentlySelectedAssets,
                 builder: (BuildContext _,
-                    Set<AssetEntity> currentlySelectedAssets, Widget __) {
+                    List<AssetEntity> currentlySelectedAssets, Widget __) {
                   final AssetEntity asset =
                       widget.assets.elementAt(snapshot.data);
                   final bool selected = currentlySelectedAssets.contains(asset);

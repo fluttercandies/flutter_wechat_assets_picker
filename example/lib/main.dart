@@ -38,10 +38,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Set<AssetEntity> assets = <AssetEntity>{};
+  List<AssetEntity> assets = <AssetEntity>[];
 
   Future<void> selectAssets() async {
-    final Set<AssetEntity> result = await AssetPicker.pickAssets(
+    final List<AssetEntity> result = await AssetPicker.pickAssets(
       context,
       maxAssets: 9,
       pathThumbSize: 84,
@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
       requestType: RequestType.common,
     );
     if (result != null) {
-      assets = Set<AssetEntity>.from(result);
+      assets = List<AssetEntity>.from(result);
     }
   }
 
@@ -218,7 +218,8 @@ class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
     if (bottomSheetHeight > 0.0)
       fabY =
           math.min(fabY, contentBottom - bottomSheetHeight - fabHeight / 2.0);
-    if (isAssetNotEmpty) fabY -= 100.0;
+    if (isAssetNotEmpty)
+      fabY -= 100.0;
 
     return Offset(fabX, fabY);
   }

@@ -56,13 +56,13 @@ class AssetPicker extends StatelessWidget {
 
   /// Static method to push with navigator.
   /// 跳转至选择器的静态方法
-  static Future<Set<AssetEntity>> pickAssets(
+  static Future<List<AssetEntity>> pickAssets(
     BuildContext context, {
     int maxAssets = 9,
-    int pathThumbSize = 80,
+    int pathThumbSize = 200,
     int gridCount = 4,
     RequestType requestType = RequestType.image,
-    Set<AssetEntity> selectedAssets,
+    List<AssetEntity> selectedAssets,
     Color themeColor = C.themeColor,
     TextDelegate textDelegate,
   }) async {
@@ -79,11 +79,11 @@ class AssetPicker extends StatelessWidget {
             gridCount: gridCount,
             textDelegate: textDelegate,
           );
-      final Set<AssetEntity> result =
-          await Navigator.of(context).push<Set<AssetEntity>>(
+      final List<AssetEntity> result =
+          await Navigator.of(context).push<List<AssetEntity>>(
         Platform.isAndroid
-            ? MaterialPageRoute<Set<AssetEntity>>(builder: picker)
-            : CupertinoPageRoute<Set<AssetEntity>>(builder: picker),
+            ? MaterialPageRoute<List<AssetEntity>>(builder: picker)
+            : CupertinoPageRoute<List<AssetEntity>>(builder: picker),
       );
       return result;
     } else {
@@ -453,10 +453,10 @@ class AssetPicker extends StatelessWidget {
     SpecialAssetType specialAssetType,
   }) {
     final AssetEntity asset = provider.currentAssets.elementAt(index);
-    return Selector<AssetPickerProvider, Set<AssetEntity>>(
+    return Selector<AssetPickerProvider, List<AssetEntity>>(
       selector: (BuildContext _, AssetPickerProvider provider) =>
           provider.selectedAssets,
-      builder: (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
+      builder: (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
         final bool selected = provider.selectedAssets.contains(asset);
         return Stack(
           children: <Widget>[
@@ -540,10 +540,10 @@ class AssetPicker extends StatelessWidget {
   /// [GridView] for assets under [AssetPickerProvider.currentPathEntity].
   /// 正在查看的目录下的资源网格部件
   Widget assetsGrid(BuildContext context) =>
-      Selector<AssetPickerProvider, Set<AssetEntity>>(
+      Selector<AssetPickerProvider, List<AssetEntity>>(
         selector: (BuildContext _, AssetPickerProvider provider) =>
             provider.currentAssets,
-        builder: (BuildContext _, Set<AssetEntity> currentAssets, Widget __) {
+        builder: (BuildContext _, List<AssetEntity> currentAssets, Widget __) {
           return GridView.builder(
             padding: isIOS
                 ? EdgeInsets.only(
@@ -628,7 +628,7 @@ class AssetPicker extends StatelessWidget {
         return GestureDetector(
           onTap: isSelectedNotEmpty
               ? () async {
-                  final Set<AssetEntity> result =
+                  final List<AssetEntity> result =
                       await AssetPickerViewer.pushToViewer(
                     context,
                     currentIndex: 0,
@@ -643,11 +643,11 @@ class AssetPicker extends StatelessWidget {
                   }
                 }
               : null,
-          child: Selector<AssetPickerProvider, Set<AssetEntity>>(
+          child: Selector<AssetPickerProvider, List<AssetEntity>>(
             selector: (BuildContext _, AssetPickerProvider provider) =>
                 provider.selectedAssets,
             builder:
-                (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
+                (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
               return Text(
                 isSelectedNotEmpty
                     ? '${textDelegate.preview}(${provider.selectedAssets.length})'

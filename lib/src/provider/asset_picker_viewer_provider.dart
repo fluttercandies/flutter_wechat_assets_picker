@@ -10,17 +10,17 @@ import 'package:photo_manager/photo_manager.dart';
 class AssetPickerViewerProvider extends ChangeNotifier {
   /// Copy selected assets for editing when constructing.
   /// 构造时深拷贝已选择的资源集合，用于后续编辑。
-  AssetPickerViewerProvider(Set<AssetEntity> assets) {
-    _currentlySelectedAssets = Set<AssetEntity>.from(assets);
+  AssetPickerViewerProvider(List<AssetEntity> assets) {
+    _currentlySelectedAssets = List<AssetEntity>.from(assets);
   }
 
   /// Selected assets in viewer.
   /// 查看器中已选择的资源
-  Set<AssetEntity> _currentlySelectedAssets;
+  List<AssetEntity> _currentlySelectedAssets;
 
-  Set<AssetEntity> get currentlySelectedAssets => _currentlySelectedAssets;
+  List<AssetEntity> get currentlySelectedAssets => _currentlySelectedAssets;
 
-  set currentlySelectedAssets(Set<AssetEntity> value) {
+  set currentlySelectedAssets(List<AssetEntity> value) {
     assert(value != null);
     if (value == _currentlySelectedAssets) {
       return;
@@ -35,16 +35,16 @@ class AssetPickerViewerProvider extends ChangeNotifier {
   /// Select asset.
   /// 选中资源
   void selectAssetEntity(AssetEntity entity) {
-    final Set<AssetEntity> set = Set<AssetEntity>.from(currentlySelectedAssets);
+    final List<AssetEntity> set = List<AssetEntity>.from(currentlySelectedAssets);
     set.add(entity);
-    currentlySelectedAssets = Set<AssetEntity>.from(set);
+    currentlySelectedAssets = List<AssetEntity>.from(set);
   }
 
   /// Un-select asset.
   /// 取消选中资源
   void unSelectAssetEntity(AssetEntity entity) {
-    final Set<AssetEntity> set = Set<AssetEntity>.from(currentlySelectedAssets);
+    final List<AssetEntity> set = List<AssetEntity>.from(currentlySelectedAssets);
     set.remove(entity);
-    currentlySelectedAssets = Set<AssetEntity>.from(set);
+    currentlySelectedAssets = List<AssetEntity>.from(set);
   }
 }

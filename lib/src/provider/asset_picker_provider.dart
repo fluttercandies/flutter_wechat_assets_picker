@@ -17,10 +17,10 @@ class AssetPickerProvider extends ChangeNotifier {
     this.maxAssets = 9,
     this.pathThumbSize = 80,
     this.requestType = RequestType.image,
-    Set<AssetEntity> selectedAssets,
+    List<AssetEntity> selectedAssets,
   }) {
     if (selectedAssets?.isNotEmpty ?? false) {
-      _selectedAssets = Set<AssetEntity>.from(selectedAssets);
+      _selectedAssets = List<AssetEntity>.from(selectedAssets);
     }
     getAssetList();
   }
@@ -122,31 +122,31 @@ class AssetPickerProvider extends ChangeNotifier {
 
   /// Assets under current path entity.
   /// 正在查看的资源路径下的所有资源
-  Set<AssetEntity> _currentAssets;
+  List<AssetEntity> _currentAssets;
 
-  Set<AssetEntity> get currentAssets => _currentAssets;
+  List<AssetEntity> get currentAssets => _currentAssets;
 
-  set currentAssets(Set<AssetEntity> value) {
+  set currentAssets(List<AssetEntity> value) {
     assert(value != null);
     if (value == _currentAssets) {
       return;
     }
-    _currentAssets = value;
+    _currentAssets = List<AssetEntity>.from(value);
     notifyListeners();
   }
 
   /// Selected assets.
   /// 已选中的资源
-  Set<AssetEntity> _selectedAssets = <AssetEntity>{};
+  List<AssetEntity> _selectedAssets = <AssetEntity>[];
 
-  Set<AssetEntity> get selectedAssets => _selectedAssets;
+  List<AssetEntity> get selectedAssets => _selectedAssets;
 
-  set selectedAssets(Set<AssetEntity> value) {
+  set selectedAssets(List<AssetEntity> value) {
     assert(value != null);
     if (value == _selectedAssets) {
       return;
     }
-    _selectedAssets = value;
+    _selectedAssets = List<AssetEntity>.from(value);
     notifyListeners();
   }
 
@@ -181,7 +181,7 @@ class AssetPickerProvider extends ChangeNotifier {
   /// 获取指定路径下的资源
   Future<void> getAssetsFromEntity(AssetPathEntity pathEntity) async {
     _currentAssets =
-        (await pathEntity.getAssetListPaged(0, pathEntity.assetCount)).toSet();
+        (await pathEntity.getAssetListPaged(0, pathEntity.assetCount)).toList();
     _hasAssetsToDisplay = currentAssets?.isNotEmpty ?? false;
     notifyListeners();
   }
@@ -200,10 +200,10 @@ class AssetPickerProvider extends ChangeNotifier {
   /// Select asset.
   /// 选中资源
   void selectAsset(AssetEntity item) {
-    if (selectedAssets.length == maxAssets) {
+    if (selectedAssets.length == maxAssets || selectedAssets.contains(item)) {
       return;
     }
-    final Set<AssetEntity> _set = Set<AssetEntity>.from(selectedAssets);
+    final List<AssetEntity> _set = List<AssetEntity>.from(selectedAssets);
     _set.add(item);
     selectedAssets = _set;
   }
@@ -211,7 +211,7 @@ class AssetPickerProvider extends ChangeNotifier {
   /// Un-select asset.
   /// 取消选中资源
   void unSelectAsset(AssetEntity item) {
-    final Set<AssetEntity> _set = Set<AssetEntity>.from(selectedAssets);
+    final List<AssetEntity> _set = List<AssetEntity>.from(selectedAssets);
     _set.remove(item);
     selectedAssets = _set;
   }
