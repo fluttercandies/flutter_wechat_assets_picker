@@ -1,3 +1,9 @@
+## [1.3.0]
+
+* Add iOS style.
+* Add cancel field to text delegate.
+* `Set` -> `List`.
+
 ## [1.2.1]
 
 * Fix missing aspect ratio for video player.
