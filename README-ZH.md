@@ -1,6 +1,5 @@
 # Flutter仿微信资源选择器
 
-
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker.svg)](https://pub.dev/packages/wechat_assets_picker)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
@@ -93,20 +92,20 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 | pageThumbSize  | `int`              | 选择器的缩略图大小                      | 80                  |
 | gridCount      | `int`              | 选择器网格数量                        | 4                   |
 | requestType    | `RequestType`      | 选择器选择资源的类型                    | `RequestType.image` |
-| selectedAssets | `Set<AssetEntity>` | 已选的资源。使用 `Set` 以确保不重复选择 | `null`              |
+| selectedAssets | `List<AssetEntity>` | 已选的资源。确保不重复选择 | `null`              |
 | themeColor     | `Color`            | 选择器的主题色  | `Color(0xff00bc56)` |
 | textDelegate | `TextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
 
 ### 简单的使用方法
 
 ```dart
-final Set<AssetEntity> assets = await AssetPicker.pickAssets(context);
+final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
 ```
 
 或者
 
 ```dart
-AssetPicker.pickAsset(context).then((Set<AssetEntity> assets) {
+AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
   /.../
 });
 ```
@@ -114,9 +113,9 @@ AssetPicker.pickAsset(context).then((Set<AssetEntity> assets) {
 ### 完整参数的使用方法
 
 ```dart
-Set<AssetEntity> assets = <AssetEntity>{};
+List<AssetEntity> assets = <AssetEntity>{};
 
-final Set<AssetEntity> result = await AssetPicker.pickAssets(
+final List<AssetEntity> result = await AssetPicker.pickAssets(
   context,
   maxAssets: 9,
   pageThumbSize: 80,
@@ -128,10 +127,10 @@ final Set<AssetEntity> result = await AssetPicker.pickAssets(
 );
 ```
 
-or
+或者
 
 ```dart
-Set<AssetEntity> assets = <AssetEntity>{};
+List<AssetEntity> assets = <AssetEntity>{};
 
 AssetPicker.pickAssets(
   context,
@@ -142,7 +141,7 @@ AssetPicker.pickAssets(
   selectedAssets: assets,
   themeColor: Colors.cyan,
   textDelegate: DefaultTextDelegate(),
-).then((Set<AssetEntity> assets) {
+).then((List<AssetEntity> assets) {
   /.../
 });
 ```

@@ -82,26 +82,26 @@ Add following content to `info.plist`.
 
 ## Usage 📖
 
-| Name           | Type               | Description                                                  | Default                 |
-| -------------- | ------------------ | ------------------------------------------------------------ | ----------------------- |
-| context        | `BuildContext`     | Context for navigator push.                                  | `null`                  |
-| maxAssets      | `int`              | Maximum asset that the picker can pick.                      | 9                       |
-| pageThumbSize  | `int`              | The size of thumb data in picker.                            | 80                      |
-| gridCount      | `int`              | Grid count in picker.                                        | 4                       |
-| requestType    | `RequestType`      | Request type for picker.                                     | RequestType.image       |
-| selectedAssets | `Set<AssetEntity>` | Selected assets. Using `Set` to prevent dulplicate selection. | `null`                  |
-| themeColor     | `Color`            | Main theme color for the picker                              | `Color(0xff00bc56)`     |
-| textDelegate   | `TextDelegate`     | Text delegate for the picker, for customize the texts.       | `DefaultTextDelegate()` |
+| Name           | Type                | Description                                            | Default                 |
+| -------------- | ------------------- | ------------------------------------------------------ | ----------------------- |
+| context        | `BuildContext`      | Context for navigator push.                            | `null`                  |
+| maxAssets      | `int`               | Maximum asset that the picker can pick.                | 9                       |
+| pageThumbSize  | `int`               | The size of thumb data in picker.                      | 80                      |
+| gridCount      | `int`               | Grid count in picker.                                  | 4                       |
+| requestType    | `RequestType`       | Request type for picker.                               | RequestType.image       |
+| selectedAssets | `List<AssetEntity>` | Selected assets. Prevent dulplicate selection.         | `null`                  |
+| themeColor     | `Color`             | Main theme color for the picker                        | `Color(0xff00bc56)`     |
+| textDelegate   | `TextDelegate`      | Text delegate for the picker, for customize the texts. | `DefaultTextDelegate()` |
 
 ### Simple usage
 ```dart
-final Set<AssetEntity> assets = await AssetPicker.pickAssets(context);
+final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
 ```
 
 or
 
 ```dart
-AssetPicker.pickAsset(context).then((Set<AssetEntity> assets) {
+AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
   /.../
 });
 ```
@@ -109,9 +109,9 @@ AssetPicker.pickAsset(context).then((Set<AssetEntity> assets) {
 ### Complete param usage
 
 ```dart
-Set<AssetEntity> assets = <AssetEntity>{};
+List<AssetEntity> assets = <AssetEntity>{};
 
-final Set<AssetEntity> result = await AssetPicker.pickAssets(
+final List<AssetEntity> result = await AssetPicker.pickAssets(
   context,
   maxAssets: 9,
   pageThumbSize: 80,
@@ -126,7 +126,7 @@ final Set<AssetEntity> result = await AssetPicker.pickAssets(
 or
 
 ```dart
-Set<AssetEntity> assets = <AssetEntity>{};
+List<AssetEntity> assets = <AssetEntity>{};
 
 AssetPicker.pickAssets(
   context,
@@ -137,7 +137,7 @@ AssetPicker.pickAssets(
   selectedAssets: assets,
   themeColor: Colors.cyan,
   textDelegate: DefaultTextDelegate(),
-).then((Set<AssetEntity> assets) {
+).then((List<AssetEntity> assets) {
   /.../
 });
 ```
