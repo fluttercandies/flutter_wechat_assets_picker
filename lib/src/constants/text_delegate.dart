@@ -53,6 +53,12 @@ abstract class TextDelegate {
 }
 
 class DefaultTextDelegate implements TextDelegate {
+  factory DefaultTextDelegate() => _instance;
+
+  DefaultTextDelegate._internal();
+
+  static final DefaultTextDelegate _instance = DefaultTextDelegate._internal();
+
   @override
   String confirm = '确认';
 
