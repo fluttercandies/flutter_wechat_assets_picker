@@ -5,4 +5,5 @@
 export 'colors.dart';
 export 'custom_scroll_physics.dart';
 export 'screens.dart';
+export 'slide_page_transition_builder.dart';
 export 'text_delegate.dart';

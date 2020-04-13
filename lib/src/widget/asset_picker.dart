@@ -74,16 +74,14 @@ class AssetPicker extends StatelessWidget {
         selectedAssets: selectedAssets,
         requestType: requestType,
       );
-      final WidgetBuilder picker = (BuildContext _) => AssetPicker(
-            provider: provider,
-            gridCount: gridCount,
-            textDelegate: textDelegate,
-          );
+      final Widget picker = AssetPicker(
+        provider: provider,
+        gridCount: gridCount,
+        textDelegate: textDelegate,
+      );
       final List<AssetEntity> result =
           await Navigator.of(context).push<List<AssetEntity>>(
-        Platform.isAndroid
-            ? MaterialPageRoute<List<AssetEntity>>(builder: picker)
-            : CupertinoPageRoute<List<AssetEntity>>(builder: picker),
+        SlidePageTransitionBuilder<List<AssetEntity>>(builder: picker),
       );
       return result;
     } else {
