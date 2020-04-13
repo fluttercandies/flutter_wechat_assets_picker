@@ -1,3 +1,8 @@
+## [1.3.1]
+
+* Add upwards slide page transition.
+* Add padding to bottom action bar in picker.
+
 ## [1.3.0]
 
 * Add iOS style.
