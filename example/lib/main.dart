@@ -215,11 +215,13 @@ class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
               snackBarHeight -
               fabHeight -
               kFloatingActionButtonMargin);
-    if (bottomSheetHeight > 0.0)
+    if (bottomSheetHeight > 0.0) {
       fabY =
           math.min(fabY, contentBottom - bottomSheetHeight - fabHeight / 2.0);
-    if (isAssetNotEmpty)
+    }
+    if (isAssetNotEmpty) {
       fabY -= 100.0;
+    }
 
     return Offset(fabX, fabY);
   }
