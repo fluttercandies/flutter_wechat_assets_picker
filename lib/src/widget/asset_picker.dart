@@ -667,8 +667,12 @@ class AssetPicker extends StatelessWidget {
   Widget bottomActionBar(BuildContext context) {
     Widget child = Container(
       width: Screens.width,
-      height: bottomActionBarHeight,
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      height: bottomActionBarHeight + Screens.bottomSafeHeight,
+      padding: EdgeInsets.only(
+        left: 20.0,
+        right: 20.0,
+        bottom: Screens.bottomSafeHeight,
+      ),
       color: theme.primaryColor.withOpacity(isIOS ? 0.90 : 1.0),
       child: Row(children: <Widget>[
         previewButton(context),
