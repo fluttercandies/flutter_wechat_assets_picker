@@ -7,7 +7,15 @@ import 'package:flutter/material.dart';
 /// Built a slide page transition for the picker.
 /// 为选择器构造一个上下进出的页面过渡动画
 class SlidePageTransitionBuilder<T> extends PageRouteBuilder<T> {
-  SlidePageTransitionBuilder({@required this.builder});
+  SlidePageTransitionBuilder({@required this.builder})
+      : super(
+          pageBuilder: (
+            BuildContext _,
+            Animation<double> __,
+            Animation<double> ___,
+          ) =>
+              builder,
+        );
 
   final Widget builder;
 
@@ -19,9 +27,8 @@ class SlidePageTransitionBuilder<T> extends PageRouteBuilder<T> {
         BuildContext _,
         Animation<double> __,
         Animation<double> ___,
-      ) {
-        return builder;
-      };
+      ) =>
+          builder;
 
   @override
   RouteTransitionsBuilder get transitionsBuilder => (
