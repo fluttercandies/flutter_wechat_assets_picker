@@ -1,3 +1,7 @@
+## [1.3.1+1]
+
+* Fix `pageBuilder` null issue.
+
 ## [1.3.1]
 
 * Add upwards slide page transition.
