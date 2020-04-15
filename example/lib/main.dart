@@ -62,10 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget get textField => Expanded(
         child: TextField(
-          autofocus: true,
           decoration: InputDecoration(
             border: InputBorder.none,
             contentPadding: const EdgeInsets.all(16.0),
+            hintText: 'Type something here...',
             isDense: true,
           ),
           style: const TextStyle(fontSize: 18.0),
@@ -75,10 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget assetItemBuilder(BuildContext _, int index) {
     return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 5.0,
-        vertical: 10.0,
-      ),
+      margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
       child: AspectRatio(
         aspectRatio: 1.0,
         child: ClipRRect(
@@ -168,15 +165,19 @@ class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
 
   final bool isAssetNotEmpty;
 
-  double _leftOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
-      {double offset = 0.0}) {
+  double _leftOffset(
+    ScaffoldPrelayoutGeometry scaffoldGeometry, {
+    double offset = 0.0,
+  }) {
     return kFloatingActionButtonMargin +
         scaffoldGeometry.minInsets.left -
         offset;
   }
 
-  double _rightOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
-      {double offset = 0.0}) {
+  double _rightOffset(
+    ScaffoldPrelayoutGeometry scaffoldGeometry, {
+    double offset = 0.0,
+  }) {
     return scaffoldGeometry.scaffoldSize.width -
         kFloatingActionButtonMargin -
         scaffoldGeometry.minInsets.right -
@@ -184,8 +185,10 @@ class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
         offset;
   }
 
-  double _endOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
-      {double offset = 0.0}) {
+  double _endOffset(
+    ScaffoldPrelayoutGeometry scaffoldGeometry, {
+    double offset = 0.0,
+  }) {
     assert(scaffoldGeometry.textDirection != null);
     switch (scaffoldGeometry.textDirection) {
       case TextDirection.rtl:
