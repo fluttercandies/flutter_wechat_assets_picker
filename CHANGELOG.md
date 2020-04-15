@@ -1,3 +1,8 @@
+## [1.3.2]
+
+* Expose page transition curve and duration to static method.
+* Fix theme color not passed to static method.
+
 ## [1.3.1+1]
 
 * Fix `pageBuilder` null issue.
