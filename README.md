@@ -82,16 +82,18 @@ Add following content to `info.plist`.
 
 ## Usage 📖
 
-| Name           | Type                | Description                                            | Default                 |
-| -------------- | ------------------- | ------------------------------------------------------ | ----------------------- |
-| context        | `BuildContext`      | Context for navigator push.                            | `null`                  |
-| maxAssets      | `int`               | Maximum asset that the picker can pick.                | 9                       |
-| pageThumbSize  | `int`               | The size of thumb data in picker.                      | 80                      |
-| gridCount      | `int`               | Grid count in picker.                                  | 4                       |
-| requestType    | `RequestType`       | Request type for picker.                               | RequestType.image       |
-| selectedAssets | `List<AssetEntity>` | Selected assets. Prevent dulplicate selection.         | `null`                  |
-| themeColor     | `Color`             | Main theme color for the picker                        | `Color(0xff00bc56)`     |
-| textDelegate   | `TextDelegate`      | Text delegate for the picker, for customize the texts. | `DefaultTextDelegate()` |
+| Name           | Type                | Description                                                  | Default                             |
+| -------------- | ------------------- | ------------------------------------------------------------ | ----------------------------------- |
+| context        | `BuildContext`      | Context for navigator push.                                  | `null`                              |
+| maxAssets      | `int`               | Maximum asset that the picker can pick.                      | 9                                   |
+| pageThumbSize  | `int`               | The size of thumb data in picker.                            | 80                                  |
+| gridCount      | `int`               | Grid count in picker.                                        | 4                                   |
+| requestType    | `RequestType`       | Request type for picker.                                     | RequestType.image                   |
+| selectedAssets | `List<AssetEntity>` | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
+| themeColor     | `Color`             | Main theme color for the picker                              | `Color(0xff00bc56)`                 |
+| textDelegate   | `TextDelegate`      | Text delegate for the picker, for customize the texts.       | `DefaultTextDelegate()`             |
+| routeCurve     | `Curve`             | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
+| routeDuration  | `Duration`          | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
 
 ### Simple usage
 ```dart
@@ -120,6 +122,8 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   selectedAssets: assets,
   themeColor: Colors.cyan,
   textDelegate: DefaultTextDelegate(),
+  routeCurve: Curves.easeIn,
+  routeDuration: const Duration(milliseconds: 500),
 );
 ```
 
@@ -137,6 +141,8 @@ AssetPicker.pickAssets(
   selectedAssets: assets,
   themeColor: Colors.cyan,
   textDelegate: DefaultTextDelegate(),
+  routeCurve: Curves.easeIn,
+  routeDuration: const Duration(milliseconds: 500),
 ).then((List<AssetEntity> assets) {
   /.../
 });

@@ -92,9 +92,11 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 | pageThumbSize  | `int`              | 选择器的缩略图大小                      | 80                  |
 | gridCount      | `int`              | 选择器网格数量                        | 4                   |
 | requestType    | `RequestType`      | 选择器选择资源的类型                    | `RequestType.image` |
-| selectedAssets | `List<AssetEntity>` | 已选的资源。确保不重复选择 | `null`              |
+| selectedAssets | `List<AssetEntity>` | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
 | themeColor     | `Color`            | 选择器的主题色  | `Color(0xff00bc56)` |
 | textDelegate | `TextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
+| routeCurve | `Curve` | 选择构造路由动画的曲线 | `Curves.easeIn` |
+| routeDuration | `Duration` | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
 
 ### 简单的使用方法
 
@@ -124,6 +126,8 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   selectedAssets: assets,
   themeColor: Colors.cyan,
   textDelegate: DefaultTextDelegate(),
+  routeCurve: Curves.easeIn,
+  routeDuration: const Duration(milliseconds: 500),
 );
 ```
 
@@ -141,6 +145,8 @@ AssetPicker.pickAssets(
   selectedAssets: assets,
   themeColor: Colors.cyan,
   textDelegate: DefaultTextDelegate(),
+  routeCurve: Curves.easeIn,
+  routeDuration: const Duration(milliseconds: 500),
 ).then((List<AssetEntity> assets) {
   /.../
 });
