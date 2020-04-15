@@ -58,6 +58,7 @@ class AssetPicker extends StatelessWidget {
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>> pickAssets(
     BuildContext context, {
+    Key key,
     int maxAssets = 9,
     int pathThumbSize = 200,
     int gridCount = 4,
@@ -65,6 +66,8 @@ class AssetPicker extends StatelessWidget {
     List<AssetEntity> selectedAssets,
     Color themeColor = C.themeColor,
     TextDelegate textDelegate,
+    Curve routeCurve = Curves.easeIn,
+    Duration routeDuration = const Duration(milliseconds: 500),
   }) async {
     final bool isPermissionGranted = await PhotoManager.requestPermission();
     if (isPermissionGranted) {
@@ -75,13 +78,19 @@ class AssetPicker extends StatelessWidget {
         requestType: requestType,
       );
       final Widget picker = AssetPicker(
+        key: key,
         provider: provider,
         gridCount: gridCount,
         textDelegate: textDelegate,
+        themeColor: themeColor,
       );
       final List<AssetEntity> result =
           await Navigator.of(context).push<List<AssetEntity>>(
-        SlidePageTransitionBuilder<List<AssetEntity>>(builder: picker),
+        SlidePageTransitionBuilder<List<AssetEntity>>(
+          builder: picker,
+          transitionCurve: routeCurve,
+          transitionDuration: routeDuration,
+        ),
       );
       return result;
     } else {
