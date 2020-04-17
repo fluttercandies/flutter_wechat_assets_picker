@@ -45,6 +45,9 @@ Language: [English](README.md) | 中文简体
 
 ![1.png](screenshots/1.png)![2.png](screenshots/2.png)![3.png](screenshots/3.png)
 
+## 开始前的注意事项
+
+尽管该库提供了资源的选择，其仍然要求使用者构建自己的方法来处理显示、上传等操作。如果你在使用该库的过程对某些方法或API有疑问，请运行demo并查看[photo_manager](https://github.com/CaiJingLong/flutter_photo_manager)对相关方法的使用说明。
 
 ## 准备工作 🍭
 
@@ -89,7 +92,8 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 | -------------- | ------------------ | ------------------------------------------------ | ------------------- |
 | context        | `BuildContext`     | 用于路由的上下文                      | `null`              |
 | maxAssets      | `int`              | 最多选择的图片数量                      | 9                   |
-| pageThumbSize  | `int`              | 选择器的缩略图大小                      | 80                  |
+| pageSize | `int` | 分页加载时每页加载的资源数量。**必须为网格数的倍数。** 设置为`null`可以取消分页。 | 320 (80 * 4) |
+| pathThumbSize | `int`              | 选择器的缩略图大小                      | 80                  |
 | gridCount      | `int`              | 选择器网格数量                        | 4                   |
 | requestType    | `RequestType`      | 选择器选择资源的类型                    | `RequestType.image` |
 | selectedAssets | `List<AssetEntity>` | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
@@ -120,7 +124,8 @@ List<AssetEntity> assets = <AssetEntity>{};
 final List<AssetEntity> result = await AssetPicker.pickAssets(
   context,
   maxAssets: 9,
-  pageThumbSize: 80,
+  pageSize: 320,
+  pathThumbSize: 80,
   gridCount: 4,
   requestType: RequestType.image,
   selectedAssets: assets,
@@ -139,7 +144,8 @@ List<AssetEntity> assets = <AssetEntity>{};
 AssetPicker.pickAssets(
   context,
   maxAssets: 9,
-  pageThumbSize: 80,
+  pageSize: 320,
+  pathThumbSize: 80,
   gridCount: 4,
   requestType: RequestType.image,
   selectedAssets: assets,

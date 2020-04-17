@@ -1,3 +1,9 @@
+## [1.4.0]
+
+* Support paging assets load.
+* Fix selected assets not synced with picker provider.
+* Bump `photo_manager` to `0.5.1-dev.5`
+
 ## [1.3.2]
 
 * Expose page transition curve and duration to static method.

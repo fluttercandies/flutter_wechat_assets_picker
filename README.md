@@ -46,6 +46,10 @@ An assets picker which looks like the one in WeChat, based on `photo_manager` fo
 ![1.png](screenshots/1.png)![2.png](screenshots/2.png)![3.png](screenshots/3.png)
 
 
+## READ THIS FIRST
+
+Althought the package provide selection for assets, it sill require users build their own methods to handle display/upload, etc. If you have any question about how to build it, please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
+
 ## Preparing for use 🍭
 
 ### Flutter
@@ -86,7 +90,8 @@ Add following content to `info.plist`.
 | -------------- | ------------------- | ------------------------------------------------------------ | ----------------------------------- |
 | context        | `BuildContext`      | Context for navigator push.                                  | `null`                              |
 | maxAssets      | `int`               | Maximum asset that the picker can pick.                      | 9                                   |
-| pageThumbSize  | `int`               | The size of thumb data in picker.                            | 80                                  |
+| pageSize       | `int`               | Assets amount when assets loaded with paging. **Must be a multiple of `gridCount`.** Nullable for non paging. | 320 (80 * 4)                        |
+| pathThumbSize  | `int`               | The size of thumb data in picker.                            | 80                                  |
 | gridCount      | `int`               | Grid count in picker.                                        | 4                                   |
 | requestType    | `RequestType`       | Request type for picker.                                     | RequestType.image                   |
 | selectedAssets | `List<AssetEntity>` | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
@@ -116,7 +121,8 @@ List<AssetEntity> assets = <AssetEntity>{};
 final List<AssetEntity> result = await AssetPicker.pickAssets(
   context,
   maxAssets: 9,
-  pageThumbSize: 80,
+  pageSize: 320,
+  pathThumbSize: 80,
   gridCount: 4,
   requestType: RequestType.image,
   selectedAssets: assets,
@@ -135,7 +141,8 @@ List<AssetEntity> assets = <AssetEntity>{};
 AssetPicker.pickAssets(
   context,
   maxAssets: 9,
-  pageThumbSize: 80,
+  pageSize: 320,
+  pathThumbSize: 80,
   gridCount: 4,
   requestType: RequestType.image,
   selectedAssets: assets,
