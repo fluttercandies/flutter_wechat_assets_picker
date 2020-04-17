@@ -147,6 +147,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   @override
   void initState() {
     super.initState();
+    // TODO(Alex): Currently hide status bar will cause the viewport shaking. So commented out.
 
     /// Hide system status bar automatically on iOS.
     /// 在iOS设备上自动隐藏状态栏
@@ -226,6 +227,13 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
     if (mounted) {
       setState(() {});
     }
+  }
+
+  /// Sync selected assets currently with asset picker provider.
+  /// 在预览中当前已选的图片同步到选择器的状态
+  Future<bool> syncSelectedAssetsWhenPop() async {
+    widget.selectorProvider.selectedAssets = provider.currentlySelectedAssets;
+    return true;
   }
 
   /// Split page builder according to type of asset.
@@ -462,8 +470,10 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
               );
             },
           ),
-          Text(widget.textDelegate.select,
-              style: const TextStyle(fontSize: 18.0)),
+          Text(
+            widget.textDelegate.select,
+            style: const TextStyle(fontSize: 18.0),
+          ),
         ],
       );
 
@@ -529,32 +539,35 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: widget.themeData,
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: Material(
-          color: Colors.black,
-          child: Stack(
-            children: <Widget>[
-              Positioned.fill(
-                child: PageView.builder(
-                  physics: isAllowSwitchPage
-                      ? const CustomScrollPhysics()
-                      : const NeverScrollableScrollPhysics(),
-                  controller: pageController,
-                  itemCount: widget.assets.length,
-                  itemBuilder: assetPageBuilder,
-                  onPageChanged: (int index) {
-                    currentIndex = index;
-                    pageStreamController.add(index);
-                  },
-                  scrollDirection: Axis.horizontal,
+    return WillPopScope(
+      onWillPop: syncSelectedAssetsWhenPop,
+      child: Theme(
+        data: widget.themeData,
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: Material(
+            color: Colors.black,
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: PageView.builder(
+                    physics: isAllowSwitchPage
+                        ? const CustomScrollPhysics()
+                        : const NeverScrollableScrollPhysics(),
+                    controller: pageController,
+                    itemCount: widget.assets.length,
+                    itemBuilder: assetPageBuilder,
+                    onPageChanged: (int index) {
+                      currentIndex = index;
+                      pageStreamController.add(index);
+                    },
+                    scrollDirection: Axis.horizontal,
+                  ),
                 ),
-              ),
-              appBar(context),
-              if (widget.selectedAssets != null) bottomDetail,
-            ],
+                appBar(context),
+                if (widget.selectedAssets != null) bottomDetail,
+              ],
+            ),
           ),
         ),
       ),
