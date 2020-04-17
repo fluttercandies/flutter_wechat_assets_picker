@@ -351,6 +351,44 @@ class AssetPicker extends StatelessWidget {
     );
   }
 
+  /// Loading indicator.
+  /// 加载指示器
+  Widget get loadingIndicator => Center(
+        child: Selector<AssetPickerProvider, bool>(
+          selector: (BuildContext _, AssetPickerProvider provider) =>
+              provider.isAssetsEmpty,
+          builder: (BuildContext _, bool isAssetsEmpty, Widget __) {
+            if (isAssetsEmpty) {
+              return Text(textDelegate.emptyPlaceHolder);
+            } else {
+              return PlatformProgressIndicator(
+                color: theme.iconTheme.color,
+                size: Screens.width / gridCount / 3,
+              );
+            }
+          },
+        ),
+      );
+
+  /// Indicator when no assets.
+  /// 资源为空时的指示器
+  Widget get assetsEmptyIndicator => Center(
+        child: Selector<AssetPickerProvider, bool>(
+          selector: (BuildContext _, AssetPickerProvider provider) =>
+              provider.isAssetsEmpty,
+          builder: (BuildContext _, bool isAssetsEmpty, Widget __) {
+            if (isAssetsEmpty) {
+              return Text(textDelegate.emptyPlaceHolder);
+            } else {
+              return PlatformProgressIndicator(
+                color: theme.iconTheme.color,
+                size: Screens.width / gridCount / 3,
+              );
+            }
+          },
+        ),
+      );
+
   /// Confirm button.
   /// 确认按钮
   ///
@@ -616,7 +654,8 @@ class AssetPicker extends StatelessWidget {
                           );
                         } else {
                           loader = Center(
-                              child: Text(textDelegate.heicNotSupported));
+                            child: Text(textDelegate.heicNotSupported),
+                          );
                         }
                         break;
                       case LoadState.failed:
@@ -751,32 +790,16 @@ class AssetPicker extends StatelessWidget {
                               children: <Widget>[
                                 Positioned.fill(child: assetsGrid(context)),
                                 PositionedDirectional(
-                                    bottom: 0.0,
-                                    child: bottomActionBar(context)),
+                                  bottom: 0.0,
+                                  child: bottomActionBar(context),
+                                ),
                               ],
                             ),
                           ),
                           pathEntityListWidget,
                         ],
                       )
-                    : Center(
-                        child: Selector<AssetPickerProvider, bool>(
-                          selector:
-                              (BuildContext _, AssetPickerProvider provider) =>
-                                  provider.isAssetsEmpty,
-                          builder:
-                              (BuildContext _, bool isAssetsEmpty, Widget __) {
-                            if (isAssetsEmpty) {
-                              return Text(textDelegate.emptyPlaceHolder);
-                            } else {
-                              return PlatformProgressIndicator(
-                                color: theme.iconTheme.color,
-                                size: Screens.width / gridCount / 3,
-                              );
-                            }
-                          },
-                        ),
-                      ),
+                    : assetsEmptyIndicator,
               );
             },
           ),
@@ -825,23 +848,7 @@ class AssetPicker extends StatelessWidget {
                       pathEntityListWidget,
                     ],
                   )
-                : Center(
-                    child: Selector<AssetPickerProvider, bool>(
-                      selector:
-                          (BuildContext _, AssetPickerProvider provider) =>
-                              provider.isAssetsEmpty,
-                      builder: (BuildContext _, bool isAssetsEmpty, Widget __) {
-                        if (isAssetsEmpty) {
-                          return Text(textDelegate.emptyPlaceHolder);
-                        } else {
-                          return PlatformProgressIndicator(
-                            color: theme.iconTheme.color,
-                            size: Screens.width / gridCount / 3,
-                          );
-                        }
-                      },
-                    ),
-                  ),
+                : loadingIndicator,
           );
         },
       ),
