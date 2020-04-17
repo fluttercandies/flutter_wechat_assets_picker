@@ -60,6 +60,7 @@ class AssetPicker extends StatelessWidget {
     BuildContext context, {
     Key key,
     int maxAssets = 9,
+    int pageSize = 320,
     int pathThumbSize = 200,
     int gridCount = 4,
     RequestType requestType = RequestType.image,
@@ -69,6 +70,8 @@ class AssetPicker extends StatelessWidget {
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 500),
   }) async {
+    assert(
+        pageSize % gridCount == 0, 'pageSize must be a multiple of gridCount.');
     final bool isPermissionGranted = await PhotoManager.requestPermission();
     if (isPermissionGranted) {
       final AssetPickerProvider provider = AssetPickerProvider(
@@ -565,6 +568,10 @@ class AssetPicker extends StatelessWidget {
             ),
             itemCount: currentAssets.length,
             itemBuilder: (BuildContext _, int index) {
+              if (index == currentAssets.length - gridCount * 3 &&
+                  Provider.of<AssetPickerProvider>(_).hasAssetsToDisplay) {
+                provider.loadMoreAssets();
+              }
               final AssetEntity asset = currentAssets.elementAt(index);
               final AssetEntityImageProvider imageProvider =
                   AssetEntityImageProvider(

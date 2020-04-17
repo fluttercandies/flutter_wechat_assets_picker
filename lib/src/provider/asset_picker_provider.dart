@@ -2,6 +2,7 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020/3/31 15:28
 ///
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class AssetPickerProvider extends ChangeNotifier {
   /// 构造时开始获取资源
   AssetPickerProvider({
     this.maxAssets = 9,
+    this.pageSize = 320,
     this.pathThumbSize = 80,
     this.requestType = RequestType.image,
     List<AssetEntity> selectedAssets,
@@ -28,6 +30,10 @@ class AssetPickerProvider extends ChangeNotifier {
   /// Maximum count for asset selection.
   /// 资源选择的最大数量
   final int maxAssets;
+
+  /// Assets should be loaded per page.
+  /// 资源选择的最大数量
+  final int pageSize;
 
   /// Thumb size for path selector.
   /// 路径选择器中缩略图的大小
@@ -65,7 +71,7 @@ class AssetPickerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Whether there's any assets that can be displayed;
+  /// Whether there's any assets that can be displayed.
   /// 是否有资源可供显示
   bool _hasAssetsToDisplay = false;
 
@@ -77,6 +83,30 @@ class AssetPickerProvider extends ChangeNotifier {
       return;
     }
     _hasAssetsToDisplay = value;
+    notifyListeners();
+  }
+
+  /// Whether there's more assets waiting for load.
+  /// 是否还有更多资源可以加载
+  bool get hasMoreToLoad => _currentAssets.length < _totalAssetsCount;
+
+  /// Current page for assets list.
+  /// 当前加载的资源列表分页数
+  int get currentAssetsListPage =>
+      (math.max(1, _currentAssets.length) / pageSize).ceil();
+
+  /// Total count for assets.
+  /// 资源总数
+  int _totalAssetsCount = 0;
+
+  int get totalAssetsCount => _totalAssetsCount;
+
+  set totalAssetsCount(int value) {
+    assert(value != null);
+    if (value == _totalAssetsCount) {
+      return;
+    }
+    _totalAssetsCount = value;
     notifyListeners();
   }
 
@@ -165,25 +195,21 @@ class AssetPickerProvider extends ChangeNotifier {
         ),
     );
     for (final AssetPathEntity pathEntity in _list) {
-      _pathEntityList[pathEntity] =
-          await getFirstThumbFromPathEntity(pathEntity);
+      // Use sync method to avoid unnecessary wait.
+      _pathEntityList[pathEntity] = null;
+      getFirstThumbFromPathEntity(pathEntity).then((Uint8List data) {
+        _pathEntityList[pathEntity] = data;
+      });
     }
     if (_pathEntityList.isNotEmpty) {
       _currentPathEntity = pathEntityList.keys.elementAt(0);
       await _currentPathEntity.refreshPathProperties();
-      getAssetsFromEntity(currentPathEntity);
+      totalAssetsCount = currentPathEntity.assetCount;
+      getAssetsFromEntity(0, currentPathEntity);
+      // Update total assets count.
     } else {
       isAssetsEmpty = true;
     }
-  }
-
-  /// Get assets under the specific path entity.
-  /// 获取指定路径下的资源
-  Future<void> getAssetsFromEntity(AssetPathEntity pathEntity) async {
-    _currentAssets =
-        (await pathEntity.getAssetListPaged(0, pathEntity.assetCount)).toList();
-    _hasAssetsToDisplay = currentAssets?.isNotEmpty ?? false;
-    notifyListeners();
   }
 
   /// Get thumb data from the first asset under the specific path entity.
@@ -195,6 +221,31 @@ class AssetPickerProvider extends ChangeNotifier {
     final Uint8List assetData =
         await asset.thumbDataWithSize(pathThumbSize, pathThumbSize);
     return assetData;
+  }
+
+  /// Get assets under the specific path entity.
+  /// 获取指定路径下的资源
+  Future<void> getAssetsFromEntity(int page, AssetPathEntity pathEntity) async {
+    _currentAssets =
+        (await pathEntity.getAssetListPaged(page, pageSize)).toList();
+    _hasAssetsToDisplay = currentAssets?.isNotEmpty ?? false;
+    notifyListeners();
+  }
+
+  /// Load more assets.
+  /// 加载更多资源
+  Future<void> loadMoreAssets() async {
+    final List<AssetEntity> assets = (await currentPathEntity.getAssetListPaged(
+            currentAssetsListPage, pageSize))
+        .toList();
+    if (assets.isNotEmpty && currentAssets.contains(assets[0])) {
+      return;
+    } else {
+      final List<AssetEntity> tempList = <AssetEntity>[];
+      tempList.addAll(_currentAssets);
+      tempList.addAll(assets);
+      currentAssets = tempList;
+    }
   }
 
   /// Select asset.
@@ -221,7 +272,8 @@ class AssetPickerProvider extends ChangeNotifier {
   void switchPath(AssetPathEntity pathEntity) {
     _isSwitchingPath = false;
     _currentPathEntity = pathEntity;
+    _totalAssetsCount = pathEntity.assetCount;
     notifyListeners();
-    getAssetsFromEntity(currentPathEntity);
+    getAssetsFromEntity(0, currentPathEntity);
   }
 }
