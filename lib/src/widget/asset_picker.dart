@@ -71,11 +71,14 @@ class AssetPicker extends StatelessWidget {
     Duration routeDuration = const Duration(milliseconds: 500),
   }) async {
     assert(
-        pageSize % gridCount == 0, 'pageSize must be a multiple of gridCount.');
+      pageSize % gridCount == 0 || pageSize == null,
+      'pageSize must be a multiple of gridCount.',
+    );
     final bool isPermissionGranted = await PhotoManager.requestPermission();
     if (isPermissionGranted) {
       final AssetPickerProvider provider = AssetPickerProvider(
         maxAssets: maxAssets,
+        pageSize: pageSize,
         pathThumbSize: pathThumbSize,
         selectedAssets: selectedAssets,
         requestType: requestType,

@@ -227,7 +227,7 @@ class AssetPickerProvider extends ChangeNotifier {
   /// 获取指定路径下的资源
   Future<void> getAssetsFromEntity(int page, AssetPathEntity pathEntity) async {
     _currentAssets =
-        (await pathEntity.getAssetListPaged(page, pageSize)).toList();
+        (await pathEntity.getAssetListPaged(page, pageSize ?? pathEntity.assetCount)).toList();
     _hasAssetsToDisplay = currentAssets?.isNotEmpty ?? false;
     notifyListeners();
   }
