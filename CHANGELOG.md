@@ -1,3 +1,7 @@
+## [1.4.0+1]
+
+* Fix call on null with `currentlySelectedAssets`. Close #6 #7 .
+
 ## [1.4.0]
 
 * Support paging assets load.
