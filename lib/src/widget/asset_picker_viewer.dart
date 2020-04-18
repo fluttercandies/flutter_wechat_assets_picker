@@ -232,7 +232,9 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// Sync selected assets currently with asset picker provider.
   /// 在预览中当前已选的图片同步到选择器的状态
   Future<bool> syncSelectedAssetsWhenPop() async {
-    widget.selectorProvider.selectedAssets = provider.currentlySelectedAssets;
+    if (provider?.currentlySelectedAssets != null) {
+      widget.selectorProvider.selectedAssets = provider.currentlySelectedAssets;
+    }
     return true;
   }
 
