@@ -1,6 +1,6 @@
 ## [1.4.0+1]
 
-* Fix call on null with `currentlySelectedAssets`. Close #6 #7 .
+* Fix call on null with `currentlySelectedAssets`.
 
 ## [1.4.0]
 
