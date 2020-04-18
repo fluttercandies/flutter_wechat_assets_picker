@@ -50,7 +50,9 @@ class _MyHomePageState extends State<MyHomePage> {
       requestType: RequestType.common,
     );
     if (result != null) {
-      assets = List<AssetEntity>.from(result);
+      setState(() {
+        assets = List<AssetEntity>.from(result);
+      });
     }
   }
 
