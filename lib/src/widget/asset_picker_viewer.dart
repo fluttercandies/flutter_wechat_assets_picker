@@ -573,6 +573,6 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
           ),
         ),
       ),
-    );a
+    );
   }
 }
