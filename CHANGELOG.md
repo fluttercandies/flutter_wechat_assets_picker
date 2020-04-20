@@ -1,3 +1,11 @@
+## [1.4.1]
+
+* Remove loading indicator for image widget.
+* Refactor video page's initialization for ratio update.
+* Using constants to store text delegate.
+* Add error catching for main methods.
+* Update text delegate management.
+
 ## [1.4.0+1]
 
 * Fix call on null with `currentlySelectedAssets`.
