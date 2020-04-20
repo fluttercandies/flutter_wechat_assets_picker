@@ -4,6 +4,8 @@
 ///
 import 'text_delegate.dart';
 
+export '../utils/real_debug_print.dart';
+
 export 'colors.dart';
 export 'custom_scroll_physics.dart';
 export 'screens.dart';
