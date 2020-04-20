@@ -70,32 +70,37 @@ class AssetPicker extends StatelessWidget {
       pageSize % gridCount == 0 || pageSize == null,
       'pageSize must be a multiple of gridCount.',
     );
-    final bool isPermissionGranted = await PhotoManager.requestPermission();
-    if (isPermissionGranted) {
-      final AssetPickerProvider provider = AssetPickerProvider(
-        maxAssets: maxAssets,
-        pageSize: pageSize,
-        pathThumbSize: pathThumbSize,
-        selectedAssets: selectedAssets,
-        requestType: requestType,
-      );
-      final Widget picker = AssetPicker(
-        key: key,
-        provider: provider,
-        gridCount: gridCount,
-        textDelegate: textDelegate,
-        themeColor: themeColor,
-      );
-      final List<AssetEntity> result =
-          await Navigator.of(context).push<List<AssetEntity>>(
-        SlidePageTransitionBuilder<List<AssetEntity>>(
-          builder: picker,
-          transitionCurve: routeCurve,
-          transitionDuration: routeDuration,
-        ),
-      );
-      return result;
-    } else {
+    try {
+      final bool isPermissionGranted = await PhotoManager.requestPermission();
+      if (isPermissionGranted) {
+        final AssetPickerProvider provider = AssetPickerProvider(
+          maxAssets: maxAssets,
+          pageSize: pageSize,
+          pathThumbSize: pathThumbSize,
+          selectedAssets: selectedAssets,
+          requestType: requestType,
+        );
+        final Widget picker = AssetPicker(
+          key: key,
+          provider: provider,
+          gridCount: gridCount,
+          textDelegate: textDelegate,
+          themeColor: themeColor,
+        );
+        final List<AssetEntity> result =
+            await Navigator.of(context).push<List<AssetEntity>>(
+          SlidePageTransitionBuilder<List<AssetEntity>>(
+            builder: picker,
+            transitionCurve: routeCurve,
+            transitionDuration: routeDuration,
+          ),
+        );
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      realDebugPrint('Error when calling assets picker: $e');
       return null;
     }
   }

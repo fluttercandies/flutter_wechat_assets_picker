@@ -64,20 +64,25 @@ class AssetPickerViewer extends StatefulWidget {
     List<AssetEntity> selectedAssets,
     AssetPickerProvider selectorProvider,
   }) async {
-    final WidgetBuilder viewer = (BuildContext _) => AssetPickerViewer(
-          currentIndex: currentIndex,
-          assets: assets,
-          themeData: themeData,
-          selectedAssets: selectedAssets,
-          selectorProvider: selectorProvider,
-        );
-    final List<AssetEntity> result =
-        await Navigator.of(context).push<List<AssetEntity>>(
-      Platform.isAndroid
-          ? MaterialPageRoute<List<AssetEntity>>(builder: viewer)
-          : CupertinoPageRoute<List<AssetEntity>>(builder: viewer),
-    );
-    return result;
+    try {
+      final WidgetBuilder viewer = (BuildContext _) => AssetPickerViewer(
+            currentIndex: currentIndex,
+            assets: assets,
+            themeData: themeData,
+            selectedAssets: selectedAssets,
+            selectorProvider: selectorProvider,
+          );
+      final List<AssetEntity> result =
+          await Navigator.of(context).push<List<AssetEntity>>(
+        Platform.isAndroid
+            ? MaterialPageRoute<List<AssetEntity>>(builder: viewer)
+            : CupertinoPageRoute<List<AssetEntity>>(builder: viewer),
+      );
+      return result;
+    } catch (e) {
+      realDebugPrint('Error when calling assets picker viewer: $e');
+      return null;
+    }
   }
 }
 

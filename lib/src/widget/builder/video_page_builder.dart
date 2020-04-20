@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import 'package:wechat_assets_picker/src/constants/constants.dart';
+
 class VideoPageBuilder extends StatefulWidget {
   const VideoPageBuilder({Key key, this.asset, this.state}) : super(key: key);
 
@@ -33,6 +35,10 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   /// Whether the controller is playing.
   /// 播放控制器是否在播放
   bool get isControllerPlaying => _controller?.value?.isPlaying ?? false;
+
+  /// Whether there's any error when initialize the video controller.
+  /// 初始化视频控制器时是否发生错误
+  bool hasErrorWhenInitializing = false;
 
   @override
   void initState() {
@@ -109,46 +115,54 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        if (_controller != null)
-          Positioned.fill(
-            child: Center(
-              child: AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              ),
-            ),
-          ),
-        if (_controller != null)
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: isPlaying
-                ? _controller.pause
-                : widget.state.switchDisplayingDetail,
-            child: Center(
-              child: AnimatedOpacity(
-                duration: kThemeAnimationDuration,
-                opacity: isControllerPlaying ? 0.0 : 1.0,
-                child: GestureDetector(
-                  onTap: playButtonCallback,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      (_controller?.value?.isPlaying ?? false)
-                          ? Icons.pause_circle_outline
-                          : Icons.play_circle_filled,
-                      size: 70.0,
+    return !hasErrorWhenInitializing
+        ? Stack(
+            children: <Widget>[
+              if (_controller != null)
+                Positioned.fill(
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
                     ),
                   ),
                 ),
-              ),
+              if (_controller != null)
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: isPlaying
+                      ? _controller.pause
+                      : widget.state.switchDisplayingDetail,
+                  child: Center(
+                    child: AnimatedOpacity(
+                      duration: kThemeAnimationDuration,
+                      opacity: isControllerPlaying ? 0.0 : 1.0,
+                      child: GestureDetector(
+                        onTap: playButtonCallback,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(color: Colors.black12)
+                            ],
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            (_controller?.value?.isPlaying ?? false)
+                                ? Icons.pause_circle_outline
+                                : Icons.play_circle_filled,
+                            size: 70.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          )
+        : Center(
+            child: Text(
+              Constants.textDelegate.loadFailed,
             ),
-          ),
-      ],
-    );
+          );
   }
 }
