@@ -18,7 +18,6 @@ import '../constants/constants.dart';
 import 'builder/fade_image_builder.dart';
 import 'builder/image_page_builder.dart';
 import 'builder/video_page_builder.dart';
-import 'platform_progress_indicator.dart';
 import 'rounded_check_box.dart';
 
 class AssetPickerViewer extends StatefulWidget {
@@ -267,12 +266,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
     Widget loader;
     switch (state.extendedImageLoadState) {
       case LoadState.loading:
-        loader = Center(
-          child: PlatformProgressIndicator(
-            color: widget.themeData.buttonColor,
-            size: Screens.width / 10,
-          ),
-        );
+        loader = const SizedBox.shrink();
         break;
       case LoadState.completed:
         loader = FadeImageBuilder(child: state.completedWidget);

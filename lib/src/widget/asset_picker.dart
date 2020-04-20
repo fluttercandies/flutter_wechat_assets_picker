@@ -602,88 +602,92 @@ class AssetPicker extends StatelessWidget {
 
   /// [GridView] for assets under [AssetPickerProvider.currentPathEntity].
   /// 正在查看的目录下的资源网格部件
-  Widget assetsGrid(BuildContext context) =>
-      Selector<AssetPickerProvider, List<AssetEntity>>(
-        selector: (BuildContext _, AssetPickerProvider provider) =>
-            provider.currentAssets,
-        builder: (BuildContext _, List<AssetEntity> currentAssets, Widget __) {
-          return GridView.builder(
-            padding: isIOS
-                ? EdgeInsets.only(
-                    top: Screens.topSafeHeight + kToolbarHeight,
-                    bottom: bottomActionBarHeight,
-                  )
-                : EdgeInsets.zero,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: gridCount,
-              mainAxisSpacing: itemSpacing,
-              crossAxisSpacing: itemSpacing,
-            ),
-            itemCount: currentAssets.length,
-            itemBuilder: (BuildContext _, int index) {
-              if (index == currentAssets.length - gridCount * 3 &&
-                  Provider.of<AssetPickerProvider>(_).hasAssetsToDisplay) {
-                provider.loadMoreAssets();
-              }
-              final AssetEntity asset = currentAssets.elementAt(index);
-              final AssetEntityImageProvider imageProvider =
-                  AssetEntityImageProvider(
-                asset,
-                isOriginal: false,
-              );
-              return RepaintBoundary(
-                child: ExtendedImage(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
-                  loadStateChanged: (ExtendedImageState state) {
-                    Widget loader;
-                    switch (state.extendedImageLoadState) {
-                      case LoadState.loading:
-                        loader = Center(
-                          child: PlatformProgressIndicator(
-                            color: theme.iconTheme.color,
-                            size: Screens.width / gridCount / 6,
-                          ),
-                        );
-                        break;
-                      case LoadState.completed:
-                        SpecialAssetType type;
-                        if (imageProvider.imageFileType == ImageFileType.gif) {
-                          type = SpecialAssetType.gif;
-                        } else if (imageProvider.imageFileType ==
-                            ImageFileType.heic) {
-                          type = SpecialAssetType.heic;
-                        } else if (asset.type == AssetType.audio) {
-                          type = SpecialAssetType.audio;
-                        } else if (asset.type == AssetType.video) {
-                          type = SpecialAssetType.video;
-                        }
-                        if (type != SpecialAssetType.heic) {
-                          loader = FadeImageBuilder(
-                            child: _succeedItem(
-                              context,
-                              index,
-                              state.completedWidget,
-                              specialAssetType: type,
-                            ),
-                          );
-                        } else {
-                          loader = Center(
-                            child: Text(textDelegate.heicNotSupported),
-                          );
-                        }
-                        break;
-                      case LoadState.failed:
-                        loader = _failedItem;
-                        break;
-                    }
-                    return loader;
-                  },
-                ),
-              );
-            },
-          );
-        },
+  Widget assetsGrid(BuildContext context) => Container(
+        color: Colors.black54,
+        child: Selector<AssetPickerProvider, List<AssetEntity>>(
+          selector: (BuildContext _, AssetPickerProvider provider) =>
+              provider.currentAssets,
+          builder: (
+            BuildContext _,
+            List<AssetEntity> currentAssets,
+            Widget __,
+          ) {
+            return GridView.builder(
+              padding: isIOS
+                  ? EdgeInsets.only(
+                      top: Screens.topSafeHeight + kToolbarHeight,
+                      bottom: bottomActionBarHeight,
+                    )
+                  : EdgeInsets.zero,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: gridCount,
+                mainAxisSpacing: itemSpacing,
+                crossAxisSpacing: itemSpacing,
+              ),
+              itemCount: currentAssets.length,
+              itemBuilder: (BuildContext _, int index) {
+                if (index == currentAssets.length - gridCount * 3 &&
+                    Provider.of<AssetPickerProvider>(_).hasAssetsToDisplay) {
+                  provider.loadMoreAssets();
+                }
+                final AssetEntity asset = currentAssets.elementAt(index);
+                final AssetEntityImageProvider imageProvider =
+                    AssetEntityImageProvider(
+                  asset,
+                  isOriginal: false,
+                );
+                return RepaintBoundary(
+                  child: ExtendedImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                    loadStateChanged: (ExtendedImageState state) {
+                      Widget loader;
+                      switch (state.extendedImageLoadState) {
+                        case LoadState.loading:
+                          loader = Container(color: const Color(0x10ffffff));
+                          break;
+                        case LoadState.completed:
+                          SpecialAssetType type;
+                          if (imageProvider.imageFileType ==
+                              ImageFileType.gif) {
+                            type = SpecialAssetType.gif;
+                          } else if (imageProvider.imageFileType ==
+                              ImageFileType.heic) {
+                            type = SpecialAssetType.heic;
+                          } else if (asset.type == AssetType.audio) {
+                            type = SpecialAssetType.audio;
+                          } else if (asset.type == AssetType.video) {
+                            type = SpecialAssetType.video;
+                          }
+                          if (type != SpecialAssetType.heic) {
+                            loader = FadeImageBuilder(
+                              child: _succeedItem(
+                                context,
+                                index,
+                                state.completedWidget,
+                                specialAssetType: type,
+                              ),
+                            );
+                          } else {
+                            loader = Center(
+                              child: Text(
+                                Constants.textDelegate.heicNotSupported,
+                              ),
+                            );
+                          }
+                          break;
+                        case LoadState.failed:
+                          loader = _failedItem;
+                          break;
+                      }
+                      return loader;
+                    },
+                  ),
+                );
+              },
+            );
+          },
+        ),
       );
 
   /// Preview button to preview selected assets.
