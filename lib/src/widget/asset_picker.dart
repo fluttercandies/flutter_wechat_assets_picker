@@ -21,18 +21,21 @@ import 'fixed_appbar.dart';
 import 'platform_progress_indicator.dart';
 
 class AssetPicker extends StatelessWidget {
-  const AssetPicker({
+  AssetPicker({
     Key key,
     @required this.provider,
     int gridCount = 4,
     Color themeColor = C.themeColor,
     TextDelegate textDelegate,
-  })  : assert(provider != null,
-            'AssetPickerProvider must be provided and not null.'),
+  })  : assert(
+          provider != null,
+          'AssetPickerProvider must be provided and not null.',
+        ),
         gridCount = gridCount ?? 4,
         themeColor = themeColor ?? C.themeColor,
-        _textDelegate = textDelegate,
-        super(key: key);
+        super(key: key) {
+    Constants.textDelegate = textDelegate ?? DefaultTextDelegate();
+  }
 
   /// [ChangeNotifier] for asset picker.
   /// 资源选择器状态保持
@@ -45,14 +48,6 @@ class AssetPicker extends StatelessWidget {
   /// Main color for picker.
   /// 选择器的主题色
   final Color themeColor;
-
-  /// Passed [TextDelegate].
-  /// 传入的文本构建
-  final TextDelegate _textDelegate;
-
-  /// [TextDelegate] that the picker and the viewer would use.
-  /// 选择器和预览会最终会使用的文本构建
-  TextDelegate get textDelegate => _textDelegate ?? DefaultTextDelegate();
 
   /// Static method to push with navigator.
   /// 跳转至选择器的静态方法
@@ -362,7 +357,7 @@ class AssetPicker extends StatelessWidget {
               provider.isAssetsEmpty,
           builder: (BuildContext _, bool isAssetsEmpty, Widget __) {
             if (isAssetsEmpty) {
-              return Text(textDelegate.emptyPlaceHolder);
+              return Text(Constants.textDelegate.emptyPlaceHolder);
             } else {
               return PlatformProgressIndicator(
                 color: theme.iconTheme.color,
@@ -381,7 +376,7 @@ class AssetPicker extends StatelessWidget {
               provider.isAssetsEmpty,
           builder: (BuildContext _, bool isAssetsEmpty, Widget __) {
             if (isAssetsEmpty) {
-              return Text(textDelegate.emptyPlaceHolder);
+              return Text(Constants.textDelegate.emptyPlaceHolder);
             } else {
               return PlatformProgressIndicator(
                 color: theme.iconTheme.color,
@@ -409,8 +404,8 @@ class AssetPicker extends StatelessWidget {
                 borderRadius: BorderRadius.circular(3.0)),
             child: Text(
               provider.isSelectedNotEmpty
-                  ? '${textDelegate.confirm}(${provider.selectedAssets.length}/${provider.maxAssets})'
-                  : textDelegate.confirm,
+                  ? '${Constants.textDelegate.confirm}(${provider.selectedAssets.length}/${provider.maxAssets})'
+                  : Constants.textDelegate.confirm,
               style: TextStyle(
                 color: provider.isSelectedNotEmpty
                     ? Colors.white
@@ -454,7 +449,7 @@ class AssetPicker extends StatelessWidget {
                 color: theme.iconTheme.color.withOpacity(0.75),
               ),
               child: Text(
-                textDelegate.gifIndicator,
+                Constants.textDelegate.gifIndicator,
                 style: TextStyle(color: theme.primaryColor, fontSize: 12.0),
               ),
             ),
@@ -484,7 +479,7 @@ class AssetPicker extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Text(
-                textDelegate
+                Constants.textDelegate
                     .videoIndicatorBuilder(Duration(seconds: asset.duration)),
                 style: const TextStyle(fontSize: 16.0),
               ),
@@ -520,7 +515,6 @@ class AssetPicker extends StatelessWidget {
                     currentIndex: index,
                     assets: provider.currentAssets,
                     themeData: theme,
-                    textDelegate: textDelegate,
                   );
                 },
                 child: AnimatedContainer(
@@ -582,7 +576,7 @@ class AssetPicker extends StatelessWidget {
   /// 资源缩略数据加载失败时使用的部件
   Widget get _failedItem => Center(
         child: Text(
-          textDelegate.loadFailed,
+          Constants.textDelegate.loadFailed,
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.white, fontSize: 18.0),
         ),
@@ -692,7 +686,6 @@ class AssetPicker extends StatelessWidget {
                     selectedAssets: provider.selectedAssets,
                     selectorProvider: provider,
                     themeData: theme,
-                    textDelegate: textDelegate,
                   );
                   if (result != null) {
                     Navigator.of(context).pop(result);
@@ -706,8 +699,8 @@ class AssetPicker extends StatelessWidget {
                 (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
               return Text(
                 isSelectedNotEmpty
-                    ? '${textDelegate.preview}(${provider.selectedAssets.length})'
-                    : textDelegate.preview,
+                    ? '${Constants.textDelegate.preview}(${provider.selectedAssets.length})'
+                    : Constants.textDelegate.preview,
                 style: TextStyle(
                   color: isSelectedNotEmpty ? null : Colors.grey[600],
                   fontSize: 18.0,
@@ -761,7 +754,7 @@ class AssetPicker extends StatelessWidget {
                   width: 60.0,
                   child: Center(
                     child: Text(
-                      textDelegate.cancel,
+                      Constants.textDelegate.cancel,
                       style: const TextStyle(fontSize: 18.0),
                     ),
                   ),

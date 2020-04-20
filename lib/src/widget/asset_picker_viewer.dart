@@ -29,7 +29,6 @@ class AssetPickerViewer extends StatefulWidget {
     @required this.themeData,
     this.selectedAssets,
     this.selectorProvider,
-    this.textDelegate,
   }) : super(key: key);
 
   /// Current previewing index in assets.
@@ -52,10 +51,6 @@ class AssetPickerViewer extends StatefulWidget {
   /// 主题
   final ThemeData themeData;
 
-  /// [TextDelegate] that the viewer would use.
-  /// 预览部件会使用的文本构建
-  final TextDelegate textDelegate;
-
   @override
   AssetPickerViewerState createState() => AssetPickerViewerState();
 
@@ -68,7 +63,6 @@ class AssetPickerViewer extends StatefulWidget {
     @required ThemeData themeData,
     List<AssetEntity> selectedAssets,
     AssetPickerProvider selectorProvider,
-    TextDelegate textDelegate,
   }) async {
     final WidgetBuilder viewer = (BuildContext _) => AssetPickerViewer(
           currentIndex: currentIndex,
@@ -76,7 +70,6 @@ class AssetPickerViewer extends StatefulWidget {
           themeData: themeData,
           selectedAssets: selectedAssets,
           selectorProvider: selectorProvider,
-          textDelegate: textDelegate,
         );
     final List<AssetEntity> result =
         await Navigator.of(context).push<List<AssetEntity>>(
@@ -255,7 +248,9 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
         builder = VideoPageBuilder(asset: asset, state: this);
         break;
       case AssetType.other:
-        builder = Center(child: Text(widget.textDelegate.unSupportedAssetType));
+        builder = Center(
+          child: Text(Constants.textDelegate.unSupportedAssetType),
+        );
         break;
     }
     return builder;
@@ -348,10 +343,10 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                 borderRadius: BorderRadius.circular(3.0)),
             child: Text(
               provider.isSelectedNotEmpty
-                  ? '${widget.textDelegate.confirm}(${provider.currentlySelectedAssets.length}'
+                  ? '${Constants.textDelegate.confirm}(${provider.currentlySelectedAssets.length}'
                       '/'
                       '${widget.selectorProvider.maxAssets})'
-                  : widget.textDelegate.confirm,
+                  : Constants.textDelegate.confirm,
               style: TextStyle(
                 color: provider.isSelectedNotEmpty
                     ? Colors.white
@@ -436,7 +431,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// Edit button. (No usage currently)
   /// 编辑按钮 (目前没有使用)
   Widget get editButton => Text(
-        widget.textDelegate.edit,
+        Constants.textDelegate.edit,
         style: const TextStyle(fontSize: 18.0),
       );
 
@@ -473,7 +468,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
             },
           ),
           Text(
-            widget.textDelegate.select,
+            Constants.textDelegate.select,
             style: const TextStyle(fontSize: 18.0),
           ),
         ],
@@ -533,7 +528,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 资源缩略数据加载失败时使用的部件
   Widget get _failedItem => Center(
         child: Text(
-          widget.textDelegate.loadFailed,
+          Constants.textDelegate.loadFailed,
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.white, fontSize: 18.0),
         ),
