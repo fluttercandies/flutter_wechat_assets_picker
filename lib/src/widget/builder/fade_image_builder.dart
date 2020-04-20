@@ -5,7 +5,10 @@
 import 'package:flutter/material.dart';
 
 class FadeImageBuilder extends StatelessWidget {
-  const FadeImageBuilder({Key key, this.child}) : super(key: key);
+  const FadeImageBuilder({
+    Key key,
+    this.child,
+  }) : super(key: key);
 
   final Widget child;
 

@@ -36,8 +36,11 @@ class SlidePageTransitionBuilder<T> extends PageRoute<T> {
   String get barrierLabel => null;
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
     return builder;
   }
 
@@ -52,7 +55,10 @@ class SlidePageTransitionBuilder<T> extends PageRoute<T> {
       position: Tween<Offset>(
         begin: const Offset(0, 1),
         end: Offset.zero,
-      ).animate(CurvedAnimation(curve: transitionCurve, parent: animation)),
+      ).animate(CurvedAnimation(
+        curve: transitionCurve,
+        parent: animation,
+      )),
       child: child,
     );
   }

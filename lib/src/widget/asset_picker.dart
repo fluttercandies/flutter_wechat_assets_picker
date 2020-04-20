@@ -17,6 +17,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/constants.dart';
 import 'builder/fade_image_builder.dart';
+import 'builder/slide_page_transition_builder.dart';
 import 'fixed_appbar.dart';
 import 'platform_progress_indicator.dart';
 
@@ -148,8 +149,10 @@ class AssetPicker extends StatelessWidget {
         textSelectionColor: themeColor.withAlpha(100),
         textSelectionHandleColor: themeColor,
         indicatorColor: themeColor,
-        appBarTheme:
-            const AppBarTheme(brightness: Brightness.dark, elevation: 0),
+        appBarTheme: const AppBarTheme(
+          brightness: Brightness.dark,
+          elevation: 0,
+        ),
       );
 
   /// Path entity select widget.
@@ -229,9 +232,11 @@ class AssetPicker extends StatelessWidget {
                       Map<AssetPathEntity, Uint8List>>(
                     selector: (BuildContext _, AssetPickerProvider provider) =>
                         provider.pathEntityList,
-                    builder: (BuildContext _,
-                        Map<AssetPathEntity, Uint8List> pathEntityList,
-                        Widget __) {
+                    builder: (
+                      BuildContext _,
+                      Map<AssetPathEntity, Uint8List> pathEntityList,
+                      Widget __,
+                    ) {
                       /// The reason that the `thumbData` should be checked at here to see if it is
                       /// null is that even the image file is not exist, the `File` can still
                       /// returned as it exist, which will cause the thumb bytes return null.
@@ -278,8 +283,11 @@ class AssetPicker extends StatelessWidget {
               Selector<AssetPickerProvider, AssetPathEntity>(
                 selector: (BuildContext _, AssetPickerProvider provider) =>
                     provider.currentPathEntity,
-                builder: (BuildContext _, AssetPathEntity currentPathEntity,
-                    Widget __) {
+                builder: (
+                  BuildContext _,
+                  AssetPathEntity currentPathEntity,
+                  Widget __,
+                ) {
                   if (currentPathEntity == pathEntity) {
                     return AspectRatio(
                       aspectRatio: 1.0,
@@ -325,8 +333,11 @@ class AssetPicker extends StatelessWidget {
                   Map<AssetPathEntity, Uint8List>>(
                 selector: (BuildContext _, AssetPickerProvider provider) =>
                     provider.pathEntityList,
-                builder: (BuildContext _,
-                    Map<AssetPathEntity, Uint8List> pathEntityList, Widget __) {
+                builder: (
+                  BuildContext _,
+                  Map<AssetPathEntity, Uint8List> pathEntityList,
+                  Widget __,
+                ) {
                   return ListView.separated(
                     padding: const EdgeInsets.only(top: 1.0),
                     itemCount: pathEntityList.length,
@@ -442,8 +453,10 @@ class AssetPicker extends StatelessWidget {
           child: Align(
             alignment: const FractionalOffset(0.1, 0.1),
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 2.0,
+                vertical: 2.0,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(2.0),
                 color: theme.iconTheme.color.withOpacity(0.75),
