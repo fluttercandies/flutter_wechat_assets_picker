@@ -48,7 +48,7 @@ An assets picker which looks like the one in WeChat, based on `photo_manager` fo
 
 ## READ THIS FIRST
 
-Althought the package provide selection for assets, it sill require users build their own methods to handle display/upload, etc. If you have any question about how to build it, please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
+Althought the package provide selection for assets, it still require users build their own methods to handle display/upload, etc. If you have any question about how to build it, please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
 
 ## Preparing for use 🍭
 
