@@ -37,17 +37,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   @override
   void initState() {
     super.initState();
-
-    /// Get media url from asset, then initialize the controller and add with listener.
-    /// 从资源获取媒体url后初始化，并添加监听。
-    widget.asset.getMediaUrl().then((String url) {
-      _controller = VideoPlayerController.network(Uri.parse(url).toString())
-        ..initialize()
-        ..addListener(videoPlayerListener);
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    initializeVideoPlayerController();
   }
 
   @override
@@ -57,6 +47,27 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
     _controller?.removeListener(videoPlayerListener);
     _controller?.dispose();
     super.dispose();
+  }
+
+  /// Get media url from asset, then initialize the controller and add with listener.
+  /// 从资源获取媒体url后初始化，并添加监听。
+  Future<void> initializeVideoPlayerController() async {
+    final String url = await widget.asset.getMediaUrl();
+    _controller = VideoPlayerController.network(Uri.parse(url).toString());
+    if (mounted) {
+      setState(() {});
+    }
+    try {
+      await _controller.initialize();
+      _controller.addListener(videoPlayerListener);
+    } catch (e) {
+      realDebugPrint('Error when initialize video controller: $e');
+      hasErrorWhenInitializing = true;
+    } finally {
+      if (mounted) {
+        setState(() {});
+      }
+    }
   }
 
   /// Listener for the video player.
