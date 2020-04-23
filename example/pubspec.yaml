@@ -9,7 +9,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  extended_image: ^0.7.1
   wechat_assets_picker:
     path: ../
 

@@ -1,8 +1,5 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'package:example/color_extension.dart';
@@ -93,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget imageWidget(int index) {
     return Positioned.fill(
-      child: ExtendedImage(
+      child: Image(
         image: AssetEntityImageProvider(
           assets.elementAt(index),
           isOriginal: false,
@@ -127,6 +124,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Asset Picker Example'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.photo_library),
+            onPressed: selectAssets,
+            tooltip: 'Select Assets',
+          ),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -149,83 +153,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: selectAssets,
-        tooltip: 'Select Asset',
-        child: Icon(Icons.photo_library),
-      ),
-      floatingActionButtonLocation:
-          CustomFloatingActionButtonLocation(assets.isNotEmpty),
     );
-  }
-}
-
-class CustomFloatingActionButtonLocation extends FloatingActionButtonLocation {
-  const CustomFloatingActionButtonLocation(this.isAssetNotEmpty);
-
-  final bool isAssetNotEmpty;
-
-  double _leftOffset(
-    ScaffoldPrelayoutGeometry scaffoldGeometry, {
-    double offset = 0.0,
-  }) {
-    return kFloatingActionButtonMargin +
-        scaffoldGeometry.minInsets.left -
-        offset;
-  }
-
-  double _rightOffset(
-    ScaffoldPrelayoutGeometry scaffoldGeometry, {
-    double offset = 0.0,
-  }) {
-    return scaffoldGeometry.scaffoldSize.width -
-        kFloatingActionButtonMargin -
-        scaffoldGeometry.minInsets.right -
-        scaffoldGeometry.floatingActionButtonSize.width +
-        offset;
-  }
-
-  double _endOffset(
-    ScaffoldPrelayoutGeometry scaffoldGeometry, {
-    double offset = 0.0,
-  }) {
-    assert(scaffoldGeometry.textDirection != null);
-    switch (scaffoldGeometry.textDirection) {
-      case TextDirection.rtl:
-        return _leftOffset(scaffoldGeometry, offset: offset);
-      case TextDirection.ltr:
-        return _rightOffset(scaffoldGeometry, offset: offset);
-    }
-    return null;
-  }
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    // Compute the x-axis offset.
-    final double fabX = _endOffset(scaffoldGeometry);
-
-    // Compute the y-axis offset.
-    final double contentBottom = scaffoldGeometry.contentBottom;
-    final double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
-    final double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
-    final double snackBarHeight = scaffoldGeometry.snackBarSize.height;
-
-    double fabY = contentBottom - fabHeight - kFloatingActionButtonMargin;
-    if (snackBarHeight > 0.0)
-      fabY = math.min(
-          fabY,
-          contentBottom -
-              snackBarHeight -
-              fabHeight -
-              kFloatingActionButtonMargin);
-    if (bottomSheetHeight > 0.0) {
-      fabY =
-          math.min(fabY, contentBottom - bottomSheetHeight - fabHeight / 2.0);
-    }
-    if (isAssetNotEmpty) {
-      fabY -= 100.0;
-    }
-
-    return Offset(fabX, fabY);
   }
 }
