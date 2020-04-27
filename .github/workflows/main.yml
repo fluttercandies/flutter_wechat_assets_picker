@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Issue Labeler
-      uses: Naturalclar/issue-action@v1.0.0
+    - name: Auto label
+      uses: Renato66/auto-label@v2.1.2
       with:
-        github-token: "${{ secrets.GITHUB_TOKEN }}"
-        keywords: any
-        labels: await-triage
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        ignore-comments: true
+        default-labels: '["await triage"]'
