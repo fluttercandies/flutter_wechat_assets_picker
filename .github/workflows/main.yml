@@ -1,0 +1,17 @@
+name: "Issue Labeler"
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Issue Labeler
+      uses: Naturalclar/issue-action@v1.0.0
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
+        keywords: any
+        labels: await-triage
