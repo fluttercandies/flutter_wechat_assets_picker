@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 
 import '../constants/constants.dart';
 
+/// A custom app bar.
+/// 自定义的顶栏
 class FixedAppBar extends StatelessWidget {
   const FixedAppBar({
     Key key,
@@ -23,15 +25,44 @@ class FixedAppBar extends StatelessWidget {
     this.blurRadius = 0.0,
   }) : super(key: key);
 
+  /// Title widget.
+  /// 标题部件
   final Widget title;
+
+  /// Leading widget.
+  /// 头部部件
   final Widget leading;
+
+  /// Action widgets.
+  /// 尾部操作部件
   final List<Widget> actions;
+
+  /// Padding for actions.
+  /// 尾部操作部分的内边距
   final EdgeInsetsGeometry actionsPadding;
+
+  /// Whether it should imply leading with [BackButton] automatically.
+  /// 是否会自动检测并添加返回按钮至头部
   final bool automaticallyImplyLeading;
+
+  /// Whether the [title] should be at the center of the [FixedAppBar].
+  /// [title] 是否会在正中间
   final bool centerTitle;
+
+  /// Background color.
+  /// 背景颜色
   final Color backgroundColor;
+
+  /// The size of the shadow below the app bar.
+  /// 底部阴影的大小
   final double elevation;
+
+  /// Height of the app bar.
+  /// 高度
   final double height;
+
+  /// Value that can enable the app bar using filter with [ui.ImageFilter]
+  /// 实现高斯模糊效果的值
   final double blurRadius;
 
   @override

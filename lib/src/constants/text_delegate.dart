@@ -2,6 +2,9 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020/4/7 10:25
 ///
+
+/// Text delegate that controls text in widgets.
+/// 控制部件中的文字实现
 abstract class TextDelegate {
   /// Confirm string for confirm button.
   /// 确认按钮的字段
@@ -52,6 +55,8 @@ abstract class TextDelegate {
   String videoIndicatorBuilder(Duration duration);
 }
 
+/// Default text delegate implements with Chinese.
+/// 中文文字实现
 class DefaultTextDelegate implements TextDelegate {
   factory DefaultTextDelegate() => _instance;
 
