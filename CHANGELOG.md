@@ -1,3 +1,9 @@
+## [1.5.0+1]
+
+* Upgrade `photo_manager` to `0.5.1`.
+* Replace deprecate `TextTheme.title` API usage.
+* Document (dartdoc) update.
+
 ## [1.5.0]
 
 * Bumping flutter sdk minimum version to `1.17.0`.
