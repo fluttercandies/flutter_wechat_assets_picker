@@ -1,3 +1,8 @@
+## [1.5.0]
+
+* Bumping flutter sdk minimum version to `1.17.0`.
+* Declare API stability and compatibility with 1.0.0 ( more details at: https://github.com/flutter/flutter/wiki/Package-migration-to-1.0.0 ).
+
 ## [1.4.1]
 
 * Remove loading indicator for image widget.
