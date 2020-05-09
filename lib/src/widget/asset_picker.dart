@@ -249,8 +249,10 @@ class AssetPicker extends StatelessWidget {
                       /// 仍然存在，使得返回的数据为空。
                       final Uint8List thumbData = pathEntityList[pathEntity];
                       if (thumbData != null) {
-                        return Image.memory(pathEntityList[pathEntity],
-                            fit: BoxFit.cover);
+                        return Image.memory(
+                          pathEntityList[pathEntity],
+                          fit: BoxFit.cover,
+                        );
                       } else {
                         return Container(color: Colors.white12);
                       }
@@ -420,7 +422,8 @@ class AssetPicker extends StatelessWidget {
                 borderRadius: BorderRadius.circular(3.0)),
             child: Text(
               provider.isSelectedNotEmpty
-                  ? '${Constants.textDelegate.confirm}(${provider.selectedAssets.length}/${provider.maxAssets})'
+                  ? '${Constants.textDelegate.confirm}'
+                      '(${provider.selectedAssets.length}/${provider.maxAssets})'
                   : Constants.textDelegate.confirm,
               style: TextStyle(
                 color: provider.isSelectedNotEmpty
@@ -721,7 +724,8 @@ class AssetPicker extends StatelessWidget {
                 (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
               return Text(
                 isSelectedNotEmpty
-                    ? '${Constants.textDelegate.preview}(${provider.selectedAssets.length})'
+                    ? '${Constants.textDelegate.preview}'
+                        '(${provider.selectedAssets.length})'
                     : Constants.textDelegate.preview,
                 style: TextStyle(
                   color: isSelectedNotEmpty ? null : Colors.grey[600],
