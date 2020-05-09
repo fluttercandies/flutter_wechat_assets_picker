@@ -8,7 +8,7 @@
 
 Language: English | [中文简体](README-ZH.md)
 
-An assets picker which looks like the one in WeChat, based on `photo_manager` for asset implementation, `extended_image` for image preview, `provider` to help controlling the state of the picker.
+An **assets picker** which looks like the one in WeChat, based on `photo_manager` for asset implementation, `extended_image` for image preview, `provider` to help controlling the state of the picker.
 
 ## Category 🗂
 
@@ -32,13 +32,12 @@ An assets picker which looks like the one in WeChat, based on `photo_manager` fo
 ## TODO 📅
 
 - [x] Image asset support
-  - [ ] Image editing (Cut/Rotate/Draw)
 - [x] Video asset support
-  - [ ] Video editing support
 - [ ] Audio asset support
 - [ ] Single asset mode
 - [x] i18n support
 - [x] Custom text delegate support
+- [x] Custom theming entirely
 - [ ] Flutter For the Web support
 
 ## Screenshots 📸
@@ -155,3 +154,20 @@ AssetPicker.pickAssets(
 });
 ```
 
+### Create `AssetEntity` from `File` or `Uint8List` (rawData)
+
+In order to combine this package with camera shooting or something related, there's a wordaround about how to create an `AssetEntity` with `File` or `Uint8List` object.
+
+```dart
+final File file = your_file; // Your file object
+final Uint8List byteData = await file.readAsBytes(); // Convert to Uint8List
+final AssetEntity imageEntity = await PhotoManager.editor.saveImage(byteData); // Saved in the device then create an AssetEntity
+```
+
+If you don't want to keep the asset in your device, just delete it after you complete with your process (upload, editing, etc).
+
+```dart
+final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+```
+
+ref: [flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item)

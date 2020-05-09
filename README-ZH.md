@@ -8,7 +8,7 @@
 
 Language: [English](README.md) | 中文简体
 
-对标微信的资源选择器，基于`photo_manager`实现资源相关功能，`extended_image`用于查看图片，`provider`用于协助管理选择器的状态。
+对标微信的**资源选择器**，基于`photo_manager`实现资源相关功能，`extended_image`用于查看图片，`provider`用于协助管理选择器的状态。
 
 ## 目录 🗂
 
@@ -32,13 +32,12 @@ Language: [English](README.md) | 中文简体
 ## 目标TODO 📅
 
 - [x] 图片资源支持
-  - [ ] 图片编辑（裁剪/旋转/涂鸦）
 - [x] 视频资源支持
-  - [ ] 视频编辑
 - [ ] 音频资源支持
 - [ ] 单资源模式
 - [x] 国际化支持
 - [x] 自定义文本支持
+- [x] 完整的自定义主题
 - [ ] FFW支持
 
 ## 截图 📸
@@ -158,3 +157,20 @@ AssetPicker.pickAssets(
 });
 ```
 
+### 从`File`或`Uint8List`创建`AssetEntity`的方法
+
+如果需要使用此库结合一些拍照需求，可通过以下方法将`File`或`Uint8List`转为`AssetEntity`。
+
+```dart
+final File file = your_file; // 你的File对象
+final Uint8List byteData = await file.readAsBytes(); // 转为Uint8List
+final AssetEntity imageEntity = await PhotoManager.editor.saveImage(byteData); // 存入手机并生成AssetEntity
+```
+
+如果不想保留文件，可以在操作完成（上传完或业务处理完）后进行删除：
+
+```dart
+final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+```
+
+参考文档： [flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item)
