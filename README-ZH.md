@@ -22,6 +22,7 @@ Language: [English](README.md) | 中文简体
 * [使用方法](#使用方法-)
   * [简单的使用方法](#简单的使用方法)
   * [完整参数的使用方法](#完整参数的使用方法)
+  * [从`File`或`Uint8List`创建`AssetEntity`的方法](#从file或uint8list创建assetentity的方法)
 
 ## 特性 ✨
 
@@ -32,13 +33,14 @@ Language: [English](README.md) | 中文简体
 ## 目标TODO 📅
 
 - [x] 图片资源支持
+  - [ ] HEIC/HEIF格式图片支持
 - [x] 视频资源支持
 - [ ] 音频资源支持
 - [ ] 单资源模式
 - [x] 国际化支持
 - [x] 自定义文本支持
-- [x] 完整的自定义主题
-- [ ] FFW支持
+- [ ] 完整的自定义主题
+- [ ] Flutter For Web 支持
 
 ## 截图 📸
 

@@ -22,6 +22,7 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 * [Usage](#usage-)
   * [Simple usage](#simple-usage)
   * [Complete param usage](#complete-param-usage)
+  * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
 
 ## Features ✨
 
@@ -32,13 +33,14 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 ## TODO 📅
 
 - [x] Image asset support
+  - [ ] HEIC/HEIF Image type support
 - [x] Video asset support
 - [ ] Audio asset support
 - [ ] Single asset mode
 - [x] i18n support
 - [x] Custom text delegate support
-- [x] Custom theming entirely
-- [ ] Flutter For the Web support
+- [ ] Custom theming entirely
+- [ ] Flutter For Web support
 
 ## Screenshots 📸
 
