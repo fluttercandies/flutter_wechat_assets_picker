@@ -662,22 +662,14 @@ class AssetPicker extends StatelessWidget {
                           } else if (asset.type == AssetType.video) {
                             type = SpecialAssetType.video;
                           }
-                          if (type != SpecialAssetType.heic) {
-                            loader = FadeImageBuilder(
-                              child: _succeedItem(
-                                context,
-                                index,
-                                state.completedWidget,
-                                specialAssetType: type,
-                              ),
-                            );
-                          } else {
-                            loader = Center(
-                              child: Text(
-                                Constants.textDelegate.heicNotSupported,
-                              ),
-                            );
-                          }
+                          loader = FadeImageBuilder(
+                            child: _succeedItem(
+                              context,
+                              index,
+                              state.completedWidget,
+                              specialAssetType: type,
+                            ),
+                          );
                           break;
                         case LoadState.failed:
                           loader = _failedItem;

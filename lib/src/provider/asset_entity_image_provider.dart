@@ -31,13 +31,17 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// 选择载入原数据还是缩略图数据
   final bool isOriginal;
 
+  /// File type for the image asset, use it for some special type detection.
+  /// 图片资源的类型，用于某些特殊类型的判断
   ImageFileType _imageFileType;
 
   ImageFileType get imageFileType => _imageFileType ?? _getType();
 
   @override
   ImageStreamCompleter load(
-      AssetEntityImageProvider key, DecoderCallback decode) {
+    AssetEntityImageProvider key,
+    DecoderCallback decode,
+  ) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -56,11 +60,17 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   }
 
   Future<ui.Codec> _loadAsync(
-      AssetEntityImageProvider key, DecoderCallback decode) async {
+    AssetEntityImageProvider key,
+    DecoderCallback decode,
+  ) async {
     assert(key == this);
     Uint8List data;
     if (isOriginal ?? false) {
-      data = await key.entity.originBytes;
+      if (imageFileType == ImageFileType.heic) {
+        data = await (await key.entity.file).readAsBytes();
+      } else {
+        data = await key.entity.originBytes;
+      }
     } else {
       data = await key.entity.thumbDataWithSize(thumbSize, thumbSize);
     }
