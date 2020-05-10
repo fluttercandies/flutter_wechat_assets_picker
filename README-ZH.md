@@ -33,7 +33,7 @@ Language: [English](README.md) | 中文简体
 ## 目标TODO 📅
 
 - [x] 图片资源支持
-  - [ ] HEIC/HEIF格式图片支持
+  - [x] HEIC/HEIF格式图片支持
 - [x] 视频资源支持
 - [ ] 音频资源支持
 - [ ] 单资源模式

@@ -1,3 +1,7 @@
+## [1.6.0]
+
+* Support HEIC/HEIF image type.
+
 ## [1.5.0+1]
 
 * Upgrade `photo_manager` to `0.5.1`.

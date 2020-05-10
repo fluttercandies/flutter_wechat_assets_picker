@@ -33,7 +33,7 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 ## TODO 📅
 
 - [x] Image asset support
-  - [ ] HEIC/HEIF Image type support
+  - [x] HEIC/HEIF Image type support
 - [x] Video asset support
 - [ ] Audio asset support
 - [ ] Single asset mode
