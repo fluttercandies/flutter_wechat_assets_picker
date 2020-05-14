@@ -48,6 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (result != null) {
       assets = List<AssetEntity>.from(result);
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
