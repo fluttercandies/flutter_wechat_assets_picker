@@ -227,7 +227,7 @@ class AssetPicker extends StatelessWidget {
         splashFactory: InkSplash.splashFactory,
         onTap: () => provider.switchPath(pathEntity),
         child: SizedBox(
-          height: 50.0,
+          height: isIOS ? 64.0 : 52.0,
           child: Row(
             children: <Widget>[
               RepaintBoundary(
@@ -419,7 +419,13 @@ class AssetPicker extends StatelessWidget {
             color:
                 provider.isSelectedNotEmpty ? themeColor : theme.dividerColor,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(3.0)),
+              borderRadius: BorderRadius.circular(3.0),
+            ),
+            elevation: 0.0,
+            disabledElevation: 0.0,
+            focusElevation: 0.0,
+            highlightElevation: 0.0,
+            hoverElevation: 0.0,
             child: Text(
               provider.isSelectedNotEmpty
                   ? '${Constants.textDelegate.confirm}'
@@ -465,13 +471,21 @@ class AssetPicker extends StatelessWidget {
                 horizontal: 2.0,
                 vertical: 2.0,
               ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(2.0),
-                color: theme.iconTheme.color.withOpacity(0.75),
-              ),
+              decoration: !isIOS
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(2.0),
+                      color: theme.iconTheme.color.withOpacity(0.75),
+                    )
+                  : null,
               child: Text(
                 Constants.textDelegate.gifIndicator,
-                style: TextStyle(color: theme.primaryColor, fontSize: 12.0),
+                style: TextStyle(
+                  color: isIOS
+                      ? theme.textTheme.bodyText2.color
+                      : theme.primaryColor,
+                  fontSize: isIOS ? 14.0 : 12.0,
+                  fontWeight: isIOS ? FontWeight.w500 : FontWeight.normal,
+                ),
               ),
             ),
           ),
@@ -563,9 +577,9 @@ class AssetPicker extends StatelessWidget {
                 },
                 child: AnimatedContainer(
                   duration: switchingPathDuration,
-                  margin: const EdgeInsets.all(6.0),
-                  width: 20.0,
-                  height: 20.0,
+                  margin: EdgeInsets.all(isIOS ? 10.0 : 6.0),
+                  width: isIOS ? 28.0 : 20.0,
+                  height: isIOS ? 28.0 : 20.0,
                   decoration: BoxDecoration(
                     border: !selected
                         ? Border.all(color: Colors.white, width: 2.0)
@@ -579,8 +593,12 @@ class AssetPicker extends StatelessWidget {
                     child: selected
                         ? Text(
                             '${selectedAssets.toList().indexOf(asset) + 1}',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 14.0),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isIOS ? 16.0 : 14.0,
+                              fontWeight:
+                                  isIOS ? FontWeight.w600 : FontWeight.normal,
+                            ),
                           )
                         : const SizedBox.shrink(),
                   ),
@@ -768,12 +786,16 @@ class AssetPicker extends StatelessWidget {
         child: isIOS
             ? GestureDetector(
                 onTap: Navigator.of(context).maybePop,
-                child: SizedBox(
-                  width: 60.0,
-                  child: Center(
-                    child: Text(
-                      Constants.textDelegate.cancel,
-                      style: const TextStyle(fontSize: 18.0),
+                child: Container(
+                  margin: isIOS
+                      ? const EdgeInsets.symmetric(horizontal: 20.0)
+                      : null,
+                  child: IntrinsicWidth(
+                    child: Center(
+                      child: Text(
+                        Constants.textDelegate.cancel,
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
                     ),
                   ),
                 ),

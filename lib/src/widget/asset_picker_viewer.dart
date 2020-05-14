@@ -141,6 +141,10 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 底部详情部件的高度
   double get bottomDetailHeight => 140.0;
 
+  /// Whether the current platform is iOS.
+  /// 当前平台是否iOS
+  bool get isIOS => Platform.isIOS;
+
   @override
   void initState() {
     super.initState();
@@ -329,37 +333,43 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 资源选择器将识别并一同返回。
   Widget confirmButton(BuildContext context) =>
       Consumer<AssetPickerViewerProvider>(
-        builder:
-            (BuildContext _, AssetPickerViewerProvider provider, Widget __) {
-          return MaterialButton(
-            minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
-            height: 32.0,
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            color: provider.isSelectedNotEmpty
-                ? widget.themeData.buttonColor
-                : widget.themeData.dividerColor,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(3.0)),
-            child: Text(
-              provider.isSelectedNotEmpty
-                  ? '${Constants.textDelegate.confirm}(${provider.currentlySelectedAssets.length}'
-                      '/'
-                      '${widget.selectorProvider.maxAssets})'
-                  : Constants.textDelegate.confirm,
-              style: TextStyle(
-                color: provider.isSelectedNotEmpty
-                    ? Colors.white
-                    : Colors.grey[600],
-                fontSize: 17.0,
-                fontWeight: FontWeight.normal,
+        builder: (
+          BuildContext _,
+          AssetPickerViewerProvider provider,
+          Widget __,
+        ) {
+          return Container(
+            margin: isIOS ? const EdgeInsets.only(right: 10.0) : null,
+            child: MaterialButton(
+              minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
+              height: 32.0,
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              color: provider.isSelectedNotEmpty
+                  ? widget.themeData.buttonColor
+                  : widget.themeData.dividerColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(3.0)),
+              child: Text(
+                provider.isSelectedNotEmpty
+                    ? '${Constants.textDelegate.confirm}(${provider.currentlySelectedAssets.length}'
+                        '/'
+                        '${widget.selectorProvider.maxAssets})'
+                    : Constants.textDelegate.confirm,
+                style: TextStyle(
+                  color: provider.isSelectedNotEmpty
+                      ? Colors.white
+                      : Colors.grey[600],
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
+              onPressed: () {
+                if (provider.isSelectedNotEmpty) {
+                  Navigator.of(context).pop(provider.currentlySelectedAssets);
+                }
+              },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            onPressed: () {
-              if (provider.isSelectedNotEmpty) {
-                Navigator.of(context).pop(provider.currentlySelectedAssets);
-              }
-            },
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           );
         },
       );
