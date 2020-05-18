@@ -75,6 +75,7 @@ class AssetPicker extends StatelessWidget {
     RequestType requestType = RequestType.image,
     List<AssetEntity> selectedAssets,
     Color themeColor = C.themeColor,
+    ThemeData pickerTheme,
     TextDelegate textDelegate,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
@@ -82,6 +83,10 @@ class AssetPicker extends StatelessWidget {
     assert(
       pageSize % gridCount == 0 || pageSize == null,
       'pageSize must be a multiple of gridCount.',
+    );
+    assert(
+      pickerTheme == null || themeColor == null,
+      'Theme and theme color cannot be set at the same time.',
     );
     try {
       final bool isPermissionGranted = await PhotoManager.requestPermission();
@@ -100,6 +105,7 @@ class AssetPicker extends StatelessWidget {
           gridCount: gridCount,
           textDelegate: textDelegate,
           themeColor: themeColor,
+          pickerTheme: pickerTheme,
         );
         final List<AssetEntity> result =
             await Navigator.of(context).push<List<AssetEntity>>(
