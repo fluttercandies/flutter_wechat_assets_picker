@@ -12,19 +12,22 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 /// [ChangeNotifier] for assets picker.
 /// 资源选择器的 provider model
 class AssetPickerProvider extends ChangeNotifier {
-  /// Call [getAssetList] when constructing.
-  /// 构造时开始获取资源
+  /// Call [getAssetList] with route duration when constructing.
+  /// 构造时根据路由时长延时获取资源
   AssetPickerProvider({
     this.maxAssets = 9,
     this.pageSize = 320,
     this.pathThumbSize = 80,
     this.requestType = RequestType.image,
     List<AssetEntity> selectedAssets,
+    Duration routeDuration,
   }) {
     if (selectedAssets?.isNotEmpty ?? false) {
       _selectedAssets = List<AssetEntity>.from(selectedAssets);
     }
-    getAssetList();
+    Future<void>.delayed(routeDuration).then(
+      (dynamic _) => getAssetList(),
+    );
   }
 
   /// Maximum count for asset selection.
