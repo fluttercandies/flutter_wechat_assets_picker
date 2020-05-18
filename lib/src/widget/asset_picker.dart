@@ -25,12 +25,17 @@ class AssetPicker extends StatelessWidget {
   AssetPicker({
     Key key,
     @required this.provider,
+    this.pickerTheme,
     int gridCount = 4,
     Color themeColor = C.themeColor,
     TextDelegate textDelegate,
   })  : assert(
           provider != null,
           'AssetPickerProvider must be provided and not null.',
+        ),
+        assert(
+          pickerTheme == null || themeColor == null,
+          'Theme and theme color cannot be set at the same time.',
         ),
         gridCount = gridCount ?? 4,
         themeColor = themeColor ?? C.themeColor,
@@ -49,6 +54,14 @@ class AssetPicker extends StatelessWidget {
   /// Main color for picker.
   /// 选择器的主题色
   final Color themeColor;
+
+  /// Theme for the picker.
+  /// 选择器的主题
+  ///
+  /// Usually the WeChat uses the dark version (dark background color) for the picker,
+  /// but some developer wants a light theme version for some reasons.
+  /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，但某些情况下开发者需要亮色或自定义主题。
+  final ThemeData pickerTheme;
 
   /// Static method to push with navigator.
   /// 跳转至选择器的静态方法
@@ -161,7 +174,7 @@ class AssetPicker extends StatelessWidget {
         ),
       );
 
-  ThemeData get theme => themeData(themeColor);
+  ThemeData get theme => pickerTheme ?? themeData(themeColor);
 
   /// Path entity select widget.
   /// 路径选择部件
