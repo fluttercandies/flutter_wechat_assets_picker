@@ -125,9 +125,9 @@ class AssetPicker extends StatelessWidget {
     }
   }
 
-  /// Whether the current platform is iOS.
-  /// 当前平台是否iOS
-  bool get isIOS => Platform.isIOS;
+  /// Whether the current platform is Apple OS.
+  /// 当前平台是否苹果系列系统 (iOS & MacOS)
+  bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
 
   /// Space between asset item widget [_succeedItem].
   /// 资源部件之间的间隔
@@ -141,9 +141,9 @@ class AssetPicker extends StatelessWidget {
   /// 底部操作栏的高度
   double get bottomActionBarHeight => kToolbarHeight / 1.1;
 
-  /// Blur radius in iOS layout mode.
-  /// iOS布局方式下的模糊度
-  double get iOSBlurRadius => 15.0;
+  /// Blur radius in Apple OS layout mode.
+  /// 苹果系列系统布局方式下的模糊度
+  double get appleOSBlurRadius => 15.0;
 
   /// [Curve] when triggering path switching.
   /// 切换路径时的动画曲线
@@ -249,7 +249,7 @@ class AssetPicker extends StatelessWidget {
         splashFactory: InkSplash.splashFactory,
         onTap: () => provider.switchPath(pathEntity),
         child: SizedBox(
-          height: isIOS ? 64.0 : 52.0,
+          height: isAppleOS ? 64.0 : 52.0,
           child: Row(
             children: <Widget>[
               RepaintBoundary(
@@ -339,7 +339,7 @@ class AssetPicker extends StatelessWidget {
   Widget get pathEntityListWidget {
     final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
     final double maxHeight =
-        isIOS ? Screens.height - appBarHeight : Screens.height * 0.75;
+        isAppleOS ? Screens.height - appBarHeight : Screens.height * 0.75;
     return Selector<AssetPickerProvider, bool>(
       selector: (BuildContext _, AssetPickerProvider provider) =>
           provider.isSwitchingPath,
@@ -347,13 +347,13 @@ class AssetPicker extends StatelessWidget {
         return AnimatedPositioned(
           duration: switchingPathDuration,
           curve: switchingPathCurve,
-          top: isIOS
+          top: isAppleOS
               ? !isSwitchingPath ? -maxHeight : appBarHeight
               : -(!isSwitchingPath ? maxHeight : 1.0),
           child: AnimatedOpacity(
             duration: switchingPathDuration,
             curve: switchingPathCurve,
-            opacity: !isIOS || isSwitchingPath ? 1.0 : 0.0,
+            opacity: !isAppleOS || isSwitchingPath ? 1.0 : 0.0,
             child: Container(
               width: Screens.width,
               height: maxHeight,
@@ -493,7 +493,7 @@ class AssetPicker extends StatelessWidget {
                 horizontal: 2.0,
                 vertical: 2.0,
               ),
-              decoration: !isIOS
+              decoration: !isAppleOS
                   ? BoxDecoration(
                       borderRadius: BorderRadius.circular(2.0),
                       color: theme.iconTheme.color.withOpacity(0.75),
@@ -502,11 +502,11 @@ class AssetPicker extends StatelessWidget {
               child: Text(
                 Constants.textDelegate.gifIndicator,
                 style: TextStyle(
-                  color: isIOS
+                  color: isAppleOS
                       ? theme.textTheme.bodyText2.color
                       : theme.primaryColor,
-                  fontSize: isIOS ? 14.0 : 12.0,
-                  fontWeight: isIOS ? FontWeight.w500 : FontWeight.normal,
+                  fontSize: isAppleOS ? 14.0 : 12.0,
+                  fontWeight: isAppleOS ? FontWeight.w500 : FontWeight.normal,
                 ),
               ),
             ),
@@ -599,9 +599,9 @@ class AssetPicker extends StatelessWidget {
                 },
                 child: AnimatedContainer(
                   duration: switchingPathDuration,
-                  margin: EdgeInsets.all(isIOS ? 10.0 : 6.0),
-                  width: isIOS ? 28.0 : 20.0,
-                  height: isIOS ? 28.0 : 20.0,
+                  margin: EdgeInsets.all(isAppleOS ? 10.0 : 6.0),
+                  width: isAppleOS ? 28.0 : 20.0,
+                  height: isAppleOS ? 28.0 : 20.0,
                   decoration: BoxDecoration(
                     border: !selected
                         ? Border.all(color: Colors.white, width: 2.0)
@@ -617,9 +617,9 @@ class AssetPicker extends StatelessWidget {
                             '${selectedAssets.toList().indexOf(asset) + 1}',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: isIOS ? 16.0 : 14.0,
+                              fontSize: isAppleOS ? 16.0 : 14.0,
                               fontWeight:
-                                  isIOS ? FontWeight.w600 : FontWeight.normal,
+                                  isAppleOS ? FontWeight.w600 : FontWeight.normal,
                             ),
                           )
                         : const SizedBox.shrink(),
@@ -656,7 +656,7 @@ class AssetPicker extends StatelessWidget {
             Widget __,
           ) {
             return GridView.builder(
-              padding: isIOS
+              padding: isAppleOS
                   ? EdgeInsets.only(
                       top: Screens.topSafeHeight + kToolbarHeight,
                       bottom: bottomActionBarHeight,
@@ -782,18 +782,18 @@ class AssetPicker extends StatelessWidget {
         right: 20.0,
         bottom: Screens.bottomSafeHeight,
       ),
-      color: theme.primaryColor.withOpacity(isIOS ? 0.90 : 1.0),
+      color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
       child: Row(children: <Widget>[
         previewButton(context),
-        if (isIOS) const Spacer(),
-        if (isIOS) confirmButton(context),
+        if (isAppleOS) const Spacer(),
+        if (isAppleOS) confirmButton(context),
       ]),
     );
-    if (isIOS) {
+    if (isAppleOS) {
       child = ClipRect(
         child: BackdropFilter(
           filter:
-              ui.ImageFilter.blur(sigmaX: iOSBlurRadius, sigmaY: iOSBlurRadius),
+              ui.ImageFilter.blur(sigmaX: appleOSBlurRadius, sigmaY: appleOSBlurRadius),
           child: child,
         ),
       );
@@ -805,11 +805,11 @@ class AssetPicker extends StatelessWidget {
   /// 返回按钮
   Widget backButton(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: isIOS
+        child: isAppleOS
             ? GestureDetector(
                 onTap: Navigator.of(context).maybePop,
                 child: Container(
-                  margin: isIOS
+                  margin: isAppleOS
                       ? const EdgeInsets.symmetric(horizontal: 20.0)
                       : null,
                   child: IntrinsicWidth(
@@ -828,9 +828,9 @@ class AssetPicker extends StatelessWidget {
               ),
       );
 
-  /// Layout for iOS devices.
-  /// iOS设备的选择器布局
-  Widget iOSLayout(BuildContext context) {
+  /// Layout for Apple OS devices.
+  /// 苹果系列设备的选择器布局
+  Widget appleOSLayout(BuildContext context) {
     return Stack(
       children: <Widget>[
         Positioned.fill(
@@ -868,7 +868,7 @@ class AssetPicker extends StatelessWidget {
           title: pathEntitySelector,
           leading: backButton(context),
           actionsPadding: const EdgeInsets.only(right: 14.0),
-          blurRadius: iOSBlurRadius,
+          blurRadius: appleOSBlurRadius,
         ),
       ],
     );
@@ -923,7 +923,7 @@ class AssetPicker extends StatelessWidget {
           value: provider,
           child: Material(
             color: theme.canvasColor,
-            child: isIOS ? iOSLayout(context) : androidLayout(context),
+            child: isAppleOS ? appleOSLayout(context) : androidLayout(context),
           ),
         ),
       ),

@@ -27,11 +27,13 @@ class PlatformProgressIndicator extends StatelessWidget {
   final double value;
   final Brightness brightness;
 
+  bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
       size: Size.square(size),
-      child: Platform.isIOS
+      child: isAppleOS
           ? CupertinoTheme(
               data: const CupertinoThemeData(brightness: Brightness.dark),
               child: CupertinoActivityIndicator(radius: radius),

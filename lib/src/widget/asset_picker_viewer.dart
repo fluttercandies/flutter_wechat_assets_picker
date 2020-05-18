@@ -141,9 +141,9 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 底部详情部件的高度
   double get bottomDetailHeight => 140.0;
 
-  /// Whether the current platform is iOS.
-  /// 当前平台是否iOS
-  bool get isIOS => Platform.isIOS;
+  /// Whether the current platform is Apple OS.
+  /// 当前平台是否为苹果系列系统
+  bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
 
   @override
   void initState() {
@@ -339,7 +339,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
           Widget __,
         ) {
           return Container(
-            margin: isIOS ? const EdgeInsets.only(right: 10.0) : null,
+            margin: isAppleOS ? const EdgeInsets.only(right: 10.0) : null,
             child: MaterialButton(
               minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
               height: 32.0,
