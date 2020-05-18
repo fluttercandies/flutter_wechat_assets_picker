@@ -1,3 +1,10 @@
+## [1.7.0-dev.1]
+
+* Add fully theme support.
+* Add delay for the first init method to prevent stuck in page routing. Fix #13 .
+* Update widgets style on iOS. Fix #14 .
+* Fix state of the example not updated after the result was returned without input method activated.
+
 ## [1.6.0]
 
 * Support HEIC/HEIF image type.

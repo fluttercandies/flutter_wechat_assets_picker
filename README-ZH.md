@@ -39,8 +39,8 @@ Language: [English](README.md) | 中文简体
 - [ ] 单资源模式
 - [x] 国际化支持
 - [x] 自定义文本支持
-- [ ] 完整的自定义主题
-- [ ] Flutter For Web 支持
+- [x] 完整的自定义主题
+- [x] 支持 MacOS
 
 ## 截图 📸
 
@@ -99,6 +99,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 | requestType    | `RequestType`      | 选择器选择资源的类型                    | `RequestType.image` |
 | selectedAssets | `List<AssetEntity>` | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
 | themeColor     | `Color`            | 选择器的主题色  | `Color(0xff00bc56)` |
+| pickerTheme | `ThemeData` | 选择器的主题提供，包括查看器 | `null` |
 | textDelegate | `TextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
 | routeCurve | `Curve` | 选择构造路由动画的曲线 | `Curves.easeIn` |
 | routeDuration | `Duration` | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
@@ -131,6 +132,7 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
+  pickerTheme: ThemeData.dark(), // 不能跟`themeColor`同时设置
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
@@ -151,6 +153,7 @@ AssetPicker.pickAssets(
   requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
+  pickerTheme: ThemeData.dark(), // 不能跟`themeColor`同时设置
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),

@@ -39,8 +39,8 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 - [ ] Single asset mode
 - [x] i18n support
 - [x] Custom text delegate support
-- [ ] Custom theming entirely
-- [ ] Flutter For Web support
+- [x] Custom theme entirely
+- [x] MacOS support
 
 ## Screenshots 📸
 
@@ -97,6 +97,7 @@ Add following content to `info.plist`.
 | requestType    | `RequestType`       | Request type for picker.                                     | RequestType.image                   |
 | selectedAssets | `List<AssetEntity>` | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
 | themeColor     | `Color`             | Main theme color for the picker                              | `Color(0xff00bc56)`                 |
+| pickerTheme    | `ThemeData`         | Theme data provider for the picker and the viewer.           | `null`                              |
 | textDelegate   | `TextDelegate`      | Text delegate for the picker, for customize the texts.       | `DefaultTextDelegate()`             |
 | routeCurve     | `Curve`             | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
 | routeDuration  | `Duration`          | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
@@ -128,6 +129,7 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
+  pickerTheme: ThemeData.dark(), // This cannot be set when the `themeColor` was provided.
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
@@ -148,6 +150,7 @@ AssetPicker.pickAssets(
   requestType: RequestType.image,
   selectedAssets: assets,
   themeColor: Colors.cyan,
+  pickerTheme: ThemeData.dark(), // This cannot be set when the `themeColor` was provided.
   textDelegate: DefaultTextDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
