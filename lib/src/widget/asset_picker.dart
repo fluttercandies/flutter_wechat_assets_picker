@@ -136,7 +136,7 @@ class AssetPicker extends StatelessWidget {
 
   /// [ThemeData] for picker.
   /// 选择器使用的主题
-  ThemeData get theme => ThemeData.dark().copyWith(
+  static ThemeData themeData(Color themeColor) => ThemeData.dark().copyWith(
         buttonColor: themeColor,
         brightness: Brightness.dark,
         primaryColor: Colors.grey[900],
@@ -160,6 +160,8 @@ class AssetPicker extends StatelessWidget {
           elevation: 0,
         ),
       );
+
+  ThemeData get theme => themeData(themeColor);
 
   /// Path entity select widget.
   /// 路径选择部件
