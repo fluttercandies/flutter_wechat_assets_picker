@@ -79,11 +79,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
 
   /// Listener for the video player.
   /// 播放器的监听方法
-  ///
-  /// Set [allowSwitchPages] in state to false if the video is playing.
-  /// 当视频正在播放时禁止切换页面
   void videoPlayerListener() {
-    widget.state.allowSwitchPages(!(_controller.value?.isPlaying ?? false));
     if (isControllerPlaying != isPlaying) {
       isPlaying = isControllerPlaying;
       if (mounted) {
@@ -135,7 +131,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: isPlaying
-                      ? _controller.pause
+                      ? playButtonCallback
                       : widget.state.switchDisplayingDetail,
                   child: Center(
                     child: AnimatedOpacity(
