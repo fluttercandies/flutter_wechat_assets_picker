@@ -556,10 +556,11 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
-                  child: PageView.builder(
+                  child: ExtendedImageGesturePageView.builder(
                     physics: isAllowSwitchPage
                         ? const CustomScrollPhysics()
                         : const NeverScrollableScrollPhysics(),
+                    canMovePage: (GestureDetails _) => isAllowSwitchPage,
                     controller: pageController,
                     itemCount: widget.assets.length,
                     itemBuilder: assetPageBuilder,
