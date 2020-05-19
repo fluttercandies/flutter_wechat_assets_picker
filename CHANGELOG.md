@@ -1,10 +1,7 @@
-## [1.7.0-dev.2]
+## [1.7.0]
 
 * Hide detail display when video start to play.
 * Switch to `ExtendedImageGesturePageView`. Fix #16 .
-
-## [1.7.0-dev.1]
-
 * Add fully theme support.
 * Add MacOS support.
 * Add delay for the first init method to prevent stuck in page routing. Fix #13 .
