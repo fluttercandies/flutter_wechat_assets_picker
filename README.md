@@ -1,6 +1,7 @@
 # Flutter WeChat Assets Picker
 
-[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&style=for-the-badge)](https://pub.dev/packages/wechat_assets_picker)
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=STABLE&style=for-the-badge)](https://pub.dev/packages/wechat_assets_picker)
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=RC%20VERSION&logo=dart&style=for-the-badge)](https://pub.dev/packages/wechat_assets_picker)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=for-the-badge)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=for-the-badge)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?style=for-the-badge)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/master/LICENSE)
