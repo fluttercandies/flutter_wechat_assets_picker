@@ -618,8 +618,9 @@ class AssetPicker extends StatelessWidget {
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: isAppleOS ? 16.0 : 14.0,
-                              fontWeight:
-                                  isAppleOS ? FontWeight.w600 : FontWeight.normal,
+                              fontWeight: isAppleOS
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
                             ),
                           )
                         : const SizedBox.shrink(),
@@ -792,8 +793,10 @@ class AssetPicker extends StatelessWidget {
     if (isAppleOS) {
       child = ClipRect(
         child: BackdropFilter(
-          filter:
-              ui.ImageFilter.blur(sigmaX: appleOSBlurRadius, sigmaY: appleOSBlurRadius),
+          filter: ui.ImageFilter.blur(
+            sigmaX: appleOSBlurRadius,
+            sigmaY: appleOSBlurRadius,
+          ),
           child: child,
         ),
       );
