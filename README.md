@@ -23,7 +23,9 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 * [Usage](#usage-)
   * [Simple usage](#simple-usage)
   * [Complete param usage](#complete-param-usage)
+* [Frequent asked questions](#frequent-asked-question)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
+  * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
 
 ## Features ✨
 
@@ -69,6 +71,50 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 ### Android
 
 You need at lease three permissions: `INTERNET` `READ_EXTERNAL_STORAGE` `WRITE_EXTERNAL_STORAGE`.
+
+Then the main project needs implementation of `AppGlideModule`. For example:
+`example/android/app/build.gradle`:
+```gradle
+  apply plugin: 'com.android.application'
+  apply plugin: 'kotlin-android'
++ apply plugin: 'kotlin-kapt'
+  apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+  
+  dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
++   implementation 'com.github.bumptech.glide:glide:4.11.0'
++   kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    testImplementation 'junit:junit:4.12'
+}
+```
+
+`example/android/app/src/main/kotlin/com/example/exampleapp/ExampleAppGlideModule.java`:
+
+```kotlin
+package com.example.exampleapp;
+
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
+
+@GlideModule
+public class ExampleAppGlideModule extends AppGlideModule {
+}
+```
+If you're using different versions of `Glide`, please add this to the `build.gradle`:
+```gradle
+rootProject.allprojects {
+    subprojects {
+        project.configurations.all {
+            resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == 'com.github.bumptech.glide'
+                        && details.requested.name.contains('glide')) {
+                    details.useVersion "4.11.0"
+                }
+            }
+        }
+    }
+}
+```
 
 ### iOS
 
@@ -118,7 +164,7 @@ AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
 
 ### Complete param usage
 
-```dart
+​```dart
 List<AssetEntity> assets = <AssetEntity>{};
 
 final List<AssetEntity> result = await AssetPicker.pickAssets(
@@ -160,6 +206,8 @@ AssetPicker.pickAssets(
 });
 ```
 
+## Frequent asked question
+
 ### Create `AssetEntity` from `File` or `Uint8List` (rawData)
 
 In order to combine this package with camera shooting or something related, there's a wordaround about how to create an `AssetEntity` with `File` or `Uint8List` object.
@@ -177,3 +225,11 @@ final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id])
 ```
 
 ref: [flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item)
+
+### Glide warning 'Failed to find GeneratedAppGlideModule'
+
+```
+W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an annotationProcessor complie dependency on com.github.bumptech.glide:compiler in you application ana a @GlideModule annotated AppGlideModule implementation or LibraryGlideModules will be silently ignored.
+```
+
+`Glide` needs annotation to keep singleton, prevent conflict between instances and versions, so while the photo manager uses `Glide` to implement image features, the project which import this should define its own `AppGlideModule`. See [Android](#android) section for implementation.

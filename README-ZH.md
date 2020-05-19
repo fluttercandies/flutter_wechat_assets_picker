@@ -23,7 +23,9 @@ Language: [English](README.md) | 中文简体
 * [使用方法](#使用方法-)
   * [简单的使用方法](#简单的使用方法)
   * [完整参数的使用方法](#完整参数的使用方法)
+* [常见问题](#常见问题)
   * [从`File`或`Uint8List`创建`AssetEntity`的方法](#从file或uint8list创建assetentity的方法)
+  * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
 
 ## 特性 ✨
 
@@ -71,6 +73,49 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 ### Android
 
 应用至少需要声明三个权限：`INTERNET` `READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE`
+
+主项目组要实现 `AppGlideModule`。比如：
+`example/android/app/build.gradle`:
+```gradle
+  apply plugin: 'com.android.application'
+  apply plugin: 'kotlin-android'
++ apply plugin: 'kotlin-kapt'
+  apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+  
+  dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
++   implementation 'com.github.bumptech.glide:glide:4.11.0'
++   kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    testImplementation 'junit:junit:4.12'
+}
+```
+
+`example/android/app/src/main/kotlin/com/example/exampleapp/ExampleAppGlideModule.java`:
+```kotlin
+package com.example.exampleapp;
+
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
+
+@GlideModule
+public class ExampleAppGlideModule extends AppGlideModule {
+}
+```
+如果你使用了与该库不一样的`Glide`版本，请将以下内容添加到`build.gradle`：
+```gradle
+rootProject.allprojects {
+    subprojects {
+        project.configurations.all {
+            resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == 'com.github.bumptech.glide'
+                        && details.requested.name.contains('glide')) {
+                    details.useVersion "4.11.0"
+                }
+            }
+        }
+    }
+}
+```
 
 ### iOS
 
@@ -163,6 +208,8 @@ AssetPicker.pickAssets(
 });
 ```
 
+## 常见问题
+
 ### 从`File`或`Uint8List`创建`AssetEntity`的方法
 
 如果需要使用此库结合一些拍照需求，可通过以下方法将`File`或`Uint8List`转为`AssetEntity`。
@@ -180,3 +227,13 @@ final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id])
 ```
 
 参考文档： [flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item)
+
+
+### 控制台提示 'Failed to find GeneratedAppGlideModule'
+
+```
+W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an annotationProcessor complie dependency on com.github.bumptech.glide:compiler in you application ana a @GlideModule annotated AppGlideModule implementation or LibraryGlideModules will be silently ignored.
+```
+
+`Glide` 通过注解来保证单例，防止单例或版本之间的冲突，而因为`photo_manager`使用了`Glide`提供部分图片功能，所以使用它的项目必须实现自己的`AppGlideModule`。 请移步[Android](#android)部分了解如何实现。
+
