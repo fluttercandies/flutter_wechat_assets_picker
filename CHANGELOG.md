@@ -1,3 +1,8 @@
+## [1.7.0-dev.2]
+
+* Hide detail display when video start to play.
+* Switch to `ExtendedImageGesturePageView`. Fix #16 .
+
 ## [1.7.0-dev.1]
 
 * Add fully theme support.
