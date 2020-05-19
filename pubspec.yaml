@@ -13,7 +13,7 @@ dependencies:
 
   extended_image: ">=0.7.3+1 <2.0.0"
   photo_manager: ">=0.5.2 <2.0.0"
-  provider: ">=4.1.0 <5.0.0"
+  provider: ">=4.1.2 <5.0.0"
   video_player: ">=0.10.11 <2.0.0"
 
 dev_dependencies:
