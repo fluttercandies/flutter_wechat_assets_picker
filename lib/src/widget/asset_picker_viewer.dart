@@ -206,8 +206,8 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
 
   /// Method to switch [isDisplayingDetail].
   /// 切换显示详情状态的方法
-  void switchDisplayingDetail() {
-    isDisplayingDetail = !isDisplayingDetail;
+  void switchDisplayingDetail({bool value}) {
+    isDisplayingDetail = value ?? !isDisplayingDetail;
 //    if (!Platform.isIOS) {
 //      SystemChrome.setEnabledSystemUIOverlays(
 //        isDisplayingDetail ? SystemUiOverlay.values : <SystemUiOverlay>[],

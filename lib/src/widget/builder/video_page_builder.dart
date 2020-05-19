@@ -50,6 +50,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   void dispose() {
     /// Remove listener from the controller and dispose it when widget dispose.
     /// 部件销毁时移除控制器的监听并销毁控制器。
+    _controller?.pause();
     _controller?.removeListener(videoPlayerListener);
     _controller?.dispose();
     super.dispose();
@@ -102,6 +103,9 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       if (isPlaying) {
         _controller.pause();
       } else {
+        if (widget.state.isDisplayingDetail) {
+          widget.state.switchDisplayingDetail(value: false);
+        }
         if (_controller.value.duration == _controller.value.position) {
           _controller
             ..seekTo(Duration.zero)
@@ -160,9 +164,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
             ],
           )
         : Center(
-            child: Text(
-              Constants.textDelegate.loadFailed,
-            ),
+            child: Text(Constants.textDelegate.loadFailed),
           );
   }
 }
