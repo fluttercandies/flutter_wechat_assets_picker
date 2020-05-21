@@ -131,6 +131,10 @@ class AssetPicker extends StatelessWidget {
   /// 当前平台是否苹果系列系统 (iOS & MacOS)
   bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
 
+  /// Whether the picker is under the single asset mode.
+  /// 选择器是否为单选模式
+  bool get isSingleAssetMode => provider.maxAssets == 1;
+
   /// Space between asset item widget.
   /// 资源部件之间的间隔
   double get itemSpacing => 2.0;
@@ -459,7 +463,7 @@ class AssetPicker extends StatelessWidget {
             highlightElevation: 0.0,
             hoverElevation: 0.0,
             child: Text(
-              provider.isSelectedNotEmpty
+              provider.isSelectedNotEmpty && !isSingleAssetMode
                   ? '${Constants.textDelegate.confirm}'
                       '(${provider.selectedAssets.length}/${provider.maxAssets})'
                   : Constants.textDelegate.confirm,
@@ -618,10 +622,7 @@ class AssetPicker extends StatelessWidget {
 
   /// Indicator for asset selected status.
   /// 资源是否已选的指示器
-  Widget _selectIndicator(
-    AssetEntity asset,
-    List<AssetEntity> selectedAssets,
-  ) {
+  Widget _selectIndicator(AssetEntity asset) {
     return Selector<AssetPickerProvider, List<AssetEntity>>(
       selector: (BuildContext _, AssetPickerProvider provider) =>
           provider.selectedAssets,
@@ -636,6 +637,9 @@ class AssetPicker extends StatelessWidget {
               if (selected) {
                 provider.unSelectAsset(asset);
               } else {
+                if (isSingleAssetMode) {
+                  provider.selectedAssets.clear();
+                }
                 provider.selectAsset(asset);
               }
             },
@@ -655,15 +659,16 @@ class AssetPicker extends StatelessWidget {
                 duration: switchingPathDuration,
                 reverseDuration: switchingPathDuration,
                 child: selected
-                    ? Text(
-                        '${selectedAssets.indexOf(asset) + 1}',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: isAppleOS ? 16.0 : 14.0,
-                          fontWeight:
-                              isAppleOS ? FontWeight.w600 : FontWeight.normal,
-                        ),
-                      )
+                    ? isSingleAssetMode
+                        ? Icon(Icons.check, size: 18.0)
+                        : Text(
+                            '${selectedAssets.indexOf(asset) + 1}',
+                            style: TextStyle(
+                              fontSize: isAppleOS ? 16.0 : 14.0,
+                              fontWeight:
+                                  isAppleOS ? FontWeight.w600 : FontWeight.bold,
+                            ),
+                          )
                     : const SizedBox.shrink(),
               ),
             ),
@@ -976,10 +981,11 @@ class AssetPicker extends StatelessWidget {
                             child: Stack(
                               children: <Widget>[
                                 Positioned.fill(child: assetsGrid(context)),
-                                PositionedDirectional(
-                                  bottom: 0.0,
-                                  child: bottomActionBar(context),
-                                ),
+                                if (!isSingleAssetMode)
+                                  PositionedDirectional(
+                                    bottom: 0.0,
+                                    child: bottomActionBar(context),
+                                  ),
                               ],
                             ),
                           ),
@@ -1032,7 +1038,7 @@ class AssetPicker extends StatelessWidget {
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGrid(context)),
-                            bottomActionBar(context),
+                            if (!isSingleAssetMode) bottomActionBar(context),
                           ],
                         ),
                       ),
