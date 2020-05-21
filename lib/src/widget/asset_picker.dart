@@ -874,25 +874,28 @@ class AssetPicker extends StatelessWidget {
                   }
                 }
               : null,
-          child: Selector<AssetPickerProvider, List<AssetEntity>>(
-            selector: (BuildContext _, AssetPickerProvider provider) =>
-                provider.selectedAssets,
-            builder: (
-              BuildContext _,
-              List<AssetEntity> selectedAssets,
-              Widget __,
-            ) {
-              return Text(
-                isSelectedNotEmpty
-                    ? '${Constants.textDelegate.preview}'
-                        '(${provider.selectedAssets.length})'
-                    : Constants.textDelegate.preview,
-                style: TextStyle(
-                  color: isSelectedNotEmpty ? null : Colors.grey[600],
-                  fontSize: 18.0,
-                ),
-              );
-            },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
+            child: Selector<AssetPickerProvider, List<AssetEntity>>(
+              selector: (BuildContext _, AssetPickerProvider provider) =>
+                  provider.selectedAssets,
+              builder: (
+                BuildContext _,
+                List<AssetEntity> selectedAssets,
+                Widget __,
+              ) {
+                return Text(
+                  isSelectedNotEmpty
+                      ? '${Constants.textDelegate.preview}'
+                          '(${provider.selectedAssets.length})'
+                      : Constants.textDelegate.preview,
+                  style: TextStyle(
+                    color: isSelectedNotEmpty ? null : Colors.grey[600],
+                    fontSize: 18.0,
+                  ),
+                );
+              },
+            ),
           ),
         );
       },
