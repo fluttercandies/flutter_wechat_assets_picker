@@ -240,7 +240,9 @@ class AssetPickerProvider extends ChangeNotifier {
   /// 加载更多资源
   Future<void> loadMoreAssets() async {
     final List<AssetEntity> assets = (await currentPathEntity.getAssetListPaged(
-            currentAssetsListPage, pageSize))
+      currentAssetsListPage,
+      pageSize,
+    ))
         .toList();
     if (assets.isNotEmpty && currentAssets.contains(assets[0])) {
       return;

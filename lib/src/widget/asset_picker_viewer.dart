@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:wechat_assets_picker/src/widget/builder/audio_page_builder.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/constants.dart';
@@ -230,8 +231,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
     Widget builder;
     switch (asset.type) {
       case AssetType.audio:
-//        builder = audioPageBuilder(context, index);
-        builder = const SizedBox.shrink();
+        builder = AudioPageBuilder(asset: asset, state: this);
         break;
       case AssetType.image:
         builder = ImagePageBuilder(asset: asset, state: this);

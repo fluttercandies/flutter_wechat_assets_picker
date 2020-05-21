@@ -132,4 +132,4 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
 enum ImageFileType { jpg, png, gif, tiff, heic, other }
 
-enum SpecialAssetType { video, audio, gif, heic }
+enum SpecialImageType { gif, heic }

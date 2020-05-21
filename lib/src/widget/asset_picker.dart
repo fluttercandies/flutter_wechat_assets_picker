@@ -129,7 +129,7 @@ class AssetPicker extends StatelessWidget {
   /// 当前平台是否苹果系列系统 (iOS & MacOS)
   bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
 
-  /// Space between asset item widget [_succeedItem].
+  /// Space between asset item widget.
   /// 资源部件之间的间隔
   double get itemSpacing => 2.0;
 
@@ -264,6 +264,14 @@ class AssetPicker extends StatelessWidget {
                       Map<AssetPathEntity, Uint8List> pathEntityList,
                       Widget __,
                     ) {
+                      if (_.watch<AssetPickerProvider>().requestType ==
+                          RequestType.audio) {
+                        return ColoredBox(
+                          color: Colors.white12,
+                          child: Center(child: Icon(Icons.audiotrack)),
+                        );
+                      }
+
                       /// The reason that the `thumbData` should be checked at here to see if it is
                       /// null is that even the image file is not exist, the `File` can still
                       /// returned as it exist, which will cause the thumb bytes return null.
@@ -276,7 +284,7 @@ class AssetPicker extends StatelessWidget {
                           fit: BoxFit.cover,
                         );
                       } else {
-                        return Container(color: Colors.white12);
+                        return ColoredBox(color: Colors.white12);
                       }
                     },
                   ),
@@ -514,6 +522,33 @@ class AssetPicker extends StatelessWidget {
         ),
       );
 
+  /// Audio asset type indicator.
+  /// 音频类型资源指示
+  Widget audioIndicator(AssetEntity asset) {
+    return Align(
+      alignment: AlignmentDirectional.bottomStart,
+      child: Container(
+        width: double.maxFinite,
+        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: AlignmentDirectional.bottomCenter,
+            end: AlignmentDirectional.topCenter,
+            colors: <Color>[Colors.black45, Colors.transparent],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child: Text(
+            Constants.textDelegate
+                .durationIndicatorBuilder(Duration(seconds: asset.duration)),
+            style: const TextStyle(fontSize: 16.0),
+          ),
+        ),
+      ),
+    );
+  }
+
   /// Video asset type indicator.
   /// 视频类型资源指示
   Widget videoIndicator(AssetEntity asset) {
@@ -547,88 +582,58 @@ class AssetPicker extends StatelessWidget {
     );
   }
 
-  /// Item widget when [AssetEntity.thumbData] loaded successfully.
-  /// 资源缩略数据加载成功时使用的部件
-  Widget _succeedItem(
-    BuildContext context,
-    int index,
-    Widget completedWidget, {
-    SpecialAssetType specialAssetType,
-  }) {
-    final AssetEntity asset = provider.currentAssets.elementAt(index);
+  /// Indicator for asset selected status.
+  /// 资源是否已选的指示器
+  Widget _selectIndicator(
+    AssetEntity asset,
+    List<AssetEntity> selectedAssets,
+  ) {
     return Selector<AssetPickerProvider, List<AssetEntity>>(
       selector: (BuildContext _, AssetPickerProvider provider) =>
           provider.selectedAssets,
       builder: (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
-        final bool selected = provider.selectedAssets.contains(asset);
-        return Stack(
-          children: <Widget>[
-            Positioned.fill(child: RepaintBoundary(child: completedWidget)),
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: () {
-                  AssetPickerViewer.pushToViewer(
-                    context,
-                    currentIndex: index,
-                    assets: provider.currentAssets,
-                    themeData: theme,
-                  );
-                },
-                child: AnimatedContainer(
-                  duration: switchingPathDuration,
-                  color:
-                      selected ? Colors.black45 : Colors.black.withOpacity(0.1),
-                ),
-              ), // 点击预览同目录下所有资源
-            ),
-            if (specialAssetType == SpecialAssetType.gif) // 如果为GIF则显示标识
-              gifIndicator,
-            if (specialAssetType == SpecialAssetType.video) // 如果为视频则显示标识
-              videoIndicator(asset),
-            Positioned(
-              top: 0.0,
-              right: 0.0,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  if (selected) {
-                    provider.unSelectAsset(asset);
-                  } else {
-                    provider.selectAsset(asset);
-                  }
-                },
-                child: AnimatedContainer(
-                  duration: switchingPathDuration,
-                  margin: EdgeInsets.all(isAppleOS ? 10.0 : 6.0),
-                  width: isAppleOS ? 28.0 : 20.0,
-                  height: isAppleOS ? 28.0 : 20.0,
-                  decoration: BoxDecoration(
-                    border: !selected
-                        ? Border.all(color: Colors.white, width: 2.0)
-                        : null,
-                    color: selected ? themeColor : null,
-                    shape: BoxShape.circle,
-                  ),
-                  child: AnimatedSwitcher(
-                    duration: switchingPathDuration,
-                    reverseDuration: switchingPathDuration,
-                    child: selected
-                        ? Text(
-                            '${selectedAssets.toList().indexOf(asset) + 1}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: isAppleOS ? 16.0 : 14.0,
-                              fontWeight: isAppleOS
-                                  ? FontWeight.w600
-                                  : FontWeight.normal,
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ),
+        final bool selected = selectedAssets.contains(asset);
+        return Positioned(
+          top: 0.0,
+          right: 0.0,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              if (selected) {
+                provider.unSelectAsset(asset);
+              } else {
+                provider.selectAsset(asset);
+              }
+            },
+            child: AnimatedContainer(
+              duration: switchingPathDuration,
+              margin: EdgeInsets.all(isAppleOS ? 10.0 : 6.0),
+              width: isAppleOS ? 28.0 : 20.0,
+              height: isAppleOS ? 28.0 : 20.0,
+              decoration: BoxDecoration(
+                border: !selected
+                    ? Border.all(color: Colors.white, width: 2.0)
+                    : null,
+                color: selected ? themeColor : null,
+                shape: BoxShape.circle,
               ),
-            ) // 角标,
-          ],
+              child: AnimatedSwitcher(
+                duration: switchingPathDuration,
+                reverseDuration: switchingPathDuration,
+                child: selected
+                    ? Text(
+                        '${selectedAssets.indexOf(asset) + 1}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isAppleOS ? 16.0 : 14.0,
+                          fontWeight:
+                              isAppleOS ? FontWeight.w600 : FontWeight.normal,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ),
+          ),
         );
       },
     );
@@ -675,56 +680,152 @@ class AssetPicker extends StatelessWidget {
                   provider.loadMoreAssets();
                 }
                 final AssetEntity asset = currentAssets.elementAt(index);
-                final AssetEntityImageProvider imageProvider =
-                    AssetEntityImageProvider(
-                  asset,
-                  isOriginal: false,
-                );
-                return RepaintBoundary(
-                  child: ExtendedImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                    loadStateChanged: (ExtendedImageState state) {
-                      Widget loader;
-                      switch (state.extendedImageLoadState) {
-                        case LoadState.loading:
-                          loader = Container(color: const Color(0x10ffffff));
-                          break;
-                        case LoadState.completed:
-                          SpecialAssetType type;
-                          if (imageProvider.imageFileType ==
-                              ImageFileType.gif) {
-                            type = SpecialAssetType.gif;
-                          } else if (imageProvider.imageFileType ==
-                              ImageFileType.heic) {
-                            type = SpecialAssetType.heic;
-                          } else if (asset.type == AssetType.audio) {
-                            type = SpecialAssetType.audio;
-                          } else if (asset.type == AssetType.video) {
-                            type = SpecialAssetType.video;
-                          }
-                          loader = FadeImageBuilder(
-                            child: _succeedItem(
-                              context,
-                              index,
-                              state.completedWidget,
-                              specialAssetType: type,
-                            ),
+                final bool selected = provider.selectedAssets.contains(asset);
+                Widget builder;
+                switch (asset.type) {
+                  case AssetType.audio:
+                    builder = audioItemBuilder(context, index, asset);
+                    break;
+                  case AssetType.image:
+                  case AssetType.video:
+                    builder = imageAndVideoItemBuilder(context, index, asset);
+                    break;
+                  case AssetType.other:
+                    builder = const SizedBox.shrink();
+                    break;
+                }
+                return Stack(
+                  children: <Widget>[
+                    builder,
+                    Positioned.fill(
+                      child: GestureDetector(
+                        onTap: () {
+                          AssetPickerViewer.pushToViewer(
+                            context,
+                            currentIndex: index,
+                            assets: provider.currentAssets,
+                            themeData: theme,
                           );
-                          break;
-                        case LoadState.failed:
-                          loader = _failedItem;
-                          break;
-                      }
-                      return loader;
-                    },
-                  ),
+                        },
+                        child: AnimatedContainer(
+                          duration: switchingPathDuration,
+                          color: selected
+                              ? Colors.black45
+                              : Colors.black.withOpacity(0.1),
+                        ),
+                      ), // 点击预览同目录下所有资源
+                    ),
+                    _selectIndicator(asset, provider.selectedAssets),
+                  ],
                 );
               },
             );
           },
         ),
       );
+
+  /// Item builder for audio type of asset.
+  /// 音频资源的部件构建
+  Widget audioItemBuilder(
+    BuildContext context,
+    int index,
+    AssetEntity asset,
+  ) {
+    return Stack(
+      children: <Widget>[
+        Align(
+          alignment: AlignmentDirectional.topStart,
+          child: Container(
+            width: double.maxFinite,
+            padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: AlignmentDirectional.topCenter,
+                end: AlignmentDirectional.bottomCenter,
+                colors: <Color>[Colors.black45, Colors.transparent],
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4.0, right: 30.0),
+              child: Text(
+                asset.title,
+                style: const TextStyle(fontSize: 16.0),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ),
+        Center(child: Icon(Icons.audiotrack)),
+        audioIndicator(asset),
+      ],
+    );
+  }
+
+  /// Item builder for image and video type of asset.
+  /// 图片和视频资源的部件构建
+  Widget imageAndVideoItemBuilder(
+    BuildContext context,
+    int index,
+    AssetEntity asset,
+  ) {
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(asset, isOriginal: false);
+    return RepaintBoundary(
+      child: ExtendedImage(
+        image: imageProvider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = Container(color: const Color(0x10ffffff));
+              break;
+            case LoadState.completed:
+              SpecialImageType type;
+              if (imageProvider.imageFileType == ImageFileType.gif) {
+                type = SpecialImageType.gif;
+              } else if (imageProvider.imageFileType == ImageFileType.heic) {
+                type = SpecialImageType.heic;
+              }
+              loader = FadeImageBuilder(
+                child: () {
+                  final AssetEntity asset =
+                      provider.currentAssets.elementAt(index);
+                  return Selector<AssetPickerProvider, List<AssetEntity>>(
+                    selector: (BuildContext _, AssetPickerProvider provider) =>
+                        provider.selectedAssets,
+                    builder: (
+                      BuildContext _,
+                      List<AssetEntity> selectedAssets,
+                      Widget __,
+                    ) {
+                      return Stack(
+                        children: <Widget>[
+                          Positioned.fill(
+                            child:
+                                RepaintBoundary(child: state.completedWidget),
+                          ),
+                          if (type == SpecialImageType.gif) // 如果为GIF则显示标识
+                            gifIndicator,
+                          if (asset.type == AssetType.video) // 如果为视频则显示标识
+                            videoIndicator(asset),
+                        ],
+                      );
+                    },
+                  );
+                }(),
+              );
+              break;
+            case LoadState.failed:
+              loader = _failedItem;
+              break;
+          }
+          return loader;
+        },
+      ),
+    );
+  }
 
   /// Preview button to preview selected assets.
   /// 预览已选资源的按钮
@@ -753,8 +854,11 @@ class AssetPicker extends StatelessWidget {
           child: Selector<AssetPickerProvider, List<AssetEntity>>(
             selector: (BuildContext _, AssetPickerProvider provider) =>
                 provider.selectedAssets,
-            builder:
-                (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
+            builder: (
+              BuildContext _,
+              List<AssetEntity> selectedAssets,
+              Widget __,
+            ) {
               return Text(
                 isSelectedNotEmpty
                     ? '${Constants.textDelegate.preview}'
@@ -840,7 +944,11 @@ class AssetPicker extends StatelessWidget {
           child: Selector<AssetPickerProvider, bool>(
             selector: (BuildContext _, AssetPickerProvider provider) =>
                 provider.hasAssetsToDisplay,
-            builder: (BuildContext _, bool hasAssetsToDisplay, Widget __) {
+            builder: (
+              BuildContext _,
+              bool hasAssetsToDisplay,
+              Widget __,
+            ) {
               return AnimatedSwitcher(
                 duration: switchingPathDuration,
                 child: hasAssetsToDisplay
@@ -892,7 +1000,11 @@ class AssetPicker extends StatelessWidget {
       body: Selector<AssetPickerProvider, bool>(
         selector: (BuildContext _, AssetPickerProvider provider) =>
             provider.hasAssetsToDisplay,
-        builder: (BuildContext _, bool hasAssetsToDisplay, Widget __) {
+        builder: (
+          BuildContext _,
+          bool hasAssetsToDisplay,
+          Widget __,
+        ) {
           return AnimatedSwitcher(
             duration: switchingPathDuration,
             child: hasAssetsToDisplay

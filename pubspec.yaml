@@ -11,9 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  extended_image: ">=0.7.4 <2.0.0"
+  assets_audio_player: "^1.5.0+4"
+  extended_image: ">=0.8.0 <2.0.0"
   photo_manager: ">=0.5.2 <2.0.0"
-  provider: ">=4.1.2 <5.0.0"
+  provider: "^4.1.2"
   video_player: ">=0.10.11 <2.0.0"
 
 dev_dependencies:
