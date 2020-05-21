@@ -583,6 +583,38 @@ class AssetPicker extends StatelessWidget {
     );
   }
 
+  /// Animated backdrop widget for items.
+  /// 部件选中时的动画遮罩部件
+  Widget _selectedBackdrop(
+    BuildContext context,
+    int index,
+    AssetEntity asset,
+  ) {
+    return Selector<AssetPickerProvider, List<AssetEntity>>(
+      selector: (BuildContext _, AssetPickerProvider provider) =>
+          provider.selectedAssets,
+      builder: (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
+        final bool selected = selectedAssets.contains(asset);
+        return Positioned.fill(
+          child: GestureDetector(
+            onTap: () {
+              AssetPickerViewer.pushToViewer(
+                context,
+                currentIndex: index,
+                assets: provider.currentAssets,
+                themeData: theme,
+              );
+            },
+            child: AnimatedContainer(
+              duration: switchingPathDuration,
+              color: selected ? Colors.black45 : Colors.black.withOpacity(0.1),
+            ),
+          ), // 点击预览同目录下所有资源
+        );
+      },
+    );
+  }
+
   /// Indicator for asset selected status.
   /// 资源是否已选的指示器
   Widget _selectIndicator(
@@ -698,25 +730,8 @@ class AssetPicker extends StatelessWidget {
                 return Stack(
                   children: <Widget>[
                     builder,
-                    Positioned.fill(
-                      child: GestureDetector(
-                        onTap: () {
-                          AssetPickerViewer.pushToViewer(
-                            context,
-                            currentIndex: index,
-                            assets: provider.currentAssets,
-                            themeData: theme,
-                          );
-                        },
-                        child: AnimatedContainer(
-                          duration: switchingPathDuration,
-                          color: selected
-                              ? Colors.black45
-                              : Colors.black.withOpacity(0.1),
-                        ),
-                      ), // 点击预览同目录下所有资源
-                    ),
-                    _selectIndicator(asset, provider.selectedAssets),
+                    _selectedBackdrop(context, index, asset),
+                    _selectIndicator(asset),
                   ],
                 );
               },
