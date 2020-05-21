@@ -38,8 +38,8 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 - [x] Image asset support
   - [x] HEIC/HEIF Image type support
 - [x] Video asset support
-- [ ] Audio asset support
-- [ ] Single asset mode
+- [x] Audio asset support
+- [x] Single asset mode
 - [x] i18n support
 - [x] Custom text delegate support
 - [x] Custom theme entirely
@@ -164,7 +164,7 @@ AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
 
 ### Complete param usage
 
-​```dart
+```dart
 List<AssetEntity> assets = <AssetEntity>{};
 
 final List<AssetEntity> result = await AssetPicker.pickAssets(
