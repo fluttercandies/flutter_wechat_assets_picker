@@ -536,8 +536,8 @@ class AssetPicker extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Text(
-                Constants.textDelegate
-                    .videoIndicatorBuilder(Duration(seconds: asset.duration)),
+                Constants.textDelegate.durationIndicatorBuilder(
+                    Duration(seconds: asset.duration)),
                 style: const TextStyle(fontSize: 16.0),
               ),
             ),
