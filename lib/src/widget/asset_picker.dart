@@ -714,7 +714,6 @@ class AssetPicker extends StatelessWidget {
                   provider.loadMoreAssets();
                 }
                 final AssetEntity asset = currentAssets.elementAt(index);
-                final bool selected = provider.selectedAssets.contains(asset);
                 Widget builder;
                 switch (asset.type) {
                   case AssetType.audio:
@@ -731,7 +730,6 @@ class AssetPicker extends StatelessWidget {
                 return Stack(
                   children: <Widget>[
                     builder,
-                    _selectedBackdrop(context, index, asset),
                     _selectIndicator(asset),
                   ],
                 );
@@ -774,6 +772,7 @@ class AssetPicker extends StatelessWidget {
           ),
         ),
         Center(child: Icon(Icons.audiotrack)),
+        _selectedBackdrop(context, index, asset),
         audioIndicator(asset),
       ],
     );
@@ -820,9 +819,11 @@ class AssetPicker extends StatelessWidget {
                       return Stack(
                         children: <Widget>[
                           Positioned.fill(
-                            child:
-                                RepaintBoundary(child: state.completedWidget),
+                            child: RepaintBoundary(
+                              child: state.completedWidget,
+                            ),
                           ),
+                          _selectedBackdrop(context, index, asset),
                           if (type == SpecialImageType.gif) // 如果为GIF则显示标识
                             gifIndicator,
                           if (asset.type == AssetType.video) // 如果为视频则显示标识
