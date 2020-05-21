@@ -83,11 +83,12 @@ class AssetPicker extends StatelessWidget {
     if (maxAssets == null || maxAssets < 1) {
       throw ArgumentError('maxAssets must be greater than 1.');
     }
-    if (pageSize % gridCount == 0 || pageSize == null) {
+    if (pageSize != null && pageSize % gridCount != 0) {
       throw ArgumentError('pageSize must be a multiple of gridCount.');
     }
-    if (pickerTheme == null || themeColor == null) {
-      throw ArgumentError('Theme and theme color cannot be set at the same time.');
+    if (pickerTheme != null && themeColor != null) {
+      throw ArgumentError(
+          'Theme and theme color cannot be set at the same time.');
     }
     try {
       final bool isPermissionGranted = await PhotoManager.requestPermission();
