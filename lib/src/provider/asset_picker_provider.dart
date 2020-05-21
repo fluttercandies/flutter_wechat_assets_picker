@@ -66,8 +66,7 @@ class AssetPickerProvider extends ChangeNotifier {
   bool get isAssetsEmpty => _isAssetsEmpty;
 
   set isAssetsEmpty(bool value) {
-    assert(value != null);
-    if (value == _isAssetsEmpty) {
+    if (value == null || value == _isAssetsEmpty) {
       return;
     }
     _isAssetsEmpty = value;

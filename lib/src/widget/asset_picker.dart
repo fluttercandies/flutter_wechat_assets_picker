@@ -80,14 +80,15 @@ class AssetPicker extends StatelessWidget {
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
-    assert(
-      pageSize % gridCount == 0 || pageSize == null,
-      'pageSize must be a multiple of gridCount.',
-    );
-    assert(
-      pickerTheme == null || themeColor == null,
-      'Theme and theme color cannot be set at the same time.',
-    );
+    if (maxAssets == null || maxAssets < 1) {
+      throw ArgumentError('maxAssets must be greater than 1.');
+    }
+    if (pageSize % gridCount == 0 || pageSize == null) {
+      throw ArgumentError('pageSize must be a multiple of gridCount.');
+    }
+    if (pickerTheme == null || themeColor == null) {
+      throw ArgumentError('Theme and theme color cannot be set at the same time.');
+    }
     try {
       final bool isPermissionGranted = await PhotoManager.requestPermission();
       if (isPermissionGranted) {
