@@ -671,7 +671,7 @@ class AssetPicker extends StatelessWidget {
               itemCount: currentAssets.length,
               itemBuilder: (BuildContext _, int index) {
                 if (index == currentAssets.length - gridCount * 3 &&
-                    Provider.of<AssetPickerProvider>(_).hasAssetsToDisplay) {
+                    _.read<AssetPickerProvider>().hasMoreToLoad) {
                   provider.loadMoreAssets();
                 }
                 final AssetEntity asset = currentAssets.elementAt(index);
