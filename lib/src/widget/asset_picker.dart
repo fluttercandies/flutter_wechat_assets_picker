@@ -127,6 +127,28 @@ class AssetPicker extends StatelessWidget {
     }
   }
 
+  /// Register observe callback with assets changes.
+  /// 注册资源（图库）变化的监听回调
+  static void registerObserve([ValueChanged<MethodCall> callback]) {
+    try {
+      PhotoManager.addChangeCallback(callback);
+      PhotoManager.startChangeNotify();
+    } catch (e) {
+      realDebugPrint('Error when registering assets callback: $e');
+    }
+  }
+
+  /// Unregister observe callback with assets changes.
+  /// 取消注册资源（图库）变化的监听回调
+  static void unregisterObserve([ValueChanged<MethodCall> callback]) {
+    try {
+      PhotoManager.removeChangeCallback(callback);
+      PhotoManager.stopChangeNotify();
+    } catch (e) {
+      realDebugPrint('Error when unregistering assets callback: $e');
+    }
+  }
+
   /// Whether the current platform is Apple OS.
   /// 当前平台是否苹果系列系统 (iOS & MacOS)
   bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
