@@ -1,3 +1,7 @@
+# [2.0.1]
+
+* Expose observe register methods.
+
 # [2.0.0]
 
 * Support audio assets.

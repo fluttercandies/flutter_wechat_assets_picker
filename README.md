@@ -23,6 +23,7 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 * [Usage](#usage-)
   * [Simple usage](#simple-usage)
   * [Complete param usage](#complete-param-usage)
+  * [Register assets change observe callback](#register-assets-change-observe-callback)
 * [Frequent asked questions](#frequent-asked-question)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
@@ -204,6 +205,14 @@ AssetPicker.pickAssets(
 ).then((List<AssetEntity> assets) {
   /.../
 });
+```
+
+### Register assets change observe callback
+```dart
+AssetPicker.registerObserve(); // Register callback.
+```
+```dart
+AssetPicker.unregisterObserve(); // Unregister callback.
 ```
 
 ## Frequent asked question

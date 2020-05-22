@@ -23,6 +23,7 @@ Language: [English](README.md) | 中文简体
 * [使用方法](#使用方法-)
   * [简单的使用方法](#简单的使用方法)
   * [完整参数的使用方法](#完整参数的使用方法)
+  * [注册资源变化回调](#注册资源变化回调)
 * [常见问题](#常见问题)
   * [从`File`或`Uint8List`创建`AssetEntity`的方法](#从file或uint8list创建assetentity的方法)
   * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
@@ -206,6 +207,14 @@ AssetPicker.pickAssets(
 ).then((List<AssetEntity> assets) {
   /.../
 });
+```
+
+### 注册资源变化回调
+```dart
+AssetPicker.registerObserve(); // 注册回调
+```
+```dart
+AssetPicker.unregisterObserve(); // 取消注册回调
 ```
 
 ## 常见问题
