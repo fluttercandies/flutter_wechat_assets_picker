@@ -168,7 +168,7 @@ AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
 ### 完整参数的使用方法
 
 ```dart
-List<AssetEntity> assets = <AssetEntity>{};
+List<AssetEntity> assets = <AssetEntity>[];
 
 final List<AssetEntity> result = await AssetPicker.pickAssets(
   context,
@@ -189,7 +189,7 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
 或者
 
 ```dart
-List<AssetEntity> assets = <AssetEntity>{};
+List<AssetEntity> assets = <AssetEntity>[];
 
 AssetPicker.pickAssets(
   context,

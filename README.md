@@ -166,7 +166,7 @@ AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
 ### Complete param usage
 
 ```dart
-List<AssetEntity> assets = <AssetEntity>{};
+List<AssetEntity> assets = <AssetEntity>[];
 
 final List<AssetEntity> result = await AssetPicker.pickAssets(
   context,
@@ -187,7 +187,7 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
 or
 
 ```dart
-List<AssetEntity> assets = <AssetEntity>{};
+List<AssetEntity> assets = <AssetEntity>[];
 
 AssetPicker.pickAssets(
   context,
