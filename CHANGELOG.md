@@ -1,3 +1,7 @@
+# [2.0.2]
+
+* Fix audio paused accidentally when the app is launching on Android #18 .
+
 # [2.0.1]
 
 * Expose observe register methods.
