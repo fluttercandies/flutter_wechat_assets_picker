@@ -726,7 +726,7 @@ class AssetPicker extends StatelessWidget {
   /// [GridView] for assets under [AssetPickerProvider.currentPathEntity].
   /// 正在查看的目录下的资源网格部件
   Widget assetsGrid(BuildContext context) => Container(
-        color: Colors.black54,
+        color: theme.canvasColor,
         child: Selector<AssetPickerProvider, List<AssetEntity>>(
           selector: (BuildContext _, AssetPickerProvider provider) =>
               provider.currentAssets,
