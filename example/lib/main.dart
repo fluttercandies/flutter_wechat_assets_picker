@@ -44,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
       pathThumbSize: 84,
       gridCount: 4,
       selectedAssets: assets,
+      themeColor: themeColor,
       requestType: RequestType.common,
     );
     if (result != null) {
