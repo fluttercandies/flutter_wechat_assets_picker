@@ -27,7 +27,7 @@ class AssetPicker extends StatelessWidget {
     @required this.provider,
     this.pickerTheme,
     int gridCount = 4,
-    Color themeColor = C.themeColor,
+    Color themeColor,
     TextDelegate textDelegate,
   })  : assert(
           provider != null,
@@ -38,7 +38,8 @@ class AssetPicker extends StatelessWidget {
           'Theme and theme color cannot be set at the same time.',
         ),
         gridCount = gridCount ?? 4,
-        themeColor = themeColor ?? C.themeColor,
+        themeColor =
+            pickerTheme?.colorScheme?.primary ?? themeColor ?? C.themeColor,
         super(key: key) {
     Constants.textDelegate = textDelegate ?? DefaultTextDelegate();
   }
@@ -74,7 +75,7 @@ class AssetPicker extends StatelessWidget {
     int gridCount = 4,
     RequestType requestType = RequestType.image,
     List<AssetEntity> selectedAssets,
-    Color themeColor = C.themeColor,
+    Color themeColor,
     ThemeData pickerTheme,
     TextDelegate textDelegate,
     Curve routeCurve = Curves.easeIn,
@@ -183,8 +184,8 @@ class AssetPicker extends StatelessWidget {
   /// 切换路径时的动画时长
   Duration get switchingPathDuration => kThemeAnimationDuration * 1.5;
 
-  /// [ThemeData] for picker.
-  /// 选择器使用的主题
+  /// Build a dark theme according to the theme color.
+  /// 通过主题色构建一个默认的暗黑主题
   static ThemeData themeData(Color themeColor) => ThemeData.dark().copyWith(
         buttonColor: themeColor,
         brightness: Brightness.dark,
@@ -210,7 +211,17 @@ class AssetPicker extends StatelessWidget {
         ),
       );
 
+  /// [ThemeData] for picker.
+  /// 选择器使用的主题
   ThemeData get theme => pickerTheme ?? themeData(themeColor);
+
+  /// Return a system ui overlay style according to
+  /// the brightness of the theme data.
+  /// 根据主题返回状态栏的明暗样式
+  SystemUiOverlayStyle get overlayStyle =>
+      theme.brightness == Brightness.light
+          ? SystemUiOverlayStyle.dark
+          : SystemUiOverlayStyle.light;
 
   /// Path entity select widget.
   /// 路径选择部件
@@ -1082,7 +1093,7 @@ class AssetPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: overlayStyle,
       child: Theme(
         data: theme,
         child: ChangeNotifierProvider<AssetPickerProvider>.value(
