@@ -89,7 +89,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   /// 标题组件
   Widget get titleWidget => Text(
         widget.asset.title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20.0,
           fontWeight: FontWeight.normal,
         ),
@@ -137,7 +137,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
             '${Constants.textDelegate.durationIndicatorBuilder(data.data)}'
             ' / '
             '${Constants.textDelegate.durationIndicatorBuilder(assetDuration)}',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20.0,
               fontWeight: FontWeight.normal,
             ),

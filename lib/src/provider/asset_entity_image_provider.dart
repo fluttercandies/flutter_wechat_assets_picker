@@ -9,8 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+@immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
-  AssetEntityImageProvider(
+  const AssetEntityImageProvider(
     this.entity, {
     this.scale = 1.0,
     this.thumbSize = 200,
@@ -33,9 +34,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   /// File type for the image asset, use it for some special type detection.
   /// 图片资源的类型，用于某些特殊类型的判断
-  ImageFileType _imageFileType;
-
-  ImageFileType get imageFileType => _imageFileType ?? _getType();
+  ImageFileType get imageFileType => _getType();
 
   @override
   ImageStreamCompleter load(

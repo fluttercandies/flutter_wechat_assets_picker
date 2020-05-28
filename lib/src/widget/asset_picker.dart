@@ -235,7 +235,7 @@ class AssetPicker extends StatelessWidget {
                     if (provider.currentPathEntity != null)
                       Flexible(
                         child: Text(
-                          '${provider.currentPathEntity.name}',
+                          provider.currentPathEntity.name ?? '',
                           style: const TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.normal,
@@ -329,7 +329,7 @@ class AssetPicker extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: Text(
-                            '${pathEntity.name}',
+                            pathEntity.name ?? '',
                             style: const TextStyle(fontSize: 18.0),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
