@@ -299,7 +299,8 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                   },
                 ),
               const Spacer(),
-              if (provider != null) selectButton,
+              if (isAppleOS && provider != null) selectButton,
+              if (!isAppleOS && provider != null) confirmButton(context),
             ],
           ),
         ),
@@ -313,44 +314,47 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   /// 资源选择器将识别并一同返回。
   Widget confirmButton(BuildContext context) =>
-      Consumer<AssetPickerViewerProvider>(
-        builder: (
-          BuildContext _,
-          AssetPickerViewerProvider provider,
-          Widget __,
-        ) {
-          return MaterialButton(
-            minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
-            height: 32.0,
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            color: provider.isSelectedNotEmpty
-                ? widget.themeData.buttonColor
-                : widget.themeData.dividerColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(3.0),
-            ),
-            child: Text(
-              provider.isSelectedNotEmpty
-                  ? '${Constants.textDelegate.confirm}(${provider.currentlySelectedAssets.length}'
-                      '/'
-                      '${widget.selectorProvider.maxAssets})'
-                  : Constants.textDelegate.confirm,
-              style: TextStyle(
-                color: provider.isSelectedNotEmpty
-                    ? Colors.white
-                    : Colors.grey[600],
-                fontSize: 17.0,
-                fontWeight: FontWeight.normal,
+      ChangeNotifierProvider<AssetPickerViewerProvider>.value(
+        value: provider,
+        child: Consumer<AssetPickerViewerProvider>(
+          builder: (
+            BuildContext _,
+            AssetPickerViewerProvider provider,
+            Widget __,
+          ) {
+            return MaterialButton(
+              minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
+              height: 32.0,
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              color: provider.isSelectedNotEmpty
+                  ? widget.themeData.buttonColor
+                  : widget.themeData.dividerColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(3.0),
               ),
-            ),
-            onPressed: () {
-              if (provider.isSelectedNotEmpty) {
-                Navigator.of(context).pop(provider.currentlySelectedAssets);
-              }
-            },
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          );
-        },
+              child: Text(
+                provider.isSelectedNotEmpty
+                    ? '${Constants.textDelegate.confirm}(${provider.currentlySelectedAssets.length}'
+                        '/'
+                        '${widget.selectorProvider.maxAssets})'
+                    : Constants.textDelegate.confirm,
+                style: TextStyle(
+                  color: provider.isSelectedNotEmpty
+                      ? Colors.white
+                      : Colors.grey[600],
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              onPressed: () {
+                if (provider.isSelectedNotEmpty) {
+                  Navigator.of(context).pop(provider.currentlySelectedAssets);
+                }
+              },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            );
+          },
+        ),
       );
 
   /// Thumb item widget in bottom detail.
