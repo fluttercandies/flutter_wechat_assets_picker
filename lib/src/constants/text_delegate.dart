@@ -103,7 +103,63 @@ class DefaultTextDelegate implements TextDelegate {
     const String separator = ':';
     final String minute = duration.inMinutes.toString().padLeft(2, '0');
     final String second =
-        ((duration - Duration(minutes: duration.inMinutes)).inSeconds).toString().padLeft(2, '0');
+        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
+            .toString()
+            .padLeft(2, '0');
+    return '$minute$separator$second';
+  }
+}
+
+/// [TextDelegate] implements with English.
+/// 英文文字实现
+class EnglishTextDelegate implements TextDelegate {
+  factory EnglishTextDelegate() => _instance;
+
+  EnglishTextDelegate._internal();
+
+  static final EnglishTextDelegate _instance = EnglishTextDelegate._internal();
+
+  @override
+  String confirm = 'Confirm';
+
+  @override
+  String cancel = 'Cancel';
+
+  @override
+  String edit = 'Edit';
+
+  @override
+  String emptyPlaceHolder = 'Nothing here...';
+
+  @override
+  String gifIndicator = 'GIF';
+
+  @override
+  String heicNotSupported = 'Unsupported HEIC asset type.';
+
+  @override
+  String loadFailed = 'Load failed';
+
+  @override
+  String original = 'Origin';
+
+  @override
+  String preview = 'Preview';
+
+  @override
+  String select = 'Select';
+
+  @override
+  String unSupportedAssetType = 'Unsupported HEIC asset type.';
+
+  @override
+  String durationIndicatorBuilder(Duration duration) {
+    const String separator = ':';
+    final String minute = duration.inMinutes.toString().padLeft(2, '0');
+    final String second =
+        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
+            .toString()
+            .padLeft(2, '0');
     return '$minute$separator$second';
   }
 }
