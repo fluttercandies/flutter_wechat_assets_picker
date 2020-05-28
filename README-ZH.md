@@ -15,7 +15,6 @@ Language: [English](README.md) | 中文简体
 
 * [特性](#特性-)
 * [截图](#截图-)
-* [目标TODO](#目标todo-)
 * [准备工作](#准备工作-)
   * [Flutter](#flutter)
   * [Android](#android)
@@ -30,21 +29,16 @@ Language: [English](README.md) | 中文简体
 
 ## 特性 ✨
 
-- 💚 99%的微信风格
-- 🌠 支持同时选择多个资源
-- 🔍 支持资源预览（图片、视频）
-
-## 目标TODO 📅
-
-- [x] 图片资源支持
-  - [x] HEIC/HEIF格式图片支持
-- [x] 视频资源支持
-- [x] 音频资源支持
-- [x] 单资源模式
-- [x] 国际化支持
-- [x] 自定义文本支持
-- [x] 完整的自定义主题
-- [x] 支持 MacOS
+- [x] 💚 99%的微信风格
+- [x] 📷 图片资源支持
+  - [x] 🔬HEIC格式图片支持
+- [x] 🎥 视频资源支持
+- [x] 🎶 音频资源支持
+- [x] 1️⃣ 单资源模式
+- [x] 💱 国际化支持
+- [x] 📝 自定义文本支持
+- [x] 🎏 完整的自定义主题
+- [x] 💻 支持 MacOS
 
 ## 截图 📸
 
@@ -62,7 +56,7 @@ Language: [English](README.md) | 中文简体
 
 ```yaml
 dependencies:
-  wechat_assets_picker: $latest_version
+  wechat_assets_picker: ^2.1.0
 ```
 
 在你的代码中导入：

@@ -1,3 +1,11 @@
+# [2.1.0]
+
+* Add present english text delegate.
+* Refactored theme constructor and getter with theme capability #22 .
+* Update color scheme usage for assets grid #23 .
+* Update picker viewer style for apple OS.
+* Fix bottom bar disappearing on apple os when it's single asset mode.
+
 # [2.0.2]
 
 * Fix audio paused accidentally when the app is launching on Android #18 .

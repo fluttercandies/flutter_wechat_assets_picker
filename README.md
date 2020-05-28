@@ -15,7 +15,6 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 
 * [Features](#features-)
 * [Screenshots](#screenshots-)
-* [TODO](#todo-)
 * [Preparing for use](#preparing-for-use-)
   * [Flutter](#flutter)
   * [Android](#android)
@@ -30,21 +29,16 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 
 ## Features ✨
 
-- 💚 99% simillar to WeChat style.
-- 🌠 Support multi assets pick.
-- 🔍 Support asset preview. (Image / Video)
-
-## TODO 📅
-
-- [x] Image asset support
-  - [x] HEIC/HEIF Image type support
-- [x] Video asset support
-- [x] Audio asset support
-- [x] Single asset mode
-- [x] i18n support
-- [x] Custom text delegate support
-- [x] Custom theme entirely
-- [x] MacOS support
+- [x] 💚 99% simillar to WeChat style.
+- [x] 📷 Image asset support
+  - [x] 🔬HEIC/HEIF Image type support
+- [x] 🎥 Video asset support
+- [x] 🎶 Audio asset support
+- [x] 1️⃣ Single asset mode
+- [x] 💱 i18n support
+- [x] 📝 Custom text delegate support
+- [x] 🎏 Custom theme entirely
+- [x] 💻 MacOS support
 
 ## Screenshots 📸
 
@@ -62,7 +56,7 @@ Althought the package provide selection for assets, it still require users build
 Add `wechat_assets_picker` to `pubspec.yaml` dependencies.
 ```yaml
 dependencies:
-  wechat_assets_picker: $latest_version
+  wechat_assets_picker: ^2.1.0
 ```
 Then import the package in your code:
 ```dart
