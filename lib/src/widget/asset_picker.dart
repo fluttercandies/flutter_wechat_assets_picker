@@ -218,10 +218,9 @@ class AssetPicker extends StatelessWidget {
   /// Return a system ui overlay style according to
   /// the brightness of the theme data.
   /// 根据主题返回状态栏的明暗样式
-  SystemUiOverlayStyle get overlayStyle =>
-      theme.brightness == Brightness.light
-          ? SystemUiOverlayStyle.dark
-          : SystemUiOverlayStyle.light;
+  SystemUiOverlayStyle get overlayStyle => theme.brightness == Brightness.light
+      ? SystemUiOverlayStyle.dark
+      : SystemUiOverlayStyle.light;
 
   /// Path entity select widget.
   /// 路径选择部件
@@ -950,7 +949,7 @@ class AssetPicker extends StatelessWidget {
       ),
       color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
       child: Row(children: <Widget>[
-        previewButton(context),
+        if (!isSingleAssetMode || !isAppleOS) previewButton(context),
         if (isAppleOS) const Spacer(),
         if (isAppleOS) confirmButton(context),
       ]),
