@@ -28,7 +28,10 @@ class AssetPickerProvider extends ChangeNotifier {
       _selectedAssets = List<AssetEntity>.from(selectedAssets);
     }
     Future<void>.delayed(routeDuration).then(
-      (dynamic _) => getAssetList(),
+      (dynamic _) async {
+        await getAssetPathList();
+        await getAssetList();
+      },
     );
   }
 
@@ -193,7 +196,7 @@ class AssetPickerProvider extends ChangeNotifier {
 
   /// Get assets path entities.
   /// 获取所有的资源路径
-  Future<void> getAssetList() async {
+  Future<void> getAssetPathList() async {
     final List<AssetPathEntity> _list = await PhotoManager.getAssetPathList(
       type: requestType,
       filterOption: FilterOptionGroup()
@@ -213,6 +216,17 @@ class AssetPickerProvider extends ChangeNotifier {
         _pathEntityList[pathEntity] = data;
       });
     }
+
+    /// Set first path entity as current path entity.
+    if (_pathEntityList.isNotEmpty) {
+      _currentPathEntity ??= pathEntityList.keys.elementAt(0);
+      await _currentPathEntity.refreshPathProperties();
+    }
+  }
+
+  /// Get assets list from current path entity.
+  /// 从当前已选路径获取资源列表
+  Future<void> getAssetList() async {
     if (_pathEntityList.isNotEmpty) {
       _currentPathEntity = pathEntityList.keys.elementAt(0);
       await _currentPathEntity.refreshPathProperties();
