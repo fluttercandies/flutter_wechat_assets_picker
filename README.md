@@ -36,6 +36,7 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 - [x] 🎶 Audio asset support
 - [x] 1️⃣ Single asset mode
 - [x] 💱 i18n support
+- [x] 🗂 Custom sort path delegate support
 - [x] 📝 Custom text delegate support
 - [x] 🎏 Custom theme entirely
 - [x] 💻 MacOS support
@@ -56,7 +57,7 @@ Althought the package provide selection for assets, it still require users build
 Add `wechat_assets_picker` to `pubspec.yaml` dependencies.
 ```yaml
 dependencies:
-  wechat_assets_picker: ^2.1.0
+  wechat_assets_picker: ^2.2.0
 ```
 Then import the package in your code:
 ```dart
@@ -67,7 +68,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 You need at lease three permissions: `INTERNET` `READ_EXTERNAL_STORAGE` `WRITE_EXTERNAL_STORAGE`.
 
-Then the main project needs implementation of `AppGlideModule`. For example:
+If you found some warning logs appearing, then the main project needs implementation of `AppGlideModule`. For example:
 `example/android/app/build.gradle`:
 ```gradle
   apply plugin: 'com.android.application'
@@ -140,6 +141,7 @@ Add following content to `info.plist`.
 | selectedAssets | `List<AssetEntity>` | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
 | themeColor     | `Color`             | Main theme color for the picker                              | `Color(0xff00bc56)`                 |
 | pickerTheme    | `ThemeData`         | Theme data provider for the picker and the viewer.           | `null`                              |
+| sortPathDelegate | `SortPathDeleage` | Path entities sort delegate for the picker, sort paths as you want. | `CommonSortPathDelegate` |
 | textDelegate   | `TextDelegate`      | Text delegate for the picker, for customize the texts.       | `DefaultTextDelegate()`             |
 | routeCurve     | `Curve`             | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
 | routeDuration  | `Duration`          | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
@@ -173,6 +175,7 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   themeColor: Colors.cyan,
   pickerTheme: ThemeData.dark(), // This cannot be set when the `themeColor` was provided.
   textDelegate: DefaultTextDelegate(),
+  sortPathDelegate: CommonSortPathDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
 );
@@ -194,6 +197,7 @@ AssetPicker.pickAssets(
   themeColor: Colors.cyan,
   pickerTheme: ThemeData.dark(), // This cannot be set when the `themeColor` was provided.
   textDelegate: DefaultTextDelegate(),
+  sortPathDelegate: CommonSortPathDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
 ).then((List<AssetEntity> assets) {

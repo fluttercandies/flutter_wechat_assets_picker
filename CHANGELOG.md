@@ -1,3 +1,9 @@
+# [2.2.0-dev.1]
+
+* Add `SortPathDelegate`.
+* Slightly add padding to viewer's assets list view.
+* Force request title for audio type asset.
+
 # [2.1.0]
 
 * Add present english text delegate.

@@ -36,6 +36,7 @@ Language: [English](README.md) | 中文简体
 - [x] 🎶 音频资源支持
 - [x] 1️⃣ 单资源模式
 - [x] 💱 国际化支持
+- [x] 🗂 自定义路径排序支持
 - [x] 📝 自定义文本支持
 - [x] 🎏 完整的自定义主题
 - [x] 💻 支持 MacOS
@@ -56,7 +57,7 @@ Language: [English](README.md) | 中文简体
 
 ```yaml
 dependencies:
-  wechat_assets_picker: ^2.1.0
+  wechat_assets_picker: ^2.2.0
 ```
 
 在你的代码中导入：
@@ -69,7 +70,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 应用至少需要声明三个权限：`INTERNET` `READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE`
 
-主项目组要实现 `AppGlideModule`。比如：
+如果你发现有一些警告日志输出，那么主项目组就需要要实现 `AppGlideModule`。比如：
 `example/android/app/build.gradle`:
 ```gradle
   apply plugin: 'com.android.application'
@@ -141,6 +142,7 @@ rootProject.allprojects {
 | selectedAssets | `List<AssetEntity>` | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
 | themeColor     | `Color`            | 选择器的主题色  | `Color(0xff00bc56)` |
 | pickerTheme | `ThemeData` | 选择器的主题提供，包括查看器 | `null` |
+| sortPathDelegate | `SortPathDeleage` | 资源路径的排序实现，可自定义路径排序方法 | `CommonSortPathDelegate` |
 | textDelegate | `TextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
 | routeCurve | `Curve` | 选择构造路由动画的曲线 | `Curves.easeIn` |
 | routeDuration | `Duration` | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
@@ -175,6 +177,7 @@ final List<AssetEntity> result = await AssetPicker.pickAssets(
   themeColor: Colors.cyan,
   pickerTheme: ThemeData.dark(), // 不能跟`themeColor`同时设置
   textDelegate: DefaultTextDelegate(),
+  sortPathDelegate: CommonSortPathDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
 );
@@ -196,6 +199,7 @@ AssetPicker.pickAssets(
   themeColor: Colors.cyan,
   pickerTheme: ThemeData.dark(), // 不能跟`themeColor`同时设置
   textDelegate: DefaultTextDelegate(),
+  sortPathDelegate: CommonSortPathDelegate(),
   routeCurve: Curves.easeIn,
   routeDuration: const Duration(milliseconds: 500),
 ).then((List<AssetEntity> assets) {
