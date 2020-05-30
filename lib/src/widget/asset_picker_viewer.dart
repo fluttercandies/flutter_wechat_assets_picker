@@ -551,7 +551,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                   height: 90.0,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.zero,
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
                     itemCount: widget.selectedAssets.length,
                     itemBuilder: _bottomDetailItem,
                   ),
