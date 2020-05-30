@@ -4,6 +4,8 @@
 ///
 import 'text_delegate.dart';
 
+export '../delegates/sort_path_delegate.dart';
+export '../delegates/text_delegate.dart';
 export '../utils/real_debug_print.dart';
 
 export 'colors.dart';
