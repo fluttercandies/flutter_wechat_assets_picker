@@ -199,7 +199,12 @@ class AssetPickerProvider extends ChangeNotifier {
   Future<void> getAssetPathList() async {
     final List<AssetPathEntity> _list = await PhotoManager.getAssetPathList(
       type: requestType,
+      // Enable need title for audio and image to get proper display.
       filterOption: FilterOptionGroup()
+        ..setOption(
+          AssetType.audio,
+          const FilterOption(needTitle: true),
+        )
         ..setOption(
           AssetType.image,
           const FilterOption(needTitle: true),
