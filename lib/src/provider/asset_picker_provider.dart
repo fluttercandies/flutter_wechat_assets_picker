@@ -27,6 +27,7 @@ class AssetPickerProvider extends ChangeNotifier {
     if (selectedAssets?.isNotEmpty ?? false) {
       _selectedAssets = List<AssetEntity>.from(selectedAssets);
     }
+    Constants.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
     Future<void>.delayed(routeDuration).then(
       (dynamic _) async {
         await getAssetPathList();
@@ -212,7 +213,7 @@ class AssetPickerProvider extends ChangeNotifier {
     );
 
     /// Sort path using sort path delegate.
-    sortPathDelegate.sort(_list);
+    Constants.sortPathDelegate.sort(_list);
 
     for (final AssetPathEntity pathEntity in _list) {
       // Use sync method to avoid unnecessary wait.
