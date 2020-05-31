@@ -1,6 +1,7 @@
-# [2.2.0-dev.1]
+# [2.2.0-dev.2]
 
 * Add `SortPathDelegate`.
+* Using zoom page transition for viewer.
 * Slightly add padding to viewer's assets list view.
 * Force request title for audio type asset.
 
