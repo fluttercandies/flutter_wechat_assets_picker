@@ -1,4 +1,4 @@
-package com.example.example;
+package com.fluttercandies.wechatAssetsPickerExample;
 
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
