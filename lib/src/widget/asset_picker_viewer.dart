@@ -12,10 +12,11 @@ import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:wechat_assets_picker/src/widget/builder/audio_page_builder.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/constants.dart';
+import '../constants/zoom_page_transition.dart';
+import 'builder/audio_page_builder.dart';
 import 'builder/fade_image_builder.dart';
 import 'builder/image_page_builder.dart';
 import 'builder/video_page_builder.dart';
@@ -65,19 +66,37 @@ class AssetPickerViewer extends StatefulWidget {
     AssetPickerProvider selectorProvider,
   }) async {
     try {
-      final WidgetBuilder viewer = (BuildContext _) => AssetPickerViewer(
-            currentIndex: currentIndex,
-            assets: assets,
-            themeData: themeData,
-            selectedAssets: selectedAssets,
-            selectorProvider: selectorProvider,
-          );
-      final List<AssetEntity> result =
-          await Navigator.of(context).push<List<AssetEntity>>(
-        Platform.isAndroid
-            ? MaterialPageRoute<List<AssetEntity>>(builder: viewer)
-            : CupertinoPageRoute<List<AssetEntity>>(builder: viewer),
+      final Widget viewer = AssetPickerViewer(
+        currentIndex: currentIndex,
+        assets: assets,
+        themeData: themeData,
+        selectedAssets: selectedAssets,
+        selectorProvider: selectorProvider,
       );
+      final PageRouteBuilder<List<AssetEntity>> pageRoute =
+          PageRouteBuilder<List<AssetEntity>>(
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return viewer;
+        },
+        transitionsBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+          Widget child,
+        ) {
+          return ZoomPageTransition(
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          );
+        },
+      );
+      final List<AssetEntity> result =
+          await Navigator.of(context).push<List<AssetEntity>>(pageRoute);
       return result;
     } catch (e) {
       realDebugPrint('Error when calling assets picker viewer: $e');
