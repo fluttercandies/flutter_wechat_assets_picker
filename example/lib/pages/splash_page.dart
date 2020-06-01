@@ -28,18 +28,18 @@ class _SplashPageState extends State<SplashPage> {
             Navigator.of(context).push(
               PageRouteBuilder<void>(
                 pageBuilder: (
-                    BuildContext _,
-                    Animation<double> __,
-                    Animation<double> ___,
-                    ) {
+                  BuildContext _,
+                  Animation<double> __,
+                  Animation<double> ___,
+                ) {
                   return const HomePage();
                 },
                 transitionsBuilder: (
-                    BuildContext _,
-                    Animation<double> animation,
-                    Animation<double> secondaryAnimation,
-                    Widget child,
-                    ) {
+                  BuildContext _,
+                  Animation<double> animation,
+                  Animation<double> secondaryAnimation,
+                  Widget child,
+                ) {
                   return FadeTransition(
                     opacity: animation,
                     child: child,

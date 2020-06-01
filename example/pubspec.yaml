@@ -10,10 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_common_exports:
-    git:
-      url: "https://github.com/AlexVincent525/flutter_common_exports.git"
-      ref: "1c1cd874"
   wechat_assets_picker:
     path: ../
 
