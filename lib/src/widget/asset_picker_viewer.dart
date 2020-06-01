@@ -399,23 +399,33 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                 selector:
                     (BuildContext _, AssetPickerViewerProvider provider) =>
                         provider.currentlySelectedAssets,
-                builder: (BuildContext _,
-                    List<AssetEntity> currentlySelectedAssets, Widget __) {
+                builder: (
+                  BuildContext _,
+                  List<AssetEntity> currentlySelectedAssets,
+                  Widget __,
+                ) {
                   final bool isSelected =
                       currentlySelectedAssets.contains(asset);
                   return Stack(
                     children: <Widget>[
-                      Positioned.fill(
-                        child: RepaintBoundary(
-                          child: ExtendedImage(
-                            image: AssetEntityImageProvider(
-                              widget.assets.elementAt(index),
-                              isOriginal: false,
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
+                      () {
+                        Widget item;
+                        switch (asset.type) {
+                          case AssetType.other:
+                            item = const SizedBox.shrink();
+                            break;
+                          case AssetType.image:
+                            item = _imagePreviewItem(asset);
+                            break;
+                          case AssetType.video:
+                            item = _videoPreviewItem(asset);
+                            break;
+                          case AssetType.audio:
+                            item = _audioPreviewItem(asset);
+                            break;
+                        }
+                        return item;
+                      }(),
                       AnimatedContainer(
                         duration: kThemeAnimationDuration,
                         curve: Curves.easeInOut,
@@ -436,6 +446,44 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
             );
           },
         ),
+      ),
+    );
+  }
+
+  /// Preview item widget for audio.
+  /// 音频的底部预览部件
+  Widget _audioPreviewItem(AssetEntity asset) {
+    return ColoredBox(
+      color: context.themeData.dividerColor,
+      child: Center(child: Icon(Icons.audiotrack)),
+    );
+  }
+
+  /// Preview item widget for image.
+  /// 音频的底部预览部件
+  Widget _imagePreviewItem(AssetEntity asset) {
+    return Positioned.fill(
+      child: RepaintBoundary(
+        child: ExtendedImage(
+          image: AssetEntityImageProvider(
+            asset,
+            isOriginal: false,
+          ),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  /// Preview item widget for video.
+  /// 音频的底部预览部件
+  Widget _videoPreviewItem(AssetEntity asset) {
+    return Positioned.fill(
+      child: Stack(
+        children: <Widget>[
+          _imagePreviewItem(asset),
+          Center(child: Icon(Icons.video_library)),
+        ],
       ),
     );
   }
