@@ -60,7 +60,7 @@ Language: [English](README.md) | 中文简体
 
 ```yaml
 dependencies:
-  wechat_assets_picker: ^2.2.0
+  wechat_assets_picker: ^latest_version
 ```
 
 在你的代码中导入：

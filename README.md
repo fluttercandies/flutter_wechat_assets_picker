@@ -59,7 +59,7 @@ Althought the package provide selection for assets, it still require users build
 Add `wechat_assets_picker` to `pubspec.yaml` dependencies.
 ```yaml
 dependencies:
-  wechat_assets_picker: ^2.2.0
+  wechat_assets_picker: ^latest_version
 ```
 Then import the package in your code:
 ```dart
