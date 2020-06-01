@@ -1,9 +1,10 @@
-# [2.2.0-dev.3]
+# [2.2.0-dev.4]
 
 * Brand new example.
 * Add `SortPathDelegate`.
 * Using zoom page transition for viewer.
 * Slightly add padding to viewer's assets list view.
+* Migrate elevation and color to material rendering.
 * Force request title for audio type asset.
 * Expose `AssetType` enum.
 
