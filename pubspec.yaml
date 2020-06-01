@@ -16,3 +16,7 @@ dependencies:
   photo_manager: ">=0.5.2 <2.0.0"
   provider: ^4.1.2
   video_player: ">=0.10.11 <2.0.0"
+
+  flutter_common_exports:
+    git:
+      url: "https://github.com/AlexVincent525/flutter_common_exports.git"
