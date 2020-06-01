@@ -19,7 +19,6 @@ import '../constants/constants.dart';
 import 'builder/fade_image_builder.dart';
 import 'builder/slide_page_transition_builder.dart';
 import 'fixed_appbar.dart';
-import 'platform_progress_indicator.dart';
 
 class AssetPicker extends StatelessWidget {
   AssetPicker({
@@ -997,6 +996,18 @@ class AssetPicker extends StatelessWidget {
               ),
       );
 
+  /// Custom app bar for the picker.
+  /// 选择器自定义的顶栏
+  FixedAppBar appBar(BuildContext context) => FixedAppBar(
+        backgroundColor: theme.appBarTheme.color,
+        centerTitle: isAppleOS,
+        title: pathEntitySelector,
+        leading: backButton(context),
+        actions: !isAppleOS ? <Widget>[confirmButton(context)] : null,
+        actionsPadding: const EdgeInsets.only(right: 14.0),
+        blurRadius: isAppleOS ? appleOSBlurRadius : 0.0,
+      );
+
   /// Layout for Apple OS devices.
   /// 苹果系列设备的选择器布局
   Widget appleOSLayout(BuildContext context) {
@@ -1036,14 +1047,7 @@ class AssetPicker extends StatelessWidget {
             },
           ),
         ),
-        FixedAppBar(
-          backgroundColor: theme.canvasColor,
-          centerTitle: true,
-          title: pathEntitySelector,
-          leading: backButton(context),
-          actionsPadding: const EdgeInsets.only(right: 14.0),
-          blurRadius: appleOSBlurRadius,
-        ),
+        appBar(context),
       ],
     );
   }
@@ -1052,14 +1056,7 @@ class AssetPicker extends StatelessWidget {
   /// Android设备的选择器布局
   Widget androidLayout(BuildContext context) {
     return FixedAppBarWrapper(
-      appBar: FixedAppBar(
-        backgroundColor: theme.canvasColor,
-        centerTitle: false,
-        title: pathEntitySelector,
-        leading: backButton(context),
-        actionsPadding: const EdgeInsets.only(right: 14.0),
-        actions: <Widget>[confirmButton(context)],
-      ),
+      appBar: appBar(context),
       body: Selector<AssetPickerProvider, bool>(
         selector: (BuildContext _, AssetPickerProvider provider) =>
             provider.hasAssetsToDisplay,
