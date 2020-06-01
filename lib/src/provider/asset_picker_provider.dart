@@ -218,9 +218,11 @@ class AssetPickerProvider extends ChangeNotifier {
     for (final AssetPathEntity pathEntity in _list) {
       // Use sync method to avoid unnecessary wait.
       _pathEntityList[pathEntity] = null;
-      getFirstThumbFromPathEntity(pathEntity).then((Uint8List data) {
-        _pathEntityList[pathEntity] = data;
-      });
+      if (requestType != RequestType.audio) {
+        getFirstThumbFromPathEntity(pathEntity).then((Uint8List data) {
+          _pathEntityList[pathEntity] = data;
+        });
+      }
     }
 
     /// Set first path entity as current path entity.
