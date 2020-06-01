@@ -25,7 +25,7 @@ class _SplashPageState extends State<SplashPage> {
         Future<void>.delayed(
           2.seconds,
           () {
-            Navigator.of(context).push(
+            Navigator.of(context).pushReplacement(
               PageRouteBuilder<void>(
                 pageBuilder: (
                   BuildContext _,
