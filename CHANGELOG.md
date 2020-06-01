@@ -1,3 +1,7 @@
+# [2.2.0+1]
+
+* Fix preview widget for audio assets in picker viewer.
+
 # [2.2.0]
 
 * Brand new example.
