@@ -5,6 +5,8 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_common_exports/flutter_common_exports.dart';
 
 import '../constants/constants.dart';
 
@@ -18,7 +20,7 @@ class FixedAppBar extends StatelessWidget {
     this.leading,
     this.centerTitle = true,
     this.backgroundColor,
-    this.elevation = 2.0,
+    this.elevation,
     this.actions,
     this.actionsPadding,
     this.height,
@@ -67,27 +69,18 @@ class FixedAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color color = (backgroundColor ?? Theme.of(context).primaryColor)
+        .withOpacity(blurRadius > 0.0 ? 0.90 : 1.0);
+
     Widget _title = title;
     if (centerTitle) {
       _title = Center(child: _title);
     }
+
     Widget child = Container(
       width: Screens.width,
       height: (height ?? kToolbarHeight) + MediaQuery.of(context).padding.top,
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      decoration: BoxDecoration(
-        boxShadow: elevation > 0
-            ? <BoxShadow>[
-                BoxShadow(
-                  color: const Color(0x0d000000),
-                  blurRadius: elevation * 1.0,
-                  offset: Offset(0, elevation * 2.0),
-                ),
-              ]
-            : null,
-        color: (backgroundColor ?? Theme.of(context).primaryColor)
-            .withOpacity(blurRadius > 0.0 ? 0.90 : 1.0),
-      ),
       child: Stack(
         children: <Widget>[
           if (automaticallyImplyLeading && Navigator.of(context).canPop())
@@ -132,6 +125,7 @@ class FixedAppBar extends StatelessWidget {
         ],
       ),
     );
+
     if (blurRadius > 0.0) {
       child = ClipRect(
         child: BackdropFilter(
@@ -140,7 +134,21 @@ class FixedAppBar extends StatelessWidget {
         ),
       );
     }
-    return Material(type: MaterialType.transparency, child: child);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: context.themeData.appBarTheme.brightness.isDark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
+      child: Material(
+        type: color.isTransparent
+            ? MaterialType.transparency
+            : MaterialType.canvas,
+        color: (backgroundColor ?? Theme.of(context).primaryColor)
+            .withOpacity(blurRadius > 0.0 ? 0.90 : 1.0),
+        elevation: elevation ?? context.themeData.appBarTheme.elevation ?? 4.0,
+        child: child,
+      ),
+    );
   }
 }
 
