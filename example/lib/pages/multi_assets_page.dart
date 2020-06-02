@@ -209,6 +209,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                   Text(
                     model.description,
                     style: context.themeData.textTheme.caption,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
