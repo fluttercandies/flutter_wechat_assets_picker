@@ -228,7 +228,6 @@ class AssetPickerProvider extends ChangeNotifier {
     /// Set first path entity as current path entity.
     if (_pathEntityList.isNotEmpty) {
       _currentPathEntity ??= pathEntityList.keys.elementAt(0);
-      await _currentPathEntity.refreshPathProperties();
     }
   }
 
@@ -237,7 +236,6 @@ class AssetPickerProvider extends ChangeNotifier {
   Future<void> getAssetList() async {
     if (_pathEntityList.isNotEmpty) {
       _currentPathEntity = pathEntityList.keys.elementAt(0);
-      await _currentPathEntity.refreshPathProperties();
       totalAssetsCount = currentPathEntity.assetCount;
       getAssetsFromEntity(0, currentPathEntity);
       // Update total assets count.
