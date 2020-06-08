@@ -1,3 +1,7 @@
+# [2.2.0+2]
+
+* Remove path entity properties refresh.
+
 # [2.2.0+1]
 
 * Fix preview widget for audio assets in picker viewer.
