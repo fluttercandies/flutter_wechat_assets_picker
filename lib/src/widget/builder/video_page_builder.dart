@@ -151,6 +151,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                                 ? Icons.pause_circle_outline
                                 : Icons.play_circle_filled,
                             size: 70.0,
+                            color: Colors.white,
                           ),
                         ),
                       ),

@@ -210,6 +210,21 @@ class AssetPicker extends StatelessWidget {
           brightness: Brightness.dark,
           elevation: 0,
         ),
+        colorScheme: ColorScheme(
+          primary: Colors.grey[900],
+          primaryVariant: Colors.grey[900],
+          secondary: themeColor,
+          secondaryVariant: themeColor,
+          background: Colors.grey[900],
+          surface: Colors.grey[900],
+          brightness: Brightness.dark,
+          error: const Color(0xffcf6679),
+          onPrimary: Colors.black,
+          onSecondary: Colors.black,
+          onSurface: Colors.white,
+          onBackground: Colors.white,
+          onError: Colors.black,
+        ),
       );
 
   /// [ThemeData] for picker.
@@ -260,15 +275,15 @@ class AssetPicker extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: theme.dividerColor.withAlpha(150),
+                          color: theme.iconTheme.color.withOpacity(0.5),
                         ),
                         child: Transform.rotate(
                           angle: provider.isSwitchingPath ? math.pi : 0.0,
                           alignment: Alignment.center,
-                          child: const Icon(
+                          child: Icon(
                             Icons.keyboard_arrow_down,
-                            color: Colors.black,
                             size: 20.0,
+                            color: theme.colorScheme.primary,
                           ),
                         ),
                       ),
@@ -492,11 +507,6 @@ class AssetPicker extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0),
             ),
-            elevation: 0.0,
-            disabledElevation: 0.0,
-            focusElevation: 0.0,
-            highlightElevation: 0.0,
-            hoverElevation: 0.0,
             child: Text(
               provider.isSelectedNotEmpty && !isSingleAssetMode
                   ? '${Constants.textDelegate.confirm}'
@@ -504,8 +514,8 @@ class AssetPicker extends StatelessWidget {
                   : Constants.textDelegate.confirm,
               style: TextStyle(
                 color: provider.isSelectedNotEmpty
-                    ? Colors.white
-                    : Colors.grey[600],
+                    ? theme.textTheme.bodyText1.color
+                    : theme.textTheme.caption.color,
                 fontSize: 17.0,
                 fontWeight: FontWeight.normal,
               ),
@@ -575,7 +585,7 @@ class AssetPicker extends StatelessWidget {
           gradient: LinearGradient(
             begin: AlignmentDirectional.bottomCenter,
             end: AlignmentDirectional.topCenter,
-            colors: <Color>[Colors.black45, Colors.transparent],
+            colors: <Color>[theme.dividerColor, Colors.transparent],
           ),
         ),
         child: Padding(
@@ -592,6 +602,12 @@ class AssetPicker extends StatelessWidget {
 
   /// Video asset type indicator.
   /// 视频类型资源指示
+  ///
+  /// Videos often contains various of color in the cover,
+  /// so in order to keep the content visible in most cases,
+  /// the color of the indicator has been set to [Colors.white].
+  /// 视频封面通常包含各种颜色，为了保证内容在一般情况下可见，此处
+  /// 将指示器的图标和文字设置为 [Colors.white]。
   Widget videoIndicator(AssetEntity asset) {
     return Align(
       alignment: AlignmentDirectional.bottomStart,
@@ -608,13 +624,20 @@ class AssetPicker extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            Icon(Icons.videocam, size: 24.0),
+            Icon(
+              Icons.videocam,
+              size: 24.0,
+              color: Colors.white,
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Text(
                 Constants.textDelegate.durationIndicatorBuilder(
                     Duration(seconds: asset.duration)),
-                style: const TextStyle(fontSize: 16.0),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
               ),
             ),
           ],
@@ -655,7 +678,7 @@ class AssetPicker extends StatelessWidget {
     );
   }
 
-  /// Indicator for asset selected status.
+  /// Indicator for assets selected status.
   /// 资源是否已选的指示器
   Widget _selectIndicator(AssetEntity asset) {
     return Selector<AssetPickerProvider, List<AssetEntity>>(
@@ -719,7 +742,10 @@ class AssetPicker extends StatelessWidget {
         child: Text(
           Constants.textDelegate.loadFailed,
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white, fontSize: 18.0),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 18.0,
+          ),
         ),
       );
 
@@ -797,7 +823,7 @@ class AssetPicker extends StatelessWidget {
               gradient: LinearGradient(
                 begin: AlignmentDirectional.topCenter,
                 end: AlignmentDirectional.bottomCenter,
-                colors: <Color>[Colors.black45, Colors.transparent],
+                colors: <Color>[theme.dividerColor, Colors.transparent],
               ),
             ),
             child: Padding(

@@ -298,7 +298,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
         height: Screens.topSafeHeight + kToolbarHeight,
         child: Container(
           padding: EdgeInsets.only(top: Screens.topSafeHeight, right: 12.0),
-          color: Colors.grey[850].withOpacity(0.95),
+          color: widget.themeData.canvasColor.withOpacity(0.85),
           child: Row(
             children: <Widget>[
               const BackButton(),
@@ -310,7 +310,6 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                     return Text(
                       '${snapshot.data + 1}/${widget.assets.length}',
                       style: TextStyle(
-                        color: Colors.grey[200],
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -346,7 +345,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
               height: 32.0,
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               color: provider.isSelectedNotEmpty
-                  ? widget.themeData.buttonColor
+                  ? widget.themeData.colorScheme.secondary
                   : widget.themeData.dividerColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(3.0),
@@ -396,9 +395,11 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                 }
               },
               child: Selector<AssetPickerViewerProvider, List<AssetEntity>>(
-                selector:
-                    (BuildContext _, AssetPickerViewerProvider provider) =>
-                        provider.currentlySelectedAssets,
+                selector: (
+                  BuildContext _,
+                  AssetPickerViewerProvider provider,
+                ) =>
+                    provider.currentlySelectedAssets,
                 builder: (
                   BuildContext _,
                   List<AssetEntity> currentlySelectedAssets,
@@ -432,7 +433,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                         decoration: BoxDecoration(
                           border: isViewing
                               ? Border.all(
-                                  color: widget.themeData.buttonColor,
+                                  color: widget.themeData.colorScheme.secondary,
                                   width: 2.0,
                                 )
                               : null,
@@ -482,7 +483,12 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
       child: Stack(
         children: <Widget>[
           _imagePreviewItem(asset),
-          Center(child: Icon(Icons.video_library)),
+          Center(
+            child: Icon(
+              Icons.video_library,
+              color: Colors.white54,
+            ),
+          ),
         ],
       ),
     );
@@ -609,7 +615,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
         height: Screens.bottomSafeHeight + bottomDetailHeight,
         child: Container(
           padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-          color: widget.themeData.canvasColor.withOpacity(0.95),
+          color: widget.themeData.canvasColor.withOpacity(0.85),
           child: Column(
             children: <Widget>[
               ChangeNotifierProvider<AssetPickerViewerProvider>.value(
@@ -668,7 +674,9 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
       child: Theme(
         data: widget.themeData,
         child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
+          value: widget.themeData.brightness.isDark
+              ? SystemUiOverlayStyle.light
+              : SystemUiOverlayStyle.dark,
           child: Material(
             color: Colors.black,
             child: Stack(

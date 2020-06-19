@@ -143,7 +143,9 @@ class FixedAppBar extends StatelessWidget {
         type: color.isTransparent
             ? MaterialType.transparency
             : MaterialType.canvas,
-        color: (backgroundColor ?? Theme.of(context).primaryColor)
+        color: (backgroundColor ??
+                context.themeData.appBarTheme.color ??
+                context.themeData.primaryColor)
             .withOpacity(blurRadius > 0.0 ? 0.90 : 1.0),
         elevation: elevation ?? context.themeData.appBarTheme.elevation ?? 4.0,
         child: child,

@@ -147,19 +147,22 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoaded
-        ? AudioWidget(
-            audio: audio,
-            play: audioPlayer.isPlaying.value,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                titleWidget,
-                audioControlButton,
-                durationIndicator,
-              ],
-            ),
-          )
-        : const SizedBox.shrink();
+    return ColoredBox(
+      color: context.themeData.backgroundColor,
+      child: isLoaded
+          ? AudioWidget(
+              audio: audio,
+              play: audioPlayer.isPlaying.value,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  titleWidget,
+                  audioControlButton,
+                  durationIndicator,
+                ],
+              ),
+            )
+          : const SizedBox.shrink(),
+    );
   }
 }
