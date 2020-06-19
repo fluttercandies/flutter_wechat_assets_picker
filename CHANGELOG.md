@@ -1,3 +1,7 @@
+# [2.2.1-dev.1]
+
+* Introduce `ColorScheme` for theme details. Fixed #32 .
+
 # [2.2.0+2]
 
 * Remove path entity properties refresh.
