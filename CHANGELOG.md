@@ -1,4 +1,4 @@
-# [2.2.1-dev.2]
+# [2.2.1-dev.3]
 
 * Introduce `ColorScheme` for theme details. Fixed #32 .
 * Enhance RTL compatibility.
