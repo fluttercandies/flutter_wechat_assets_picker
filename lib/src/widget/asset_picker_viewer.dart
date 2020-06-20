@@ -358,8 +358,8 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                     : Constants.textDelegate.confirm,
                 style: TextStyle(
                   color: provider.isSelectedNotEmpty
-                      ? Colors.white
-                      : Colors.grey[600],
+                      ? widget.themeData.textTheme.bodyText1.color
+                      : widget.themeData.textTheme.caption.color,
                   fontSize: 17.0,
                   fontWeight: FontWeight.normal,
                 ),
@@ -437,7 +437,10 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                                   width: 2.0,
                                 )
                               : null,
-                          color: isSelected ? null : Colors.white54,
+                          color: isSelected
+                              ? null
+                              : widget.themeData.colorScheme.surface
+                                  .withOpacity(0.54),
                         ),
                       ),
                     ],
@@ -486,7 +489,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
           Center(
             child: Icon(
               Icons.video_library,
-              color: Colors.white54,
+              color: widget.themeData.colorScheme.surface.withOpacity(0.54),
             ),
           ),
         ],
