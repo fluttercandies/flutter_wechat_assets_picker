@@ -421,7 +421,7 @@ class AssetPicker extends StatelessWidget {
             child: Container(
               width: Screens.width,
               height: maxHeight,
-              decoration: BoxDecoration(color: theme.primaryColor),
+              decoration: BoxDecoration(color: theme.colorScheme.background),
               child: Selector<AssetPickerProvider,
                   Map<AssetPathEntity, Uint8List>>(
                 selector: (BuildContext _, AssetPickerProvider provider) =>
