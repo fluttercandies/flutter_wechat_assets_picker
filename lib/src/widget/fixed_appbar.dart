@@ -176,14 +176,16 @@ class FixedAppBarWrapper extends StatelessWidget {
       type: MaterialType.transparency,
       child: Stack(
         children: <Widget>[
-          Positioned(
+          Positioned.fill(
             top: kToolbarHeight + MediaQuery.of(context).padding.top,
-            left: 0.0,
-            right: 0.0,
-            bottom: 0.0,
             child: body,
           ),
-          Positioned(top: 0.0, left: 0.0, right: 0.0, child: appBar),
+          PositionedDirectional(
+            top: 0.0,
+            start: 0.0,
+            end: 0.0,
+            child: appBar,
+          ),
         ],
       ),
     );
