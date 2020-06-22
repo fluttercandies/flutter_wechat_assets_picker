@@ -1,7 +1,8 @@
-# [2.2.1-dev.3]
+# [2.2.1-dev.4]
 
 * Introduce `ColorScheme` for theme details. Fixed #32 .
 * Enhance RTL compatibility.
+* Enlarge select indicator's size. Related to #33 .
 
 # [2.2.0+2]
 
