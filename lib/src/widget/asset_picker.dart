@@ -686,6 +686,7 @@ class AssetPicker extends StatelessWidget {
           provider.selectedAssets,
       builder: (BuildContext _, List<AssetEntity> selectedAssets, Widget __) {
         final bool selected = selectedAssets.contains(asset);
+        final double indicatorSize = Screens.width / gridCount / 3;
         return Positioned(
           top: 0.0,
           right: 0.0,
@@ -701,33 +702,40 @@ class AssetPicker extends StatelessWidget {
                 provider.selectAsset(asset);
               }
             },
-            child: AnimatedContainer(
-              duration: switchingPathDuration,
-              margin: EdgeInsets.all(isAppleOS ? 10.0 : 6.0),
-              width: isAppleOS ? 28.0 : 20.0,
-              height: isAppleOS ? 28.0 : 20.0,
-              decoration: BoxDecoration(
-                border: !selected
-                    ? Border.all(color: Colors.white, width: 2.0)
-                    : null,
-                color: selected ? themeColor : null,
-                shape: BoxShape.circle,
-              ),
-              child: AnimatedSwitcher(
+            child: Container(
+              margin: EdgeInsets.all(
+                  Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0)),
+              width: indicatorSize,
+              height: indicatorSize,
+              alignment: AlignmentDirectional.topEnd,
+              child: AnimatedContainer(
                 duration: switchingPathDuration,
-                reverseDuration: switchingPathDuration,
-                child: selected
-                    ? isSingleAssetMode
-                        ? Icon(Icons.check, size: 18.0)
-                        : Text(
-                            '${selectedAssets.indexOf(asset) + 1}',
-                            style: TextStyle(
-                              fontSize: isAppleOS ? 16.0 : 14.0,
-                              fontWeight:
-                                  isAppleOS ? FontWeight.w600 : FontWeight.bold,
-                            ),
-                          )
-                    : const SizedBox.shrink(),
+                width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
+                height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
+                decoration: BoxDecoration(
+                  border: !selected
+                      ? Border.all(color: Colors.white, width: 2.0)
+                      : null,
+                  color: selected ? themeColor : null,
+                  shape: BoxShape.circle,
+                ),
+                child: AnimatedSwitcher(
+                  duration: switchingPathDuration,
+                  reverseDuration: switchingPathDuration,
+                  child: selected
+                      ? isSingleAssetMode
+                          ? Icon(Icons.check, size: 18.0)
+                          : Text(
+                              '${selectedAssets.indexOf(asset) + 1}',
+                              style: TextStyle(
+                                fontSize: isAppleOS ? 16.0 : 14.0,
+                                fontWeight: isAppleOS
+                                    ? FontWeight.w600
+                                    : FontWeight.bold,
+                              ),
+                            )
+                      : const SizedBox.shrink(),
+                ),
               ),
             ),
           ),
