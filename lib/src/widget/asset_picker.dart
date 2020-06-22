@@ -735,9 +735,9 @@ class AssetPicker extends StatelessWidget {
                           : Text(
                               '${selectedAssets.indexOf(asset) + 1}',
                               style: TextStyle(
-                              color: selected
-                                  ? theme.textTheme.bodyText1.color
-                                  : null,
+                                color: selected
+                                    ? theme.textTheme.bodyText1.color
+                                    : null,
                                 fontSize: isAppleOS ? 16.0 : 14.0,
                                 fontWeight: isAppleOS
                                     ? FontWeight.w600
