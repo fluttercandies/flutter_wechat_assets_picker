@@ -30,6 +30,7 @@ class AssetPickerViewer extends StatefulWidget {
     @required this.themeData,
     this.selectedAssets,
     this.selectorProvider,
+    this.specialPickerType,
   }) : super(key: key);
 
   /// Current previewing index in assets.
@@ -52,6 +53,13 @@ class AssetPickerViewer extends StatefulWidget {
   /// 主题
   final ThemeData themeData;
 
+  /// The current special picker type for the viewer.
+  /// 当前特殊选择类型
+  ///
+  /// If the type is not null, the title of the viewer will not display.
+  /// 如果类型不为空，则标题将不会显示。
+  final SpecialPickerType specialPickerType;
+
   @override
   AssetPickerViewerState createState() => AssetPickerViewerState();
 
@@ -64,6 +72,7 @@ class AssetPickerViewer extends StatefulWidget {
     @required ThemeData themeData,
     List<AssetEntity> selectedAssets,
     AssetPickerProvider selectorProvider,
+    SpecialPickerType specialPickerType,
   }) async {
     try {
       final Widget viewer = AssetPickerViewer(
@@ -72,6 +81,7 @@ class AssetPickerViewer extends StatefulWidget {
         themeData: themeData,
         selectedAssets: selectedAssets,
         selectorProvider: selectorProvider,
+        specialPickerType: specialPickerType,
       );
       final PageRouteBuilder<List<AssetEntity>> pageRoute =
           PageRouteBuilder<List<AssetEntity>>(
@@ -302,7 +312,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
           child: Row(
             children: <Widget>[
               const BackButton(),
-              if (!isAppleOS)
+              if (!isAppleOS && widget.specialPickerType == null)
                 StreamBuilder<int>(
                   initialData: currentIndex,
                   stream: pageStreamController.stream,
@@ -318,7 +328,9 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                 ),
               const Spacer(),
               if (isAppleOS && provider != null) selectButton,
-              if (!isAppleOS && provider != null) confirmButton(context),
+              if (!isAppleOS && provider != null ||
+                  widget.specialPickerType == SpecialPickerType.wechatMoment)
+                confirmButton(context),
             ],
           ),
         ),
@@ -341,30 +353,61 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
             Widget __,
           ) {
             return MaterialButton(
-              minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
+              minWidth: () {
+                if (widget.specialPickerType ==
+                    SpecialPickerType.wechatMoment) {
+                  return 48.0;
+                }
+                return provider.isSelectedNotEmpty ? 48.0 : 20.0;
+              }(),
               height: 32.0,
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              color: provider.isSelectedNotEmpty
-                  ? widget.themeData.colorScheme.secondary
-                  : widget.themeData.dividerColor,
+              color: () {
+                if (widget.specialPickerType ==
+                    SpecialPickerType.wechatMoment) {
+                  return widget.themeData.colorScheme.secondary;
+                }
+                return provider.isSelectedNotEmpty
+                    ? widget.themeData.colorScheme.secondary
+                    : widget.themeData.dividerColor;
+              }(),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(3.0),
               ),
               child: Text(
-                provider.isSelectedNotEmpty
-                    ? '${Constants.textDelegate.confirm}(${provider.currentlySelectedAssets.length}'
+                () {
+                  if (widget.specialPickerType ==
+                      SpecialPickerType.wechatMoment) {
+                    return Constants.textDelegate.confirm;
+                  }
+                  if (provider.isSelectedNotEmpty) {
+                    return '${Constants.textDelegate.confirm}'
+                        '(${provider.currentlySelectedAssets.length}'
                         '/'
-                        '${widget.selectorProvider.maxAssets})'
-                    : Constants.textDelegate.confirm,
+                        '${widget.selectorProvider.maxAssets})';
+                  }
+                  return Constants.textDelegate.confirm;
+                }(),
                 style: TextStyle(
-                  color: provider.isSelectedNotEmpty
-                      ? widget.themeData.textTheme.bodyText1.color
-                      : widget.themeData.textTheme.caption.color,
+                  color: () {
+                    if (widget.specialPickerType ==
+                        SpecialPickerType.wechatMoment) {
+                      return widget.themeData.textTheme.bodyText1.color;
+                    }
+                    return provider.isSelectedNotEmpty
+                        ? widget.themeData.textTheme.bodyText1.color
+                        : widget.themeData.textTheme.caption.color;
+                  }(),
                   fontSize: 17.0,
                   fontWeight: FontWeight.normal,
                 ),
               ),
               onPressed: () {
+                if (widget.specialPickerType ==
+                    SpecialPickerType.wechatMoment) {
+                  Navigator.of(context).pop(<AssetEntity>[currentAsset]);
+                  return;
+                }
                 if (provider.isSelectedNotEmpty) {
                   Navigator.of(context).pop(provider.currentlySelectedAssets);
                 }

@@ -131,6 +131,23 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
             );
           },
         ),
+        PickMethodModel(
+          icon: '🎭',
+          name: 'Wechat moment',
+          description: 'Pick assets just like the wechat moment pattern.',
+          method: (
+            BuildContext context,
+            List<AssetEntity> assets,
+          ) async {
+            return await AssetPicker.pickAssets(
+              context,
+              maxAssets: maxAssetsCount,
+              selectedAssets: assets,
+              themeColor: themeColor,
+              specialPickerType: SpecialPickerType.wechatMoment,
+            );
+          },
+        ),
       ];
 
   Future<void> selectAssets(PickMethodModel model) async {

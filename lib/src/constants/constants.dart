@@ -11,6 +11,7 @@ export '../delegates/text_delegate.dart';
 
 export 'colors.dart';
 export 'custom_scroll_physics.dart';
+export 'enums.dart';
 
 class Constants {
   const Constants._();

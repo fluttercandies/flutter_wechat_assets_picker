@@ -119,7 +119,7 @@ class _ZoomPageTransitionState extends State<ZoomPageTransition> {
       builder: (BuildContext context, Widget child) {
         if (widget.animation.status == AnimationStatus.forward ||
             _transitionWasInterrupted) {
-          return Container(
+          return ColoredBox(
             color:
                 Colors.black.withOpacity(_forwardScrimOpacityAnimation.value),
             child: FadeTransition(

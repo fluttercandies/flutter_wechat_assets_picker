@@ -7,8 +7,8 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -28,6 +28,7 @@ class AssetPicker extends StatelessWidget {
     int gridCount = 4,
     Color themeColor,
     TextDelegate textDelegate,
+    this.specialPickerType,
   })  : assert(
           provider != null,
           'AssetPickerProvider must be provided and not null.',
@@ -63,6 +64,17 @@ class AssetPicker extends StatelessWidget {
   /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，但某些情况下开发者需要亮色或自定义主题。
   final ThemeData pickerTheme;
 
+  /// The current special picker type for the viewer.
+  /// 当前特殊选择类型
+  ///
+  /// There're several types which are special:
+  /// * [SpecialPickerType.wechatMoment] When user selected video, no more images
+  /// can be selected.
+  ///
+  /// 这里包含一些特殊选择类型：
+  /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
+  final SpecialPickerType specialPickerType;
+
   /// Static method to push with the navigator.
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>> pickAssets(
@@ -72,7 +84,8 @@ class AssetPicker extends StatelessWidget {
     int pageSize = 320,
     int pathThumbSize = 200,
     int gridCount = 4,
-    RequestType requestType = RequestType.image,
+    RequestType requestType,
+    SpecialPickerType specialPickerType,
     List<AssetEntity> selectedAssets,
     Color themeColor,
     ThemeData pickerTheme,
@@ -82,15 +95,32 @@ class AssetPicker extends StatelessWidget {
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
     if (maxAssets == null || maxAssets < 1) {
-      throw ArgumentError('maxAssets must be greater than 1.');
+      throw ArgumentError(
+        'maxAssets must be greater than 1.',
+      );
     }
     if (pageSize != null && pageSize % gridCount != 0) {
-      throw ArgumentError('pageSize must be a multiple of gridCount.');
+      throw ArgumentError(
+        'pageSize must be a multiple of gridCount.',
+      );
     }
     if (pickerTheme != null && themeColor != null) {
       throw ArgumentError(
-          'Theme and theme color cannot be set at the same time.');
+        'Theme and theme color cannot be set at the same time.',
+      );
     }
+    if (specialPickerType != null && requestType != null) {
+      throw ArgumentError(
+        'specialPickerType and requestType cannot be set at the same time.',
+      );
+    } else {
+      if (specialPickerType == SpecialPickerType.wechatMoment) {
+        requestType = RequestType.common;
+      } else {
+        requestType ??= RequestType.image;
+      }
+    }
+
     try {
       final bool isPermissionGranted = await PhotoManager.requestPermission();
       if (isPermissionGranted) {
@@ -110,6 +140,7 @@ class AssetPicker extends StatelessWidget {
           textDelegate: textDelegate,
           themeColor: themeColor,
           pickerTheme: pickerTheme,
+          specialPickerType: specialPickerType,
         );
         final List<AssetEntity> result = await Navigator.of(
           context,
@@ -272,7 +303,7 @@ class AssetPicker extends StatelessWidget {
                       ),
                     Padding(
                       padding: const EdgeInsets.only(left: 5.0),
-                      child: Container(
+                      child: DecoratedBox(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: theme.iconTheme.color.withOpacity(0.5),
@@ -665,13 +696,19 @@ class AssetPicker extends StatelessWidget {
         final bool selected = selectedAssets.contains(asset);
         return Positioned.fill(
           child: GestureDetector(
-            onTap: () {
-              AssetPickerViewer.pushToViewer(
+            onTap: () async {
+              final List<AssetEntity> result =
+                  await AssetPickerViewer.pushToViewer(
                 context,
                 currentIndex: index,
                 assets: provider.currentAssets,
                 themeData: theme,
+                specialPickerType:
+                    asset.type == AssetType.video ? specialPickerType : null,
               );
+              if (result != null) {
+                Navigator.of(context).pop(result);
+              }
             },
             child: AnimatedContainer(
               duration: switchingPathDuration,
@@ -766,7 +803,7 @@ class AssetPicker extends StatelessWidget {
 
   /// [GridView] for assets under [AssetPickerProvider.currentPathEntity].
   /// 正在查看的目录下的资源网格部件
-  Widget assetsGrid(BuildContext context) => Container(
+  Widget assetsGrid(BuildContext context) => ColoredBox(
         color: theme.canvasColor,
         child: Selector<AssetPickerProvider, List<AssetEntity>>(
           selector: (BuildContext _, AssetPickerProvider provider) =>
@@ -811,7 +848,9 @@ class AssetPicker extends StatelessWidget {
                 return Stack(
                   children: <Widget>[
                     builder,
-                    _selectIndicator(asset),
+                    if (specialPickerType != SpecialPickerType.wechatMoment ||
+                        asset.type != AssetType.video)
+                      _selectIndicator(asset),
                   ],
                 );
               },
@@ -876,7 +915,7 @@ class AssetPicker extends StatelessWidget {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = Container(color: const Color(0x10ffffff));
+              loader = const ColoredBox(color: Color(0x10ffffff));
               break;
             case LoadState.completed:
               SpecialImageType type;
