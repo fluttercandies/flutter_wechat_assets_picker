@@ -48,14 +48,14 @@ class AssetPickerViewer extends StatefulWidget {
   /// 资源选择器的状态保持
   final AssetPickerProvider selectorProvider;
 
-  /// Theme for viewer.
+  /// Theme for the viewer.
   /// 主题
   final ThemeData themeData;
 
   @override
   AssetPickerViewerState createState() => AssetPickerViewerState();
 
-  /// Static method to push with navigator.
+  /// Static method to push with the navigator.
   /// 跳转至选择预览的静态方法
   static Future<List<AssetEntity>> pushToViewer(
     BuildContext context, {
@@ -110,7 +110,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// [StreamController] for viewing page index update.
   /// 用于更新当前正在浏览的资源页码的流控制器
   ///
-  /// The main purpose is to narrow down build parts when page index is changing, prevent
+  /// The main purpose is narrow down build parts when page index is changing, prevent
   /// widely [setState] and causing other widgets rebuild.
   /// 使用 [StreamController] 的主要目的是缩小页码变化时构建组件的范围，
   /// 防止滥用 [setState] 导致其他部件重新构建。
@@ -145,11 +145,11 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 当前正在预览的资源索引
   int currentIndex;
 
-  /// Whether detail widgets is displayed.
+  /// Whether detail widgets displayed.
   /// 详情部件是否显示
   bool isDisplayingDetail = true;
 
-  /// Getter for current asset.
+  /// Getter for the current asset.
   /// 当前资源的Getter
   AssetEntity get currentAsset => widget.assets.elementAt(currentIndex);
 
@@ -164,8 +164,8 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   @override
   void initState() {
     super.initState();
-    // TODO(Alex): Currently hide status bar will cause the viewport shaking. So commented out.
 
+    // TODO(Alex): Currently hide status bar will cause the viewport shaking. So commented out.
     /// Hide system status bar automatically on iOS.
     /// 在iOS设备上自动隐藏状态栏
 //    if (Platform.isIOS) {
@@ -327,7 +327,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// Confirm button.
   /// 确认按钮
   ///
-  /// It'll pop with [AssetPickerProvider.selectedAssets] when there're any assets were chosen.
+  /// It'll pop with [AssetPickerProvider.selectedAssets] when there're any assets chosen.
   /// The [PhotoSelector] will recognize and pop too.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   /// 资源选择器将识别并一同返回。
@@ -375,7 +375,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
         ),
       );
 
-  /// Thumb item widget in bottom detail.
+  /// Thumb item widgets in bottom detail.
   /// 底部信息栏单个资源缩略部件
   Widget _bottomDetailItem(BuildContext _, int index) {
     return Padding(
@@ -454,7 +454,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
     );
   }
 
-  /// Preview item widget for audio.
+  /// Preview item widgets for audios.
   /// 音频的底部预览部件
   Widget _audioPreviewItem(AssetEntity asset) {
     return ColoredBox(
@@ -463,7 +463,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
     );
   }
 
-  /// Preview item widget for image.
+  /// Preview item widgets for images.
   /// 音频的底部预览部件
   Widget _imagePreviewItem(AssetEntity asset) {
     return Positioned.fill(
@@ -479,7 +479,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
     );
   }
 
-  /// Preview item widget for video.
+  /// Preview item widgets for video.
   /// 音频的底部预览部件
   Widget _videoPreviewItem(AssetEntity asset) {
     return Positioned.fill(
@@ -660,7 +660,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
         ),
       );
 
-  /// Item widget when [AssetEntity.thumbData] load failed.
+  /// The item widget when [AssetEntity.thumbData] load failed.
   /// 资源缩略数据加载失败时使用的部件
   Widget get _failedItem => Center(
         child: Text(

@@ -34,7 +34,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   /// 创建一个[AssetsAudioPlayer]的实例
   final AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
 
-  /// Whether the audio is loaded.
+  /// Whether the audio loaded.
   /// 音频是否已经加载完成
   bool isLoaded = false;
 
@@ -67,8 +67,8 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
     super.dispose();
   }
 
-  /// Using [audioPlayer] to load content url from asset.
-  /// 使用[audioPlayer]通过content地址加载资源
+  /// Using [audioPlayer] to load content url from the asset.
+  /// 使用 [audioPlayer] 通过content地址加载资源
   Future<void> openAudioFile() async {
     try {
       assetDuration = Duration(seconds: widget.asset.duration);

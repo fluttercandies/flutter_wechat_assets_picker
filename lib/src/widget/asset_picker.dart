@@ -47,23 +47,23 @@ class AssetPicker extends StatelessWidget {
   /// 资源选择器状态保持
   final AssetPickerProvider provider;
 
-  /// Assets count for picker.
+  /// Assets count for the picker.
   /// 资源网格数
   final int gridCount;
 
-  /// Main color for picker.
+  /// Main color for the picker.
   /// 选择器的主题色
   final Color themeColor;
 
   /// Theme for the picker.
   /// 选择器的主题
   ///
-  /// Usually the WeChat uses the dark version (dark background color) for the picker,
-  /// but some developer wants a light theme version for some reasons.
+  /// Usually the WeChat uses the dark version (dark background color) for the picker.
+  /// However, some developer wants a light theme version for some reasons.
   /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，但某些情况下开发者需要亮色或自定义主题。
   final ThemeData pickerTheme;
 
-  /// Static method to push with navigator.
+  /// Static method to push with the navigator.
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>> pickAssets(
     BuildContext context, {
@@ -142,7 +142,7 @@ class AssetPicker extends StatelessWidget {
     }
   }
 
-  /// Unregister observe callback with assets changes.
+  /// Unregister the observation callback with assets changes.
   /// 取消注册资源（图库）变化的监听回调
   static void unregisterObserve([ValueChanged<MethodCall> callback]) {
     try {
@@ -161,7 +161,7 @@ class AssetPicker extends StatelessWidget {
   /// 选择器是否为单选模式
   bool get isSingleAssetMode => provider.maxAssets == 1;
 
-  /// Space between asset item widget.
+  /// Space between assets item widget.
   /// 资源部件之间的间隔
   double get itemSpacing => 2.0;
 
@@ -227,7 +227,7 @@ class AssetPicker extends StatelessWidget {
         ),
       );
 
-  /// [ThemeData] for picker.
+  /// [ThemeData] for the picker.
   /// 选择器使用的主题
   ThemeData get theme => pickerTheme ?? themeData(themeColor);
 
@@ -296,7 +296,7 @@ class AssetPicker extends StatelessWidget {
         ),
       );
 
-  /// Item widget for path entity selector.
+  /// Item widgets for path entity selector.
   /// 路径单独条目选择组件
   Widget pathEntityWidget(AssetPathEntity pathEntity) {
     return Material(
@@ -498,7 +498,7 @@ class AssetPicker extends StatelessWidget {
   /// Confirm button.
   /// 确认按钮
   ///
-  /// It'll pop with [AssetPickerProvider.selectedAssets] when there're any assets were chosen.
+  /// It'll pop with [AssetPickerProvider.selectedAssets] when there're any assets chosen.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   Widget confirmButton(BuildContext context) => Consumer<AssetPickerProvider>(
         builder: (BuildContext _, AssetPickerProvider provider, Widget __) {
@@ -754,7 +754,7 @@ class AssetPicker extends StatelessWidget {
     );
   }
 
-  /// Item widget when [AssetEntity.thumbData] load failed.
+  /// Item widgets when [AssetEntity.thumbData] load failed.
   /// 资源缩略数据加载失败时使用的部件
   Widget get _failedItem => Center(
         child: Text(
@@ -820,7 +820,7 @@ class AssetPicker extends StatelessWidget {
         ),
       );
 
-  /// Item builder for audio type of asset.
+  /// The item builder for audio type of asset.
   /// 音频资源的部件构建
   Widget audioItemBuilder(
     BuildContext context,
@@ -859,7 +859,7 @@ class AssetPicker extends StatelessWidget {
     );
   }
 
-  /// Item builder for image and video type of asset.
+  /// The item builder for images and video type of asset.
   /// 图片和视频资源的部件构建
   Widget imageAndVideoItemBuilder(
     BuildContext context,

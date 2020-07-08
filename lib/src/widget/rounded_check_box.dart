@@ -18,46 +18,7 @@ import 'package:flutter/src/material/theme_data.dart';
 // ignore: implementation_imports
 import 'package:flutter/src/material/toggleable.dart';
 
-/// A material design checkbox.
-///
-/// The checkbox itself does not maintain any state. Instead, when the state of
-/// the checkbox changes, the widget calls the [onChanged] callback. Most
-/// widgets that use a checkbox will listen for the [onChanged] callback and
-/// rebuild the checkbox with a new [value] to update the visual appearance of
-/// the checkbox.
-///
-/// The checkbox can optionally display three values - true, false, and null -
-/// if [tristate] is true. When [value] is null a dash is displayed. By default
-/// [tristate] is false and the checkbox's [value] must be true or false.
-///
-/// Requires one of its ancestors to be a [Material] widget.
-///
-/// See also:
-///
-///  * [CheckboxListTile], which combines this widget with a [ListTile] so that
-///    you can give the checkbox a label.
-///  * [Switch], a widget with semantics similar to [Checkbox].
-///  * [Radio], for selecting among a set of explicit values.
-///  * [Slider], for selecting a value in a range.
-///  * <https://material.io/design/components/selection-controls.html#checkboxes>
-///  * <https://material.io/design/components/lists.html#types>
 class RoundedCheckbox extends StatefulWidget {
-  /// Creates a material design checkbox.
-  ///
-  /// The checkbox itself does not maintain any state. Instead, when the state of
-  /// the checkbox changes, the widget calls the [onChanged] callback. Most
-  /// widgets that use a checkbox will listen for the [onChanged] callback and
-  /// rebuild the checkbox with a new [value] to update the visual appearance of
-  /// the checkbox.
-  ///
-  /// The following arguments are required:
-  ///
-  /// * [value], which determines whether the checkbox is checked. The [value]
-  ///   can only be null if [tristate] is true.
-  /// * [onChanged], which is called when the value of the checkbox should
-  ///   change. It can be set to null to disable the checkbox.
-  ///
-  /// The value of [tristate] must not be null.
   const RoundedCheckbox({
     Key key,
     @required this.value,
@@ -71,77 +32,20 @@ class RoundedCheckbox extends StatefulWidget {
         assert(tristate || value != null),
         super(key: key);
 
-  /// Whether this checkbox is checked.
-  ///
-  /// This property must not be null.
   final bool value;
 
-  /// Called when the value of the checkbox should change.
-  ///
-  /// The checkbox passes the new value to the callback but does not actually
-  /// change state until the parent widget rebuilds the checkbox with the new
-  /// value.
-  ///
-  /// If this callback is null, the checkbox will be displayed as disabled
-  /// and will not respond to input gestures.
-  ///
-  /// When the checkbox is tapped, if [tristate] is false (the default) then
-  /// the [onChanged] callback will be applied to `!value`. If [tristate] is
-  /// true this callback cycle from false to true to null.
-  ///
-  /// The callback provided to [onChanged] should update the state of the parent
-  /// [StatefulWidget] using the [State.setState] method, so that the parent
-  /// gets rebuilt; for example:
-  ///
-  /// ```dart
-  /// Checkbox(
-  ///   value: _throwShotAway,
-  ///   onChanged: (bool newValue) {
-  ///     setState(() {
-  ///       _throwShotAway = newValue;
-  ///     });
-  ///   },
-  /// )
-  /// ```
   final ValueChanged<bool> onChanged;
 
-  /// The color to use when this checkbox is checked.
-  ///
-  /// Defaults to [ThemeData.toggleableActiveColor].
   final Color activeColor;
 
-  /// The color to use when this checkbox is unchecked.
-  ///
-  /// Defaults to [ThemeData.unselectedWidgetColor].
   final Color inactiveColor;
 
-  /// The color to use for the check icon when this checkbox is checked
-  ///
-  /// Defaults to Color(0xFFFFFFFF)
   final Color checkColor;
 
-  /// If true the checkbox's [value] can be true, false, or null.
-  ///
-  /// Checkbox displays a dash when its value is null.
-  ///
-  /// When a tri-state checkbox is tapped its [onChanged] callback will be
-  /// applied to true if the current value is null or false, false otherwise.
-  /// Typically tri-state checkboxes are disabled (the onChanged callback is
-  /// null) so they don't respond to taps.
-  ///
-  /// If tristate is false (the default), [value] must not be null.
   final bool tristate;
 
-  /// Configures the minimum size of the tap target.
-  ///
-  /// Defaults to [ThemeData.materialTapTargetSize].
-  ///
-  /// See also:
-  ///
-  ///  * [MaterialTapTargetSize], for a description of how this affects tap targets.
   final MaterialTapTargetSize materialTapTargetSize;
 
-  /// The width of a checkbox widget.
   static const double width = 18.0;
 
   @override
@@ -277,10 +181,6 @@ class _RenderCheckbox extends RenderToggleable {
     config.isChecked = value == true;
   }
 
-  // The square outer bounds of the checkbox at t, with the specified origin.
-  // At t == 0.0, the outer rect's size is _kEdgeSize (Checkbox.width)
-  // At t == 0.5, .. is _kEdgeSize - _kStrokeWidth
-  // At t == 1.0, .. is _kEdgeSize
   RRect _outerRectAt(Offset origin, double t) {
     final double inset = 1.0 - (t - 0.5).abs() * 2.0;
     final double size = _kEdgeSize - inset * _kStrokeWidth;
@@ -289,10 +189,7 @@ class _RenderCheckbox extends RenderToggleable {
     return RRect.fromRectAndRadius(rect, _kEdgeRadius);
   }
 
-  // The checkbox's border color if value == false, or its fill color when
-  // value == true or null.
   Color _colorAt(double t) {
-    // As t goes from 0.0 to 0.25, animate from the inactiveColor to activeColor.
     return onChanged == null
         ? inactiveColor
         : (t >= 0.25
@@ -300,7 +197,6 @@ class _RenderCheckbox extends RenderToggleable {
             : Color.lerp(inactiveColor, activeColor, t * 4.0));
   }
 
-  // White stroke used to paint the check and dash.
   void _initStrokePaint(Paint paint) {
     paint
       ..color = checkColor
@@ -311,7 +207,6 @@ class _RenderCheckbox extends RenderToggleable {
   void _drawBorder(Canvas canvas, RRect outer, double t, Paint paint) {
     assert(t >= 0.0 && t <= 0.5);
     final double size = outer.width;
-    // As t goes from 0.0 to 1.0, gradually fill the outer RRect.
     final RRect inner =
         outer.deflate(math.min(size / 2.0, _kStrokeWidth + size * t));
     canvas.drawDRRect(outer, inner, paint);
@@ -319,8 +214,6 @@ class _RenderCheckbox extends RenderToggleable {
 
   void _drawCheck(Canvas canvas, Offset origin, double t, Paint paint) {
     assert(t >= 0.0 && t <= 1.0);
-    // As t goes from 0.0 to 1.0, animate the two check mark strokes from the
-    // short side to the long side.
     final Path path = Path();
     const Offset start = Offset(_kEdgeSize * 0.15, _kEdgeSize * 0.45);
     const Offset mid = Offset(_kEdgeSize * 0.4, _kEdgeSize * 0.7);
@@ -342,8 +235,6 @@ class _RenderCheckbox extends RenderToggleable {
 
   void _drawDash(Canvas canvas, Offset origin, double t, Paint paint) {
     assert(t >= 0.0 && t <= 1.0);
-    // As t goes from 0.0 to 1.0, animate the horizontal line from the
-    // mid point outwards.
     const Offset start = Offset(_kEdgeSize * 0.2, _kEdgeSize * 0.5);
     const Offset mid = Offset(_kEdgeSize * 0.5, _kEdgeSize * 0.5);
     const Offset end = Offset(_kEdgeSize * 0.8, _kEdgeSize * 0.5);
@@ -365,7 +256,6 @@ class _RenderCheckbox extends RenderToggleable {
             ? position.value
             : 1.0 - position.value;
 
-    // Four cases: false to null, false to true, null to false, true to false
     if (_oldValue == false || value == false) {
       final double t = value == false ? 1.0 - tNormalized : tNormalized;
       final RRect outer = _outerRectAt(origin, t);
@@ -385,7 +275,6 @@ class _RenderCheckbox extends RenderToggleable {
         }
       }
     } else {
-      // Two cases: null to true, true to null
       final RRect outer = _outerRectAt(origin, 1.0);
       final Paint paint = Paint()..color = _colorAt(1.0);
       canvas.drawRRect(outer, paint);

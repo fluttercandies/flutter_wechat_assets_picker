@@ -14,7 +14,7 @@ class AssetPickerViewerProvider extends ChangeNotifier {
     _currentlySelectedAssets = List<AssetEntity>.from(assets);
   }
 
-  /// Selected assets in viewer.
+  /// Selected assets in the viewer.
   /// 查看器中已选择的资源
   List<AssetEntity> _currentlySelectedAssets;
 

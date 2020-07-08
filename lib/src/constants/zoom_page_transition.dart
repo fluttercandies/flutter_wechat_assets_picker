@@ -4,8 +4,7 @@
 ///
 import 'package:flutter/material.dart';
 
-// Zooms and fades a new page in, zooming out the previous page. This transition
-// is designed to match the Android 10 activity transition.
+// TODO(Alex): Implement new transition after the new one released.
 class ZoomPageTransition extends StatefulWidget {
   const ZoomPageTransition({
     Key key,
@@ -14,14 +13,11 @@ class ZoomPageTransition extends StatefulWidget {
     this.child,
   }) : super(key: key);
 
-  // The scrim obscures the old page by becoming increasingly opaque.
   static final Tween<double> _scrimOpacityTween = Tween<double>(
     begin: 0.0,
     end: 0.60,
   );
 
-  // A curve sequence that is similar to the 'fastOutExtraSlowIn' curve used in
-  // the native transition.
   static final List<TweenSequenceItem<double>>
       fastOutExtraSlowInTweenSequenceItems = <TweenSequenceItem<double>>[
     TweenSequenceItem<double>(
@@ -61,10 +57,6 @@ class _ZoomPageTransitionState extends State<ZoomPageTransition> {
     });
   }
 
-  // This check ensures that the animation reverses the original animation if
-  // the transition were interruped midway. This prevents a disjointed
-  // experience since the reverse animation uses different fade and scaling
-  // curves.
   bool get _transitionWasInterrupted {
     bool wasInProgress = false;
     bool isInProgress = false;

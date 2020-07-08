@@ -24,7 +24,7 @@ class VideoPageBuilder extends StatefulWidget {
 }
 
 class _VideoPageBuilderState extends State<VideoPageBuilder> {
-  /// Controller for video player.
+  /// Controller for the video player.
   /// 视频播放的控制器
   VideoPlayerController _controller;
 
@@ -56,7 +56,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
     super.dispose();
   }
 
-  /// Get media url from asset, then initialize the controller and add with listener.
+  /// Get media url from the asset, then initialize the controller and add with a listener.
   /// 从资源获取媒体url后初始化，并添加监听。
   Future<void> initializeVideoPlayerController() async {
     final String url = await widget.asset.getMediaUrl();
@@ -91,8 +91,8 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   /// Callback for the play button.
   /// 播放按钮的回调
   ///
-  /// Normally it only switch play state for the player. If the video reaches the end, then click
-  /// the button will make the video replay.
+  /// Normally it only switches play state for the player. If the video reaches the end,
+  /// then click the button will make the video replay.
   /// 一般来说按钮只切换播放暂停。当视频播放结束时，点击按钮将从头开始播放。
   Future<void> playButtonCallback() async {
     if (_controller.value != null) {

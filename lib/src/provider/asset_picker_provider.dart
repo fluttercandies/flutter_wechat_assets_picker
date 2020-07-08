@@ -69,7 +69,7 @@ class AssetPickerProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  /// Whether there's any assets on the devices.
+  /// Whether there're any assets on the devices.
   /// 设备上是否有资源文件
   bool _isAssetsEmpty = false;
 
@@ -83,7 +83,7 @@ class AssetPickerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Whether there's any assets that can be displayed.
+  /// Whether there're any assets that can be displayed.
   /// 是否有资源可供显示
   bool _hasAssetsToDisplay = false;
 
@@ -98,11 +98,11 @@ class AssetPickerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Whether there's more assets waiting for load.
+  /// Whether there're more assets waiting for load.
   /// 是否还有更多资源可以加载
   bool get hasMoreToLoad => _currentAssets.length < _totalAssetsCount;
 
-  /// Current page for assets list.
+  /// The current page for assets list.
   /// 当前加载的资源列表分页数
   int get currentAssetsListPage =>
       (math.max(1, _currentAssets.length) / pageSize).ceil();
@@ -122,7 +122,7 @@ class AssetPickerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// If path switcher was opened.
+  /// If path switcher opened.
   /// 是否正在进行路径选择
   bool _isSwitchingPath = false;
 
@@ -200,7 +200,7 @@ class AssetPickerProvider extends ChangeNotifier {
   Future<void> getAssetPathList() async {
     final List<AssetPathEntity> _list = await PhotoManager.getAssetPathList(
       type: requestType,
-      // Enable need title for audio and image to get proper display.
+      // Enable need title for audios and image to get proper display.
       filterOption: FilterOptionGroup()
         ..setOption(
           AssetType.audio,
