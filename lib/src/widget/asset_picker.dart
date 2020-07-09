@@ -29,6 +29,8 @@ class AssetPicker extends StatelessWidget {
     Color themeColor,
     TextDelegate textDelegate,
     this.specialPickerType,
+    this.customItemPosition = CustomItemPosition.none,
+    this.customItemBuilder,
   })  : assert(
           provider != null,
           'AssetPickerProvider must be provided and not null.',
@@ -75,6 +77,14 @@ class AssetPicker extends StatelessWidget {
   /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
   final SpecialPickerType specialPickerType;
 
+  /// Allow users set custom item in the picker.
+  /// 允许用户在选择器中添加一个自定义item，并指定位置。
+  final CustomItemPosition customItemPosition;
+
+  /// The widget builder for the custom item.
+  /// 自定义item的构造方法
+  final WidgetBuilder customItemBuilder;
+
   /// Static method to push with the navigator.
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>> pickAssets(
@@ -91,6 +101,8 @@ class AssetPicker extends StatelessWidget {
     ThemeData pickerTheme,
     SortPathDelegate sortPathDelegate,
     TextDelegate textDelegate,
+    WidgetBuilder customItemBuilder,
+    CustomItemPosition customItemPosition = CustomItemPosition.none,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
@@ -120,6 +132,12 @@ class AssetPicker extends StatelessWidget {
         requestType ??= RequestType.image;
       }
     }
+    if ((customItemBuilder == null &&
+            customItemPosition != CustomItemPosition.none) ||
+        (customItemBuilder != null &&
+            customItemPosition == CustomItemPosition.none)) {
+      throw ArgumentError('Custom item didn\'t set properly.');
+    }
 
     try {
       final bool isPermissionGranted = await PhotoManager.requestPermission();
@@ -141,6 +159,8 @@ class AssetPicker extends StatelessWidget {
           themeColor: themeColor,
           pickerTheme: pickerTheme,
           specialPickerType: specialPickerType,
+          customItemPosition: customItemPosition,
+          customItemBuilder: customItemBuilder,
         );
         final List<AssetEntity> result = await Navigator.of(
           context,
@@ -602,6 +622,10 @@ class AssetPicker extends StatelessWidget {
                   fontSize: isAppleOS ? 14.0 : 12.0,
                   fontWeight: isAppleOS ? FontWeight.w500 : FontWeight.normal,
                 ),
+                strutStyle: const StrutStyle(
+                  forceStrutHeight: true,
+                  height: 1.0,
+                ),
               ),
             ),
           ),
@@ -658,6 +682,7 @@ class AssetPicker extends StatelessWidget {
           ),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const Icon(
               Icons.videocam,
@@ -673,6 +698,10 @@ class AssetPicker extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16.0,
+                ),
+                strutStyle: const StrutStyle(
+                  forceStrutHeight: true,
+                  height: 1.4,
                 ),
               ),
             ),
@@ -825,39 +854,121 @@ class AssetPicker extends StatelessWidget {
                 mainAxisSpacing: itemSpacing,
                 crossAxisSpacing: itemSpacing,
               ),
-              itemCount: currentAssets.length,
+              itemCount: _assetsGridItemCount(_, currentAssets),
               itemBuilder: (BuildContext _, int index) {
-                if (index == currentAssets.length - gridCount * 3 &&
-                    _.read<AssetPickerProvider>().hasMoreToLoad) {
-                  provider.loadMoreAssets();
-                }
-                final AssetEntity asset = currentAssets.elementAt(index);
-                Widget builder;
-                switch (asset.type) {
-                  case AssetType.audio:
-                    builder = audioItemBuilder(context, index, asset);
-                    break;
-                  case AssetType.image:
-                  case AssetType.video:
-                    builder = imageAndVideoItemBuilder(context, index, asset);
-                    break;
-                  case AssetType.other:
-                    builder = const SizedBox.shrink();
-                    break;
-                }
-                return Stack(
-                  children: <Widget>[
-                    builder,
-                    if (specialPickerType != SpecialPickerType.wechatMoment ||
-                        asset.type != AssetType.video)
-                      _selectIndicator(asset),
-                  ],
-                );
+                return _assetGridItemBuilder(_, index, currentAssets);
               },
             );
           },
         ),
       );
+
+  /// The function which return items count for the assets' grid.
+  /// 为资源列表提供内容数量计算的方法
+  int _assetsGridItemCount(
+    BuildContext context,
+    List<AssetEntity> currentAssets,
+  ) {
+    final AssetPathEntity currentPath = Provider.of<AssetPickerProvider>(
+      context,
+      listen: false,
+    ).currentPathEntity;
+
+    /// Return actual length if current path is all.
+    /// 如果当前目录是全部内容，则返回实际的内容数量。
+    if (!currentPath.isAll) {
+      return currentAssets.length;
+    }
+    int length;
+    switch (customItemPosition) {
+      case CustomItemPosition.none:
+        length = currentAssets.length;
+        break;
+      case CustomItemPosition.prepend:
+      case CustomItemPosition.append:
+        length = currentAssets.length + 1;
+        break;
+    }
+    return length;
+  }
+
+  /// The item builder for the assets' grid.
+  /// 资源列表项的构建
+  ///
+  /// There're several conditions within this builder:
+  /// * Return [customItemBuilder] while the current path is all and [customItemPosition]
+  ///   is not equal to [CustomItemPosition.none].
+  /// * Return item builder according to the asset's type.
+  ///   * [AssetType.audio] -> [audioItemBuilder]
+  ///   * [AssetType.image], [AssetType.video] -> [imageAndVideoItemBuilder]
+  /// * Load more assets when the index reached at third line counting backwards.
+  /// 资源构建有几个条件：
+  /// * 当前路径是全部资源且 [customItemPosition] 不等于 [CustomItemPosition.none] 时，将会通过
+  ///   [customItemBuilder] 构建内容。
+  /// * 根据资源类型返回对应类型的构建：
+  ///   * [AssetType.audio] -> [audioItemBuilder] 音频类型
+  ///   * [AssetType.image], [AssetType.video] -> [imageAndVideoItemBuilder] 图片和视频类型
+  /// * 在索引到达倒数第三列的时候加载更多资源。
+  Widget _assetGridItemBuilder(
+    BuildContext context,
+    int index,
+    List<AssetEntity> currentAssets,
+  ) {
+    final AssetPathEntity currentPath = Provider.of<AssetPickerProvider>(
+      context,
+      listen: false,
+    ).currentPathEntity;
+
+    int currentIndex;
+    switch (customItemPosition) {
+      case CustomItemPosition.none:
+      case CustomItemPosition.append:
+        currentIndex = index;
+        break;
+      case CustomItemPosition.prepend:
+        currentIndex = index - 1;
+        break;
+    }
+    if (!currentPath.isAll) {
+      currentIndex = index;
+    }
+
+    if (index == currentAssets.length - gridCount * 3 &&
+        context.read<AssetPickerProvider>().hasMoreToLoad) {
+      provider.loadMoreAssets();
+    }
+
+    if (currentPath.isAll) {
+      if ((index == currentAssets.length &&
+              customItemPosition == CustomItemPosition.append) ||
+          (index == 0 && customItemPosition == CustomItemPosition.prepend)) {
+        return customItemBuilder(context);
+      }
+    }
+
+    final AssetEntity asset = currentAssets.elementAt(currentIndex);
+    Widget builder;
+    switch (asset.type) {
+      case AssetType.audio:
+        builder = audioItemBuilder(context, currentIndex, asset);
+        break;
+      case AssetType.image:
+      case AssetType.video:
+        builder = imageAndVideoItemBuilder(context, currentIndex, asset);
+        break;
+      case AssetType.other:
+        builder = const SizedBox.shrink();
+        break;
+    }
+    return Stack(
+      children: <Widget>[
+        builder,
+        if (specialPickerType != SpecialPickerType.wechatMoment ||
+            asset.type != AssetType.video)
+          _selectIndicator(asset),
+      ],
+    );
+  }
 
   /// The item builder for audio type of asset.
   /// 音频资源的部件构建

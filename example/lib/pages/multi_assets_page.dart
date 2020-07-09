@@ -131,6 +131,27 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
             );
           },
         ),
+        PickMethodModel(
+          icon: '➕',
+          name: 'Prepend custom item',
+          description: 'An custom item will prepend to the assets grid.',
+          method: (
+            BuildContext context,
+            List<AssetEntity> assets,
+          ) async {
+            return await AssetPicker.pickAssets(
+              context,
+              maxAssets: maxAssetsCount,
+              selectedAssets: assets,
+              themeColor: themeColor,
+              requestType: RequestType.common,
+              customItemPosition: CustomItemPosition.append,
+              customItemBuilder: (BuildContext context) {
+                return const Center(child: Text('Custom Widget'));
+              },
+            );
+          },
+        ),
       ];
 
   Future<void> selectAssets(PickMethodModel model) async {
