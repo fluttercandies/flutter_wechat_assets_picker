@@ -13,17 +13,19 @@ Language: [English](README.md) | 中文简体
 
 ## 目录 🗂
 
-* [特性](#特性-)
-* [截图](#截图-)
-* [准备工作](#准备工作-)
+* [特性 ✨](#特性-✨)
+* [截图 📸](#截图-📸)
+* [准备工作 🍭](#准备工作-🍭)
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
-* [使用方法](#使用方法-)
+* [使用方法 📖](#使用方法-📖)
   * [简单的使用方法](#简单的使用方法)
   * [完整参数的使用方法](#完整参数的使用方法)
   * [注册资源变化回调](#注册资源变化回调)
-* [常见问题](#常见问题)
+* [类介绍 💭](#类介绍-💭)
+  * [`AssetEntity`](#assetentity)
+* [常见问题 ❔](#常见问题-❔)
   * [从`File`或`Uint8List`创建`AssetEntity`的方法](#从file或uint8list创建assetentity的方法)
   * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
 
@@ -48,7 +50,7 @@ Language: [English](README.md) | 中文简体
 | ![4](screenshots/4.jpg) | ![5](screenshots/5.jpg) | ![6](screenshots/6.jpg) |
 | ![7](screenshots/7.jpg) | ![8](screenshots/8.jpg) | ![9](screenshots/9.jpg) |
 
-## 开始前的注意事项
+## 开始前的注意事项 ‼️
 
 尽管该库提供了资源的选择，其仍然要求使用者构建自己的方法来处理显示、上传等操作。如果你在使用该库的过程对某些方法或API有疑问，请运行demo并查看[photo_manager](https://github.com/CaiJingLong/flutter_photo_manager)对相关方法的使用说明。
 
@@ -142,11 +144,14 @@ rootProject.allprojects {
 | pathThumbSize | `int`              | 选择器的缩略图大小                      | 80                  |
 | gridCount      | `int`              | 选择器网格数量                        | 4                   |
 | requestType    | `RequestType`      | 选择器选择资源的类型                    | `RequestType.image` |
+| specialPickerType | `SpecialPickerType` | 提供一些特殊的选择器类型以整合非常规的选择行为 | `null` |
 | selectedAssets | `List<AssetEntity>` | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
 | themeColor     | `Color`            | 选择器的主题色  | `Color(0xff00bc56)` |
 | pickerTheme | `ThemeData` | 选择器的主题提供，包括查看器 | `null` |
 | sortPathDelegate | `SortPathDeleage` | 资源路径的排序实现，可自定义路径排序方法 | `CommonSortPathDelegate` |
 | textDelegate | `TextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
+| customItemBuilder | `WidgetBuilder` | 自定义item的构造方法 | `null` |
+| customItemPosition | `CustomItemPosition` | 允许用户在选择器中添加一个自定义item，并指定位置。 | `CustomItemPosition.none` |
 | routeCurve | `Curve` | 选择构造路由动画的曲线 | `Curves.easeIn` |
 | routeDuration | `Duration` | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
 
@@ -166,49 +171,7 @@ AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
 
 ### 完整参数的使用方法
 
-```dart
-List<AssetEntity> assets = <AssetEntity>[];
-
-final List<AssetEntity> result = await AssetPicker.pickAssets(
-  context,
-  maxAssets: 9,
-  pageSize: 320,
-  pathThumbSize: 80,
-  gridCount: 4,
-  requestType: RequestType.image,
-  selectedAssets: assets,
-  themeColor: Colors.cyan,
-  pickerTheme: ThemeData.dark(), // 不能跟`themeColor`同时设置
-  textDelegate: DefaultTextDelegate(),
-  sortPathDelegate: CommonSortPathDelegate(),
-  routeCurve: Curves.easeIn,
-  routeDuration: const Duration(milliseconds: 500),
-);
-```
-
-或者
-
-```dart
-List<AssetEntity> assets = <AssetEntity>[];
-
-AssetPicker.pickAssets(
-  context,
-  maxAssets: 9,
-  pageSize: 320,
-  pathThumbSize: 80,
-  gridCount: 4,
-  requestType: RequestType.image,
-  selectedAssets: assets,
-  themeColor: Colors.cyan,
-  pickerTheme: ThemeData.dark(), // 不能跟`themeColor`同时设置
-  textDelegate: DefaultTextDelegate(),
-  sortPathDelegate: CommonSortPathDelegate(),
-  routeCurve: Curves.easeIn,
-  routeDuration: const Duration(milliseconds: 500),
-).then((List<AssetEntity> assets) {
-  /.../
-});
-```
+欲了解各种选择器模式，请直接运行 example 查看。
 
 ### 注册资源变化回调
 ```dart
@@ -218,7 +181,95 @@ AssetPicker.registerObserve(); // 注册回调
 AssetPicker.unregisterObserve(); // 取消注册回调
 ```
 
-## 常见问题
+## 类介绍 💭
+
+### `AssetEntity`
+
+```dart
+/// Android: Database _id column
+/// iOS    : `PhotoKit > PHObject > localIdentifier`
+String id;
+
+/// Android: `MediaStore.MediaColumns.DISPLAY_NAME`
+/// iOS    : `PHAssetResource.filename`. Nullable
+/// If you must need it, See [FilterOption.needTitle] or use [titleAsync].
+String title;
+
+/// Android: title
+/// iOS    : [PHAsset valueForKey:@"filename"]
+Future<String> get titleAsync;
+
+/// * 1: [AssetType.image]
+/// * 2: [AssetType.video]
+/// * 3: [AssetType.audio]
+/// * default: [AssetType.other]
+AssetType get type;
+
+/// Asset type int value.
+int typeInt;
+
+/// Duration of video, the unit is second.
+/// If [type] is [AssetType.image], then it's value is 0.
+/// See also: [videoDuration].
+int duration;
+
+/// Width of the asset.
+int width;
+
+/// Height of the asset.
+int height;
+
+/// Location information when shooting. Nullable.
+/// When the device is Android 10 or above, it's ALWAYS null.
+/// See also: [longitude].
+double get latitude => _latitude ?? 0;
+/// Also with a setter.
+
+/// Get lat/lng from `MediaStore`(Android) / `Photos`(iOS).
+/// In Android Q, this comes from EXIF.
+Future<LatLng> latlngAsync();
+
+/// Get [File] object.
+/// Notice that this is not the origin file, so when it comes to some
+/// scene like reading a GIF's file, please use `originFile`, or you'll
+/// get a JPG.
+Future<File> get file async;
+
+/// Get the original [File] object.
+Future<File> get originFile async;
+
+/// The raw data for the entity, it may be large.
+/// This property is NOT RECOMMENDED for video assets.
+Future<Uint8List> get originBytes;
+
+/// The thumbnail data for the entity. Usually use for displaying a thumbnail image widget.
+Future<Uint8List> get thumbData;
+
+/// Get thumbnail data with specific size.
+Future<Uint8List> thumbDataWithSize(
+  int width,
+  int height, {
+  ThumbFormat format = ThumbFormat.jpeg,
+  int quality = 100,
+});
+
+/// Get the asset's size. Nullable if the manager is null,
+Size get size;
+
+/// If the asset is deleted, return false.
+Future<bool> get exists => PhotoManager._assetExistsWithId(id);
+
+/// The url is provided to some video player. Such as [flutter_ijkplayer](https://pub.dev/packages/flutter_ijkplayer)
+///
+/// Android: `content://media/external/video/media/894857`
+/// iOS    : `file:///var/mobile/Media/DCIM/118APPLE/IMG_8371.MOV` in iOS.
+Future<String> getMediaUrl();
+
+/// Refresh the properties for the entity.
+Future<AssetEntity> refreshProperties() async;
+```
+
+## 常见问题 ❔
 
 ### 从`File`或`Uint8List`创建`AssetEntity`的方法
 

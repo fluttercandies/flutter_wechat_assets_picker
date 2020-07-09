@@ -66,7 +66,7 @@ class AssetPicker extends StatelessWidget {
   /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，但某些情况下开发者需要亮色或自定义主题。
   final ThemeData pickerTheme;
 
-  /// The current special picker type for the viewer.
+  /// The current special picker type for the picker.
   /// 当前特殊选择类型
   ///
   /// There're several types which are special:
@@ -77,13 +77,13 @@ class AssetPicker extends StatelessWidget {
   /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
   final SpecialPickerType specialPickerType;
 
-  /// Allow users set custom item in the picker.
-  /// 允许用户在选择器中添加一个自定义item，并指定位置。
-  final CustomItemPosition customItemPosition;
-
   /// The widget builder for the custom item.
   /// 自定义item的构造方法
   final WidgetBuilder customItemBuilder;
+
+  /// Allow users set custom item in the picker with several positions.
+  /// 允许用户在选择器中添加一个自定义item，并指定位置。
+  final CustomItemPosition customItemPosition;
 
   /// Static method to push with the navigator.
   /// 跳转至选择器的静态方法
@@ -902,6 +902,7 @@ class AssetPicker extends StatelessWidget {
   ///   * [AssetType.audio] -> [audioItemBuilder]
   ///   * [AssetType.image], [AssetType.video] -> [imageAndVideoItemBuilder]
   /// * Load more assets when the index reached at third line counting backwards.
+  ///
   /// 资源构建有几个条件：
   /// * 当前路径是全部资源且 [customItemPosition] 不等于 [CustomItemPosition.none] 时，将会通过
   ///   [customItemBuilder] 构建内容。

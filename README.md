@@ -3,7 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
+[![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_wechat_assets_picker?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_wechat_assets_picker)
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/master/LICENSE)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
@@ -13,17 +13,19 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 
 ## Category 🗂
 
-* [Features](#features-)
-* [Screenshots](#screenshots-)
-* [Preparing for use](#preparing-for-use-)
+* [Features ✨](#features-✨)
+* [Screenshots 📸](#screenshots-📸)
+* [Preparing for use 🍭](#preparing-for-use-🍭)
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
-* [Usage](#usage-)
+* [Usage 📖](#usage-📖)
   * [Simple usage](#simple-usage)
   * [Complete param usage](#complete-param-usage)
   * [Register assets change observe callback](#register-assets-change-observe-callback)
-* [Frequent asked questions](#frequent-asked-question)
+* [Classes Introduction 💭](#classes-introduction-💭)
+  * [`AssetEntity`](#assetentity)
+* [Frequent asked question ❔](#frequent-asked-question-❔)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
 
@@ -36,6 +38,7 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 - [x] 🎶 Audio asset support
 - [x] 1️⃣ Single asset mode
 - [x] 💱 i18n support
+- [x] ➕ Custom item builder (prepend/append) support
 - [x] 🗂 Custom sort path delegate support
 - [x] 📝 Custom text delegate support
 - [x] 🎏 Custom theme entirely
@@ -48,7 +51,7 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 | ![4](screenshots/4.jpg) | ![5](screenshots/5.jpg) | ![6](screenshots/6.jpg) |
 | ![7](screenshots/7.jpg) | ![8](screenshots/8.jpg) | ![9](screenshots/9.jpg) |
 
-## READ THIS FIRST
+## READ THIS FIRST ‼️
 
 Althought the package provide selection for assets, it still require users build their own methods to handle display/upload, etc. If you have any question about how to build it, please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
 
@@ -68,10 +71,13 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-You need at lease three permissions: `INTERNET` `READ_EXTERNAL_STORAGE` `WRITE_EXTERNAL_STORAGE`.
+Package required you upgrade your flutter project's Android part to v2 embedding, for further information, check [Upgrading pre 1.12 Android projects](https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects)
 
-If you found some warning logs appearing, then the main project needs implementation of `AppGlideModule`. For example:
+Required permissions: `INTERNET`, `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`.
+
+If you found some warning logs with `Glide` appearing, then the main project needs an implementation of `AppGlideModule`. For example:
 `example/android/app/build.gradle`:
+
 ```gradle
   apply plugin: 'com.android.application'
   apply plugin: 'kotlin-android'
@@ -116,6 +122,11 @@ rootProject.allprojects {
 
 ### iOS
 
+Define the minimum platform in `ios/Podfile` upper to *9.0*.
+```
+platform :ios, '9.0'
+```
+
 Add following content to `info.plist`.
 
 ```
@@ -139,12 +150,15 @@ Add following content to `info.plist`.
 | pageSize       | `int`               | Assets amount when assets loaded with paging. **Must be a multiple of `gridCount`.** Nullable for non paging. | 320 (80 * 4)                        |
 | pathThumbSize  | `int`               | The size of thumb data in picker.                            | 80                                  |
 | gridCount      | `int`               | Grid count in picker.                                        | 4                                   |
-| requestType    | `RequestType`       | Request type for picker.                                     | RequestType.image                   |
+| requestType    | `RequestType`       | Request type for picker.                                     | `RequestType.image`                 |
+| specialPickerType | `SpacialPickerType` | Provide some special picker types to integrate un-common pick pattern. | `null` |
 | selectedAssets | `List<AssetEntity>` | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
 | themeColor     | `Color`             | Main theme color for the picker                              | `Color(0xff00bc56)`                 |
 | pickerTheme    | `ThemeData`         | Theme data provider for the picker and the viewer.           | `null`                              |
 | sortPathDelegate | `SortPathDeleage` | Path entities sort delegate for the picker, sort paths as you want. | `CommonSortPathDelegate` |
 | textDelegate   | `TextDelegate`      | Text delegate for the picker, for customize the texts.       | `DefaultTextDelegate()`             |
+| customItemBuilder | `WidgetBuilder` | The widget builder for the custom item. | `null` |
+| customItemPosition | `CustomItemPosition` | Allow users set custom item in the picker with several positions. | `CustomItemPosition.none` |
 | routeCurve     | `Curve`             | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
 | routeDuration  | `Duration`          | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
 
@@ -163,49 +177,7 @@ AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
 
 ### Complete param usage
 
-```dart
-List<AssetEntity> assets = <AssetEntity>[];
-
-final List<AssetEntity> result = await AssetPicker.pickAssets(
-  context,
-  maxAssets: 9,
-  pageSize: 320,
-  pathThumbSize: 80,
-  gridCount: 4,
-  requestType: RequestType.image,
-  selectedAssets: assets,
-  themeColor: Colors.cyan,
-  pickerTheme: ThemeData.dark(), // This cannot be set when the `themeColor` was provided.
-  textDelegate: DefaultTextDelegate(),
-  sortPathDelegate: CommonSortPathDelegate(),
-  routeCurve: Curves.easeIn,
-  routeDuration: const Duration(milliseconds: 500),
-);
-```
-
-or
-
-```dart
-List<AssetEntity> assets = <AssetEntity>[];
-
-AssetPicker.pickAssets(
-  context,
-  maxAssets: 9,
-  pageSize: 320,
-  pathThumbSize: 80,
-  gridCount: 4,
-  requestType: RequestType.image,
-  selectedAssets: assets,
-  themeColor: Colors.cyan,
-  pickerTheme: ThemeData.dark(), // This cannot be set when the `themeColor` was provided.
-  textDelegate: DefaultTextDelegate(),
-  sortPathDelegate: CommonSortPathDelegate(),
-  routeCurve: Curves.easeIn,
-  routeDuration: const Duration(milliseconds: 500),
-).then((List<AssetEntity> assets) {
-  /.../
-});
-```
+For various type of the picker, head over to the example and run it with no doubt.
 
 ### Register assets change observe callback
 ```dart
@@ -215,7 +187,104 @@ AssetPicker.registerObserve(); // Register callback.
 AssetPicker.unregisterObserve(); // Unregister callback.
 ```
 
-## Frequent asked question
+## Classes Introduction 💭
+
+### `AssetEntity`
+
+```dart
+/// Android: Database _id column
+/// iOS    : `PhotoKit > PHObject > localIdentifier`
+String id;
+
+/// Android: `MediaStore.MediaColumns.DISPLAY_NAME`
+/// iOS    : `PHAssetResource.filename`. Nullable
+/// If you must need it, See [FilterOption.needTitle] or use [titleAsync].
+String title;
+
+/// Android: title
+/// iOS    : [PHAsset valueForKey:@"filename"]
+Future<String> get titleAsync;
+
+/// * 1: [AssetType.image]
+/// * 2: [AssetType.video]
+/// * 3: [AssetType.audio]
+/// * default: [AssetType.other]
+AssetType get type;
+
+/// Asset type int value.
+int typeInt;
+
+/// Duration of video, the unit is second.
+/// If [type] is [AssetType.image], then it's value is 0.
+/// See also: [videoDuration].
+int duration;
+
+/// Width of the asset.
+int width;
+
+/// Height of the asset.
+int height;
+
+/// Location information when shooting. Nullable.
+/// When the device is Android 10 or above, it's ALWAYS null.
+/// See also: [longitude].
+double get latitude => _latitude ?? 0;
+/// Also with a setter.
+
+/// Get lat/lng from `MediaStore`(Android) / `Photos`(iOS).
+/// In Android Q, this comes from EXIF.
+Future<LatLng> latlngAsync();
+
+/// Get [File] object.
+/// Notice that this is not the origin file, so when it comes to some
+/// scene like reading a GIF's file, please use `originFile`, or you'll
+/// get a JPG.
+Future<File> get file async;
+
+/// Get the original [File] object.
+Future<File> get originFile async;
+
+/// The raw data for the entity, it may be large.
+/// This property is NOT RECOMMENDED for video assets.
+Future<Uint8List> get originBytes;
+
+/// The thumbnail data for the entity. Usually use for displaying a thumbnail image widget.
+Future<Uint8List> get thumbData;
+
+/// Get thumbnail data with specific size.
+Future<Uint8List> thumbDataWithSize(
+  int width,
+  int height, {
+  ThumbFormat format = ThumbFormat.jpeg,
+  int quality = 100,
+});
+
+/// Get the asset's size. Nullable if the manager is null,
+Size get size;
+
+/// If the asset is deleted, return false.
+Future<bool> get exists => PhotoManager._assetExistsWithId(id);
+
+/// The url is provided to some video player. Such as [flutter_ijkplayer](https://pub.dev/packages/flutter_ijkplayer)
+///
+/// Android: `content://media/external/video/media/894857`
+/// iOS    : `file:///var/mobile/Media/DCIM/118APPLE/IMG_8371.MOV` in iOS.
+Future<String> getMediaUrl();
+
+/// Refresh the properties for the entity.
+Future<AssetEntity> refreshProperties() async;
+```
+
+## Frequent asked question ❔
+
+### How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?
+
+You don't need it (might be).
+
+You can always request the `File` object with `entity.originFile`, if `Uint8List` then `entity.originBytes`.
+
+If you still needs path after requested the `File`, get it through `file.absolutePath`.
+
 
 ### Create `AssetEntity` from `File` or `Uint8List` (rawData)
 
