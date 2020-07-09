@@ -1,3 +1,8 @@
+# [3.0.0-dev.1]
+
+* Add `SpecialPickerType`. Fix #37 .
+* Add custom item build mode. Fix #39 .
+
 # [2.2.1]
 
 * Introduce `ColorScheme` for theme details. Fixed #32 .
