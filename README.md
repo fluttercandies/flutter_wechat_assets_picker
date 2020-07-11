@@ -27,6 +27,7 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 * [Classes Introduction](#classes-introduction-)
   * [`AssetEntity`](#assetentity)
 * [Frequent asked question](#frequent-asked-question-)
+  * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
 
