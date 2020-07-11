@@ -3,6 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
+[![Build status](https://img.shields.io/github/workflow/status/fluttercandies/flutter_wechat_assets_picker/Build%20test?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions?query=workflow%3A%22Build+test%22)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_wechat_assets_picker?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_wechat_assets_picker)
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/master/LICENSE)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
@@ -13,19 +14,19 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 
 ## Category 🗂
 
-* [Features ✨](#features-✨)
-* [Screenshots 📸](#screenshots-📸)
-* [Preparing for use 🍭](#preparing-for-use-🍭)
+* [Features](#features-)
+* [Screenshots](#screenshots-)
+* [Preparing for use](#preparing-for-use-)
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
-* [Usage 📖](#usage-📖)
+* [Usage](#usage-)
   * [Simple usage](#simple-usage)
   * [Complete param usage](#complete-param-usage)
   * [Register assets change observe callback](#register-assets-change-observe-callback)
-* [Classes Introduction 💭](#classes-introduction-💭)
+* [Classes Introduction](#classes-introduction-)
   * [`AssetEntity`](#assetentity)
-* [Frequent asked question ❔](#frequent-asked-question-❔)
+* [Frequent asked question](#frequent-asked-question-)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
 
@@ -64,6 +65,11 @@ Add `wechat_assets_picker` to `pubspec.yaml` dependencies.
 dependencies:
   wechat_assets_picker: ^latest_version
 ```
+
+The latest **stable** version is: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+
+The latest **dev** version is: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+
 Then import the package in your code:
 ```dart
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -284,7 +290,6 @@ You don't need it (might be).
 You can always request the `File` object with `entity.originFile`, if `Uint8List` then `entity.originBytes`.
 
 If you still needs path after requested the `File`, get it through `file.absolutePath`.
-
 
 ### Create `AssetEntity` from `File` or `Uint8List` (rawData)
 

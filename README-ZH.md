@@ -3,8 +3,9 @@
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&label=%E7%A8%B3%E5%AE%9A%E7%89%88&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=%E5%BC%80%E5%8F%91%E7%89%88&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
+[![Build status](https://img.shields.io/github/workflow/status/fluttercandies/flutter_wechat_assets_picker/Build%20test?label=%E7%8A%B6%E6%80%81&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions?query=workflow%3A%22Build+test%22)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
-[![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?label=%E5%8D%8F%E8%AE%AE&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/master/LICENSE)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
 Language: [English](README.md) | 中文简体
@@ -13,19 +14,20 @@ Language: [English](README.md) | 中文简体
 
 ## 目录 🗂
 
-* [特性 ✨](#特性-✨)
-* [截图 📸](#截图-📸)
-* [准备工作 🍭](#准备工作-🍭)
+* [特性](#特性-)
+* [截图](#截图-)
+* [准备工作](#准备工作-)
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
-* [使用方法 📖](#使用方法-📖)
+* [使用方法](#使用方法-)
   * [简单的使用方法](#简单的使用方法)
   * [完整参数的使用方法](#完整参数的使用方法)
   * [注册资源变化回调](#注册资源变化回调)
-* [类介绍 💭](#类介绍-💭)
+* [类介绍](#类介绍-)
   * [`AssetEntity`](#assetentity)
-* [常见问题 ❔](#常见问题-❔)
+* [常见问题](#常见问题-)
+  * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合？)
   * [从`File`或`Uint8List`创建`AssetEntity`的方法](#从file或uint8list创建assetentity的方法)
   * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
 
@@ -65,6 +67,10 @@ dependencies:
   wechat_assets_picker: ^latest_version
 ```
 
+最新的**稳定**版本是: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+
+最新的**开发**版本是: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+
 在你的代码中导入：
 
 ```dart
@@ -73,9 +79,9 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-应用至少需要声明三个权限：`INTERNET` `READ_EXTERNAL_STORAGE WRITE_EXTERNAL_STORAGE`
+需要声明的权限：`INTERNET`, `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`。
 
-如果你发现有一些警告日志输出，那么主项目组就需要要实现 `AppGlideModule`。比如：
+如果你发现有一些与`Glide`有关的警告日志输出，那么主项目就需要要实现 `AppGlideModule`。比如：
 `example/android/app/build.gradle`:
 ```gradle
   apply plugin: 'com.android.application'
@@ -119,6 +125,11 @@ rootProject.allprojects {
 ```
 
 ### iOS
+
+在 `ios/Podfile` 中指定最低构建版本至 *9.0*。
+```
+platform :ios, '9.0'
+```
 
 将以下内容添加至`info.plist`。
 
@@ -270,6 +281,14 @@ Future<AssetEntity> refreshProperties() async;
 ```
 
 ## 常见问题 ❔
+
+### 如何获取资源的路径以进行上传或编辑等操作的整合？
+
+你不需要获得路径（也许）。
+
+`File` 对象可以通过 `entity.originFile` 获得，如果需要 `Uint8List` 则使用 `entity.originBytes`。
+
+如果再此之后你仍然需要路径，那么可以通过已获得的 `File` 对象获取： `file.absolutePath`。
 
 ### 从`File`或`Uint8List`创建`AssetEntity`的方法
 
