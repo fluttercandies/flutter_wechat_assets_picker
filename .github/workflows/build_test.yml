@@ -25,7 +25,7 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: flutter analyze lib example/lib
-      - run: cd example; flutter build ios --no-code-sign
+      - run: cd example; flutter build ios --no-codesign
 
   test_android:
     name: Test android on ${{ matrix.os }}
@@ -46,4 +46,4 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze lib example/lib
       - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;20.0.5594570"
-      - run: cd example; sudo flutter build apk --debug
+      - run: cd example; flutter build apk --debug
