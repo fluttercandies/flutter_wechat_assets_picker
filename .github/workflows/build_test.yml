@@ -6,14 +6,13 @@ on:
   pull_request:
     branches: [ master ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  test:
-    name: Test on ${{ matrix.os }}
+  test_iOS:
+    name: Test iOS on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [macos-latest]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
@@ -26,6 +25,25 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: flutter analyze lib example/lib
-      - run: cd example
-      - run: flutter build apk --debug
-      - run: flutter build ios --no-code-sign
+      - run: cd example; flutter build ios --no-code-sign
+
+  test_android:
+    name: Test android on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - run: dart --version
+      - run: flutter --version
+      - run: flutter pub get
+      - run: flutter analyze lib example/lib
+      - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;20.0.5594570"
+      - run: cd example; sudo flutter build apk --debug
