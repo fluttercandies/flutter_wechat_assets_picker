@@ -20,6 +20,16 @@
         "question",
         "review"
       ]
+    },
+    {
+      "login": "CaiJingLong",
+      "name": "Caijinglong",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/14145407?v=4",
+      "profile": "https://www.kikt.top",
+      "contributions": [
+        "example",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
