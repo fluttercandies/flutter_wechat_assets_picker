@@ -38,7 +38,6 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               context,
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
-              themeColor: themeColor,
               requestType: RequestType.image,
             );
           },
@@ -55,7 +54,6 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               context,
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
-              themeColor: themeColor,
               requestType: RequestType.video,
             );
           },
@@ -72,7 +70,6 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               context,
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
-              themeColor: themeColor,
               requestType: RequestType.audio,
             );
           },
@@ -89,25 +86,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               context,
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
-              themeColor: themeColor,
               requestType: RequestType.common,
-            );
-          },
-        ),
-        PickMethodModel(
-          icon: '📱',
-          name: 'All picker',
-          description: 'Pick all type of assets.',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              themeColor: themeColor,
-              requestType: RequestType.all,
             );
           },
         ),
@@ -126,8 +105,32 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               pageSize: 120,
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
-              themeColor: themeColor,
               requestType: RequestType.common,
+            );
+          },
+        ),
+        PickMethodModel(
+          icon: '⏳',
+          name: 'Custom filter options',
+          description: 'Add filter options for the picker.',
+          method: (
+            BuildContext context,
+            List<AssetEntity> assets,
+          ) async {
+            return await AssetPicker.pickAssets(
+              context,
+              maxAssets: maxAssetsCount,
+              selectedAssets: assets,
+              requestType: RequestType.video,
+              filterOptions: FilterOptionGroup()
+                ..setOption(
+                  AssetType.video,
+                  FilterOption(
+                    durationConstraint: DurationConstraint(
+                      max: 1.minutes,
+                    ),
+                  ),
+                ),
             );
           },
         ),
@@ -143,7 +146,6 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               context,
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
-              themeColor: themeColor,
               requestType: RequestType.common,
               customItemPosition: CustomItemPosition.append,
               customItemBuilder: (BuildContext context) {

@@ -21,6 +21,7 @@ class AssetPickerProvider extends ChangeNotifier {
     this.pathThumbSize = 80,
     this.requestType = RequestType.image,
     this.sortPathDelegate = SortPathDelegate.common,
+    this.filterOptions,
     List<AssetEntity> selectedAssets,
     Duration routeDuration,
   }) {
@@ -55,6 +56,13 @@ class AssetPickerProvider extends ChangeNotifier {
   /// Delegate to sort asset path entities.
   /// 资源路径排序的实现
   final SortPathDelegate sortPathDelegate;
+
+  /// Filter options for the picker.
+  /// 选择器的筛选条件
+  ///
+  /// Will be merged into the base configuration.
+  /// 将会与基础条件进行合并。
+  final FilterOptionGroup filterOptions;
 
   /// Clear all fields when dispose.
   /// 销毁时重置所有内容
@@ -198,18 +206,26 @@ class AssetPickerProvider extends ChangeNotifier {
   /// Get assets path entities.
   /// 获取所有的资源路径
   Future<void> getAssetPathList() async {
+    /// Initial base options.
+    /// Enable need title for audios and image to get proper display.
+    final FilterOptionGroup options = FilterOptionGroup()
+      ..setOption(
+        AssetType.audio,
+        const FilterOption(needTitle: true),
+      )
+      ..setOption(
+        AssetType.image,
+        const FilterOption(needTitle: true),
+      );
+
+    /// Merge user's filter option into base options if it's not null.
+    if (filterOptions != null) {
+      options.merge(filterOptions);
+    }
+
     final List<AssetPathEntity> _list = await PhotoManager.getAssetPathList(
       type: requestType,
-      // Enable need title for audios and image to get proper display.
-      filterOption: FilterOptionGroup()
-        ..setOption(
-          AssetType.audio,
-          const FilterOption(needTitle: true),
-        )
-        ..setOption(
-          AssetType.image,
-          const FilterOption(needTitle: true),
-        ),
+      filterOption: options,
     );
 
     /// Sort path using sort path delegate.

@@ -1,7 +1,6 @@
 library wechat_assets_picker;
 
-export 'package:photo_manager/photo_manager.dart'
-    show AssetEntity, AssetType, RequestType;
+export 'package:photo_manager/photo_manager.dart';
 
 export 'src/constants/enums.dart';
 export 'src/delegates/sort_path_delegate.dart';

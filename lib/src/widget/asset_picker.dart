@@ -101,6 +101,7 @@ class AssetPicker extends StatelessWidget {
     ThemeData pickerTheme,
     SortPathDelegate sortPathDelegate,
     TextDelegate textDelegate,
+    FilterOptionGroup filterOptions,
     WidgetBuilder customItemBuilder,
     CustomItemPosition customItemPosition = CustomItemPosition.none,
     Curve routeCurve = Curves.easeIn,
@@ -149,6 +150,7 @@ class AssetPicker extends StatelessWidget {
           selectedAssets: selectedAssets,
           requestType: requestType,
           sortPathDelegate: sortPathDelegate,
+          filterOptions: filterOptions,
           routeDuration: routeDuration,
         );
         final Widget picker = AssetPicker(
