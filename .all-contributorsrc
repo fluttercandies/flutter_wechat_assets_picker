@@ -1,0 +1,31 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "AlexV525",
+      "name": "Alex Li",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/15884415?v=4",
+      "profile": "https://blog.alexv525.com",
+      "contributions": [
+        "code",
+        "design",
+        "doc",
+        "example",
+        "ideas",
+        "maintenance",
+        "question",
+        "review"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "flutter_wechat_assets_picker",
+  "projectOwner": "fluttercandies",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
