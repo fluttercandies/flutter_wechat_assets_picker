@@ -1,5 +1,6 @@
-# [3.0.0-dev.1]
+# [3.0.0-dev.2]
 
+* Add `FilterOptionGroup`. Fix #41 .
 * Add `SpecialPickerType`. Fix #37 .
 * Add custom item build mode. Fix #39 .
 

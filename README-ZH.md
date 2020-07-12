@@ -161,6 +161,7 @@ platform :ios, '9.0'
 | pickerTheme | `ThemeData` | 选择器的主题提供，包括查看器 | `null` |
 | sortPathDelegate | `SortPathDeleage` | 资源路径的排序实现，可自定义路径排序方法 | `CommonSortPathDelegate` |
 | textDelegate | `TextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
+| filterOptions | `FilterOptionGroup` | Allow users to customize assets filter options. | `null` |
 | customItemBuilder | `WidgetBuilder` | 自定义item的构造方法 | `null` |
 | customItemPosition | `CustomItemPosition` | 允许用户在选择器中添加一个自定义item，并指定位置。 | `CustomItemPosition.none` |
 | routeCurve | `Curve` | 选择构造路由动画的曲线 | `Curves.easeIn` |
