@@ -3,6 +3,7 @@
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
 [![Build status](https://img.shields.io/github/workflow/status/fluttercandies/flutter_wechat_assets_picker/Build%20test?label=CI&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions?query=workflow%3A%22Build+test%22)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_wechat_assets_picker?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_wechat_assets_picker)
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/master/LICENSE)
@@ -17,6 +18,7 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 * [Features](#features-)
 * [Screenshots](#screenshots-)
 * [Preparing for use](#preparing-for-use-)
+  * [Version constraints](#version-constraints)
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
@@ -43,21 +45,28 @@ An **assets picker** which looks like the one in WeChat, based on `photo_manager
 - [x] ➕ Custom item builder (prepend/append) support
 - [x] 🗂 Custom sort path delegate support
 - [x] 📝 Custom text delegate support
+- [x] ⏳ Custom filter options support ( `photo_manager` )
 - [x] 🎏 Custom theme entirely
 - [x] 💻 MacOS support
 
 ## Screenshots 📸
 
-| ![1](screenshots/1.jpg) | ![2](screenshots/2.jpg) | ![3](screenshots/3.jpg) |
-| ----------------------- | ----------------------- | ----------------------- |
-| ![4](screenshots/4.jpg) | ![5](screenshots/5.jpg) | ![6](screenshots/6.jpg) |
-| ![7](screenshots/7.jpg) | ![8](screenshots/8.jpg) | ![9](screenshots/9.jpg) |
+| ![1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5plm5wlj30u01t0zp7.jpg) | ![2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q69848j30u01t04o5.jpg) | ![3](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q60v9qj30u01t07vh.jpg) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![4](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5qe7jj30u01t04qp.jpg) | ![5](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5jobgj30u01t0ngi.jpg) | ![6](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5cebej30u01t04a0.jpg) |
+| ![7](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q56xuhj30u01t077a.jpg) | ![8](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q50otnj30u01t0kjf.jpg) | ![9](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q4o7x5j30u01t0e81.jpg) |
 
 ## READ THIS FIRST ‼️
 
 Althought the package provide selection for assets, it still require users build their own methods to handle display/upload, etc. If you have any question about how to build it, please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
 
 ## Preparing for use 🍭
+
+### Version constraints
+
+Flutter SDK: `>=1.17.0` .
+
+If you got an error about `resolve conflict` when running `flutter pub get` , please use `dependency_overrides` to solve it.
 
 ### Flutter
 
@@ -295,7 +304,7 @@ If you still needs path after requested the `File`, get it through `file.absolut
 
 ### Create `AssetEntity` from `File` or `Uint8List` (rawData)
 
-In order to combine this package with camera shooting or something related, there's a wordaround about how to create an `AssetEntity` with `File` or `Uint8List` object.
+In order to combine this package with camera shooting or something related, there's a solution about how to create an `AssetEntity` with `File` or `Uint8List` object.
 
 ```dart
 final File file = your_file; // Your file object

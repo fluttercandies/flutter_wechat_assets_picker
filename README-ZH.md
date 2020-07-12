@@ -3,8 +3,9 @@
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&label=%E7%A8%B3%E5%AE%9A%E7%89%88&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=%E5%BC%80%E5%8F%91%E7%89%88&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
-[![Build status](https://img.shields.io/github/workflow/status/fluttercandies/flutter_wechat_assets_picker/Build%20test?label=%E7%8A%B6%E6%80%81&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions?query=workflow%3A%22Build+test%22)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
+[![Build status](https://img.shields.io/github/workflow/status/fluttercandies/flutter_wechat_assets_picker/Build%20test?label=%E7%8A%B6%E6%80%81&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions?query=workflow%3A%22Build+test%22)
+[![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_wechat_assets_picker?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_wechat_assets_picker)
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?label=%E5%8D%8F%E8%AE%AE&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/master/LICENSE)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
@@ -17,6 +18,7 @@ Language: [English](README.md) | 中文简体
 * [特性](#特性-)
 * [截图](#截图-)
 * [准备工作](#准备工作-)
+  * [版本限制](#版本限制)
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
@@ -40,23 +42,31 @@ Language: [English](README.md) | 中文简体
 - [x] 🎶 音频资源支持
 - [x] 1️⃣ 单资源模式
 - [x] 💱 国际化支持
+- [x] ➕ 自定义 widget 构建支持（前置/后置）
 - [x] 🗂 自定义路径排序支持
-- [x] 📝 自定义文本支持
+- [x] 📝 自定义文本构建支持
+- [x] ⏳ 自定义筛选规则支持（ `photo_manager` ）
 - [x] 🎏 完整的自定义主题
 - [x] 💻 支持 MacOS
 
 ## 截图 📸
 
-| ![1](screenshots/1.jpg) | ![2](screenshots/2.jpg) | ![3](screenshots/3.jpg) |
-| ----------------------- | ----------------------- | ----------------------- |
-| ![4](screenshots/4.jpg) | ![5](screenshots/5.jpg) | ![6](screenshots/6.jpg) |
-| ![7](screenshots/7.jpg) | ![8](screenshots/8.jpg) | ![9](screenshots/9.jpg) |
+| ![1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5plm5wlj30u01t0zp7.jpg) | ![2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q69848j30u01t04o5.jpg) | ![3](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q60v9qj30u01t07vh.jpg) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![4](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5qe7jj30u01t04qp.jpg) | ![5](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5jobgj30u01t0ngi.jpg) | ![6](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5cebej30u01t04a0.jpg) |
+| ![7](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q56xuhj30u01t077a.jpg) | ![8](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q50otnj30u01t0kjf.jpg) | ![9](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q4o7x5j30u01t0e81.jpg) |
 
 ## 开始前的注意事项 ‼️
 
 尽管该库提供了资源的选择，其仍然要求使用者构建自己的方法来处理显示、上传等操作。如果你在使用该库的过程对某些方法或API有疑问，请运行demo并查看[photo_manager](https://github.com/CaiJingLong/flutter_photo_manager)对相关方法的使用说明。
 
 ## 准备工作 🍭
+
+### 版本限制
+
+Flutter SDK：`>=1.17.0` 。
+
+如果在 `flutter pub get` 时遇到了失败问题，请使用 `dependency_overrides` 解决。
 
 ### Flutter
 
@@ -79,10 +89,13 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
+依赖要求项目的安卓原生部分整合至 Android embedding v2，更多信息请至 [Upgrading pre 1.12 Android projects](https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects) 查看。
+
 需要声明的权限：`INTERNET`, `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`。
 
-如果你发现有一些与`Glide`有关的警告日志输出，那么主项目就需要要实现 `AppGlideModule`。比如：
+如果你发现有一些与`Glide`有关的警告日志输出，那么主项目就需要实现 `AppGlideModule`。比如：
 `example/android/app/build.gradle`:
+
 ```gradle
   apply plugin: 'com.android.application'
   apply plugin: 'kotlin-android'
