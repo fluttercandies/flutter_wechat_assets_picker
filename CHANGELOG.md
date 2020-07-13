@@ -1,3 +1,7 @@
+# [3.0.0+1]
+
+* Constraint dependencies version.
+
 # [3.0.0]
 
 * Add `FilterOptionGroup`. Fix #41 .
