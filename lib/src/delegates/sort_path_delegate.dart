@@ -1,5 +1,5 @@
 ///
-/// [Author] Alex (https://github.com/AlexVincent525)
+/// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020-05-30 13:08
 ///
 import 'package:photo_manager/photo_manager.dart';
