@@ -2,6 +2,8 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/3/31 16:02
 ///
+import 'package:flutter/widgets.dart';
+
 import 'constants.dart';
 
 export 'package:flutter_common_exports/flutter_common_exports.dart';
@@ -15,6 +17,8 @@ export 'enums.dart';
 
 class Constants {
   const Constants._();
+
+  static GlobalKey pickerKey = GlobalKey();
 
   static TextDelegate textDelegate = DefaultTextDelegate();
   static SortPathDelegate sortPathDelegate = SortPathDelegate.common;

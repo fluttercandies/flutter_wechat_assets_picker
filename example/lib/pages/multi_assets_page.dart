@@ -75,6 +75,39 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
           },
         ),
         PickMethodModel(
+          icon: '📷',
+          name: 'Pick from camera',
+          description: 'Allow pick asset through camera.',
+          method: (
+            BuildContext context,
+            List<AssetEntity> assets,
+          ) async {
+            return await AssetPicker.pickAssets(
+              context,
+              maxAssets: maxAssetsCount,
+              selectedAssets: assets,
+              requestType: RequestType.common,
+              customItemPosition: CustomItemPosition.prepend,
+              customItemBuilder: (BuildContext context) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () async {
+                    final AssetEntity result =
+                        await AssetPicker.pickFromCamera(context);
+                    if (result != null) {
+                      Navigator.of(context)
+                          .pop(<AssetEntity>[...assets, result]);
+                    }
+                  },
+                  child: const Center(
+                    child: Icon(Icons.camera_enhance, size: 42.0),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        PickMethodModel(
           icon: '📹',
           name: 'Common picker',
           description: 'Pick images and videos.',
@@ -147,7 +180,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.common,
-              customItemPosition: CustomItemPosition.append,
+              customItemPosition: CustomItemPosition.prepend,
               customItemBuilder: (BuildContext context) {
                 return const Center(child: Text('Custom Widget'));
               },

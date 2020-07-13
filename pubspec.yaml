@@ -12,8 +12,10 @@ dependencies:
     sdk: flutter
 
   assets_audio_player: ^2.0.7+9
+  camera: ^0.5.8+2
   extended_image: ^0.9.0
   flutter_common_exports: ^0.1.0
+  path_provider: ^1.6.11
   photo_manager: ^0.5.5+1
   provider: ^4.3.1
   video_player: ^0.10.11+2

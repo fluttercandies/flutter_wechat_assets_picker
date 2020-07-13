@@ -10,7 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  camera: ">=0.5.8+2 <2.0.0"
   wechat_assets_picker:
     path: ../
 
