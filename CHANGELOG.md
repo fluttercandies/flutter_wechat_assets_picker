@@ -1,4 +1,4 @@
-# [3.0.0-dev.2]
+# [3.0.0]
 
 * Add `FilterOptionGroup`. Fix #41 .
 * Add `SpecialPickerType`. Fix #37 .
