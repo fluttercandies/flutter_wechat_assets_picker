@@ -276,7 +276,7 @@ class _CameraPickerState extends State<CameraPicker> {
         margin: const EdgeInsets.all(10.0),
         width: Screens.width / 15,
         height: Screens.width / 15,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
         ),
@@ -305,7 +305,7 @@ class _CameraPickerState extends State<CameraPicker> {
           color: Colors.white30,
           shape: BoxShape.circle,
         ),
-        child: DecoratedBox(
+        child: const DecoratedBox(
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
@@ -368,7 +368,7 @@ class _CameraPickerState extends State<CameraPicker> {
         margin: const EdgeInsets.all(10.0),
         width: Screens.width / 15,
         height: Screens.width / 15,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
         ),
