@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/constants.dart';
-import '../constants/zoom_page_transition.dart';
+
 import 'builder/audio_page_builder.dart';
 import 'builder/fade_image_builder.dart';
 import 'builder/image_page_builder.dart';
@@ -98,11 +98,7 @@ class AssetPickerViewer extends StatefulWidget {
           Animation<double> secondaryAnimation,
           Widget child,
         ) {
-          return ZoomPageTransition(
-            animation: animation,
-            secondaryAnimation: secondaryAnimation,
-            child: child,
-          );
+          return FadeTransition(opacity: animation, child: child);
         },
       );
       final List<AssetEntity> result =
