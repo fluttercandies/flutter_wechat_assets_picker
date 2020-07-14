@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:video_player/video_player.dart';
 
 import 'package:wechat_assets_picker/src/constants/constants.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -22,7 +22,7 @@ class AudioPageBuilder extends StatefulWidget {
   final AssetEntity asset;
 
   /// [State] for asset picker viewer.
-  /// 资源查看器的状态[State]
+  /// 资源查看器的状态 [State]
   final AssetPickerViewerState state;
 
   @override
@@ -30,25 +30,30 @@ class AudioPageBuilder extends StatefulWidget {
 }
 
 class _AudioPageBuilderState extends State<AudioPageBuilder> {
-  /// Create an [AssetsAudioPlayer] instance for the page builder state.
-  /// 创建一个[AssetsAudioPlayer]的实例
-  final AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
+  /// A [StreamController] for current position of the [_controller].
+  /// 控制器当前的播放进度
+  final StreamController<Duration> durationStreamController =
+      StreamController<Duration>.broadcast();
+
+  /// Create a [VideoPlayerController] instance for the page builder state.
+  /// 创建一个 [VideoPlayerController] 的实例
+  VideoPlayerController _controller;
 
   /// Whether the audio loaded.
   /// 音频是否已经加载完成
   bool isLoaded = false;
 
-  /// Whether there's some error when loading the audio.
-  /// 加载音频时是否有错误
-  bool isError = false;
+  /// Whether the player is playing.
+  /// 播放器是否在播放
+  bool isPlaying = false;
+
+  /// Whether the controller is playing.
+  /// 播放控制器是否在播放
+  bool get isControllerPlaying => _controller?.value?.isPlaying ?? false;
 
   /// Duration of the audio.
   /// 音频的时长
   Duration assetDuration;
-
-  /// Audio instance.
-  /// 音频实例
-  Audio audio;
 
   @override
   void initState() {
@@ -61,27 +66,44 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
     /// Stop and dispose player instance to stop playing
     /// when dispose (e.g. page switched).
     /// 状态销毁时停止并销毁实例（例如页面切换时）
-    audioPlayer
-      ..stop()
-      ..dispose();
+    _controller?.pause();
+    _controller?.removeListener(audioPlayerListener);
+    _controller?.dispose();
     super.dispose();
   }
 
-  /// Using [audioPlayer] to load content url from the asset.
-  /// 使用 [audioPlayer] 通过content地址加载资源
+  /// Load content url from the asset.
+  /// 通过content地址加载资源
   Future<void> openAudioFile() async {
     try {
-      assetDuration = Duration(seconds: widget.asset.duration);
-      audio = Audio.file(await widget.asset.getMediaUrl());
-      audioPlayer.open(audio, autoStart: false);
+      final String url = await widget.asset.getMediaUrl();
+      assetDuration = widget.asset.duration.seconds;
+      _controller = VideoPlayerController.network(url);
+      await _controller.initialize();
+      _controller.addListener(audioPlayerListener);
     } catch (e) {
       realDebugPrint('Error when opening audio file: $e');
-      isError = true;
     } finally {
       isLoaded = true;
       if (mounted) {
         setState(() {});
       }
+    }
+  }
+
+  /// Listener for the player.
+  /// 播放器的监听方法
+  void audioPlayerListener() {
+    if (isControllerPlaying != isPlaying) {
+      isPlaying = isControllerPlaying;
+      if (mounted) {
+        setState(() {});
+      }
+    }
+
+    /// Add the current position into the stream.
+    if (_controller?.value?.position != null) {
+      durationStreamController.add(_controller.value.position);
     }
   }
 
@@ -97,41 +119,32 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
 
   /// Button to control audio play/pause.
   /// 控制音频播放或暂停的按钮
-  Widget get audioControlButton => StreamBuilder<bool>(
-        initialData: false,
-        stream: audioPlayer.isPlaying,
-        builder: (BuildContext _, AsyncSnapshot<bool> data) {
-          final bool isPlaying = data.data;
-          return GestureDetector(
-            onTap: () {
-              if (isPlaying) {
-                audioPlayer.pause();
-              } else {
-                audioPlayer.play();
-              }
-            },
-            child: Container(
-              margin: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                isPlaying
-                    ? Icons.pause_circle_outline
-                    : Icons.play_circle_filled,
-                size: 70.0,
-              ),
-            ),
-          );
+  Widget get audioControlButton => GestureDetector(
+        onTap: () {
+          if (isPlaying) {
+            _controller.pause();
+          } else {
+            _controller.play();
+          }
         },
+        child: Container(
+          margin: const EdgeInsets.all(20.0),
+          decoration: BoxDecoration(
+            boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            isPlaying ? Icons.pause_circle_outline : Icons.play_circle_filled,
+            size: 70.0,
+          ),
+        ),
       );
 
   /// Duration indicator for the audio.
   /// 音频的时长指示器
   Widget get durationIndicator => StreamBuilder<Duration>(
         initialData: Duration.zero,
-        stream: audioPlayer.currentPosition,
+        stream: durationStreamController.stream,
         builder: (BuildContext _, AsyncSnapshot<Duration> data) {
           return Text(
             '${Constants.textDelegate.durationIndicatorBuilder(data.data)}'
@@ -150,17 +163,13 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
     return ColoredBox(
       color: context.themeData.backgroundColor,
       child: isLoaded
-          ? AudioWidget(
-              audio: audio,
-              play: audioPlayer.isPlaying.value,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  titleWidget,
-                  audioControlButton,
-                  durationIndicator,
-                ],
-              ),
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                titleWidget,
+                audioControlButton,
+                durationIndicator,
+              ],
             )
           : const SizedBox.shrink(),
     );
