@@ -18,7 +18,6 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../constants/constants.dart';
 import 'builder/fade_image_builder.dart';
 import 'builder/slide_page_transition_builder.dart';
-import 'camera_picker.dart';
 import 'fixed_appbar.dart';
 
 class AssetPicker extends StatelessWidget {
@@ -182,27 +181,6 @@ class AssetPicker extends StatelessWidget {
       realDebugPrint('Error when calling assets picker: $e');
       return null;
     }
-  }
-
-  /// Static method to create [AssetEntity] through camera.
-  /// 通过相机创建 [AssetEntity] 的静态方法
-  static Future<AssetEntity> pickFromCamera(
-    BuildContext context, {
-    bool shouldKeptInLocal = true,
-  }) async {
-    final AssetEntity result = await Navigator.of(
-      context,
-      rootNavigator: true,
-    ).push<AssetEntity>(
-      SlidePageTransitionBuilder<AssetEntity>(
-        builder: CameraPicker(
-          shouldKeptInLocal: shouldKeptInLocal,
-        ),
-        transitionCurve: Curves.easeIn,
-        transitionDuration: const Duration(milliseconds: 300),
-      ),
-    );
-    return result;
   }
 
   /// Register observe callback with assets changes.
