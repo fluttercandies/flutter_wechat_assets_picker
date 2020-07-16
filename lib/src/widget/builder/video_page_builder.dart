@@ -50,8 +50,8 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   void dispose() {
     /// Remove listener from the controller and dispose it when widget dispose.
     /// 部件销毁时移除控制器的监听并销毁控制器。
-    _controller?.pause();
     _controller?.removeListener(videoPlayerListener);
+    _controller?.pause();
     _controller?.dispose();
     super.dispose();
   }
