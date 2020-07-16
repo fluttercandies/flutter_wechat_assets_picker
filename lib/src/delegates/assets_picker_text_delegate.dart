@@ -63,7 +63,8 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
 
   DefaultAssetsPickerTextDelegate._internal();
 
-  static final DefaultAssetsPickerTextDelegate _instance = DefaultAssetsPickerTextDelegate._internal();
+  static final DefaultAssetsPickerTextDelegate _instance =
+      DefaultAssetsPickerTextDelegate._internal();
 
   @override
   String confirm = '确认';

@@ -20,6 +20,7 @@ class Constants {
 
   static GlobalKey pickerKey = GlobalKey();
 
-  static AssetsPickerTextDelegate textDelegate = DefaultAssetsPickerTextDelegate();
+  static AssetsPickerTextDelegate textDelegate =
+      DefaultAssetsPickerTextDelegate();
   static SortPathDelegate sortPathDelegate = SortPathDelegate.common;
 }
