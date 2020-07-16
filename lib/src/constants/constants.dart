@@ -8,8 +8,8 @@ import 'constants.dart';
 
 export 'package:flutter_common_exports/flutter_common_exports.dart';
 
+export '../delegates/assets_picker_text_delegate.dart';
 export '../delegates/sort_path_delegate.dart';
-export '../delegates/text_delegate.dart';
 
 export 'colors.dart';
 export 'custom_scroll_physics.dart';
@@ -20,6 +20,6 @@ class Constants {
 
   static GlobalKey pickerKey = GlobalKey();
 
-  static TextDelegate textDelegate = DefaultTextDelegate();
+  static AssetsPickerTextDelegate textDelegate = DefaultAssetsPickerTextDelegate();
   static SortPathDelegate sortPathDelegate = SortPathDelegate.common;
 }

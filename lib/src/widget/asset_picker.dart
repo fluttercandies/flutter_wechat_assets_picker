@@ -27,7 +27,7 @@ class AssetPicker extends StatelessWidget {
     this.pickerTheme,
     int gridCount = 4,
     Color themeColor,
-    TextDelegate textDelegate,
+    AssetsPickerTextDelegate textDelegate,
     this.specialPickerType,
     this.customItemPosition = CustomItemPosition.none,
     this.customItemBuilder,
@@ -43,7 +43,7 @@ class AssetPicker extends StatelessWidget {
         themeColor =
             pickerTheme?.colorScheme?.secondary ?? themeColor ?? C.themeColor,
         super(key: key) {
-    Constants.textDelegate = textDelegate ?? DefaultTextDelegate();
+    Constants.textDelegate = textDelegate ?? DefaultAssetsPickerTextDelegate();
   }
 
   /// [ChangeNotifier] for asset picker.
@@ -99,7 +99,7 @@ class AssetPicker extends StatelessWidget {
     Color themeColor,
     ThemeData pickerTheme,
     SortPathDelegate sortPathDelegate,
-    TextDelegate textDelegate,
+    AssetsPickerTextDelegate textDelegate,
     FilterOptionGroup filterOptions,
     WidgetBuilder customItemBuilder,
     CustomItemPosition customItemPosition = CustomItemPosition.none,

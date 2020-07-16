@@ -5,7 +5,7 @@
 
 /// Text delegate that controls text in widgets.
 /// 控制部件中的文字实现
-abstract class TextDelegate {
+abstract class AssetsPickerTextDelegate {
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
   String confirm;
@@ -58,12 +58,12 @@ abstract class TextDelegate {
 
 /// Default text delegate implements with Chinese.
 /// 中文文字实现
-class DefaultTextDelegate implements TextDelegate {
-  factory DefaultTextDelegate() => _instance;
+class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
+  factory DefaultAssetsPickerTextDelegate() => _instance;
 
-  DefaultTextDelegate._internal();
+  DefaultAssetsPickerTextDelegate._internal();
 
-  static final DefaultTextDelegate _instance = DefaultTextDelegate._internal();
+  static final DefaultAssetsPickerTextDelegate _instance = DefaultAssetsPickerTextDelegate._internal();
 
   @override
   String confirm = '确认';
@@ -110,9 +110,9 @@ class DefaultTextDelegate implements TextDelegate {
   }
 }
 
-/// [TextDelegate] implements with English.
+/// [AssetsPickerTextDelegate] implements with English.
 /// 英文文字实现
-class EnglishTextDelegate implements TextDelegate {
+class EnglishTextDelegate implements AssetsPickerTextDelegate {
   factory EnglishTextDelegate() => _instance;
 
   EnglishTextDelegate._internal();
