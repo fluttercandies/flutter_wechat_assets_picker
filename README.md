@@ -175,8 +175,6 @@ Add following content to `info.plist`.
 <string>Replace with your permission description.</string>
 ```
 
-
-
 ## Usage 📖
 
 | Name           | Type                | Description                                                  | Default                             |
@@ -200,6 +198,7 @@ Add following content to `info.plist`.
 | routeDuration  | `Duration`          | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
 
 ### Simple usage
+
 ```dart
 final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
 ```

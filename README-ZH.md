@@ -156,8 +156,6 @@ platform :ios, '9.0'
 <string>你的相册权限描述</string>
 ```
 
-
-
 ## 使用方法 📖
 
 | 参数名           | 类型               | 描述                                      | 默认值             |
@@ -321,7 +319,6 @@ final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id])
 ```
 
 参考文档： [flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item)
-
 
 ### 控制台提示 'Failed to find GeneratedAppGlideModule'
 

@@ -1,3 +1,13 @@
+# [4.0.0]
+
+* Drop `asset_audio_player` .
+* Experimenting status bar hidden on iOS.
+* Remove video player listener before pause.
+
+## Breaking changes
+
+* `TextDelegate` -> `AssetsPickerTextDelegate` .
+
 # [3.0.0+1]
 
 * Constraint dependencies version.
