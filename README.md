@@ -13,6 +13,8 @@ Language: English | [中文简体](README-ZH.md)
 
 An **assets picker** which looks like the one in WeChat, based on `photo_manager` for asset implementation, `extended_image` for image preview, `provider` to help controlling the state of the picker.
 
+To take a photo or a video for assets, please check the detailed usage in the example, and head over to [wechat_camera_picker](https://pub.dev/packages/wechat_camera_picker) .
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):

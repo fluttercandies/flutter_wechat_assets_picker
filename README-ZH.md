@@ -13,6 +13,8 @@ Language: [English](README.md) | 中文简体
 
 对标微信的**资源选择器**，基于`photo_manager`实现资源相关功能，`extended_image`用于查看图片，`provider`用于协助管理选择器的状态。
 
+拍照及录制视频，请查看 example 详细用法，并前往 [wechat_camera_picker](https://pub.flutter-io.cn/packages/wechat_camera_picker) 。
+
 ## 目录 🗂
 
 * [特性](#特性-)
