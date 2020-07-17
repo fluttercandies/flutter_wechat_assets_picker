@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_common_exports/flutter_common_exports.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 import '../constants/picker_model.dart';
 import '../main.dart';
@@ -93,7 +94,10 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                   behavior: HitTestBehavior.opaque,
                   onTap: () async {
                     final AssetEntity result =
-                        await AssetPicker.pickFromCamera(context);
+                        await CameraPicker.pickFromCamera(
+                      context,
+                      isAllowRecording: true,
+                    );
                     if (result != null) {
                       Navigator.of(context)
                           .pop(<AssetEntity>[...assets, result]);
