@@ -454,12 +454,41 @@ class AssetPicker extends StatelessWidget {
     );
   }
 
+  /// A backdrop widget behind the [pathEntityListWidget].
+  /// 在 [pathEntityListWidget] 后面的遮罩层
+  ///
+  /// While the picker is switching path, this will displayed.
+  /// If the user tapped on it, it'll collapse the list widget.
+  ///
+  /// 当选择器正在选择路径时，它会出现。用户点击它时，列表会折叠收起。
+  Widget get pathEntityListBackdrop {
+    return Selector<AssetPickerProvider, bool>(
+      selector: (BuildContext _, AssetPickerProvider provider) =>
+          provider.isSwitchingPath,
+      builder: (BuildContext _, bool isSwitchingPath, Widget __) {
+        return IgnorePointer(
+          ignoring: !isSwitchingPath,
+          child: GestureDetector(
+            onTap: () {
+              _.read<AssetPickerProvider>().isSwitchingPath = false;
+            },
+            child: AnimatedOpacity(
+              duration: switchingPathDuration,
+              opacity: isSwitchingPath ? 1.0 : 0.0,
+              child: Container(color: Colors.black.withOpacity(0.75)),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   /// List widget for path entities.
   /// 路径选择列表组件
   Widget get pathEntityListWidget {
     final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
     final double maxHeight =
-        isAppleOS ? Screens.height - appBarHeight : Screens.height * 0.75;
+        isAppleOS ? Screens.height - appBarHeight : Screens.height * 0.825;
     return Selector<AssetPickerProvider, bool>(
       selector: (BuildContext _, AssetPickerProvider provider) =>
           provider.isSwitchingPath,
@@ -1273,6 +1302,7 @@ class AssetPicker extends StatelessWidget {
                           ],
                         ),
                       ),
+                      pathEntityListBackdrop,
                       pathEntityListWidget,
                     ],
                   )
