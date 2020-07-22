@@ -1,3 +1,7 @@
+# [4.1.0]
+
+* Add backdrop widget in the picker, which makes the picker more like the one in WeChat.
+
 # [4.0.0]
 
 * Drop `asset_audio_player` .
