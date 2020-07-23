@@ -1,3 +1,7 @@
+# [4.1.0+1]
+
+* Adjust AppleOS layout.
+
 # [4.1.0]
 
 * Add backdrop widget in the picker, which makes the picker more like the one in WeChat.
