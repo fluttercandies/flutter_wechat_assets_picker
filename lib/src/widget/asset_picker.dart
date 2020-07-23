@@ -487,8 +487,7 @@ class AssetPicker extends StatelessWidget {
   /// 路径选择列表组件
   Widget get pathEntityListWidget {
     final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
-    final double maxHeight =
-        isAppleOS ? Screens.height - appBarHeight : Screens.height * 0.825;
+    final double maxHeight = Screens.height * 0.825;
     return Selector<AssetPickerProvider, bool>(
       selector: (BuildContext _, AssetPickerProvider provider) =>
           provider.isSwitchingPath,
@@ -506,7 +505,13 @@ class AssetPicker extends StatelessWidget {
             child: Container(
               width: Screens.width,
               height: maxHeight,
-              decoration: BoxDecoration(color: theme.colorScheme.background),
+              decoration: BoxDecoration(
+                borderRadius: isAppleOS ? const BorderRadius.only(
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                ) : null,
+                color: theme.colorScheme.background,
+              ),
               child: Selector<AssetPickerProvider,
                   Map<AssetPathEntity, Uint8List>>(
                 selector: (BuildContext _, AssetPickerProvider provider) =>
@@ -1263,6 +1268,7 @@ class AssetPicker extends StatelessWidget {
                               ],
                             ),
                           ),
+                          pathEntityListBackdrop,
                           pathEntityListWidget,
                         ],
                       )
