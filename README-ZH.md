@@ -31,6 +31,7 @@ Language: [English](README.md) | 中文简体
 * [类介绍](#类介绍-)
   * [`AssetEntity`](#assetentity)
 * [常见问题](#常见问题-)
+  * [`xxx` 版本获取冲突 (例如 `dartx`)](#xxx-版本获取冲突-例如-dartx)
   * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合)
   * [从`File`或`Uint8List`创建`AssetEntity`的方法](#从file或uint8list创建assetentity的方法)
   * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
@@ -68,7 +69,7 @@ Language: [English](README.md) | 中文简体
 
 Flutter SDK：`>=1.17.0` 。
 
-如果在 `flutter pub get` 时遇到了失败问题，请使用 `dependency_overrides` 解决。
+如果在 `flutter pub get` 时遇到了失败问题，请使用 `dependency_overrides` 解决。参考[这里](#xxx-版本获取冲突-例如-dartx)。
 
 ### Flutter
 
@@ -295,6 +296,22 @@ Future<AssetEntity> refreshProperties() async;
 ```
 
 ## 常见问题 ❔
+
+### `xxx` 版本获取冲突 (例如 `dartx`)
+
+`dartx` 或其他依赖可能因为某些原因使用了与你的项目不同的版本。如果你遇到了与下面内容类似的错误：:
+
+```
+Because dartx >=0.2.0 <0.5.0 depends on collection >=1.14.11 <1.15.0 and every version of flutter from sdk depends on collection 1.15.0-nullsafety, dartx >=0.2.0 <0.5.0 is incompatible with flutter from sdk.
+So, because wechat_assets_picker_demo depends on both flutter any from sdk and dartx ^0.4.2, version solving failed.
+```
+
+将以下代码添加至你的 `pubspec.yaml`：
+
+```yaml
+dependency_overrides:
+  dartx: ^0.4.2
+```
 
 ### 如何获取资源的路径以进行上传或编辑等操作的整合？
 

@@ -51,6 +51,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 * [Classes Introduction](#classes-introduction-)
   * [`AssetEntity`](#assetentity)
 * [Frequent asked question](#frequent-asked-question-)
+  * [Version resolve conflict with `xxx` (e.g. `dartx`)](#version-resolve-conflict-with-xxx-e.g.-dartx)
   * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
@@ -88,7 +89,7 @@ Althought the package provide selection for assets, it still require users build
 
 Flutter SDK: `>=1.17.0` .
 
-If you got an error about `resolve conflict` when running `flutter pub get` , please use `dependency_overrides` to solve it.
+If you got an error about `resolve conflict` when running `flutter pub get` , please use `dependency_overrides` to solve it. See [here](#version-resolve-conflict-with-xxx-e.g.-dartx) .
 
 ### Flutter
 
@@ -314,6 +315,22 @@ Future<AssetEntity> refreshProperties() async;
 ```
 
 ## Frequent asked question ❔
+
+### Version resolve conflict with `xxx` (e.g. `dartx`)
+
+For some reasons `dartx` or other packages may require a different version than yours. If you're facing this issue, and the error looks like:
+
+```
+Because dartx >=0.2.0 <0.5.0 depends on collection >=1.14.11 <1.15.0 and every version of flutter from sdk depends on collection 1.15.0-nullsafety, dartx >=0.2.0 <0.5.0 is incompatible with flutter from sdk.
+So, because wechat_assets_picker_demo depends on both flutter any from sdk and dartx ^0.4.2, version solving failed.
+```
+
+Please add the code below to make it work.
+
+```yaml
+dependency_overrides:
+  dartx: ^0.4.2
+```
 
 ### How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?
 
