@@ -51,7 +51,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 * [Classes Introduction](#classes-introduction-)
   * [`AssetEntity`](#assetentity)
 * [Frequent asked question](#frequent-asked-question-)
-  * [Version resolve conflict with `xxx` (e.g. `dartx`)](#version-resolve-conflict-with-xxx-e.g.-dartx)
+  * [Version resolve conflict with `xxx` (e.g. `dartx`)](#version-resolve-conflict-with-xxx-eg-dartx)
   * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
@@ -89,7 +89,7 @@ Althought the package provide selection for assets, it still require users build
 
 Flutter SDK: `>=1.17.0` .
 
-If you got an error about `resolve conflict` when running `flutter pub get` , please use `dependency_overrides` to solve it. See [here](#version-resolve-conflict-with-xxx-e.g.-dartx) .
+If you got an error about `resolve conflict` when running `flutter pub get` , please use `dependency_overrides` to solve it. See [here](#version-resolve-conflict-with-xxx-eg-dartx) .
 
 ### Flutter
 
