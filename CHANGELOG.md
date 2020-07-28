@@ -1,3 +1,9 @@
+# [4.1.0+2]
+
+* Ignore size constraint for image assets.
+* Format code using `dartfmt`.
+* Upgrade `photo_manager`.
+
 # [4.1.0+1]
 
 * Adjust AppleOS layout.
