@@ -215,7 +215,10 @@ class AssetPickerProvider extends ChangeNotifier {
       )
       ..setOption(
         AssetType.image,
-        const FilterOption(needTitle: true),
+        const FilterOption(
+          needTitle: true,
+          sizeConstraint: SizeConstraint(ignoreSize: true),
+        ),
       );
 
     /// Merge user's filter option into base options if it's not null.
