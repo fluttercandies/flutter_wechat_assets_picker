@@ -506,10 +506,12 @@ class AssetPicker extends StatelessWidget {
               width: Screens.width,
               height: maxHeight,
               decoration: BoxDecoration(
-                borderRadius: isAppleOS ? const BorderRadius.only(
-                  bottomLeft: Radius.circular(10.0),
-                  bottomRight: Radius.circular(10.0),
-                ) : null,
+                borderRadius: isAppleOS
+                    ? const BorderRadius.only(
+                        bottomLeft: Radius.circular(10.0),
+                        bottomRight: Radius.circular(10.0),
+                      )
+                    : null,
                 color: theme.colorScheme.background,
               ),
               child: Selector<AssetPickerProvider,

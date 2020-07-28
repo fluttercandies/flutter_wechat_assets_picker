@@ -93,7 +93,8 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
                 return GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () async {
-                    final AssetEntity result = await CameraPicker.pickFromCamera(
+                    final AssetEntity result =
+                        await CameraPicker.pickFromCamera(
                       context,
                       isAllowRecording: true,
                     );
