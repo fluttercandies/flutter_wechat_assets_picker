@@ -140,7 +140,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                       child: GestureDetector(
                         onTap: playButtonCallback,
                         child: DecoratedBox(
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             boxShadow: <BoxShadow>[
                               BoxShadow(color: Colors.black12)
                             ],

@@ -256,7 +256,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
                 children: <Widget>[
                   Text(
                     model.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
@@ -268,7 +268,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: Colors.grey,
             ),

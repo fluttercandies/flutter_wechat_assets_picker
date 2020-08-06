@@ -315,7 +315,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                   builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
                     return Text(
                       '${snapshot.data + 1}/${widget.assets.length}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -498,7 +498,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   Widget _audioPreviewItem(AssetEntity asset) {
     return ColoredBox(
       color: context.themeData.dividerColor,
-      child: Center(child: Icon(Icons.audiotrack)),
+      child: const Center(child: Icon(Icons.audiotrack)),
     );
   }
 
@@ -616,12 +616,12 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
             child: isSelected
                 ? Text(
                     (currentIndex + 1).toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
                   )
-                : Icon(Icons.check, size: 20.0),
+                : const Icon(Icons.check, size: 20.0),
           ),
         ),
       ),

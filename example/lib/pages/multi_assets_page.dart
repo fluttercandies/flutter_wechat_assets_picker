@@ -261,7 +261,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                 children: <Widget>[
                   Text(
                     model.name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
@@ -275,7 +275,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.chevron_right,
               color: Colors.grey,
             ),
@@ -453,13 +453,13 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                         horizontal: 10.0,
                       ),
                       padding: const EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.grey,
                       ),
                       child: Text(
                         '${assets.length}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           height: 1.0,
                         ),

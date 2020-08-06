@@ -129,7 +129,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
         },
         child: Container(
           margin: const EdgeInsets.all(20.0),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
             shape: BoxShape.circle,
           ),

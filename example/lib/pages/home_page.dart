@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
+                const Text(
                   'WeChat Asset Picker',
                   style: TextStyle(
                     fontSize: 18.0,
@@ -112,14 +112,14 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentIndex,
           onTap: selectIndex,
-          items: <BottomNavigationBarItem>[
+          items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.photo_library),
-              title: const Text('Multi'),
+              title: Text('Multi'),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.photo),
-              title: const Text('Single'),
+              title: Text('Single'),
             ),
           ],
         ),

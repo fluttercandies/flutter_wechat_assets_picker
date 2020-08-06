@@ -834,7 +834,7 @@ class AssetPicker extends StatelessWidget {
                   reverseDuration: switchingPathDuration,
                   child: selected
                       ? isSingleAssetMode
-                          ? Icon(Icons.check, size: 18.0)
+                          ? const Icon(Icons.check, size: 18.0)
                           : Text(
                               '${selectedAssets.indexOf(asset) + 1}',
                               style: TextStyle(
