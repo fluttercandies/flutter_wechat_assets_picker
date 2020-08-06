@@ -1,3 +1,7 @@
+# [4.1.0+4] - [2020/08/06]
+
+* Upgrade `extended_image` .
+
 # [4.1.0+3] - [2020/08/06]
 
 * Make widgets constant.
