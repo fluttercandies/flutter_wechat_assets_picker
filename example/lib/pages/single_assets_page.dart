@@ -264,6 +264,8 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
                   Text(
                     model.description,
                     style: context.themeData.textTheme.caption,
+                    maxLines: 2,
+                    overflow: TextOverflow.fade,
                   ),
                 ],
               ),
