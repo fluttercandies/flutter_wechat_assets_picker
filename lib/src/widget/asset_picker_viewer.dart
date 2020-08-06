@@ -171,12 +171,6 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   void initState() {
     super.initState();
 
-    // TODO(Alex): Currently hide status bar will cause the viewport shaking on Android.
-    /// Hide system status bar automatically on iOS.
-    /// 在iOS设备上自动隐藏状态栏
-    if (Platform.isIOS) {
-      SystemChrome.setEnabledSystemUIOverlays(<SystemUiOverlay>[]);
-    }
     _doubleTapAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -194,7 +188,6 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     _doubleTapAnimationController?.dispose();
     pageStreamController?.close();
     super.dispose();
@@ -230,11 +223,6 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 切换显示详情状态的方法
   void switchDisplayingDetail({bool value}) {
     isDisplayingDetail = value ?? !isDisplayingDetail;
-//    if (!Platform.isIOS) {
-//      SystemChrome.setEnabledSystemUIOverlays(
-//        isDisplayingDetail ? SystemUiOverlay.values : <SystemUiOverlay>[],
-//      );
-//    }
     if (mounted) {
       setState(() {});
     }
