@@ -191,6 +191,24 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
             );
           },
         ),
+        PickMethodModel(
+          icon: '🎚',
+          name: 'Custom image preview thumb size',
+          description:
+              'You can reduce the thumb size in order to get more quickly load speed.',
+          method: (
+            BuildContext context,
+            List<AssetEntity> assets,
+          ) async {
+            return await AssetPicker.pickAssets(
+              context,
+              maxAssets: maxAssetsCount,
+              selectedAssets: assets,
+              requestType: RequestType.image,
+              previewThumbSize: const <int>[300, 300],
+            );
+          },
+        ),
       ];
 
   Future<void> selectAssets(PickMethodModel model) async {
@@ -265,6 +283,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     model.description,
