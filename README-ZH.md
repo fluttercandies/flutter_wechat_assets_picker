@@ -1,7 +1,7 @@
 # Flutter仿微信资源选择器
 
-[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&label=%E7%A8%B3%E5%AE%9A%E7%89%88&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
-[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=%E5%BC%80%E5%8F%91%E7%89%88&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&label=%E7%A8%B3%E5%AE%9A%E7%89%88&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=%E5%BC%80%E5%8F%91%E7%89%88&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
 [![Build status](https://img.shields.io/github/workflow/status/fluttercandies/flutter_wechat_assets_picker/Build%20test?label=%E7%8A%B6%E6%80%81&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions?query=workflow%3A%22Build+test%22)
@@ -13,7 +13,7 @@ Language: [English](README.md) | 中文简体
 
 对标微信的**资源选择器**，基于`photo_manager`实现资源相关功能，`extended_image`用于查看图片，`provider`用于协助管理选择器的状态。
 
-拍照及录制视频，请查看 example 详细用法，并前往 [wechat_camera_picker](https://pub.flutter-io.cn/packages/wechat_camera_picker) 。
+拍照及录制视频，请查看 example 详细用法，并前往 [wechat_camera_picker](https://fluttercandies.github.io/flutter_wechat_camera_picker/README-ZH.html) 。
 
 ## 目录 🗂
 
@@ -80,9 +80,9 @@ dependencies:
   wechat_assets_picker: ^latest_version
 ```
 
-最新的**稳定**版本是: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+最新的**稳定**版本是: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
 
-最新的**开发**版本是: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+最新的**开发**版本是: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
 
 在你的代码中导入：
 
@@ -96,49 +96,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 需要声明的权限：`INTERNET`, `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`。
 
-如果你发现有一些与`Glide`有关的警告日志输出，那么主项目就需要实现 `AppGlideModule`。比如：
-`example/android/app/build.gradle`:
-
-```gradle
-  apply plugin: 'com.android.application'
-  apply plugin: 'kotlin-android'
-+ apply plugin: 'kotlin-kapt'
-  apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-  
-  dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-+   implementation 'com.github.bumptech.glide:glide:4.11.0'
-+   kapt 'com.github.bumptech.glide:compiler:4.11.0'
-    testImplementation 'junit:junit:4.12'
-}
-```
-
-`example/android/app/src/main/kotlin/com/example/exampleapp/ExampleAppGlideModule.java`:
-```kotlin
-package com.example.exampleapp;
-
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
-
-@GlideModule
-public class ExampleAppGlideModule extends AppGlideModule {
-}
-```
-如果你使用了与该库不一样的`Glide`版本，请将以下内容添加到`build.gradle`：
-```gradle
-rootProject.allprojects {
-    subprojects {
-        project.configurations.all {
-            resolutionStrategy.eachDependency { details ->
-                if (details.requested.group == 'com.github.bumptech.glide'
-                        && details.requested.name.contains('glide')) {
-                    details.useVersion "4.11.0"
-                }
-            }
-        }
-    }
-}
-```
+如果你发现有一些与`Glide`有关的警告日志输出，那么主项目就需要实现 `AppGlideModule`。请查看 [Generated API](https://muyangmin.github.io/glide-docs-cn/doc/generatedapi.html).
 
 ### iOS
 
@@ -161,25 +119,25 @@ platform :ios, '9.0'
 
 ## 使用方法 📖
 
-| 参数名           | 类型               | 描述                                      | 默认值             |
-| -------------- | ------------------ | ------------------------------------------------ | ------------------- |
-| context        | `BuildContext`     | 用于路由的上下文                      | `null`              |
-| maxAssets      | `int`              | 最多选择的图片数量                      | 9                   |
-| pageSize | `int` | 分页加载时每页加载的资源数量。**必须为网格数的倍数。** 设置为`null`可以取消分页。 | 320 (80 * 4) |
-| pathThumbSize | `int`              | 选择器的缩略图大小                      | 80                  |
-| gridCount      | `int`              | 选择器网格数量                        | 4                   |
-| requestType    | `RequestType`      | 选择器选择资源的类型                    | `RequestType.image` |
-| specialPickerType | `SpecialPickerType` | 提供一些特殊的选择器类型以整合非常规的选择行为 | `null` |
-| selectedAssets | `List<AssetEntity>` | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
-| themeColor     | `Color`            | 选择器的主题色  | `Color(0xff00bc56)` |
-| pickerTheme | `ThemeData` | 选择器的主题提供，包括查看器 | `null` |
-| sortPathDelegate | `SortPathDeleage` | 资源路径的排序实现，可自定义路径排序方法 | `CommonSortPathDelegate` |
-| textDelegate | `TextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
-| filterOptions | `FilterOptionGroup` | Allow users to customize assets filter options. | `null` |
-| customItemBuilder | `WidgetBuilder` | 自定义item的构造方法 | `null` |
+| 参数名              | 类型                  | 描述                                      | 默认值             |
+| ------------------ | -------------------- | ------------------------------------------------ | ------------------- |
+| maxAssets          | `int`                | 最多选择的图片数量                      | 9                   |
+| pageSize           | `int`                | 分页加载时每页加载的资源数量。**必须为网格数的倍数。** 设置为`null`可以取消分页。 | 320 (80 * 4) |
+| pathThumbSize      | `int`                | 选择器的缩略图大小                      | 80                  |
+| gridCount          | `int`                | 选择器网格数量                        | 4                   |
+| previewThumbSize   | `List<int>`          | 预览时图片的缩略图大小                    | `null`                 |
+| requestType        | `RequestType`        | 选择器选择资源的类型                    | `RequestType.image` |
+| specialPickerType  | `SpecialPickerType`  | 提供一些特殊的选择器类型以整合非常规的选择行为 | `null` |
+| selectedAssets     | `List<AssetEntity>`  | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
+| themeColor         | `Color`              | 选择器的主题色  | `Color(0xff00bc56)` |
+| pickerTheme        | `ThemeData`          | 选择器的主题提供，包括查看器 | `null` |
+| sortPathDelegate   | `SortPathDeleage`    | 资源路径的排序实现，可自定义路径排序方法 | `CommonSortPathDelegate` |
+| textDelegate       | `TextDelegate`       | 选择器的文本代理构建，用于自定义文本 | `DefaultTextDelegate()` |
+| filterOptions      | `FilterOptionGroup`  | Allow users to customize assets filter options. | `null` |
+| customItemBuilder  | `WidgetBuilder`      | 自定义item的构造方法 | `null` |
 | customItemPosition | `CustomItemPosition` | 允许用户在选择器中添加一个自定义item，并指定位置。 | `CustomItemPosition.none` |
-| routeCurve | `Curve` | 选择构造路由动画的曲线 | `Curves.easeIn` |
-| routeDuration | `Duration` | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
+| routeCurve         | `Curve`              | 选择构造路由动画的曲线 | `Curves.easeIn` |
+| routeDuration      | `Duration`           | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
 
 ### 简单的使用方法
 

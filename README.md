@@ -13,7 +13,7 @@ Language: English | [中文简体](README-ZH.md)
 
 An **assets picker** which looks like the one in WeChat, based on `photo_manager` for asset implementation, `extended_image` for image preview, `provider` to help controlling the state of the picker.
 
-To take a photo or a video for assets, please check the detailed usage in the example, and head over to [wechat_camera_picker](https://pub.dev/packages/wechat_camera_picker) .
+To take a photo or a video for assets, please check the detailed usage in the example, and head over to [wechat_camera_picker](https://fluttercandies.github.io/flutter_wechat_camera_picker/) .
 
 ## Contributors ✨
 
@@ -111,54 +111,10 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-Package required you upgrade your flutter project's Android part to v2 embedding, for further information, check [Upgrading pre 1.12 Android projects](https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects)
-
 Required permissions: `INTERNET`, `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`.
 
-If you found some warning logs with `Glide` appearing, then the main project needs an implementation of `AppGlideModule`. For example:
-`example/android/app/build.gradle`:
-
-```gradle
-  apply plugin: 'com.android.application'
-  apply plugin: 'kotlin-android'
-+ apply plugin: 'kotlin-kapt'
-  apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-  
-  dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-+   implementation 'com.github.bumptech.glide:glide:4.11.0'
-+   kapt 'com.github.bumptech.glide:compiler:4.11.0'
-    testImplementation 'junit:junit:4.12'
-}
-```
-
-`example/android/app/src/main/kotlin/com/example/exampleapp/ExampleAppGlideModule.java`:
-
-```kotlin
-package com.example.exampleapp;
-
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
-
-@GlideModule
-public class ExampleAppGlideModule extends AppGlideModule {
-}
-```
-If you're using different versions of `Glide`, please add this to the `build.gradle`:
-```gradle
-rootProject.allprojects {
-    subprojects {
-        project.configurations.all {
-            resolutionStrategy.eachDependency { details ->
-                if (details.requested.group == 'com.github.bumptech.glide'
-                        && details.requested.name.contains('glide')) {
-                    details.useVersion "4.11.0"
-                }
-            }
-        }
-    }
-}
-```
+If you found some warning logs with `Glide` appearing, then the main project needs an implementation of `AppGlideModule`. 
+See [Generated API](http://sjudd.github.io/glide/doc/generatedapi.html).
 
 ### iOS
 
@@ -172,8 +128,8 @@ Add following content to `info.plist`.
 ```
 <key>NSAppTransportSecurity</key>
 <dict>
-	<key>NSAllowsArbitraryLoads</key>
-  <true/>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
 </dict>
 <key>NSPhotoLibraryUsageDescription</key>
 <string>Replace with your permission description.</string>
@@ -181,25 +137,25 @@ Add following content to `info.plist`.
 
 ## Usage 📖
 
-| Name           | Type                | Description                                                  | Default                             |
-| -------------- | ------------------- | ------------------------------------------------------------ | ----------------------------------- |
-| context        | `BuildContext`      | Context for navigator push.                                  | `null`                              |
-| maxAssets      | `int`               | Maximum asset that the picker can pick.                      | 9                                   |
-| pageSize       | `int`               | Assets amount when assets loaded with paging. **Must be a multiple of `gridCount`.** Nullable for non paging. | 320 (80 * 4)                        |
-| pathThumbSize  | `int`               | The size of thumb data in picker.                            | 80                                  |
-| gridCount      | `int`               | Grid count in picker.                                        | 4                                   |
-| requestType    | `RequestType`       | Request type for picker.                                     | `RequestType.image`                 |
-| specialPickerType | `SpacialPickerType` | Provide some special picker types to integrate un-common pick pattern. | `null` |
-| selectedAssets | `List<AssetEntity>` | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
-| themeColor     | `Color`             | Main theme color for the picker                              | `Color(0xff00bc56)`                 |
-| pickerTheme    | `ThemeData`         | Theme data provider for the picker and the viewer.           | `null`                              |
-| sortPathDelegate | `SortPathDeleage` | Path entities sort delegate for the picker, sort paths as you want. | `CommonSortPathDelegate` |
-| textDelegate   | `TextDelegate`      | Text delegate for the picker, for customize the texts.       | `DefaultTextDelegate()`             |
-| filterOptions | `FilterOptionGroup` | Allow users to customize assets filter options. | `null` |
-| customItemBuilder | `WidgetBuilder` | The widget builder for the custom item. | `null` |
-| customItemPosition | `CustomItemPosition` | Allow users set custom item in the picker with several positions. | `CustomItemPosition.none` |
-| routeCurve     | `Curve`             | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
-| routeDuration  | `Duration`          | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
+| Name               | Type                 | Description                                                                                                         | Default                             |
+| ------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| maxAssets          | `int`                | Maximum asset that the picker can pick.                                                                             | 9                                   |
+| pageSize           | `int`                | Assets amount when assets loaded with paging. **Must be a multiple of `gridCount`.** Nullable for non paging.       | 320 (80 * 4)                        |
+| pathThumbSize      | `int`                | The size of thumb data in picker.                                                                                   | 80                                  |
+| gridCount          | `int`                | Grid count in picker.                                                                                               | 4                                   |
+| previewThumbSize   | `List<int>`          | Thumb size for the preview of images in the viewer.                                                                 | `null`                              |
+| requestType        | `RequestType`        | Request type for picker.                                                                                            | `RequestType.image`                 |
+| specialPickerType  | `SpacialPickerType`  | Provide some special picker types to integrate un-common pick pattern.                                              | `null`                              |
+| selectedAssets     | `List<AssetEntity>`  | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
+| themeColor         | `Color`              | Main theme color for the picker                                                                                     | `Color(0xff00bc56)`                 |
+| pickerTheme        | `ThemeData`          | Theme data provider for the picker and the viewer.                                                                  | `null`                              |
+| sortPathDelegate   | `SortPathDeleage`    | Path entities sort delegate for the picker, sort paths as you want.                                                 | `CommonSortPathDelegate`            |
+| textDelegate       | `TextDelegate`       | Text delegate for the picker, for customize the texts.                                                              | `DefaultTextDelegate()`             |
+| filterOptions      | `FilterOptionGroup`  | Allow users to customize assets filter options.                                                                     | `null`                              |
+| customItemBuilder  | `WidgetBuilder`      | The widget builder for the custom item.                                                                             | `null`                              |
+| customItemPosition | `CustomItemPosition` | Allow users set custom item in the picker with several positions.                                                   | `CustomItemPosition.none`           |
+| routeCurve         | `Curve`              | The curve which the picker use to build page route transition.                                                      | `Curves.easeIn`                     |
+| routeDuration      | `Duration`           | The duration which the picker use to build page route transition.                                                   | `const Duration(milliseconds: 500)` |
 
 ### Simple usage
 
