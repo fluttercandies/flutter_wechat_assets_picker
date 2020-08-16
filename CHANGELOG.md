@@ -1,3 +1,7 @@
+# [4.2.0] - [2020/08/16]
+
+* Add `previewThumbSize` for the viewer.
+
 # [4.1.0+4] - [2020/08/06]
 
 * Upgrade `extended_image` .
