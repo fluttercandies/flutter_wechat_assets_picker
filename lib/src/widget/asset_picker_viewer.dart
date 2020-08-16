@@ -28,6 +28,7 @@ class AssetPickerViewer extends StatefulWidget {
     @required this.currentIndex,
     @required this.assets,
     @required this.themeData,
+    this.previewThumbSize,
     this.selectedAssets,
     this.selectorProvider,
     this.specialPickerType,
@@ -53,6 +54,10 @@ class AssetPickerViewer extends StatefulWidget {
   /// 主题
   final ThemeData themeData;
 
+  /// Thumb size for the preview of images in the viewer.
+  /// 预览时图片的缩略图大小
+  final List<int> previewThumbSize;
+
   /// The current special picker type for the viewer.
   /// 当前特殊选择类型
   ///
@@ -70,6 +75,7 @@ class AssetPickerViewer extends StatefulWidget {
     int currentIndex = 0,
     @required List<AssetEntity> assets,
     @required ThemeData themeData,
+    List<int> previewThumbSize,
     List<AssetEntity> selectedAssets,
     AssetPickerProvider selectorProvider,
     SpecialPickerType specialPickerType,
@@ -79,6 +85,7 @@ class AssetPickerViewer extends StatefulWidget {
         currentIndex: currentIndex,
         assets: assets,
         themeData: themeData,
+        previewThumbSize: previewThumbSize,
         selectedAssets: selectedAssets,
         selectorProvider: selectorProvider,
         specialPickerType: specialPickerType,
@@ -247,7 +254,11 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
         builder = AudioPageBuilder(asset: asset, state: this);
         break;
       case AssetType.image:
-        builder = ImagePageBuilder(asset: asset, state: this);
+        builder = ImagePageBuilder(
+          asset: asset,
+          state: this,
+          previewThumbSize: widget.previewThumbSize,
+        );
         break;
       case AssetType.video:
         builder = VideoPageBuilder(asset: asset, state: this);

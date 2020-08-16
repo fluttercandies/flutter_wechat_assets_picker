@@ -24,10 +24,11 @@ class AssetPicker extends StatelessWidget {
   AssetPicker({
     Key key,
     @required this.provider,
-    this.pickerTheme,
     int gridCount = 4,
     Color themeColor,
     AssetsPickerTextDelegate textDelegate,
+    this.pickerTheme,
+    this.previewThumbSize,
     this.specialPickerType,
     this.customItemPosition = CustomItemPosition.none,
     this.customItemBuilder,
@@ -61,10 +62,24 @@ class AssetPicker extends StatelessWidget {
   /// Theme for the picker.
   /// 选择器的主题
   ///
-  /// Usually the WeChat uses the dark version (dark background color) for the picker.
-  /// However, some developer wants a light theme version for some reasons.
+  /// Usually the WeChat uses the dark version (dark background color)
+  /// for the picker. However, some others want a light or a custom version.
+  ///
   /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，但某些情况下开发者需要亮色或自定义主题。
   final ThemeData pickerTheme;
+
+  /// Thumb size for the preview of images in the viewer.
+  /// 预览时图片的缩略图大小
+  ///
+  /// This only works on images since other types does not have request
+  /// for thumb data. The speed of preview can be raised by reducing it.
+  ///
+  /// 该参数仅生效于图片类型的资源，因为其他资源不需要请求缩略图数据。
+  /// 预览图片的速度可以通过适当降低它的数值来提升。
+  ///
+  /// Default is `null`, which will request the origin data.
+  /// 默认为空，即读取原图。
+  final List<int> previewThumbSize;
 
   /// The current special picker type for the picker.
   /// 当前特殊选择类型
@@ -93,6 +108,7 @@ class AssetPicker extends StatelessWidget {
     int pageSize = 320,
     int pathThumbSize = 200,
     int gridCount = 4,
+    List<int> previewThumbSize,
     RequestType requestType,
     SpecialPickerType specialPickerType,
     List<AssetEntity> selectedAssets,
@@ -159,6 +175,7 @@ class AssetPicker extends StatelessWidget {
           textDelegate: textDelegate,
           themeColor: themeColor,
           pickerTheme: pickerTheme,
+          previewThumbSize: previewThumbSize,
           specialPickerType: specialPickerType,
           customItemPosition: customItemPosition,
           customItemBuilder: customItemBuilder,
@@ -383,6 +400,7 @@ class AssetPicker extends StatelessWidget {
                       /// The reason that the `thumbData` should be checked at here to see if it is
                       /// null is that even the image file is not exist, the `File` can still
                       /// returned as it exist, which will cause the thumb bytes return null.
+                      ///
                       /// 此处需要检查缩略图为空的原因是：尽管文件可能已经被删除，但通过`File`读取的文件对象
                       /// 仍然存在，使得返回的数据为空。
                       final Uint8List thumbData = pathEntityList[pathEntity];
@@ -587,6 +605,7 @@ class AssetPicker extends StatelessWidget {
   /// 确认按钮
   ///
   /// It'll pop with [AssetPickerProvider.selectedAssets] when there're any assets chosen.
+  ///
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   Widget confirmButton(BuildContext context) => Consumer<AssetPickerProvider>(
         builder: (BuildContext _, AssetPickerProvider provider, Widget __) {
@@ -702,6 +721,7 @@ class AssetPicker extends StatelessWidget {
   /// Videos often contains various of color in the cover,
   /// so in order to keep the content visible in most cases,
   /// the color of the indicator has been set to [Colors.white].
+  ///
   /// 视频封面通常包含各种颜色，为了保证内容在一般情况下可见，此处
   /// 将指示器的图标和文字设置为 [Colors.white]。
   Widget videoIndicator(AssetEntity asset) {
@@ -769,6 +789,7 @@ class AssetPicker extends StatelessWidget {
                 currentIndex: index,
                 assets: provider.currentAssets,
                 themeData: theme,
+                previewThumbSize: previewThumbSize,
                 specialPickerType:
                     asset.type == AssetType.video ? specialPickerType : null,
               );
@@ -1129,6 +1150,7 @@ class AssetPicker extends StatelessWidget {
                     context,
                     currentIndex: 0,
                     assets: provider.selectedAssets,
+                    previewThumbSize: previewThumbSize,
                     selectedAssets: provider.selectedAssets,
                     selectorProvider: provider,
                     themeData: theme,

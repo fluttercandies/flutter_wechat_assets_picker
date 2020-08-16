@@ -11,12 +11,21 @@ import 'package:photo_manager/photo_manager.dart';
 
 @immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
-  const AssetEntityImageProvider(
+  AssetEntityImageProvider(
     this.entity, {
     this.scale = 1.0,
-    this.thumbSize = 200,
+    this.thumbSize = const <int>[200, 200],
     this.isOriginal = true,
-  });
+  }) : assert(
+          thumbSize?.length == 2,
+          'thumbSize must contain and only contain two integers',
+        ) {
+    if (thumbSize?.length != 2) {
+      throw ArgumentError(
+        'thumbSize must contain and only contain two integers',
+      );
+    }
+  }
 
   final AssetEntity entity;
 
@@ -26,7 +35,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   /// Size for thumb data.
   /// 缩略图的大小
-  final int thumbSize;
+  final List<int> thumbSize;
 
   /// Choose if original data or thumb data should be loaded.
   /// 选择载入原数据还是缩略图数据
@@ -71,7 +80,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
         data = await key.entity.originBytes;
       }
     } else {
-      data = await key.entity.thumbDataWithSize(thumbSize, thumbSize);
+      data = await key.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     }
     return decode(data);
   }
