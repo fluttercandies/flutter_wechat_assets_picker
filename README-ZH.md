@@ -24,6 +24,7 @@ Language: [English](README.md) | 中文简体
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
+  * [MacOS](#macos)
 * [使用方法](#使用方法-)
   * [简单的使用方法](#简单的使用方法)
   * [完整参数的使用方法](#完整参数的使用方法)
@@ -100,7 +101,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### iOS
 
-在 `ios/Podfile` 中指定最低构建版本至 *9.0*。
+在 `ios/Podfile` 中指定最低构建版本至 **9.0**。
 ```
 platform :ios, '9.0'
 ```
@@ -116,6 +117,20 @@ platform :ios, '9.0'
 <key>NSPhotoLibraryUsageDescription</key>
 <string>你的相册权限描述</string>
 ```
+
+### MacOS
+
+目前 Flutter 桌面版仍然在开发阶段，所以请注意，任何与桌面版本有关的问题都不会受到技术支持。
+
+1. 在 `macos/Podfile` 中指定最低构建版本至 **10.15**。
+
+2. 使用 **Xcode** 打开 `macos/Runner.xcworkspace`。接着根据下面的截图将最低构建版本提升至 **10.15**。
+
+3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
+
+4. ![step 2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67vd3f2j30jv04zgm5.jpg)
+
+5. 与 iOS 一样，添加相同的东西到  `info.plist` 里。
 
 ## 使用方法 📖
 

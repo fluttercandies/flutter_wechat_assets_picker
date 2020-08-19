@@ -45,6 +45,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
+  * [MacOS](#macos)
 * [Usage](#usage-)
   * [Simple usage](#simple-usage)
   * [Complete param usage](#complete-param-usage)
@@ -118,22 +119,39 @@ See [Generated API](http://sjudd.github.io/glide/doc/generatedapi.html).
 
 ### iOS
 
-Define the minimum platform in `ios/Podfile` upper to *9.0*.
+1. Define the minimum platform in `ios/Podfile` upper to *9.0*.
 ```
 platform :ios, '9.0'
 ```
 
-Add following content to `info.plist`.
+2. Add following content to `info.plist`.
 
 ```
 <key>NSAppTransportSecurity</key>
 <dict>
-    <key>NSAllowsArbitraryLoads</key>
-    <true/>
+	<key>NSAllowsArbitraryLoads</key>
+	<true/>
 </dict>
 <key>NSPhotoLibraryUsageDescription</key>
 <string>Replace with your permission description.</string>
 ```
+
+### MacOS
+
+Currently flutter desktop is still under development, so please be aware that any issues releated to the desktop version is not yet supported.
+
+1. Define the minimum platform in `macos/Podfile` upper to *10.15*.
+```
+platform :osx, '10.15'
+```
+
+2. Use *Xcode* to open the `macos/Runner.xcworkspace`. Then follow screenshots to setup the minumum target version upper to *10.15*.
+
+3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
+
+4. ![step 2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67vd3f2j30jv04zgm5.jpg)
+
+5. Add the same thing as iOS does into `info.plist`.
 
 ## Usage 📖
 
