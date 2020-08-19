@@ -3,10 +3,10 @@
 /// [Date] 2020-05-31 20:21
 ///
 import 'package:flutter/material.dart';
-import 'package:flutter_common_exports/flutter_common_exports.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
+import '../constants/extensions.dart';
 import '../constants/picker_model.dart';
 import '../main.dart';
 
@@ -162,9 +162,9 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               filterOptions: FilterOptionGroup()
                 ..setOption(
                   AssetType.video,
-                  FilterOption(
+                  const FilterOption(
                     durationConstraint: DurationConstraint(
-                      max: 1.minutes,
+                      max: Duration(minutes: 1),
                     ),
                   ),
                 ),
@@ -306,10 +306,13 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
   }
 
   Widget get methodListView => Expanded(
-        child: ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          itemCount: pickMethods.length,
-          itemBuilder: methodItemBuilder,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 10.0),
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            itemCount: pickMethods.length,
+            itemBuilder: methodItemBuilder,
+          ),
         ),
       );
 
@@ -503,7 +506,6 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
 
   Widget get selectedAssetsListView => Expanded(
         child: ListView.builder(
-          shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           scrollDirection: Axis.horizontal,

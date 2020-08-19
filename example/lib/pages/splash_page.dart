@@ -4,8 +4,8 @@
 ///
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_common_exports/flutter_common_exports.dart';
 
+import '../constants/extensions.dart';
 import '../constants/resource.dart';
 import 'home_page.dart';
 
@@ -23,7 +23,7 @@ class _SplashPageState extends State<SplashPage> {
     SchedulerBinding.instance.addPostFrameCallback(
       (Duration _) {
         Future<void>.delayed(
-          2.seconds,
+          const Duration(seconds: 2),
           () {
             Navigator.of(context).pushReplacement(
               PageRouteBuilder<void>(
@@ -45,7 +45,7 @@ class _SplashPageState extends State<SplashPage> {
                     child: child,
                   );
                 },
-                transitionDuration: 1.seconds,
+                transitionDuration: const Duration(seconds: 1),
               ),
             );
           },
