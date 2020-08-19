@@ -77,7 +77,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   Future<void> openAudioFile() async {
     try {
       final String url = await widget.asset.getMediaUrl();
-      assetDuration = widget.asset.duration.seconds;
+      assetDuration = Duration(seconds: widget.asset.duration);
       _controller = VideoPlayerController.network(url);
       await _controller.initialize();
       _controller.addListener(audioPlayerListener);
