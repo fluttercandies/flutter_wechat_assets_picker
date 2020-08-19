@@ -33,7 +33,7 @@ class ImagePageBuilder extends StatelessWidget {
         image: AssetEntityImageProvider(
           asset,
           isOriginal: previewThumbSize == null,
-          thumbSize: previewThumbSize,
+          thumbSize: previewThumbSize ?? const <int>[200, 200],
         ),
         fit: BoxFit.contain,
         mode: ExtendedImageMode.gesture,
