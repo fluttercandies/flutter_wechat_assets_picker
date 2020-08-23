@@ -115,7 +115,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 Required permissions: `INTERNET`, `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`.
 
 If you found some warning logs with `Glide` appearing, then the main project needs an implementation of `AppGlideModule`. 
-See [Generated API](http://sjudd.github.io/glide/doc/generatedapi.html).
+See [Generated API](https://sjudd.github.io/glide/doc/generatedapi.html).
 
 ### iOS
 
