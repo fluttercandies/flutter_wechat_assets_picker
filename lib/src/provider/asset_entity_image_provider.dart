@@ -126,17 +126,25 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    final AssetEntityImageProvider typedOther =
-        // ignore: test_types_in_equals
-        other as AssetEntityImageProvider;
-    return entity == typedOther.entity &&
-        scale == typedOther.scale &&
-        thumbSize == typedOther.thumbSize &&
-        isOriginal == typedOther.isOriginal;
+    if (identical(this, other)) {
+      return true;
+    }
+    return entity == other.entity &&
+        scale == other.scale &&
+        thumbSize == other.thumbSize &&
+        isOriginal == other.isOriginal;
   }
 
   @override
-  int get hashCode => hashValues(entity, scale, isOriginal);
+  int get hashCode {
+    return hashValues(
+      entity,
+      scale,
+      thumbSize?.elementAt(0) ?? 0,
+      thumbSize?.elementAt(1) ?? 0,
+      isOriginal,
+    );
+  }
 }
 
 enum ImageFileType { jpg, png, gif, tiff, heic, other }
