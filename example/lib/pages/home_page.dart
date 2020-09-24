@@ -116,11 +116,11 @@ class _HomePageState extends State<HomePage> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.photo_library),
-              label: 'Multi',
+              title: Text('Multi'),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.photo),
-              label: 'Single',
+              title: Text('Single'),
             ),
           ],
         ),
