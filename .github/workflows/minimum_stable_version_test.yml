@@ -1,4 +1,4 @@
-name: Lowest capability test
+name: Minumum stable version capability test
 
 on:
   push:
@@ -45,4 +45,3 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: flutter analyze lib example/lib
-      - run: cd example; flutter build apk --debug
