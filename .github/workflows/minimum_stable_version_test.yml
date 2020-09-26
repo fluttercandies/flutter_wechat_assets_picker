@@ -25,7 +25,6 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: flutter analyze lib example/lib
-      - run: cd example; flutter build ios --no-codesign
 
   test_android:
     name: Test android on ${{ matrix.os }}
