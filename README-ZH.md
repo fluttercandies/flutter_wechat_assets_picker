@@ -34,6 +34,7 @@ Language: [English](README.md) | 中文简体
 * [常见问题](#常见问题-)
   * [`xxx` 版本获取冲突 (例如 `dartx`)](#xxx-版本获取冲突-例如-dartx)
   * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合)
+  * [如何更改“Recent”或其他路径的名称或属性？](#如何更改recent或其他路径的名称或属性)
   * [从`File`或`Uint8List`创建`AssetEntity`的方法](#从file或uint8list创建assetentity的方法)
   * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
 
@@ -293,6 +294,38 @@ dependency_overrides:
 `File` 对象可以通过 `entity.originFile` 获得，如果需要 `Uint8List` 则使用 `entity.originBytes`。
 
 如果再此之后你仍然需要路径，那么可以通过已获得的 `File` 对象获取： `file.absolutePath`。
+
+### 如何更改“Recent”或其他路径的名称或属性？
+
+由 `photo_manager` 传递的 “Recent” 路径，包含了您设备上的所有的 `AssetEntity`。大部分的平台都会将这个路径命名为 “Recent”。尽管我们提供了自定义文字构建的能力，但是 `AssetPathEntity` 的名字或属性只能通过 `SortPathDelegate` 进行更改。这是你能访问到所有 `AssetPathEntity` 的唯一方法，或者说，是现阶段我们暴露出来的唯一方法。
+
+若需要更改某一个路径的名字，继承 `SortPathDelegate` 并实现你自己的构建，接着像如下代码一样进行编写：
+
+```dart
+/// 构建你自己的排序
+class CustomSortPathDelegate extends SortPathDelegate {
+  const CustomSortPathDelegate();
+
+  @override
+  void sort(List<AssetPathEntity> list) {
+    ///...///
+
+    // 在这里你可以对每个你认为需要的路径进行判断。
+    // 我们唯一推荐更改的属性是 [name]，
+    // 并且我们不对更改其他属性造成的问题负责。
+    for (final AssetPathEntity entity in list) {
+      // 如果这个路径的 `isAll` 为真，则该路径就是你需要的。
+      if (entity.isAll) {
+        entity.name = '最近';
+      }
+    }
+
+    ///...///
+  }
+}
+```
+
+将你的构建传递至静态调用方法里，而后你就会看到你自定义了名称的路径。
 
 ### 从`File`或`Uint8List`创建`AssetEntity`的方法
 

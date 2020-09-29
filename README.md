@@ -55,6 +55,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 * [Frequent asked question](#frequent-asked-question-)
   * [Version resolve conflict with `xxx` (e.g. `dartx`)](#version-resolve-conflict-with-xxx-eg-dartx)
   * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
+  * [How can I change the name of "Recent" or other entities name/properties?](#how-can-i-change-the-name-of-recent-or-other-entities-nameproperties)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
 
@@ -314,6 +315,39 @@ You don't need it (might be).
 You can always request the `File` object with `entity.originFile`, if `Uint8List` then `entity.originBytes`.
 
 If you still needs path after requested the `File`, get it through `file.absolutePath`.
+
+### How can I change the name of "Recent" or other entities name/properties?
+
+The path entity called "Recent", brought by `photo_manager` in the path entities list, includes all `AssetEntity` on your device. "Recent" is a system named entity in most of platforms. While we provided ability to customize the text delegate, the name/properties can only be updated with `SortPathDelegate` . This is the only way that you have access to all path entities, or the only way that we exposed currently.
+
+To change the name of the path entity, extend the `SortPathDelegate` with your own delegate, then write something like the code below:
+
+```dart
+/// Create your own sort path delegate.
+class CustomSortPathDelegate extends SortPathDelegate {
+  const CustomSortPathDelegate();
+
+  @override
+  void sort(List<AssetPathEntity> list) {
+    ///...///
+
+    // In here you can check every path entities if you want.
+    // The only property we recommend to change is [name],
+    // And we have no responsibility for issues caused by
+    // other properties update.
+    for (final AssetPathEntity entity in list) {
+      // If the entity `isAll`, that's the "Recent" entity you want.
+      if (entity.isAll) {
+        entity.name = 'Whatever you want';
+      }
+    }
+
+    ///...///
+  }
+}
+```
+
+Pass the delegate through the static call method, then you will get a self-named path entity.
 
 ### Create `AssetEntity` from `File` or `Uint8List` (rawData)
 
