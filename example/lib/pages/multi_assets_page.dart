@@ -454,7 +454,11 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
   Widget get selectedAssetsWidget => AnimatedContainer(
         duration: kThemeChangeDuration,
         curve: Curves.easeInOut,
-        height: assets.isNotEmpty ? isDisplayingDetail ? 120.0 : 80.0 : 40.0,
+        height: assets.isNotEmpty
+            ? isDisplayingDetail
+                ? 120.0
+                : 80.0
+            : 40.0,
         child: Column(
           children: <Widget>[
             SizedBox(

@@ -514,7 +514,9 @@ class AssetPicker extends StatelessWidget {
           duration: switchingPathDuration,
           curve: switchingPathCurve,
           top: isAppleOS
-              ? !isSwitchingPath ? -maxHeight : appBarHeight
+              ? !isSwitchingPath
+                  ? -maxHeight
+                  : appBarHeight
               : -(!isSwitchingPath ? maxHeight : 1.0),
           child: AnimatedOpacity(
             duration: switchingPathDuration,
