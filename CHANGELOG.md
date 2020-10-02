@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 4.2.2
 
-- Supress deprecated usage in example.
+- Suppress deprecated usage in example.
 - Improve code format with dart format.
 - Raise dependencies version.
 
