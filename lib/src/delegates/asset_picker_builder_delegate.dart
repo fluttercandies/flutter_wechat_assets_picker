@@ -1032,9 +1032,7 @@ class DefaultAssetPickerBuilderDelegate
       Map<AssetPathEntity, Uint8List> pathEntityList,
       Widget __,
     ) {
-      if (context
-          .watch<DefaultAssetPickerProvider>()
-          .requestType ==
+      if (context.watch<DefaultAssetPickerProvider>().requestType ==
           RequestType.audio) {
         return ColoredBox(
           color: theme.colorScheme.primary.withOpacity(0.12),
@@ -1060,6 +1058,7 @@ class DefaultAssetPickerBuilderDelegate
         );
       }
     }
+
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
@@ -1153,10 +1152,10 @@ class DefaultAssetPickerBuilderDelegate
                       await AssetPickerViewer.pushToViewer(
                     context,
                     currentIndex: 0,
-                    assets: provider.selectedAssets,
+                    previewAssets: provider.selectedAssets,
                     previewThumbSize: previewThumbSize,
                     selectedAssets: provider.selectedAssets,
-                    selectorProvider: provider,
+                    selectorProvider: provider as DefaultAssetPickerProvider,
                     themeData: theme,
                   );
                   if (result != null) {
@@ -1276,7 +1275,7 @@ class DefaultAssetPickerBuilderDelegate
                   await AssetPickerViewer.pushToViewer(
                 context,
                 currentIndex: index,
-                assets: provider.currentAssets,
+                previewAssets: provider.currentAssets,
                 themeData: theme,
                 previewThumbSize: previewThumbSize,
                 specialPickerType:

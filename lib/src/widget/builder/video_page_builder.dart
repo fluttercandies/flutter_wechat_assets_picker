@@ -8,7 +8,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'package:wechat_assets_picker/src/constants/constants.dart';
 
-class VideoPageBuilder extends StatefulWidget {
+class VideoPageBuilder<A, P> extends StatefulWidget {
   const VideoPageBuilder({Key key, this.asset, this.state}) : super(key: key);
 
   /// Asset currently displayed.
@@ -17,7 +17,7 @@ class VideoPageBuilder extends StatefulWidget {
 
   /// [State] for asset picker viewer.
   /// 资源查看器的状态[State]
-  final AssetPickerViewerState state;
+  final AssetPickerViewerState<A, P> state;
 
   @override
   _VideoPageBuilderState createState() => _VideoPageBuilderState();
@@ -99,8 +99,8 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       if (isPlaying) {
         _controller.pause();
       } else {
-        if (widget.state.isDisplayingDetail) {
-          widget.state.switchDisplayingDetail(value: false);
+        if (widget.state.builder.isDisplayingDetail) {
+          widget.state.builder.switchDisplayingDetail(value: false);
         }
         if (_controller.value.duration == _controller.value.position) {
           _controller
