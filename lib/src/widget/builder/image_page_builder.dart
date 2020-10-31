@@ -3,8 +3,8 @@
 /// [Date] 2020/4/6 15:07
 ///
 import 'package:flutter/material.dart';
-import 'package:extended_image/extended_image.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+
+import 'package:wechat_assets_picker/src/constants/constants.dart';
 
 class ImagePageBuilder extends StatelessWidget {
   const ImagePageBuilder({

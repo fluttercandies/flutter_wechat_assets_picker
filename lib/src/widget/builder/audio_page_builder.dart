@@ -5,8 +5,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'package:wechat_assets_picker/src/constants/constants.dart';
 

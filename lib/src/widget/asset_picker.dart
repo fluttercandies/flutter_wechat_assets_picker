@@ -6,12 +6,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:wechat_assets_picker/src/provider/asset_picker_provider.dart';
 
 import '../constants/constants.dart';
-import '../delegates/asset_picker_builder_delegate.dart';
-import 'builder/slide_page_transition_builder.dart';
 
 @immutable
 class AssetPicker<A, P> extends StatelessWidget {

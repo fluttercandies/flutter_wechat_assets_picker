@@ -7,8 +7,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:wechat_assets_picker/src/constants/constants.dart';
+
+import '../constants/constants.dart';
 
 @immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {

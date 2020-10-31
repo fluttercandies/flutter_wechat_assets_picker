@@ -6,21 +6,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/services.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:provider/provider.dart';
-import 'package:wechat_assets_picker/src/provider/asset_entity_image_provider.dart';
-import 'package:wechat_assets_picker/src/widget/rounded_check_box.dart';
 
 import '../constants/constants.dart';
-import '../provider/asset_picker_provider.dart';
-import '../provider/asset_picker_viewer_provider.dart';
-import '../widget/asset_picker_viewer.dart';
-import '../widget/builder/audio_page_builder.dart';
-import '../widget/builder/fade_image_builder.dart';
-import '../widget/builder/image_page_builder.dart';
-import '../widget/builder/video_page_builder.dart';
 
 abstract class AssetPickerViewerBuilderDelegate<A, P> {
   AssetPickerViewerBuilderDelegate({
@@ -57,8 +45,8 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   /// [StreamController] for viewing page index update.
   /// 用于更新当前正在浏览的资源页码的流控制器
   ///
-  /// The main purpose is narrow down build parts when page index is changing, prevent
-  /// widely [setState] and causing other widgets rebuild.
+  /// The main purpose is narrow down build parts when page index is changing,
+  /// prevent widely [setState] and causing other widgets rebuild.
   /// 使用 [StreamController] 的主要目的是缩小页码变化时构建组件的范围，
   /// 防止滥用 [setState] 导致其他部件重新构建。
   final StreamController<int> pageStreamController =

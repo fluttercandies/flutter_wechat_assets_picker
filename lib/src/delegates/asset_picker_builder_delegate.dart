@@ -9,17 +9,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:extended_image/extended_image.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
-import '../provider/asset_entity_image_provider.dart';
-import '../provider/asset_picker_provider.dart';
-import '../widget/asset_picker.dart';
-import '../widget/asset_picker_viewer.dart';
-import '../widget/builder/fade_image_builder.dart';
-import '../widget/fixed_appbar.dart';
 
 abstract class AssetPickerBuilderDelegate<A, P> {
   AssetPickerBuilderDelegate({

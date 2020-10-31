@@ -14,9 +14,11 @@ class CustomScrollPhysics extends BouncingScrollPhysics {
   }
 
   @override
-  SpringDescription get spring => SpringDescription.withDampingRatio(
-        mass: 0.5,
-        stiffness: 400.0,
-        ratio: 1.1,
-      );
+  SpringDescription get spring {
+    return SpringDescription.withDampingRatio(
+      mass: 0.5,
+      stiffness: 400.0,
+      ratio: 1.1,
+    );
+  }
 }

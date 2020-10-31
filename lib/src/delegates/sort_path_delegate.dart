@@ -7,7 +7,8 @@ import 'package:photo_manager/photo_manager.dart';
 /// Delegate to sort asset path entities.
 /// 用于资源路径排序的实现
 ///
-/// Define [sort] to sort the asset path list. Usually integrate with [List.sort].
+/// Define [sort] to sort the asset path list.
+/// Usually integrate with [List.sort].
 /// 通过定义 [sort] 方法对资源路径列表进行排序。通常使用 [List.sort]。
 abstract class SortPathDelegate {
   const SortPathDelegate();

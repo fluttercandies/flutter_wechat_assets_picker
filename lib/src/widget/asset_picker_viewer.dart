@@ -7,12 +7,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:wechat_assets_picker/src/delegates/asset_picker_viewer_builder_delegate.dart';
 
 import '../constants/constants.dart';
-import '../provider/asset_picker_provider.dart';
-import '../provider/asset_picker_viewer_provider.dart';
 
 class AssetPickerViewer<A, P> extends StatefulWidget {
   const AssetPickerViewer({
