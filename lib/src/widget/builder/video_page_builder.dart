@@ -4,11 +4,12 @@
 ///
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wechat_assets_picker/src/delegates/asset_picker_viewer_builder_delegate.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'package:wechat_assets_picker/src/constants/constants.dart';
 
-class VideoPageBuilder<A, P> extends StatefulWidget {
+class VideoPageBuilder extends StatefulWidget {
   const VideoPageBuilder({Key key, this.asset, this.state}) : super(key: key);
 
   /// Asset currently displayed.
@@ -17,7 +18,7 @@ class VideoPageBuilder<A, P> extends StatefulWidget {
 
   /// [State] for asset picker viewer.
   /// 资源查看器的状态[State]
-  final AssetPickerViewerState<A, P> state;
+  final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
 
   @override
   _VideoPageBuilderState createState() => _VideoPageBuilderState();
@@ -39,6 +40,9 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   /// Whether there's any error when initialize the video controller.
   /// 初始化视频控制器时是否发生错误
   bool hasErrorWhenInitializing = false;
+
+  DefaultAssetPickerViewerBuilderDelegate get builder =>
+      widget.state.builder as DefaultAssetPickerViewerBuilderDelegate;
 
   @override
   void initState() {
@@ -99,8 +103,8 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       if (isPlaying) {
         _controller.pause();
       } else {
-        if (widget.state.builder.isDisplayingDetail) {
-          widget.state.builder.switchDisplayingDetail(value: false);
+        if (builder.isDisplayingDetail) {
+          builder.switchDisplayingDetail(value: false);
         }
         if (_controller.value.duration == _controller.value.position) {
           _controller
@@ -132,7 +136,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                   behavior: HitTestBehavior.opaque,
                   onTap: isPlaying
                       ? playButtonCallback
-                      : widget.state.switchDisplayingDetail,
+                      : builder.switchDisplayingDetail,
                   child: Center(
                     child: AnimatedOpacity(
                       duration: kThemeAnimationDuration,
@@ -160,8 +164,6 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                 ),
             ],
           )
-        : Center(
-            child: Text(Constants.textDelegate.loadFailed),
-          );
+        : Center(child: Text(Constants.textDelegate.loadFailed));
   }
 }

@@ -10,7 +10,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'package:wechat_assets_picker/src/constants/constants.dart';
 
-class AudioPageBuilder<A, P> extends StatefulWidget {
+class AudioPageBuilder extends StatefulWidget {
   const AudioPageBuilder({
     Key key,
     this.asset,
@@ -23,7 +23,7 @@ class AudioPageBuilder<A, P> extends StatefulWidget {
 
   /// [State] for asset picker viewer.
   /// 资源查看器的状态 [State]
-  final AssetPickerViewerState<A, P> state;
+  final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
 
   @override
   State<StatefulWidget> createState() => _AudioPageBuilderState();

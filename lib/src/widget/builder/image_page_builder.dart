@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-class ImagePageBuilder<A, P> extends StatelessWidget {
+class ImagePageBuilder extends StatelessWidget {
   const ImagePageBuilder({
     Key key,
     this.asset,
@@ -20,15 +20,18 @@ class ImagePageBuilder<A, P> extends StatelessWidget {
 
   /// [State] for asset picker viewer.
   /// 资源查看器的状态[State]
-  final AssetPickerViewerState<A, P> state;
+  final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
 
   final List<int> previewThumbSize;
+
+  DefaultAssetPickerViewerBuilderDelegate get builder =>
+      state.builder as DefaultAssetPickerViewerBuilderDelegate;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: state.buidler.switchDisplayingDetail,
+      onTap: builder.switchDisplayingDetail,
       child: ExtendedImage(
         image: AssetEntityImageProvider(
           asset,
@@ -37,7 +40,7 @@ class ImagePageBuilder<A, P> extends StatelessWidget {
         ),
         fit: BoxFit.contain,
         mode: ExtendedImageMode.gesture,
-        onDoubleTap: state.builder.updateAnimation,
+        onDoubleTap: builder.updateAnimation,
         initGestureConfigHandler: (ExtendedImageState state) {
           return GestureConfig(
             initialScale: 1.0,
@@ -49,7 +52,9 @@ class ImagePageBuilder<A, P> extends StatelessWidget {
             inPageView: true,
           );
         },
-        loadStateChanged: state.builder.previewWidgetLoadStateChanged,
+        loadStateChanged: (ExtendedImageState state) {
+          return builder.previewWidgetLoadStateChanged(context, state);
+        },
       ),
     );
   }
