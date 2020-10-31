@@ -403,7 +403,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          assets.remove(assets.elementAt(index));
+          assets.removeAt(index);
           if (assetsLength == 0) {
             isDisplayingDetail = false;
           }
