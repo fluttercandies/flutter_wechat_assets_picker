@@ -19,6 +19,8 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     Color themeColor,
     AssetsPickerTextDelegate textDelegate,
     this.pickerTheme,
+    this.customItemPosition = CustomItemPosition.none,
+    this.customItemBuilder,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -49,6 +51,14 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   ///
   /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，但某些情况下开发者需要亮色或自定义主题。
   final ThemeData pickerTheme;
+
+  /// Allow users set custom item in the picker with several positions.
+  /// 允许用户在选择器中添加一个自定义item，并指定位置。
+  final CustomItemPosition customItemPosition;
+
+  /// The widget builder for the custom item.
+  /// 自定义item的构造方法
+  final WidgetBuilder customItemBuilder;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -387,10 +397,10 @@ class DefaultAssetPickerBuilderDelegate
     Color themeColor,
     AssetsPickerTextDelegate textDelegate,
     ThemeData pickerTheme,
+    CustomItemPosition customItemPosition = CustomItemPosition.none,
+    WidgetBuilder customItemBuilder,
     this.previewThumbSize,
     this.specialPickerType,
-    this.customItemPosition = CustomItemPosition.none,
-    this.customItemBuilder,
   })  : assert(
           provider != null,
           'AssetPickerProvider must be provided and not null.',
@@ -405,6 +415,8 @@ class DefaultAssetPickerBuilderDelegate
           themeColor: themeColor,
           textDelegate: textDelegate,
           pickerTheme: pickerTheme,
+          customItemPosition: customItemPosition,
+          customItemBuilder: customItemBuilder,
         );
 
   /// Thumb size for the preview of images in the viewer.
@@ -430,14 +442,6 @@ class DefaultAssetPickerBuilderDelegate
   /// 这里包含一些特殊选择类型：
   /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
   final SpecialPickerType specialPickerType;
-
-  /// The widget builder for the custom item.
-  /// 自定义item的构造方法
-  final WidgetBuilder customItemBuilder;
-
-  /// Allow users set custom item in the picker with several positions.
-  /// 允许用户在选择器中添加一个自定义item，并指定位置。
-  final CustomItemPosition customItemPosition;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
@@ -570,10 +574,11 @@ class DefaultAssetPickerBuilderDelegate
     int index,
     List<AssetEntity> currentAssets,
   ) {
-    final AssetPathEntity currentPath = Provider.of<DefaultAssetPickerProvider>(
+    final AssetPathEntity currentPathEntity =
+        Provider.of<DefaultAssetPickerProvider>(
       context,
       listen: false,
-    ).currentPath;
+    ).currentPathEntity;
 
     int currentIndex;
     switch (customItemPosition) {
@@ -585,7 +590,7 @@ class DefaultAssetPickerBuilderDelegate
         currentIndex = index - 1;
         break;
     }
-    if (!currentPath.isAll) {
+    if (!currentPathEntity.isAll) {
       currentIndex = index;
     }
 
@@ -594,7 +599,7 @@ class DefaultAssetPickerBuilderDelegate
       provider.loadMoreAssets();
     }
 
-    if (currentPath.isAll) {
+    if (currentPathEntity.isAll) {
       if ((index == currentAssets.length &&
               customItemPosition == CustomItemPosition.append) ||
           (index == 0 && customItemPosition == CustomItemPosition.prepend)) {
@@ -631,14 +636,15 @@ class DefaultAssetPickerBuilderDelegate
     BuildContext context,
     List<AssetEntity> currentAssets,
   ) {
-    final AssetPathEntity currentPath = Provider.of<DefaultAssetPickerProvider>(
+    final AssetPathEntity currentPathEntity =
+        Provider.of<DefaultAssetPickerProvider>(
       context,
       listen: false,
-    ).currentPath;
+    ).currentPathEntity;
 
     /// Return actual length if current path is all.
     /// 如果当前目录是全部内容，则返回实际的内容数量。
-    if (!currentPath.isAll) {
+    if (!currentPathEntity.isAll) {
       return currentAssets.length;
     }
     int length;
@@ -867,9 +873,8 @@ class DefaultAssetPickerBuilderDelegate
           ignoring: !isSwitchingPath,
           child: GestureDetector(
             onTap: () {
-              context
-                  .read<AssetPickerProvider<AssetEntity, AssetPathEntity>>()
-                  .isSwitchingPath = false;
+              context.read<DefaultAssetPickerProvider>().isSwitchingPath =
+                  false;
             },
             child: AnimatedOpacity(
               duration: switchingPathDuration,
@@ -977,10 +982,10 @@ class DefaultAssetPickerBuilderDelegate
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (provider.currentPath != null)
+                  if (provider.currentPathEntity != null)
                     Flexible(
                       child: Text(
-                        provider.currentPath.name ?? '',
+                        provider.currentPathEntity.name ?? '',
                         style: const TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.normal,
@@ -1107,7 +1112,7 @@ class DefaultAssetPickerBuilderDelegate
                   BuildContext _,
                   DefaultAssetPickerProvider provider,
                 ) =>
-                    provider.currentPath,
+                    provider.currentPathEntity,
                 builder: (
                   BuildContext _,
                   AssetPathEntity currentPathEntity,
