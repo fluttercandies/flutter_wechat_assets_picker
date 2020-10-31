@@ -90,18 +90,22 @@ class AssetPicker<A, P> extends StatelessWidget {
           filterOptions: filterOptions,
           routeDuration: routeDuration,
         );
-        final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
-          key: Constants.pickerKey,
-          builder: DefaultAssetPickerBuilderDelegate(
-            provider: provider,
-            gridCount: gridCount,
-            textDelegate: textDelegate,
-            themeColor: themeColor,
-            pickerTheme: pickerTheme,
-            previewThumbSize: previewThumbSize,
-            specialPickerType: specialPickerType,
-            customItemPosition: customItemPosition,
-            customItemBuilder: customItemBuilder,
+        final Widget picker =
+            ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+          value: provider,
+          child: AssetPicker<AssetEntity, AssetPathEntity>(
+            key: Constants.pickerKey,
+            builder: DefaultAssetPickerBuilderDelegate(
+              provider: provider,
+              gridCount: gridCount,
+              textDelegate: textDelegate,
+              themeColor: themeColor,
+              pickerTheme: pickerTheme,
+              previewThumbSize: previewThumbSize,
+              specialPickerType: specialPickerType,
+              customItemPosition: customItemPosition,
+              customItemBuilder: customItemBuilder,
+            ),
           ),
         );
         final List<AssetEntity> result = await Navigator.of(

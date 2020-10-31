@@ -34,8 +34,7 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
   /// Select asset.
   /// 选中资源
   void selectAssetEntity(A entity) {
-    final List<A> set =
-        List<A>.from(currentlySelectedAssets);
+    final List<A> set = List<A>.from(currentlySelectedAssets);
     set.add(entity);
     currentlySelectedAssets = List<A>.from(set);
   }
@@ -43,8 +42,7 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
   /// Un-select asset.
   /// 取消选中资源
   void unSelectAssetEntity(A entity) {
-    final List<A> set =
-        List<A>.from(currentlySelectedAssets);
+    final List<A> set = List<A>.from(currentlySelectedAssets);
     set.remove(entity);
     currentlySelectedAssets = List<A>.from(set);
   }
