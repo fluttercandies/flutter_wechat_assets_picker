@@ -18,9 +18,6 @@ dependencies:
   path_provider: 1.6.21
   provider: 4.3.2+2
 
-dev_dependencies:
-  flutter_asset_generator: 0.5.1
-
 flutter:
   uses-material-design: true
   assets:
