@@ -379,7 +379,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
                   await AssetPickerViewer.pushToViewer(
                 context,
                 currentIndex: index,
-                assets: assets,
+                previewAssets: assets,
                 themeData: AssetPicker.themeData(themeColor),
               );
               if (result != assets && result != null) {

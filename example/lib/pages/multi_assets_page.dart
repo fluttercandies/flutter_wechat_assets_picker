@@ -407,7 +407,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                   await AssetPickerViewer.pushToViewer(
                 context,
                 currentIndex: index,
-                assets: assets,
+                previewAssets: assets,
                 themeData: AssetPicker.themeData(themeColor),
               );
               if (result != assets && result != null) {
