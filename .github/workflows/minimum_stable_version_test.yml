@@ -1,10 +1,6 @@
 name: Minumum stable version capability test
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   analysis:
