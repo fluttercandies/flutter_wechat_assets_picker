@@ -264,6 +264,9 @@ class _CustomPickerPageState extends State<CustomPickerPage> {
                   '`getExternalStorageDirectory`, Then check whether '
                   'it contains images.',
                 ),
+                paddingText(
+                  'Put files into the path to see how this custom picker work.',
+                ),
                 FlatButton(
                   onPressed: callPicker,
                   child: const Text(
