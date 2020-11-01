@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
               title: Text('Single'),
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.photo),
+              icon: Icon(Icons.explore),
               // ignore: deprecated_member_use
               title: Text('Custom'),
             ),
