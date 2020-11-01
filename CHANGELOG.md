@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 5.0.0-dev.1
+
+- Allow users build their own picker with custom assets types. (See example.)
+
+### Breaking changes
+
+- Abstract `AssetPickerBuilderDelegate<A, P>`, `AssetPickerViewerBuilderDelegate<A, P>`,
+  `AssetPickerProvider<A, P>`, and minify the `AssetPickerViewerProvider<A>`. Support
+  custom types by generic type.
+
+- The `assets` param in `AssetPickerViewer.pushToViewer` is now `previewAssets`.
+
 ## 4.2.2
 
 - Suppress deprecated usage in example.
@@ -50,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Experimenting status bar hidden on iOS.
 - Remove video player listener before pause.
 
-## Breaking changes
+### Breaking changes
 
 - `TextDelegate` -> `AssetsPickerTextDelegate` .
 
@@ -113,7 +125,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enlarge preview button's detector area size.
 - Fix wrong properties usage causing infinite build when the page reaches the end.
 
-## Breaking changes
+### Breaking changes
 
 - `videoIndicatorBuilder` -> `durationIndicatorBuilder`.
 
