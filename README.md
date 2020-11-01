@@ -62,7 +62,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 
 ## Migration Guide ♻️
 
-See [Migration Guide](docs/migration_guide.md).
+See [Migration Guide](doc/migration_guide.md).
 
 ## Features ✨
 

@@ -41,7 +41,7 @@ Language: [English](README.md) | 中文简体
 
 ## 迁移指南 ♻️
 
-查看 [迁移指南](docs/migration_guide.md).
+查看 [迁移指南](doc/migration_guide.md).
 
 ## 特性 ✨
 
