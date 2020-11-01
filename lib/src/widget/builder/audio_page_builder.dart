@@ -5,8 +5,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'package:wechat_assets_picker/src/constants/constants.dart';
 
@@ -23,7 +21,7 @@ class AudioPageBuilder extends StatefulWidget {
 
   /// [State] for asset picker viewer.
   /// 资源查看器的状态 [State]
-  final AssetPickerViewerState state;
+  final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
 
   @override
   State<StatefulWidget> createState() => _AudioPageBuilderState();

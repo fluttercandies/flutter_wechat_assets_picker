@@ -38,6 +38,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 
 ## Category 🗂
 
+* [Migration Guide](#migration-guide-)
 * [Features](#features-)
 * [Screenshots](#screenshots-)
 * [Preparing for use](#preparing-for-use-)
@@ -58,6 +59,10 @@ This project follows the [all-contributors](https://github.com/all-contributors/
   * [How can I change the name of "Recent" or other entities name/properties?](#how-can-i-change-the-name-of-recent-or-other-entities-nameproperties)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
+
+## Migration Guide ♻️
+
+See [Migration Guide](doc/migration_guide.md).
 
 ## Features ✨
 

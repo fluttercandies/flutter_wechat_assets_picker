@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import '../constants/extensions.dart';
 import '../constants/resource.dart';
 import '../constants/screens.dart';
+
+import 'custom_picker_page.dart';
 import 'multi_assets_page.dart';
 import 'single_assets_page.dart';
 
@@ -104,6 +106,7 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     MultiAssetsPage(),
                     SingleAssetPage(),
+                    CustomPickerPage(),
                   ],
                 ),
               ),
@@ -123,6 +126,11 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.photo),
               // ignore: deprecated_member_use
               title: Text('Single'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.explore),
+              // ignore: deprecated_member_use
+              title: Text('Custom'),
             ),
           ],
         ),

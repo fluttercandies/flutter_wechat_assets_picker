@@ -12,10 +12,11 @@ dependencies:
 
   wechat_assets_picker:
     path: ../
-  wechat_camera_picker: ^1.2.2
-
-dev_dependencies:
-  flutter_asset_generator: ">=0.4.8 <2.0.0"
+  wechat_camera_picker: ^1.3.0
+  extended_image: 1.3.0
+  path: 1.7.0
+  path_provider: 1.6.21
+  provider: 4.3.2+2
 
 flutter:
   uses-material-design: true

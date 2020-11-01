@@ -407,7 +407,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                   await AssetPickerViewer.pushToViewer(
                 context,
                 currentIndex: index,
-                assets: assets,
+                previewAssets: assets,
                 themeData: AssetPicker.themeData(themeColor),
               );
               if (result != assets && result != null) {
@@ -431,7 +431,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          assets.remove(assets.elementAt(index));
+          assets.removeAt(index);
           if (assetsLength == 0) {
             isDisplayingDetail = false;
           }

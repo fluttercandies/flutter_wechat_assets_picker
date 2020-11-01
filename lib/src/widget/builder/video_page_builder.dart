@@ -17,7 +17,7 @@ class VideoPageBuilder extends StatefulWidget {
 
   /// [State] for asset picker viewer.
   /// 资源查看器的状态[State]
-  final AssetPickerViewerState state;
+  final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
 
   @override
   _VideoPageBuilderState createState() => _VideoPageBuilderState();
@@ -39,6 +39,9 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   /// Whether there's any error when initialize the video controller.
   /// 初始化视频控制器时是否发生错误
   bool hasErrorWhenInitializing = false;
+
+  DefaultAssetPickerViewerBuilderDelegate get builder =>
+      widget.state.builder as DefaultAssetPickerViewerBuilderDelegate;
 
   @override
   void initState() {
@@ -99,8 +102,8 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       if (isPlaying) {
         _controller.pause();
       } else {
-        if (widget.state.isDisplayingDetail) {
-          widget.state.switchDisplayingDetail(value: false);
+        if (builder.isDisplayingDetail) {
+          builder.switchDisplayingDetail(value: false);
         }
         if (_controller.value.duration == _controller.value.position) {
           _controller
@@ -132,7 +135,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                   behavior: HitTestBehavior.opaque,
                   onTap: isPlaying
                       ? playButtonCallback
-                      : widget.state.switchDisplayingDetail,
+                      : builder.switchDisplayingDetail,
                   child: Center(
                     child: AnimatedOpacity(
                       duration: kThemeAnimationDuration,
@@ -160,8 +163,6 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                 ),
             ],
           )
-        : Center(
-            child: Text(Constants.textDelegate.loadFailed),
-          );
+        : Center(child: Text(Constants.textDelegate.loadFailed));
   }
 }

@@ -9,9 +9,28 @@ import 'package:flutter/widgets.dart';
 
 import 'constants.dart';
 
+export 'package:extended_image/extended_image.dart';
+export 'package:photo_manager/photo_manager.dart';
+export 'package:provider/provider.dart';
+export 'package:video_player/video_player.dart';
+
+export '../delegates/asset_picker_builder_delegate.dart';
+export '../delegates/asset_picker_viewer_builder_delegate.dart';
 export '../delegates/assets_picker_text_delegate.dart';
 export '../delegates/sort_path_delegate.dart';
+export '../provider/asset_entity_image_provider.dart';
+export '../provider/asset_picker_provider.dart';
+export '../provider/asset_picker_viewer_provider.dart';
+export '../widget/asset_picker.dart';
+export '../widget/asset_picker_viewer.dart';
+export '../widget/builder/audio_page_builder.dart';
+export '../widget/builder/fade_image_builder.dart';
+export '../widget/builder/image_page_builder.dart';
+export '../widget/builder/slide_page_transition_builder.dart';
+export '../widget/builder/video_page_builder.dart';
+export '../widget/fixed_appbar.dart';
 export '../widget/platform_progress_indicator.dart';
+export '../widget/rounded_check_box.dart';
 
 export 'colors.dart';
 export 'custom_scroll_physics.dart';

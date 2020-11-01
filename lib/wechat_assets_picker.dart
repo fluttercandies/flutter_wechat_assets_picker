@@ -3,6 +3,8 @@ library wechat_assets_picker;
 export 'package:photo_manager/photo_manager.dart';
 
 export 'src/constants/enums.dart';
+export 'src/delegates/asset_picker_builder_delegate.dart';
+export 'src/delegates/asset_picker_viewer_builder_delegate.dart';
 export 'src/delegates/assets_picker_text_delegate.dart';
 export 'src/delegates/sort_path_delegate.dart';
 export 'src/provider/asset_entity_image_provider.dart';

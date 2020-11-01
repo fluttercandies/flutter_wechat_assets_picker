@@ -17,6 +17,7 @@ Language: [English](README.md) | 中文简体
 
 ## 目录 🗂
 
+* [迁移指南](#迁移指南-)
 * [特性](#特性-)
 * [截图](#截图-)
 * [准备工作](#准备工作-)
@@ -37,6 +38,10 @@ Language: [English](README.md) | 中文简体
   * [如何更改“Recent”或其他路径的名称或属性？](#如何更改recent或其他路径的名称或属性)
   * [从`File`或`Uint8List`创建`AssetEntity`的方法](#从file或uint8list创建assetentity的方法)
   * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
+
+## 迁移指南 ♻️
+
+查看 [迁移指南](doc/migration_guide.md).
 
 ## 特性 ✨
 
