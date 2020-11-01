@@ -10,7 +10,10 @@ import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 
 /// [ChangeNotifier] for assets picker.
-/// 资源选择器的 provider model
+///
+/// The provider maintain all methods that control assets and paths.
+/// By extending it you can customize how you can get all assets or paths,
+/// how to fetch the next page of assets, how to get the thumb data of a path.
 abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   /// Call [getAssetList] with route duration when constructing.
   /// 构造时根据路由时长延时获取资源

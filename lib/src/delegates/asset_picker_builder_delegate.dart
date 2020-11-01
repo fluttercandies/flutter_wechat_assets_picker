@@ -12,6 +12,12 @@ import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
 
+/// The delegate to build the whole picker's components.
+///
+/// By extending the delegate, you can customize every components on you own.
+/// Delegate requires two generic types:
+///  * [A] "Asset": The type of your assets. Defaults to [AssetEntity].
+///  * [P] "Path": The type of your paths. Defaults to [AssetPathEntity].
 abstract class AssetPickerBuilderDelegate<A, P> {
   AssetPickerBuilderDelegate({
     @required this.provider,
