@@ -88,8 +88,8 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.common,
-              customItemPosition: CustomItemPosition.prepend,
-              customItemBuilder: (BuildContext context) {
+              specialItemPosition: SpecialItemPosition.prepend,
+              specialItemBuilder: (BuildContext context) {
                 return GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () async {
@@ -209,7 +209,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
 
   void removeAsset(int index) {
     setState(() {
-      assets.remove(assets.elementAt(index));
+      assets.removeAt(index);
       if (assets.isEmpty) {
         isDisplayingDetail = false;
       }
@@ -401,14 +401,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
 
   Widget _selectedAssetDeleteButton(int index) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          assets.removeAt(index);
-          if (assetsLength == 0) {
-            isDisplayingDetail = false;
-          }
-        });
-      },
+      onTap: () => removeAsset(index),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4.0),

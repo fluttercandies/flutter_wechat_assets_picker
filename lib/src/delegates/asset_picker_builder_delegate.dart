@@ -25,8 +25,8 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     Color themeColor,
     AssetsPickerTextDelegate textDelegate,
     this.pickerTheme,
-    this.customItemPosition = CustomItemPosition.none,
-    this.customItemBuilder,
+    this.specialItemPosition = SpecialItemPosition.none,
+    this.specialItemBuilder,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -58,13 +58,13 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，但某些情况下开发者需要亮色或自定义主题。
   final ThemeData pickerTheme;
 
-  /// Allow users set custom item in the picker with several positions.
+  /// Allow users set a special item in the picker with several positions.
   /// 允许用户在选择器中添加一个自定义item，并指定位置。
-  final CustomItemPosition customItemPosition;
+  final SpecialItemPosition specialItemPosition;
 
-  /// The widget builder for the custom item.
+  /// The widget builder for the the special item.
   /// 自定义item的构造方法
-  final WidgetBuilder customItemBuilder;
+  final WidgetBuilder specialItemBuilder;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -403,8 +403,8 @@ class DefaultAssetPickerBuilderDelegate
     Color themeColor,
     AssetsPickerTextDelegate textDelegate,
     ThemeData pickerTheme,
-    CustomItemPosition customItemPosition = CustomItemPosition.none,
-    WidgetBuilder customItemBuilder,
+    SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
+    WidgetBuilder specialItemBuilder,
     this.previewThumbSize,
     this.specialPickerType,
   })  : assert(
@@ -421,8 +421,8 @@ class DefaultAssetPickerBuilderDelegate
           themeColor: themeColor,
           textDelegate: textDelegate,
           pickerTheme: pickerTheme,
-          customItemPosition: customItemPosition,
-          customItemBuilder: customItemBuilder,
+          specialItemPosition: specialItemPosition,
+          specialItemBuilder: specialItemBuilder,
         );
 
   /// Thumb size for the preview of images in the viewer.
@@ -558,8 +558,8 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   /// There're several conditions within this builder:
-  ///  * Return [customItemBuilder] while the current path is all and
-  ///    [customItemPosition] is not equal to [CustomItemPosition.none].
+  ///  * Return [specialItemBuilder] while the current path is all and
+  ///    [specialItemPosition] is not equal to [SpecialItemPosition.none].
   ///  * Return item builder according to the asset's type.
   ///    * [AssetType.audio] -> [audioItemBuilder]
   ///    * [AssetType.image], [AssetType.video] -> [imageAndVideoItemBuilder]
@@ -567,8 +567,8 @@ class DefaultAssetPickerBuilderDelegate
   ///    backwards.
   ///
   /// 资源构建有几个条件：
-  ///  * 当前路径是全部资源且 [customItemPosition] 不等于 [CustomItemPosition.none]
-  ///    时，将会通过 [customItemBuilder] 构建内容。
+  ///  * 当前路径是全部资源且 [specialItemPosition] 不等于
+  ///    [SpecialItemPosition.none] 时，将会通过 [specialItemBuilder] 构建内容。
   ///  * 根据资源类型返回对应类型的构建：
   ///    * [AssetType.audio] -> [audioItemBuilder] 音频类型
   ///    * [AssetType.image], [AssetType.video] -> [imageAndVideoItemBuilder]
@@ -587,12 +587,12 @@ class DefaultAssetPickerBuilderDelegate
     ).currentPathEntity;
 
     int currentIndex;
-    switch (customItemPosition) {
-      case CustomItemPosition.none:
-      case CustomItemPosition.append:
+    switch (specialItemPosition) {
+      case SpecialItemPosition.none:
+      case SpecialItemPosition.append:
         currentIndex = index;
         break;
-      case CustomItemPosition.prepend:
+      case SpecialItemPosition.prepend:
         currentIndex = index - 1;
         break;
     }
@@ -607,9 +607,9 @@ class DefaultAssetPickerBuilderDelegate
 
     if (currentPathEntity.isAll) {
       if ((index == currentAssets.length &&
-              customItemPosition == CustomItemPosition.append) ||
-          (index == 0 && customItemPosition == CustomItemPosition.prepend)) {
-        return customItemBuilder(context);
+              specialItemPosition == SpecialItemPosition.append) ||
+          (index == 0 && specialItemPosition == SpecialItemPosition.prepend)) {
+        return specialItemBuilder(context);
       }
     }
 
@@ -654,12 +654,12 @@ class DefaultAssetPickerBuilderDelegate
       return currentAssets.length;
     }
     int length;
-    switch (customItemPosition) {
-      case CustomItemPosition.none:
+    switch (specialItemPosition) {
+      case SpecialItemPosition.none:
         length = currentAssets.length;
         break;
-      case CustomItemPosition.prepend:
-      case CustomItemPosition.append:
+      case SpecialItemPosition.prepend:
+      case SpecialItemPosition.append:
         length = currentAssets.length + 1;
         break;
     }

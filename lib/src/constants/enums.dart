@@ -9,5 +9,17 @@
 enum SpecialPickerType { wechatMoment }
 
 /// Provide an item slot for custom widget insertion.
-/// 提供一个自定义位置供自定义item放入资源列表中。
-enum CustomItemPosition { none, prepend, append }
+/// 提供一个自定义位置供特殊item放入资源列表中。
+enum SpecialItemPosition {
+  /// Not insert to the list.
+  /// 不放入列表
+  none,
+
+  /// Add as leading of the list.
+  /// 在列表前放入
+  prepend,
+
+  /// Add as trailing of the list.
+  /// 在列表后放入
+  append
+}

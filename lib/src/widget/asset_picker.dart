@@ -39,8 +39,8 @@ class AssetPicker<A, P> extends StatelessWidget {
     SortPathDelegate sortPathDelegate,
     AssetsPickerTextDelegate textDelegate,
     FilterOptionGroup filterOptions,
-    WidgetBuilder customItemBuilder,
-    CustomItemPosition customItemPosition = CustomItemPosition.none,
+    WidgetBuilder specialItemBuilder,
+    SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
@@ -70,10 +70,10 @@ class AssetPicker<A, P> extends StatelessWidget {
         requestType ??= RequestType.image;
       }
     }
-    if ((customItemBuilder == null &&
-            customItemPosition != CustomItemPosition.none) ||
-        (customItemBuilder != null &&
-            customItemPosition == CustomItemPosition.none)) {
+    if ((specialItemBuilder == null &&
+            specialItemPosition != SpecialItemPosition.none) ||
+        (specialItemBuilder != null &&
+            specialItemPosition == SpecialItemPosition.none)) {
       throw ArgumentError('Custom item didn\'t set properly.');
     }
 
@@ -103,8 +103,8 @@ class AssetPicker<A, P> extends StatelessWidget {
               pickerTheme: pickerTheme,
               previewThumbSize: previewThumbSize,
               specialPickerType: specialPickerType,
-              customItemPosition: customItemPosition,
-              customItemBuilder: customItemBuilder,
+              specialItemPosition: specialItemPosition,
+              specialItemBuilder: specialItemBuilder,
             ),
           ),
         );

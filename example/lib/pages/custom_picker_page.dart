@@ -531,12 +531,12 @@ class FileAssetPickerBuilder
     List<File> currentAssets,
   ) {
     int currentIndex;
-    switch (customItemPosition) {
-      case CustomItemPosition.none:
-      case CustomItemPosition.append:
+    switch (specialItemPosition) {
+      case SpecialItemPosition.none:
+      case SpecialItemPosition.append:
         currentIndex = index;
         break;
-      case CustomItemPosition.prepend:
+      case SpecialItemPosition.prepend:
         currentIndex = index - 1;
         break;
     }
@@ -558,12 +558,12 @@ class FileAssetPickerBuilder
   @override
   int assetsGridItemCount(BuildContext context, List<File> currentAssets) {
     int length;
-    switch (customItemPosition) {
-      case CustomItemPosition.none:
+    switch (specialItemPosition) {
+      case SpecialItemPosition.none:
         length = currentAssets.length;
         break;
-      case CustomItemPosition.prepend:
-      case CustomItemPosition.append:
+      case SpecialItemPosition.prepend:
+      case SpecialItemPosition.append:
         length = currentAssets.length + 1;
         break;
     }

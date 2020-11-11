@@ -88,8 +88,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.common,
-              customItemPosition: CustomItemPosition.prepend,
-              customItemBuilder: (BuildContext context) {
+              specialItemPosition: SpecialItemPosition.prepend,
+              specialItemBuilder: (BuildContext context) {
                 return GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () async {
@@ -173,8 +173,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
         ),
         PickMethodModel(
           icon: '➕',
-          name: 'Prepend custom item',
-          description: 'An custom item will prepend to the assets grid.',
+          name: 'Prepend special item',
+          description: 'A special item will prepend to the assets grid.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -184,8 +184,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.common,
-              customItemPosition: CustomItemPosition.prepend,
-              customItemBuilder: (BuildContext context) {
+              specialItemPosition: SpecialItemPosition.prepend,
+              specialItemBuilder: (BuildContext context) {
                 return const Center(child: Text('Custom Widget'));
               },
             );
@@ -232,7 +232,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
 
   void removeAsset(int index) {
     setState(() {
-      assets.remove(assets.elementAt(index));
+      assets.removeAt(index);
       if (assets.isEmpty) {
         isDisplayingDetail = false;
       }
@@ -429,14 +429,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
 
   Widget _selectedAssetDeleteButton(int index) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          assets.removeAt(index);
-          if (assetsLength == 0) {
-            isDisplayingDetail = false;
-          }
-        });
-      },
+      onTap: () => removeAsset(index),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4.0),
