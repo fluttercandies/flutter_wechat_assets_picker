@@ -161,25 +161,26 @@ platform :osx, '10.15'
 
 ## Usage 📖
 
-| Name                | Type                       | Description                                                  | Default                             |
-| ------------------- | -------------------------- | ------------------------------------------------------------ | ----------------------------------- |
-| maxAssets           | `int`                      | Maximum asset that the picker can pick.                      | 9                                   |
-| pageSize            | `int`                      | Assets amount when assets loaded with paging. **Must be a multiple of `gridCount`.** Nullable for non paging. | 320 (80 * 4)                        |
-| pathThumbSize       | `int`                      | The size of thumb data in picker.                            | 80                                  |
-| gridCount           | `int`                      | Grid count in picker.                                        | 4                                   |
-| previewThumbSize    | `List<int>`                | Thumb size for the preview of images in the viewer.          | `null`                              |
-| requestType         | `RequestType`              | Request type for picker.                                     | `RequestType.image`                 |
-| specialPickerType   | `SpacialPickerType`        | Provide some special picker types to integrate un-common pick pattern. | `null`                              |
-| selectedAssets      | `List<AssetEntity>`        | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
-| themeColor          | `Color`                    | Main theme color for the picker                              | `Color(0xff00bc56)`                 |
-| pickerTheme         | `ThemeData`                | Theme data provider for the picker and the viewer.           | `null`                              |
-| sortPathDelegate    | `SortPathDeleage`          | Path entities sort delegate for the picker, sort paths as you want. | `CommonSortPathDelegate`            |
-| textDelegate        | `AssetsPickerTextDelegate` | Text delegate for the picker, for customize the texts.       | `DefaultAssetsPickerTextDelegate()` |
-| filterOptions       | `FilterOptionGroup`        | Allow users to customize assets filter options.              | `null`                              |
-| specialItemBuilder  | `WidgetBuilder`            | The widget builder for the special item.                     | `null`                              |
-| specialItemPosition | `SpecialItemPosition`      | Allow users set a special item in the picker with several positions. | `SpecialItemPosition.none`          |
-| routeCurve          | `Curve`                    | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
-| routeDuration       | `Duration`                 | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
+| Name                      | Type                       | Description                                                  | Default                             |
+| ------------------------- | -------------------------- | ------------------------------------------------------------ | ----------------------------------- |
+| maxAssets                 | `int`                      | Maximum asset that the picker can pick.                      | 9                                   |
+| pageSize                  | `int`                      | Assets amount when assets loaded with paging. **Must be a multiple of `gridCount`.** Nullable for non paging. | 320 (80 * 4)                        |
+| pathThumbSize             | `int`                      | The size of thumb data in picker.                            | 80                                  |
+| gridCount                 | `int`                      | Grid count in picker.                                        | 4                                   |
+| previewThumbSize          | `List<int>`                | Thumb size for the preview of images in the viewer.          | `null`                              |
+| requestType               | `RequestType`              | Request type for picker.                                     | `RequestType.image`                 |
+| specialPickerType         | `SpacialPickerType`        | Provide some special picker types to integrate un-common pick pattern. | `null`                              |
+| selectedAssets            | `List<AssetEntity>`        | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
+| themeColor                | `Color`                    | Main theme color for the picker                              | `Color(0xff00bc56)`                 |
+| pickerTheme               | `ThemeData`                | Theme data provider for the picker and the viewer.           | `null`                              |
+| sortPathDelegate          | `SortPathDeleage`          | Path entities sort delegate for the picker, sort paths as you want. | `CommonSortPathDelegate`            |
+| textDelegate              | `AssetsPickerTextDelegate` | Text delegate for the picker, for customize the texts.       | `DefaultAssetsPickerTextDelegate()` |
+| filterOptions             | `FilterOptionGroup`        | Allow users to customize assets filter options.              | `null`                              |
+| specialItemBuilder        | `WidgetBuilder`            | The widget builder for the special item.                     | `null`                              |
+| specialItemPosition       | `SpecialItemPosition`      | Allow users set a special item in the picker with several positions. | `SpecialItemPosition.none`          |
+| allowSpecialItemWhenEmpty | `bool`                     | Whether the special item will display or not when assets is empty.  | `false`                             |
+| routeCurve                | `Curve`                    | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
+| routeDuration             | `Duration`                 | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
 
 ### Simple usage
 
