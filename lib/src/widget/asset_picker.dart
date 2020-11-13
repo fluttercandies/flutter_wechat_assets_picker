@@ -41,6 +41,7 @@ class AssetPicker<A, P> extends StatelessWidget {
     FilterOptionGroup filterOptions,
     WidgetBuilder specialItemBuilder,
     SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
+    bool allowSpecialItemWhenEmpty = false,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
@@ -105,6 +106,7 @@ class AssetPicker<A, P> extends StatelessWidget {
               specialPickerType: specialPickerType,
               specialItemPosition: specialItemPosition,
               specialItemBuilder: specialItemBuilder,
+              allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
             ),
           ),
         );

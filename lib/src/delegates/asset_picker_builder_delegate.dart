@@ -27,6 +27,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     this.pickerTheme,
     this.specialItemPosition = SpecialItemPosition.none,
     this.specialItemBuilder,
+    this.allowSpecialItemWhenEmpty = false,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -55,16 +56,21 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// Usually the WeChat uses the dark version (dark background color)
   /// for the picker. However, some others want a light or a custom version.
   ///
-  /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，但某些情况下开发者需要亮色或自定义主题。
+  /// 通常情况下微信选择器使用的是暗色（暗色背景）的主题，
+  /// 但某些情况下开发者需要亮色或自定义主题。
   final ThemeData pickerTheme;
 
   /// Allow users set a special item in the picker with several positions.
-  /// 允许用户在选择器中添加一个自定义item，并指定位置。
+  /// 允许用户在选择器中添加一个自定义item，并指定位置
   final SpecialItemPosition specialItemPosition;
 
   /// The widget builder for the the special item.
   /// 自定义item的构造方法
   final WidgetBuilder specialItemBuilder;
+
+  /// Whether the special item will display or not when assets is empty.
+  /// 当没有资源时是否显示自定义item
+  final bool allowSpecialItemWhenEmpty;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -405,6 +411,7 @@ class DefaultAssetPickerBuilderDelegate
     ThemeData pickerTheme,
     SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
     WidgetBuilder specialItemBuilder,
+    bool allowSpecialItemWhenEmpty = false,
     this.previewThumbSize,
     this.specialPickerType,
   })  : assert(
@@ -423,6 +430,7 @@ class DefaultAssetPickerBuilderDelegate
           pickerTheme: pickerTheme,
           specialItemPosition: specialItemPosition,
           specialItemBuilder: specialItemBuilder,
+          allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
         );
 
   /// Thumb size for the preview of images in the viewer.
@@ -472,9 +480,12 @@ class DefaultAssetPickerBuilderDelegate
           bool hasAssetsToDisplay,
           Widget __,
         ) {
+          final bool shouldDisplayAssets = hasAssetsToDisplay ||
+              (allowSpecialItemWhenEmpty &&
+                  specialItemPosition != SpecialItemPosition.none);
           return AnimatedSwitcher(
             duration: switchingPathDuration,
-            child: hasAssetsToDisplay
+            child: shouldDisplayAssets
                 ? Stack(
                     children: <Widget>[
                       RepaintBoundary(
@@ -596,6 +607,20 @@ class DefaultAssetPickerBuilderDelegate
         currentIndex = index - 1;
         break;
     }
+
+    // Directly return the special item when it's empty.
+    if (currentPathEntity == null &&
+        allowSpecialItemWhenEmpty &&
+        specialItemPosition != SpecialItemPosition.none) {
+      return specialItemBuilder(context);
+    }
+
+    if (currentPathEntity.isAll &&
+        specialItemPosition != SpecialItemPosition.none &&
+        (index == 0 || index == currentAssets.length)) {
+      return specialItemBuilder(context);
+    }
+
     if (!currentPathEntity.isAll) {
       currentIndex = index;
     }
@@ -603,14 +628,6 @@ class DefaultAssetPickerBuilderDelegate
     if (index == currentAssets.length - gridCount * 3 &&
         context.read<DefaultAssetPickerProvider>().hasMoreToLoad) {
       provider.loadMoreAssets();
-    }
-
-    if (currentPathEntity.isAll) {
-      if ((index == currentAssets.length &&
-              specialItemPosition == SpecialItemPosition.append) ||
-          (index == 0 && specialItemPosition == SpecialItemPosition.prepend)) {
-        return specialItemBuilder(context);
-      }
     }
 
     final AssetEntity asset = currentAssets.elementAt(currentIndex);
@@ -647,6 +664,11 @@ class DefaultAssetPickerBuilderDelegate
       context,
       listen: false,
     ).currentPathEntity;
+
+    if (currentPathEntity == null &&
+        specialItemPosition != SpecialItemPosition.none) {
+      return 1;
+    }
 
     /// Return actual length if current path is all.
     /// 如果当前目录是全部内容，则返回实际的内容数量。
