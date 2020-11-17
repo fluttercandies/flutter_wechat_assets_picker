@@ -50,6 +50,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 * [Usage](#usage-)
   * [Simple usage](#simple-usage)
   * [Complete param usage](#complete-param-usage)
+  * [Display selected assets](#display-selected-assets)
   * [Register assets change observe callback](#register-assets-change-observe-callback)
 * [Classes Introduction](#classes-introduction-)
   * [`AssetEntity`](#assetentity)
@@ -89,7 +90,7 @@ See [Migration Guide](doc/migration_guide.md).
 
 ## READ THIS FIRST ‼️
 
-Althought the package provide selection for assets, it still require users build their own methods to handle display/upload, etc. If you have any question about how to build it, please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
+Althought the package provide selection for assets, it still require users build their own methods to handle upload, image compress, etc. If you have any question about how to build it, please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
 
 ## Preparing for use 🍭
 
@@ -199,6 +200,16 @@ AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
 ### Complete param usage
 
 For various type of the picker, head over to the example and run it with no doubt.
+
+### Display selected assets
+
+The `AssetEntityImageProvider` can display the thumb image of _images & videos_, and the original data of _image_. Use it like a common `ImageProvider`.
+
+```dart
+Image(image: AssetEntityImageProvider(asset, isOriginal: false))
+```
+
+Check the example for how it displays.
 
 ### Register assets change observe callback
 ```dart

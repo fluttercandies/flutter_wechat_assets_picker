@@ -29,6 +29,7 @@ Language: [English](README.md) | 中文简体
 * [使用方法](#使用方法-)
   * [简单的使用方法](#简单的使用方法)
   * [完整参数的使用方法](#完整参数的使用方法)
+  * [展示选中的资源](#展示选中的资源)
   * [注册资源变化回调](#注册资源变化回调)
 * [类介绍](#类介绍-)
   * [`AssetEntity`](#assetentity)
@@ -178,6 +179,16 @@ AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
 ### 完整参数的使用方法
 
 欲了解各种选择器模式，请直接运行 example 查看。
+
+### 展示选中的资源
+
+`AssetEntityImageProvider` 可以为 **图片 & 视频** 展示缩略图，以及展示 **图片的原图**。它的使用方法与常见的 `ImageProvider` 一致。
+
+```dart
+Image(image: AssetEntityImageProvider(asset, isOriginal: false))
+```
+
+请查看示例以了解它如何进行展示。
 
 ### 注册资源变化回调
 ```dart
