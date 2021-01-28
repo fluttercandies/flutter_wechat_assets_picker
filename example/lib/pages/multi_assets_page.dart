@@ -96,7 +96,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                     final AssetEntity result =
                         await CameraPicker.pickFromCamera(
                       context,
-                      isAllowRecording: true,
+                      enableRecording: true,
                     );
                     if (result != null) {
                       Navigator.of(context)
