@@ -21,9 +21,9 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
     this.maxAssets = 9,
     this.pageSize = 320,
     this.pathThumbSize = 80,
-    List<A> selectedAssets,
+    required List<A> selectedAssets,
   }) {
-    if (selectedAssets?.isNotEmpty ?? false) {
+    if (selectedAssets.isNotEmpty) {
       _selectedAssets = List<A>.from(selectedAssets);
     }
   }
@@ -34,6 +34,8 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   /// Assets should be loaded per page.
   /// 资源选择的最大数量
+  ///
+  /// Use `null` to display all assets into a single grid.
   final int pageSize;
 
   /// Thumb size for path selector.
@@ -48,7 +50,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
     _isSwitchingPath = false;
     _pathEntityList.clear();
     _currentPathEntity = null;
-    _currentAssets = null;
+    _currentAssets.clear();
     _selectedAssets.clear();
     super.dispose();
   }
@@ -126,19 +128,18 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   ///
   /// Using [Map] in order to save the thumb data for the first asset under the path.
   /// 使用[Map]来保存路径下第一个资源的缩略数据。
-  final Map<P, Uint8List> _pathEntityList = <P, Uint8List>{};
+  final Map<P, Uint8List?> _pathEntityList = <P, Uint8List>{};
 
-  Map<P, Uint8List> get pathEntityList => _pathEntityList;
+  Map<P, Uint8List?> get pathEntityList => _pathEntityList;
 
   /// The path which is currently using.
   /// 正在查看的资源路径
-  P _currentPathEntity;
+  P? _currentPathEntity;
 
-  P get currentPathEntity => _currentPathEntity;
+  P? get currentPathEntity => _currentPathEntity;
 
-  set currentPathEntity(P value) {
-    assert(value != null);
-    if (value == _currentPathEntity) {
+  set currentPathEntity(P? value) {
+    if (value == null || value == _currentPathEntity) {
       return;
     }
     _currentPathEntity = value;
@@ -147,7 +148,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   /// Assets under current path entity.
   /// 正在查看的资源路径下的所有资源
-  List<A> _currentAssets;
+  List<A> _currentAssets = <A>[];
 
   List<A> get currentAssets => _currentAssets;
 
@@ -184,7 +185,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   /// Get thumb data from the first asset under the specific path entity.
   /// 获取指定路径下的第一个资源的缩略数据
-  Future<Uint8List> getFirstThumbFromPathEntity(P pathEntity);
+  Future<Uint8List?> getFirstThumbFromPathEntity(P pathEntity);
 
   /// Get assets under the specific path entity.
   /// 获取指定路径下的资源
@@ -221,14 +222,14 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 class DefaultAssetPickerProvider
     extends AssetPickerProvider<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerProvider({
+    required List<AssetEntity> selectedAssets,
     this.requestType = RequestType.image,
     this.sortPathDelegate = SortPathDelegate.common,
     this.filterOptions,
     int maxAssets = 9,
     int pageSize = 320,
     int pathThumbSize = 80,
-    List<AssetEntity> selectedAssets,
-    Duration routeDuration,
+    Duration routeDuration = const Duration(milliseconds: 300),
   }) : super(
           maxAssets: maxAssets,
           pageSize: pageSize,
@@ -250,14 +251,14 @@ class DefaultAssetPickerProvider
 
   /// Delegate to sort asset path entities.
   /// 资源路径排序的实现
-  final SortPathDelegate sortPathDelegate;
+  final SortPathDelegate? sortPathDelegate;
 
   /// Filter options for the picker.
   /// 选择器的筛选条件
   ///
   /// Will be merged into the base configuration.
   /// 将会与基础条件进行合并。
-  final FilterOptionGroup filterOptions;
+  final FilterOptionGroup? filterOptions;
 
   @override
   Future<void> getAssetPathList() async {
@@ -278,7 +279,7 @@ class DefaultAssetPickerProvider
 
     /// Merge user's filter option into base options if it's not null.
     if (filterOptions != null) {
-      options.merge(filterOptions);
+      options.merge(filterOptions!);
     }
 
     final List<AssetPathEntity> _list = await PhotoManager.getAssetPathList(
@@ -293,7 +294,7 @@ class DefaultAssetPickerProvider
       // Use sync method to avoid unnecessary wait.
       _pathEntityList[pathEntity] = null;
       if (requestType != RequestType.audio) {
-        getFirstThumbFromPathEntity(pathEntity).then((Uint8List data) {
+        getFirstThumbFromPathEntity(pathEntity).then((Uint8List? data) {
           _pathEntityList[pathEntity] = data;
         });
       }
@@ -310,8 +311,8 @@ class DefaultAssetPickerProvider
   Future<void> getAssetList() async {
     if (_pathEntityList.isNotEmpty) {
       _currentPathEntity = _pathEntityList.keys.elementAt(0);
-      totalAssetsCount = currentPathEntity.assetCount;
-      await getAssetsFromEntity(0, currentPathEntity);
+      totalAssetsCount = currentPathEntity!.assetCount;
+      await getAssetsFromEntity(0, currentPathEntity!);
       // Update total assets count.
     } else {
       isAssetsEmpty = true;
@@ -322,20 +323,21 @@ class DefaultAssetPickerProvider
   Future<void> getAssetsFromEntity(int page, AssetPathEntity pathEntity) async {
     _currentAssets = (await pathEntity.getAssetListPaged(
       page,
-      pageSize ?? pathEntity.assetCount,
+      pageSize,
     ))
         .toList();
-    _hasAssetsToDisplay = currentAssets?.isNotEmpty ?? false;
+    _hasAssetsToDisplay = currentAssets.isNotEmpty;
     notifyListeners();
   }
 
   @override
   Future<void> loadMoreAssets() async {
-    final List<AssetEntity> assets = (await currentPathEntity.getAssetListPaged(
+    final List<AssetEntity> assets =
+        (await currentPathEntity!.getAssetListPaged(
       currentAssetsListPage,
       pageSize,
     ))
-        .toList();
+            .toList();
     if (assets.isNotEmpty && currentAssets.contains(assets[0])) {
       return;
     } else {
@@ -352,11 +354,11 @@ class DefaultAssetPickerProvider
     _currentPathEntity = pathEntity;
     _totalAssetsCount = pathEntity.assetCount;
     notifyListeners();
-    getAssetsFromEntity(0, currentPathEntity);
+    getAssetsFromEntity(0, currentPathEntity!);
   }
 
   @override
-  Future<Uint8List> getFirstThumbFromPathEntity(
+  Future<Uint8List?> getFirstThumbFromPathEntity(
     AssetPathEntity pathEntity,
   ) async {
     final AssetEntity asset = (await pathEntity.getAssetListRange(
@@ -364,7 +366,7 @@ class DefaultAssetPickerProvider
       end: 1,
     ))
         .elementAt(0);
-    final Uint8List assetData =
+    final Uint8List? assetData =
         await asset.thumbDataWithSize(pathThumbSize, pathThumbSize);
     return assetData;
   }

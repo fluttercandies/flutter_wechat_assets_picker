@@ -9,7 +9,6 @@ import 'package:flutter/widgets.dart';
 
 import 'constants.dart';
 
-export 'package:extended_image/extended_image.dart';
 export 'package:photo_manager/photo_manager.dart';
 export 'package:provider/provider.dart';
 export 'package:video_player/video_player.dart';
@@ -30,7 +29,6 @@ export '../widget/builder/slide_page_transition_builder.dart';
 export '../widget/builder/video_page_builder.dart';
 export '../widget/fixed_appbar.dart';
 export '../widget/platform_progress_indicator.dart';
-export '../widget/rounded_check_box.dart';
 
 export 'colors.dart';
 export 'custom_scroll_physics.dart';

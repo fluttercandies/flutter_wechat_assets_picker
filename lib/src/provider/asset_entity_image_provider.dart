@@ -12,7 +12,7 @@ import '../constants/constants.dart';
 
 @immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
-  AssetEntityImageProvider(
+  const AssetEntityImageProvider(
     this.entity, {
     this.scale = 1.0,
     this.thumbSize = Constants.defaultPreviewThumbSize,
@@ -20,13 +20,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   }) : assert(
           isOriginal || thumbSize?.length == 2,
           'thumbSize must contain and only contain two integers when it\'s not original',
-        ) {
-    if (!isOriginal && thumbSize?.length != 2) {
-      throw ArgumentError(
-        'thumbSize must contain and only contain two integers when it\'s not original',
-      );
-    }
-  }
+        );
 
   final AssetEntity entity;
 
@@ -36,7 +30,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   /// Size for thumb data.
   /// 缩略图的大小
-  final List<int> thumbSize;
+  final List<int>? thumbSize;
 
   /// Choose if original data or thumb data should be loaded.
   /// 选择载入原数据还是缩略图数据
@@ -73,15 +67,19 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     DecoderCallback decode,
   ) async {
     assert(key == this);
-    Uint8List data;
-    if (isOriginal ?? false) {
+    Uint8List? data;
+    if (isOriginal) {
       if (imageFileType == ImageFileType.heic) {
-        data = await (await key.entity.file).readAsBytes();
+        data = await (await key.entity.file)?.readAsBytes();
       } else {
         data = await key.entity.originBytes;
       }
     } else {
-      data = await key.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
+      final List<int> _thumbSize = thumbSize!;
+      data = await key.entity.thumbDataWithSize(_thumbSize[0], _thumbSize[1]);
+    }
+    if (data == null) {
+      throw AssertionError('Null in entity\'s data.');
     }
     return decode(data);
   }
@@ -93,8 +91,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// so this method might not work sometime.
   /// 并非所有的系统版本都支持读取文件名，所以该方法有时无法返回正确的type。
   ImageFileType _getType() {
-    ImageFileType type;
-    final String extension = entity.title?.split('.')?.last;
+    ImageFileType? type;
+    final String? extension = entity.title?.split('.').last;
     if (extension != null) {
       switch (extension.toLowerCase()) {
         case 'jpg':
@@ -118,7 +116,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
           break;
       }
     }
-    return type;
+    return type ?? ImageFileType.other;
   }
 
   @override

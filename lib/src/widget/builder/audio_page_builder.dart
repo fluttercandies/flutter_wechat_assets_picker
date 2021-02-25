@@ -10,9 +10,9 @@ import 'package:wechat_assets_picker/src/constants/constants.dart';
 
 class AudioPageBuilder extends StatefulWidget {
   const AudioPageBuilder({
-    Key key,
-    this.asset,
-    this.state,
+    Key? key,
+    required this.asset,
+    required this.state,
   }) : super(key: key);
 
   /// Asset currently displayed.
@@ -35,7 +35,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
 
   /// Create a [VideoPlayerController] instance for the page builder state.
   /// 创建一个 [VideoPlayerController] 的实例
-  VideoPlayerController _controller;
+  late final VideoPlayerController _controller;
 
   /// Whether the audio loaded.
   /// 音频是否已经加载完成
@@ -47,11 +47,11 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
 
   /// Whether the controller is playing.
   /// 播放控制器是否在播放
-  bool get isControllerPlaying => _controller?.value?.isPlaying ?? false;
+  bool get isControllerPlaying => _controller.value.isPlaying;
 
   /// Duration of the audio.
   /// 音频的时长
-  Duration assetDuration;
+  late final Duration assetDuration;
 
   @override
   void initState() {
@@ -64,9 +64,9 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
     /// Stop and dispose player instance to stop playing
     /// when dispose (e.g. page switched).
     /// 状态销毁时停止并销毁实例（例如页面切换时）
-    _controller?.pause();
-    _controller?.removeListener(audioPlayerListener);
-    _controller?.dispose();
+    _controller.pause();
+    _controller.removeListener(audioPlayerListener);
+    _controller.dispose();
     super.dispose();
   }
 
@@ -74,9 +74,9 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   /// 通过content地址加载资源
   Future<void> openAudioFile() async {
     try {
-      final String url = await widget.asset.getMediaUrl();
+      final String? url = await widget.asset.getMediaUrl();
       assetDuration = Duration(seconds: widget.asset.duration);
-      _controller = VideoPlayerController.network(url);
+      _controller = VideoPlayerController.network(url!);
       await _controller.initialize();
       _controller.addListener(audioPlayerListener);
     } catch (e) {
@@ -100,61 +100,62 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
     }
 
     /// Add the current position into the stream.
-    if (_controller?.value?.position != null) {
-      durationStreamController.add(_controller.value.position);
-    }
+    durationStreamController.add(_controller.value.position);
   }
 
   /// Title widget.
   /// 标题组件
-  Widget get titleWidget => Text(
-        widget.asset.title,
-        style: const TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.normal,
-        ),
-      );
+  Widget get titleWidget {
+    return Text(
+      widget.asset.title ?? '',
+      style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
+    );
+  }
 
   /// Button to control audio play/pause.
   /// 控制音频播放或暂停的按钮
-  Widget get audioControlButton => GestureDetector(
-        onTap: () {
-          if (isPlaying) {
-            _controller.pause();
-          } else {
-            _controller.play();
-          }
-        },
-        child: Container(
-          margin: const EdgeInsets.all(20.0),
-          decoration: const BoxDecoration(
-            boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            isPlaying ? Icons.pause_circle_outline : Icons.play_circle_filled,
-            size: 70.0,
-          ),
+  Widget get audioControlButton {
+    return GestureDetector(
+      onTap: () {
+        if (isPlaying) {
+          _controller.pause();
+        } else {
+          _controller.play();
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.all(20.0),
+        decoration: const BoxDecoration(
+          boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
+          shape: BoxShape.circle,
         ),
-      );
+        child: Icon(
+          isPlaying ? Icons.pause_circle_outline : Icons.play_circle_filled,
+          size: 70.0,
+        ),
+      ),
+    );
+  }
 
   /// Duration indicator for the audio.
   /// 音频的时长指示器
-  Widget get durationIndicator => StreamBuilder<Duration>(
-        initialData: Duration.zero,
-        stream: durationStreamController.stream,
-        builder: (BuildContext _, AsyncSnapshot<Duration> data) {
-          return Text(
-            '${Constants.textDelegate.durationIndicatorBuilder(data.data)}'
-            ' / '
-            '${Constants.textDelegate.durationIndicatorBuilder(assetDuration)}',
-            style: const TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.normal,
-            ),
-          );
-        },
-      );
+  Widget get durationIndicator {
+    return StreamBuilder<Duration>(
+      initialData: Duration.zero,
+      stream: durationStreamController.stream,
+      builder: (BuildContext _, AsyncSnapshot<Duration> data) {
+        return Text(
+          '${Constants.textDelegate.durationIndicatorBuilder(data.data!)}'
+          ' / '
+          '${Constants.textDelegate.durationIndicatorBuilder(assetDuration)}',
+          style: const TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.normal,
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

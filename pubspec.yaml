@@ -4,14 +4,14 @@ version: 5.0.0-dev.4
 homepage: https://github.com/fluttercandies/flutter_wechat_assets_picker
 
 environment:
-  sdk: ">=2.9.0 <3.0.0"
-  flutter: ">=1.20.0"
+  sdk: ">=2.12.0-0 <3.0.0"
+  flutter: ">=1.22.6"
 
 dependencies:
   flutter:
     sdk: flutter
 
   extended_image: ^1.5.0
-  photo_manager: ^0.6.0
-  provider: ^4.3.3
-  video_player: ^1.0.1
+  photo_manager: ^1.0.0-nullsafety.0
+  provider: ^5.0.0-nullsafety.5
+  video_player: ^2.0.0

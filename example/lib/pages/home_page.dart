@@ -14,7 +14,7 @@ import 'multi_assets_page.dart';
 import 'single_assets_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -42,8 +42,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void pageControllerListener() {
-    final int currentPage = controller.page.round();
-    if (currentPage != currentIndex) {
+    final int? currentPage = controller.page?.round();
+    if (currentPage != null && currentPage != currentIndex) {
       currentIndex = currentPage;
       if (mounted) {
         setState(() {});

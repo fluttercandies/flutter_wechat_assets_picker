@@ -8,8 +8,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/services.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,6 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../constants/extensions.dart';
 import '../constants/screens.dart';
-import '../rounded_check_box.dart';
 
 const Color themeColor = Color(0xff00bc56);
 
@@ -43,7 +42,7 @@ class _CustomPickerPageState extends State<CustomPickerPage> {
         builder: FileAssetPickerBuilder(provider: provider),
       ),
     );
-    final List<File> result = await Navigator.of(
+    final List<File>? result = await Navigator.of(
       context,
       rootNavigator: true,
     ).push<List<File>>(
@@ -186,9 +185,9 @@ class _CustomPickerPageState extends State<CustomPickerPage> {
                   return FadeTransition(opacity: animation, child: child);
                 },
               );
-              final List<File> result =
+              final List<File>? result =
                   await Navigator.of(context).push<List<File>>(pageRoute);
-              if (result != fileList && result != null) {
+              if (result != null && result != fileList) {
                 fileList
                   ..clear()
                   ..addAll(result);
@@ -267,7 +266,7 @@ class _CustomPickerPageState extends State<CustomPickerPage> {
                 paddingText(
                   'Put files into the path to see how this custom picker work.',
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: callPicker,
                   child: const Text(
                     '🎁 Call the Picker',
@@ -297,7 +296,7 @@ const List<String> imagesExtensions = <String>[
 
 class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   FileAssetPickerProvider({
-    List<File> selectedAssets,
+    required List<File> selectedAssets,
   }) : super(selectedAssets: selectedAssets) {
     Future<void>.delayed(const Duration(milliseconds: 300), () async {
       await getAssetPathList();
@@ -309,10 +308,12 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   Future<void> getAssetPathList() async {
     currentAssets = <File>[];
     pathEntityList.clear();
-    final Directory directory = await getExternalStorageDirectory();
-    pathEntityList[directory] = null;
-    currentPathEntity = directory;
-    pathEntityList[directory] = await getFirstThumbFromPathEntity(directory);
+    final Directory? directory = await getExternalStorageDirectory();
+    if (directory != null) {
+      pathEntityList[directory] = null;
+      currentPathEntity = directory;
+      pathEntityList[directory] = await getFirstThumbFromPathEntity(directory);
+    }
   }
 
   @override
@@ -331,7 +332,7 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<Uint8List> getFirstThumbFromPathEntity(Directory pathEntity) async {
+  Future<Uint8List?> getFirstThumbFromPathEntity(Directory pathEntity) async {
     final List<FileSystemEntity> entities =
         pathEntity.listSync().whereType<File>().toList();
     currentAssets.clear();
@@ -363,14 +364,14 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
     currentPathEntity = pathEntity;
     totalAssetsCount = 0;
     notifyListeners();
-    getAssetsFromEntity(0, currentPathEntity);
+    getAssetsFromEntity(0, currentPathEntity!);
   }
 }
 
 class FileAssetPickerBuilder
     extends AssetPickerBuilderDelegate<File, Directory> {
   FileAssetPickerBuilder({
-    @required FileAssetPickerProvider provider,
+    required FileAssetPickerProvider provider,
   }) : super(provider: provider);
 
   AssetsPickerTextDelegate get textDelegate =>
@@ -380,12 +381,12 @@ class FileAssetPickerBuilder
 
   Curve get switchingPathCurve => Curves.easeInOut;
 
-  Future<List<File>> pushToPicker(
+  Future<List<File>?> pushToPicker(
     BuildContext context, {
-    @required int index,
-    @required List<File> previewAssets,
-    List<File> selectedAssets,
-    FileAssetPickerProvider selectorProvider,
+    required int index,
+    required List<File> previewAssets,
+    List<File>? selectedAssets,
+    FileAssetPickerProvider? selectorProvider,
   }) {
     final Widget viewer = AssetPickerViewer<File, Directory>(
       builder: FileAssetPickerViewerBuilderDelegate(
@@ -416,7 +417,7 @@ class FileAssetPickerBuilder
         return FadeTransition(opacity: animation, child: child);
       },
     );
-    return Navigator.of(context).push<List<File>>(pageRoute);
+    return Navigator.of(context).push<List<File>?>(pageRoute);
   }
 
   @override
@@ -432,11 +433,7 @@ class FileAssetPickerBuilder
                 FileAssetPickerProvider provider,
               ) =>
                   provider.hasAssetsToDisplay,
-              builder: (
-                BuildContext _,
-                bool hasAssetsToDisplay,
-                Widget __,
-              ) {
+              builder: (_, bool hasAssetsToDisplay, __) {
                 return AnimatedSwitcher(
                   duration: switchingPathDuration,
                   child: hasAssetsToDisplay
@@ -472,7 +469,12 @@ class FileAssetPickerBuilder
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
-      actions: !isAppleOS ? <Widget>[confirmButton(context)] : null,
+      actions: !isAppleOS
+          ? <Widget>[
+              confirmButton(context),
+              const SizedBox(width: 14.0),
+            ]
+          : null,
     );
   }
 
@@ -483,15 +485,11 @@ class FileAssetPickerBuilder
         Positioned.fill(
           child: Selector<FileAssetPickerProvider, bool>(
             selector: (
-              BuildContext _,
-              FileAssetPickerProvider provider,
+              _,
+              FileAssetPickerProvider p,
             ) =>
-                provider.hasAssetsToDisplay,
-            builder: (
-              BuildContext _,
-              bool hasAssetsToDisplay,
-              Widget __,
-            ) {
+                p.hasAssetsToDisplay,
+            builder: (_, bool hasAssetsToDisplay, __) {
               return AnimatedSwitcher(
                 duration: switchingPathDuration,
                 child: hasAssetsToDisplay
@@ -501,7 +499,8 @@ class FileAssetPickerBuilder
                             child: Stack(
                               children: <Widget>[
                                 Positioned.fill(
-                                    child: assetsGridBuilder(context)),
+                                  child: assetsGridBuilder(context),
+                                ),
                                 if (!isSingleAssetMode || isAppleOS)
                                   PositionedDirectional(
                                     bottom: 0.0,
@@ -514,7 +513,7 @@ class FileAssetPickerBuilder
                           pathEntityListWidget(context),
                         ],
                       )
-                    : assetsEmptyIndicator(context),
+                    : loadingIndicator(context),
               );
             },
           ),
@@ -584,11 +583,7 @@ class FileAssetPickerBuilder
   Widget confirmButton(BuildContext context) {
     return Center(
       child: Consumer<FileAssetPickerProvider>(
-        builder: (
-          BuildContext _,
-          FileAssetPickerProvider provider,
-          Widget __,
-        ) {
+        builder: (_, FileAssetPickerProvider provider, __) {
           return MaterialButton(
             minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
             height: appBarItemHeight,
@@ -605,8 +600,8 @@ class FileAssetPickerBuilder
                   : textDelegate.confirm,
               style: TextStyle(
                 color: provider.isSelectedNotEmpty
-                    ? theme.textTheme.bodyText1.color
-                    : theme.textTheme.caption.color,
+                    ? theme.textTheme.bodyText1?.color
+                    : theme.textTheme.caption?.color,
                 fontSize: 17.0,
                 fontWeight: FontWeight.normal,
               ),
@@ -631,7 +626,7 @@ class FileAssetPickerBuilder
         image: imageProvider,
         fit: BoxFit.cover,
         loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
+          Widget loader = const SizedBox.shrink();
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               loader = const ColoredBox(color: Color(0x10ffffff));
@@ -660,21 +655,18 @@ class FileAssetPickerBuilder
   Widget loadingIndicator(BuildContext context) {
     return Center(
       child: Selector<FileAssetPickerProvider, bool>(
-        selector: (
-          BuildContext _,
-          FileAssetPickerProvider provider,
-        ) =>
-            provider.isAssetsEmpty,
-        builder: (BuildContext _, bool isAssetsEmpty, Widget __) {
+        selector: (_, FileAssetPickerProvider p) => p.isAssetsEmpty,
+        builder: (_, bool isAssetsEmpty, __) {
           if (isAssetsEmpty) {
-            return Text(textDelegate.emptyPlaceHolder);
+            return const Text('Nothing here.');
           } else {
             return Center(
               child: SizedBox.fromSize(
                 size: Size.square(Screens.width / gridCount / 3),
                 child: CircularProgressIndicator(
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(theme.iconTheme.color),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    theme.iconTheme.color ?? Colors.grey,
+                  ),
                 ),
               ),
             );
@@ -687,12 +679,8 @@ class FileAssetPickerBuilder
   @override
   Widget pathEntityListBackdrop(BuildContext context) {
     return Selector<FileAssetPickerProvider, bool>(
-      selector: (
-        BuildContext _,
-        FileAssetPickerProvider provider,
-      ) =>
-          provider.isSwitchingPath,
-      builder: (BuildContext context, bool isSwitchingPath, Widget __) {
+      selector: (_, FileAssetPickerProvider p) => p.isSwitchingPath,
+      builder: (BuildContext context, bool isSwitchingPath, _) {
         return IgnorePointer(
           ignoring: !isSwitchingPath,
           child: GestureDetector(
@@ -715,12 +703,8 @@ class FileAssetPickerBuilder
     final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
     final double maxHeight = Screens.height * 0.825;
     return Selector<FileAssetPickerProvider, bool>(
-      selector: (
-        BuildContext _,
-        FileAssetPickerProvider provider,
-      ) =>
-          provider.isSwitchingPath,
-      builder: (BuildContext _, bool isSwitchingPath, Widget __) {
+      selector: (_, FileAssetPickerProvider p) => p.isSwitchingPath,
+      builder: (_, bool isSwitchingPath, __) {
         return AnimatedPositioned(
           duration: switchingPathDuration,
           curve: switchingPathCurve,
@@ -746,17 +730,9 @@ class FileAssetPickerBuilder
                 color: theme.colorScheme.background,
               ),
               child:
-                  Selector<FileAssetPickerProvider, Map<Directory, Uint8List>>(
-                selector: (
-                  BuildContext _,
-                  FileAssetPickerProvider provider,
-                ) =>
-                    provider.pathEntityList,
-                builder: (
-                  BuildContext _,
-                  Map<Directory, Uint8List> pathEntityList,
-                  Widget __,
-                ) {
+                  Selector<FileAssetPickerProvider, Map<Directory, Uint8List?>>(
+                selector: (_, FileAssetPickerProvider p) => p.pathEntityList,
+                builder: (_, Map<Directory, Uint8List?> pathEntityList, __) {
                   return ListView.separated(
                     padding: const EdgeInsets.only(top: 1.0),
                     itemCount: pathEntityList.length,
@@ -785,11 +761,7 @@ class FileAssetPickerBuilder
   Widget pathEntitySelector(BuildContext context) {
     return UnconstrainedBox(
       child: Consumer<FileAssetPickerProvider>(
-        builder: (
-          BuildContext _,
-          FileAssetPickerProvider provider,
-          Widget __,
-        ) {
+        builder: (_, FileAssetPickerProvider provider, __) {
           return GestureDetector(
             onTap: () {
               provider.isSwitchingPath = !provider.isSwitchingPath;
@@ -808,7 +780,7 @@ class FileAssetPickerBuilder
                   if (provider.currentPathEntity != null)
                     Flexible(
                       child: Text(
-                        provider.currentPathEntity.path ?? '',
+                        provider.currentPathEntity!.path,
                         style: const TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.normal,
@@ -822,7 +794,7 @@ class FileAssetPickerBuilder
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: theme.iconTheme.color.withOpacity(0.5),
+                        color: theme.iconTheme.color?.withOpacity(0.5),
                       ),
                       child: Transform.rotate(
                         angle: provider.isSwitchingPath ? math.pi : 0.0,
@@ -848,15 +820,12 @@ class FileAssetPickerBuilder
   Widget pathEntityWidget(BuildContext context, Directory path) {
     Widget builder(
       BuildContext context,
-      Map<Directory, Uint8List> pathEntityList,
-      Widget __,
+      Map<Directory, Uint8List?> pathEntityList,
+      Widget? child,
     ) {
-      final Uint8List thumbData = pathEntityList[path];
+      final Uint8List? thumbData = pathEntityList[path];
       if (thumbData != null) {
-        return Image.memory(
-          pathEntityList[path],
-          fit: BoxFit.cover,
-        );
+        return Image.memory(thumbData, fit: BoxFit.cover);
       } else {
         return ColoredBox(
           color: theme.colorScheme.primary.withOpacity(0.12),
@@ -877,7 +846,7 @@ class FileAssetPickerBuilder
                 child: AspectRatio(
                   aspectRatio: 1.0,
                   child: Selector<FileAssetPickerProvider,
-                      Map<Directory, Uint8List>>(
+                      Map<Directory, Uint8List?>>(
                     selector: (
                       BuildContext _,
                       FileAssetPickerProvider provider,
@@ -893,7 +862,7 @@ class FileAssetPickerBuilder
                   child: Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: Text(
-                      path.path ?? '',
+                      path.path,
                       style: const TextStyle(fontSize: 18.0),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -902,16 +871,9 @@ class FileAssetPickerBuilder
                 ),
               ),
               Selector<FileAssetPickerProvider, Directory>(
-                selector: (
-                  BuildContext _,
-                  FileAssetPickerProvider provider,
-                ) =>
-                    provider.currentPathEntity,
-                builder: (
-                  BuildContext _,
-                  Directory currentPathEntity,
-                  Widget __,
-                ) {
+                selector: (_, FileAssetPickerProvider p) =>
+                    p.currentPathEntity!,
+                builder: (_, Directory currentPathEntity, __) {
                   if (currentPathEntity == path) {
                     return const AspectRatio(
                       aspectRatio: 1.0,
@@ -932,13 +894,12 @@ class FileAssetPickerBuilder
   @override
   Widget previewButton(BuildContext context) {
     return Selector<FileAssetPickerProvider, bool>(
-      selector: (BuildContext _, FileAssetPickerProvider provider) =>
-          provider.isSelectedNotEmpty,
-      builder: (BuildContext _, bool isSelectedNotEmpty, Widget __) {
+      selector: (_, FileAssetPickerProvider p) => p.isSelectedNotEmpty,
+      builder: (_, bool isSelectedNotEmpty, __) {
         return GestureDetector(
           onTap: isSelectedNotEmpty
               ? () async {
-                  final List<File> result = await pushToPicker(
+                  final List<File>? result = await pushToPicker(
                     context,
                     index: 0,
                     previewAssets: provider.selectedAssets,
@@ -953,13 +914,8 @@ class FileAssetPickerBuilder
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Selector<FileAssetPickerProvider, List<File>>(
-              selector: (BuildContext _, FileAssetPickerProvider provider) =>
-                  provider.selectedAssets,
-              builder: (
-                BuildContext _,
-                List<File> selectedAssets,
-                Widget __,
-              ) {
+              selector: (_, FileAssetPickerProvider p) => p.selectedAssets,
+              builder: (_, List<File> selectedAssets, __) {
                 return Text(
                   isSelectedNotEmpty
                       ? '${textDelegate.preview}'
@@ -968,7 +924,7 @@ class FileAssetPickerBuilder
                   style: TextStyle(
                     color: isSelectedNotEmpty
                         ? null
-                        : theme.textTheme.caption.color,
+                        : theme.textTheme.caption?.color,
                     fontSize: 18.0,
                   ),
                 );
@@ -983,13 +939,10 @@ class FileAssetPickerBuilder
   @override
   Widget selectIndicator(BuildContext context, File asset) {
     return Selector<FileAssetPickerProvider, List<File>>(
-      selector: (BuildContext _, FileAssetPickerProvider provider) =>
-          provider.selectedAssets,
-      builder: (BuildContext _, List<File> selectedAssets, Widget __) {
-        final bool isSelected = selectedAssets
-                .where((File f) => f.path == asset.path)
-                ?.isNotEmpty ??
-            false;
+      selector: (_, FileAssetPickerProvider p) => p.selectedAssets,
+      builder: (_, List<File> selectedAssets, __) {
+        final bool isSelected =
+            selectedAssets.where((File f) => f.path == asset.path).isNotEmpty;
         int index = 0;
         if (isSelected) {
           index = selectedAssets.indexWhere((File f) => f.path == asset.path);
@@ -1012,7 +965,8 @@ class FileAssetPickerBuilder
             },
             child: Container(
               margin: EdgeInsets.all(
-                  Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0)),
+                Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
+              ),
               width: indicatorSize,
               height: indicatorSize,
               alignment: AlignmentDirectional.topEnd,
@@ -1037,7 +991,7 @@ class FileAssetPickerBuilder
                               '${index + 1}',
                               style: TextStyle(
                                 color: isSelected
-                                    ? theme.textTheme.bodyText1.color
+                                    ? theme.textTheme.bodyText1?.color
                                     : null,
                                 fontSize: isAppleOS ? 16.0 : 14.0,
                                 fontWeight: isAppleOS
@@ -1058,17 +1012,14 @@ class FileAssetPickerBuilder
   @override
   Widget selectedBackdrop(BuildContext context, int index, File asset) {
     return Selector<FileAssetPickerProvider, List<File>>(
-      selector: (BuildContext _, FileAssetPickerProvider provider) =>
-          provider.selectedAssets,
-      builder: (BuildContext _, List<File> selectedAssets, Widget __) {
-        final bool isSelected = selectedAssets
-                .where((File f) => f.path == asset.path)
-                ?.isNotEmpty ??
-            false;
+      selector: (_, FileAssetPickerProvider p) => p.selectedAssets,
+      builder: (_, List<File> selectedAssets, __) {
+        final bool isSelected =
+            selectedAssets.where((File f) => f.path == asset.path).isNotEmpty;
         return Positioned.fill(
           child: GestureDetector(
             onTap: () async {
-              final List<File> result = await pushToPicker(
+              final List<File>? result = await pushToPicker(
                 context,
                 index: index,
                 previewAssets: provider.currentAssets,
@@ -1109,12 +1060,12 @@ class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
 class FileAssetPickerViewerBuilderDelegate
     extends AssetPickerViewerBuilderDelegate<File, Directory> {
   FileAssetPickerViewerBuilderDelegate({
-    @required AssetPickerViewerProvider<File> provider,
-    @required List<File> previewAssets,
-    @required ThemeData themeData,
-    @required int currentIndex,
-    List<File> selectedAssets,
-    AssetPickerProvider<File, Directory> selectorProvider,
+    required List<File> previewAssets,
+    required ThemeData themeData,
+    required int currentIndex,
+    List<File>? selectedAssets,
+    AssetPickerProvider<File, Directory>? selectorProvider,
+    AssetPickerViewerProvider<File>? provider,
   }) : super(
           provider: provider,
           previewAssets: previewAssets,
@@ -1126,18 +1077,17 @@ class FileAssetPickerViewerBuilderDelegate
 
   bool isDisplayingDetail = true;
 
-  AnimationController _doubleTapAnimationController;
-  Animation<double> _doubleTapCurveAnimation;
-  Animation<double> _doubleTapAnimation;
+  late final AnimationController _doubleTapAnimationController;
+  late final Animation<double> _doubleTapCurveAnimation;
+  Animation<double>? _doubleTapAnimation;
+  late VoidCallback _doubleTapListener;
 
-  VoidCallback _doubleTapListener;
-
-  PageController pageController;
+  late final PageController pageController;
 
   AssetsPickerTextDelegate get textDelegate =>
       DefaultAssetsPickerTextDelegate();
 
-  void switchDisplayingDetail({bool value}) {
+  void switchDisplayingDetail({bool? value}) {
     isDisplayingDetail = value ?? !isDisplayingDetail;
     if (viewerState.mounted) {
       // ignore: invalid_use_of_protected_member
@@ -1156,7 +1106,7 @@ class FileAssetPickerViewerBuilderDelegate
       ..reset();
     _doubleTapListener = () {
       state.handleDoubleTap(
-        scale: _doubleTapAnimation.value,
+        scale: _doubleTapAnimation!.value,
         doubleTapPosition: pointerDownPosition,
       );
     };
@@ -1165,13 +1115,12 @@ class FileAssetPickerViewerBuilderDelegate
       end: end,
     ).animate(_doubleTapCurveAnimation)
       ..addListener(_doubleTapListener);
-
     _doubleTapAnimationController.forward();
   }
 
   Future<bool> syncSelectedAssetsWhenPop() async {
     if (provider?.currentlySelectedAssets != null) {
-      selectorProvider.selectedAssets = provider.currentlySelectedAssets;
+      selectorProvider?.selectedAssets = provider!.currentlySelectedAssets;
     }
     return true;
   }
@@ -1222,13 +1171,13 @@ class FileAssetPickerViewerBuilderDelegate
         child: Column(
           children: <Widget>[
             ChangeNotifierProvider<AssetPickerViewerProvider<File>>.value(
-              value: provider,
+              value: provider!,
               child: SizedBox(
                 height: 90.0,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  itemCount: selectedAssets.length,
+                  itemCount: selectedAssets!.length,
                   itemBuilder: bottomDetailItemBuilder,
                 ),
               ),
@@ -1247,7 +1196,7 @@ class FileAssetPickerViewerBuilderDelegate
                     if (isAppleOS && provider != null)
                       ChangeNotifierProvider<
                           AssetPickerViewerProvider<File>>.value(
-                        value: provider,
+                        value: provider!,
                         child: confirmButton(context),
                       )
                     else
@@ -1272,7 +1221,7 @@ class FileAssetPickerViewerBuilderDelegate
           initialData: currentIndex,
           stream: pageStreamController.stream,
           builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
-            final File asset = selectedAssets.elementAt(index);
+            final File asset = selectedAssets!.elementAt(index);
             final bool isViewing = asset.path == currentAsset.path;
             return GestureDetector(
               onTap: () {
@@ -1281,20 +1230,12 @@ class FileAssetPickerViewerBuilderDelegate
                 }
               },
               child: Selector<AssetPickerViewerProvider<File>, List<File>>(
-                selector: (
-                  BuildContext _,
-                  AssetPickerViewerProvider<File> provider,
-                ) =>
-                    provider.currentlySelectedAssets,
-                builder: (
-                  BuildContext _,
-                  List<File> currentlySelectedAssets,
-                  Widget __,
-                ) {
+                selector: (_, AssetPickerViewerProvider<File> p) =>
+                    p.currentlySelectedAssets,
+                builder: (_, List<File> currentlySelectedAssets, __) {
                   final bool isSelected = currentlySelectedAssets
-                          .where((File f) => f.path == asset.path)
-                          ?.isNotEmpty ??
-                      false;
+                      .where((File f) => f.path == asset.path)
+                      .isNotEmpty;
                   return Stack(
                     children: <Widget>[
                       Positioned.fill(
@@ -1348,7 +1289,7 @@ class FileAssetPickerViewerBuilderDelegate
                 stream: pageStreamController.stream,
                 builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
                   return Text(
-                    '${snapshot.data + 1}/${previewAssets.length}',
+                    '${snapshot.data! + 1}/${previewAssets.length}',
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
@@ -1405,13 +1346,9 @@ class FileAssetPickerViewerBuilderDelegate
   @override
   Widget confirmButton(BuildContext context) {
     return ChangeNotifierProvider<AssetPickerViewerProvider<File>>.value(
-      value: provider,
+      value: provider!,
       child: Consumer<AssetPickerViewerProvider<File>>(
-        builder: (
-          BuildContext _,
-          AssetPickerViewerProvider<File> provider,
-          Widget __,
-        ) {
+        builder: (_, AssetPickerViewerProvider<File> provider, __) {
           return MaterialButton(
             minWidth: () {
               return provider.isSelectedNotEmpty ? 48.0 : 20.0;
@@ -1432,15 +1369,15 @@ class FileAssetPickerViewerBuilderDelegate
                   return '${textDelegate.confirm}'
                       '(${provider.currentlySelectedAssets.length}'
                       '/'
-                      '${selectorProvider.maxAssets})';
+                      '${selectorProvider!.maxAssets})';
                 }
                 return textDelegate.confirm;
               }(),
               style: TextStyle(
                 color: () {
                   return provider.isSelectedNotEmpty
-                      ? themeData.textTheme.bodyText1.color
-                      : themeData.textTheme.caption.color;
+                      ? themeData.textTheme.bodyText1?.color
+                      : themeData.textTheme.caption?.color;
                 }(),
                 fontSize: 17.0,
                 fontWeight: FontWeight.normal,
@@ -1477,8 +1414,8 @@ class FileAssetPickerViewerBuilderDelegate
 
   @override
   void dispose() {
-    _doubleTapAnimationController?.dispose();
-    pageStreamController?.close();
+    _doubleTapAnimationController.dispose();
+    pageStreamController.close();
   }
 
   @override
@@ -1491,19 +1428,15 @@ class FileAssetPickerViewerBuilderDelegate
           builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
             return ChangeNotifierProvider<
                 AssetPickerViewerProvider<File>>.value(
-              value: provider,
+              value: provider!,
               child: Selector<AssetPickerViewerProvider<File>, List<File>>(
                 selector: (
                   BuildContext _,
                   AssetPickerViewerProvider<File> provider,
                 ) =>
                     provider.currentlySelectedAssets,
-                builder: (
-                  BuildContext _,
-                  List<File> currentlySelectedAssets,
-                  Widget __,
-                ) {
-                  final File asset = previewAssets.elementAt(snapshot.data);
+                builder: (_, List<File> currentlySelectedAssets, __) {
+                  final File asset = previewAssets.elementAt(snapshot.data!);
                   final bool isSelected =
                       currentlySelectedAssets.contains(asset);
                   if (isAppleOS) {
@@ -1532,9 +1465,9 @@ class FileAssetPickerViewerBuilderDelegate
         behavior: HitTestBehavior.opaque,
         onTap: () {
           if (isSelected) {
-            provider.unSelectAssetEntity(asset);
+            provider?.unSelectAssetEntity(asset);
           } else {
-            provider.selectAssetEntity(asset);
+            provider?.selectAssetEntity(asset);
           }
         },
         child: AnimatedContainer(
@@ -1542,9 +1475,7 @@ class FileAssetPickerViewerBuilderDelegate
           width: 28.0,
           decoration: BoxDecoration(
             border: !isSelected
-                ? Border.all(
-                    color: themeData.iconTheme.color,
-                  )
+                ? Border.all(color: themeData.iconTheme.color!)
                 : null,
             color: isSelected ? themeData.buttonColor : null,
             shape: BoxShape.circle,
@@ -1566,13 +1497,13 @@ class FileAssetPickerViewerBuilderDelegate
   }
 
   Widget _androidSelectButton(bool isSelected, File asset) {
-    return RoundedCheckbox(
+    return Checkbox(
       value: isSelected,
-      onChanged: (bool value) {
+      onChanged: (bool? value) {
         if (isSelected) {
-          provider.unSelectAssetEntity(asset);
+          provider?.unSelectAssetEntity(asset);
         } else {
-          provider.selectAssetEntity(asset);
+          provider?.selectAssetEntity(asset);
         }
       },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1582,7 +1513,7 @@ class FileAssetPickerViewerBuilderDelegate
 
 class SlidePageTransitionBuilder<T> extends PageRoute<T> {
   SlidePageTransitionBuilder({
-    @required this.builder,
+    required this.builder,
     this.transitionCurve = Curves.easeIn,
     this.transitionDuration = const Duration(milliseconds: 500),
   });
@@ -1604,10 +1535,10 @@ class SlidePageTransitionBuilder<T> extends PageRoute<T> {
   final bool maintainState = true;
 
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   Widget buildPage(

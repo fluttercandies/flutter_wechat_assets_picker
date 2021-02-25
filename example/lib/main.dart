@@ -30,13 +30,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Screens.mediaQuery.platformBrightness,
         primarySwatch: themeColor.swatch,
-        cursorColor: themeColor,
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: themeColor,
+        ),
       ),
       home: const SplashPage(),
-      builder: (BuildContext c, Widget w) {
+      builder: (BuildContext c, Widget? w) {
         return ScrollConfiguration(
           behavior: const NoGlowScrollBehavior(),
-          child: w,
+          child: w!,
         );
       },
     );

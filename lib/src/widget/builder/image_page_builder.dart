@@ -3,14 +3,15 @@
 /// [Date] 2020/4/6 15:07
 ///
 import 'package:flutter/material.dart';
+import 'package:extended_image/extended_image.dart';
 
 import 'package:wechat_assets_picker/src/constants/constants.dart';
 
-class ImagePageBuilder extends StatelessWidget {
+class ImagePageBuilder extends StatefulWidget {
   const ImagePageBuilder({
-    Key key,
-    this.asset,
-    this.state,
+    Key? key,
+    required this.asset,
+    required this.state,
     this.previewThumbSize,
   }) : super(key: key);
 
@@ -22,10 +23,17 @@ class ImagePageBuilder extends StatelessWidget {
   /// 资源查看器的状态[State]
   final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
 
-  final List<int> previewThumbSize;
+  final List<int>? previewThumbSize;
 
+  @override
+  _ImagePageBuilderState createState() => _ImagePageBuilderState();
+}
+
+class _ImagePageBuilderState extends State<ImagePageBuilder> {
   DefaultAssetPickerViewerBuilderDelegate get builder =>
-      state.builder as DefaultAssetPickerViewerBuilderDelegate;
+      widget.state.builder as DefaultAssetPickerViewerBuilderDelegate;
+
+  bool loaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +42,9 @@ class ImagePageBuilder extends StatelessWidget {
       onTap: builder.switchDisplayingDetail,
       child: ExtendedImage(
         image: AssetEntityImageProvider(
-          asset,
-          isOriginal: previewThumbSize == null,
-          thumbSize: previewThumbSize,
+          widget.asset,
+          isOriginal: widget.previewThumbSize == null,
+          thumbSize: widget.previewThumbSize,
         ),
         fit: BoxFit.contain,
         mode: ExtendedImageMode.gesture,
@@ -53,7 +61,14 @@ class ImagePageBuilder extends StatelessWidget {
           );
         },
         loadStateChanged: (ExtendedImageState state) {
-          return builder.previewWidgetLoadStateChanged(context, state);
+          if (state.extendedImageLoadState == LoadState.completed) {
+            loaded = true;
+          }
+          return builder.previewWidgetLoadStateChanged(
+            context,
+            state,
+            hasLoaded: loaded,
+          );
         },
       ),
     );

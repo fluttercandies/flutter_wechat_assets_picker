@@ -93,7 +93,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                 return GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () async {
-                    final AssetEntity result =
+                    final AssetEntity? result =
                         await CameraPicker.pickFromCamera(
                       context,
                       enableRecording: true,
@@ -184,7 +184,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.common,
-              specialItemPosition: SpecialItemPosition.prepend,
+              specialItemPosition: SpecialItemPosition.append,
               specialItemBuilder: (BuildContext context) {
                 return const Center(child: Text('Custom Widget'));
               },
@@ -212,21 +212,12 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
       ];
 
   Future<void> selectAssets(PickMethodModel model) async {
-    final List<AssetEntity> result = await model.method(context, assets);
+    final List<AssetEntity>? result = await model.method(context, assets);
     if (result != null) {
       assets = List<AssetEntity>.from(result);
       if (mounted) {
         setState(() {});
       }
-    }
-  }
-
-  Future<void> methodWrapper(PickMethodModel model) async {
-    assets = List<AssetEntity>.from(
-      await model.method(context, assets),
-    );
-    if (mounted) {
-      setState(() {});
     }
   }
 
@@ -242,15 +233,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
   Widget methodItemBuilder(BuildContext _, int index) {
     final PickMethodModel model = pickMethods[index];
     return InkWell(
-      onTap: () async {
-        final List<AssetEntity> result = await model.method(context, assets);
-        if (result != null && result != assets) {
-          assets = List<AssetEntity>.from(result);
-          if (mounted) {
-            setState(() {});
-          }
-        }
-      },
+      onTap: () => selectAssets(model),
       child: Container(
         height: 72.0,
         padding: const EdgeInsets.symmetric(
@@ -358,11 +341,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
             bottom: isDisplayingDetail ? 0.0 : -20.0,
             height: 20.0,
             child: Text(
-              asset.title,
-              style: const TextStyle(
-                height: 1.0,
-                fontSize: 10.0,
-              ),
+              asset.title ?? '',
+              style: const TextStyle(height: 1.0, fontSize: 10.0),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -403,14 +383,14 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
     return GestureDetector(
       onTap: isDisplayingDetail
           ? () async {
-              final List<AssetEntity> result =
+              final List<AssetEntity>? result =
                   await AssetPickerViewer.pushToViewer(
                 context,
                 currentIndex: index,
                 previewAssets: assets,
                 themeData: AssetPicker.themeData(themeColor),
               );
-              if (result != assets && result != null) {
+              if (result != null && result != assets) {
                 assets = List<AssetEntity>.from(result);
                 if (mounted) {
                   setState(() {});

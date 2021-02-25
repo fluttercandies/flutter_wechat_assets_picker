@@ -20,7 +20,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback(
+    SchedulerBinding.instance?.addPostFrameCallback(
       (Duration _) {
         Future<void>.delayed(
           const Duration(seconds: 2),

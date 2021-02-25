@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 /// Progress Indicator. Used in loading data.
 class PlatformProgressIndicator extends StatelessWidget {
   const PlatformProgressIndicator({
-    Key key,
+    Key? key,
     this.strokeWidth = 4.0,
     this.radius = 10.0,
     this.size = 48.0,
@@ -22,9 +22,9 @@ class PlatformProgressIndicator extends StatelessWidget {
   final double strokeWidth;
   final double radius;
   final double size;
-  final Color color;
-  final double value;
-  final Brightness brightness;
+  final Color? color;
+  final double? value;
+  final Brightness? brightness;
 
   bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
 
@@ -42,7 +42,7 @@ class PlatformProgressIndicator extends StatelessWidget {
           : CircularProgressIndicator(
               strokeWidth: strokeWidth,
               valueColor:
-                  color != null ? AlwaysStoppedAnimation<Color>(color) : null,
+                  color != null ? AlwaysStoppedAnimation<Color>(color!) : null,
               value: value,
             ),
     );

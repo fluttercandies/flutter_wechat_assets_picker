@@ -9,16 +9,16 @@ import '../main.dart';
 
 class PickMethodModel {
   const PickMethodModel({
-    this.icon,
-    this.name,
-    this.description,
-    this.method,
+    required this.icon,
+    required this.name,
+    required this.description,
+    required this.method,
   });
 
   final String icon;
   final String name;
   final String description;
-  final Future<List<AssetEntity>> Function(BuildContext, List<AssetEntity>)
+  final Future<List<AssetEntity>?> Function(BuildContext, List<AssetEntity>)
       method;
 
   static PickMethodModel common = PickMethodModel(

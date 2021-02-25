@@ -12,8 +12,8 @@ import '../constants/constants.dart';
 
 class AssetPickerViewer<A, P> extends StatefulWidget {
   const AssetPickerViewer({
-    Key key,
-    @required this.builder,
+    Key? key,
+    required this.builder,
   }) : super(key: key);
 
   final AssetPickerViewerBuilderDelegate<A, P> builder;
@@ -23,15 +23,15 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
 
   /// Static method to push with the navigator.
   /// 跳转至选择预览的静态方法
-  static Future<List<AssetEntity>> pushToViewer(
+  static Future<List<AssetEntity>?> pushToViewer(
     BuildContext context, {
     int currentIndex = 0,
-    @required List<AssetEntity> previewAssets,
-    @required ThemeData themeData,
-    List<int> previewThumbSize,
-    List<AssetEntity> selectedAssets,
-    DefaultAssetPickerProvider selectorProvider,
-    SpecialPickerType specialPickerType,
+    required List<AssetEntity> previewAssets,
+    required ThemeData themeData,
+    DefaultAssetPickerProvider? selectorProvider,
+    List<int>? previewThumbSize,
+    List<AssetEntity>? selectedAssets,
+    SpecialPickerType? specialPickerType,
   }) async {
     try {
       final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
@@ -66,7 +66,7 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
           return FadeTransition(opacity: animation, child: child);
         },
       );
-      final List<AssetEntity> result =
+      final List<AssetEntity>? result =
           await Navigator.of(context).push<List<AssetEntity>>(pageRoute);
       return result;
     } catch (e) {

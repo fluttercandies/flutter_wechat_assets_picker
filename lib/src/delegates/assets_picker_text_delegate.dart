@@ -8,47 +8,43 @@
 abstract class AssetsPickerTextDelegate {
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
-  String confirm;
+  late final String confirm;
 
   /// Cancel string for back button.
   /// 返回按钮的字段
-  String cancel;
+  late final String cancel;
 
   /// Edit string for edit button.
   /// 编辑按钮的字段
-  String edit;
-
-  /// Placeholder when there's nothing can display in the picker.
-  /// 选择器没有可显示的内容时的占位字段
-  String emptyPlaceHolder;
+  late final String edit;
 
   /// GIF indicator string.
   /// GIF指示的字段
-  String gifIndicator;
+  late final String gifIndicator;
 
   /// HEIC failed string.
   /// HEIC类型资源加载失败的字段
-  String heicNotSupported;
+  late final String heicNotSupported;
 
   /// Load failed string for item.
   /// 资源加载失败时的字段
-  String loadFailed;
+  late final String loadFailed;
 
   /// Original string for original selection.
   /// 选择是否原图的字段
-  String original;
+  late final String original;
 
   /// Preview string for preview button.
   /// 预览按钮的字段
-  String preview;
+  late final String preview;
 
   /// Select string for select button.
   /// 选择按钮的字段
-  String select;
+  late final String select;
 
   /// Un-supported asset type string for assets that belongs to [AssetType.other].
   /// 未支持的资源类型的字段
-  String unSupportedAssetType;
+  late final String unSupportedAssetType;
 
   /// This is used in video asset item in the picker, in order
   /// to display the duration of the video or audio type of asset.
@@ -74,9 +70,6 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
 
   @override
   String edit = '编辑';
-
-  @override
-  String emptyPlaceHolder = '这里空空如也';
 
   @override
   String gifIndicator = 'GIF';
@@ -128,9 +121,6 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
 
   @override
   String edit = 'Edit';
-
-  @override
-  String emptyPlaceHolder = 'Nothing here...';
 
   @override
   String gifIndicator = 'GIF';

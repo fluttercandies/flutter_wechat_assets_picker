@@ -12,9 +12,9 @@ import '../constants/constants.dart';
 @immutable
 class AssetPicker<A, P> extends StatelessWidget {
   const AssetPicker({
-    Key key,
-    @required this.builder,
-  })  : assert(
+    Key? key,
+    required this.builder,
+  })   : assert(
           builder != null,
           'Builder must be provided and not null.',
         ),
@@ -24,22 +24,23 @@ class AssetPicker<A, P> extends StatelessWidget {
 
   /// Static method to push with the navigator.
   /// 跳转至选择器的静态方法
-  static Future<List<AssetEntity>> pickAssets(
+  static Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
+    required List<AssetEntity> selectedAssets,
     int maxAssets = 9,
     int pageSize = 320,
     int pathThumbSize = 200,
     int gridCount = 4,
-    List<int> previewThumbSize,
-    RequestType requestType,
-    SpecialPickerType specialPickerType,
-    List<AssetEntity> selectedAssets,
-    Color themeColor,
-    ThemeData pickerTheme,
-    SortPathDelegate sortPathDelegate,
-    AssetsPickerTextDelegate textDelegate,
-    FilterOptionGroup filterOptions,
-    WidgetBuilder specialItemBuilder,
+    RequestType requestType = RequestType.image,
+    List<int>? previewThumbSize,
+    SpecialPickerType? specialPickerType,
+    Color? themeColor,
+    ThemeData? pickerTheme,
+    SortPathDelegate? sortPathDelegate,
+    AssetsPickerTextDelegate? textDelegate,
+    FilterOptionGroup? filterOptions,
+    WidgetBuilder? specialItemBuilder,
+    IndicatorBuilder? loadingIndicatorBuilder,
     SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
     bool allowSpecialItemWhenEmpty = false,
     Curve routeCurve = Curves.easeIn,
@@ -67,8 +68,6 @@ class AssetPicker<A, P> extends StatelessWidget {
     } else {
       if (specialPickerType == SpecialPickerType.wechatMoment) {
         requestType = RequestType.common;
-      } else {
-        requestType ??= RequestType.image;
       }
     }
     if ((specialItemBuilder == null &&
@@ -106,11 +105,12 @@ class AssetPicker<A, P> extends StatelessWidget {
               specialPickerType: specialPickerType,
               specialItemPosition: specialItemPosition,
               specialItemBuilder: specialItemBuilder,
+              loadingIndicatorBuilder: loadingIndicatorBuilder,
               allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
             ),
           ),
         );
-        final List<AssetEntity> result = await Navigator.of(
+        final List<AssetEntity>? result = await Navigator.of(
           context,
           rootNavigator: true,
         ).push<List<AssetEntity>>(
@@ -132,7 +132,10 @@ class AssetPicker<A, P> extends StatelessWidget {
 
   /// Register observe callback with assets changes.
   /// 注册资源（图库）变化的监听回调
-  static void registerObserve([ValueChanged<MethodCall> callback]) {
+  static void registerObserve([ValueChanged<MethodCall>? callback]) {
+    if (callback == null) {
+      return;
+    }
     try {
       PhotoManager.addChangeCallback(callback);
       PhotoManager.startChangeNotify();
@@ -143,7 +146,10 @@ class AssetPicker<A, P> extends StatelessWidget {
 
   /// Unregister the observation callback with assets changes.
   /// 取消注册资源（图库）变化的监听回调
-  static void unregisterObserve([ValueChanged<MethodCall> callback]) {
+  static void unregisterObserve([ValueChanged<MethodCall>? callback]) {
+    if (callback == null) {
+      return;
+    }
     try {
       PhotoManager.removeChangeCallback(callback);
       PhotoManager.stopChangeNotify();
@@ -170,21 +176,23 @@ class AssetPicker<A, P> extends StatelessWidget {
       cardColor: Colors.grey[900],
       highlightColor: Colors.transparent,
       toggleableActiveColor: themeColor,
-      cursorColor: themeColor,
-      textSelectionColor: themeColor.withAlpha(100),
-      textSelectionHandleColor: themeColor,
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: themeColor,
+        selectionColor: themeColor.withAlpha(100),
+        selectionHandleColor: themeColor,
+      ),
       indicatorColor: themeColor,
       appBarTheme: const AppBarTheme(
         brightness: Brightness.dark,
         elevation: 0,
       ),
       colorScheme: ColorScheme(
-        primary: Colors.grey[900],
-        primaryVariant: Colors.grey[900],
+        primary: Colors.grey[900]!,
+        primaryVariant: Colors.grey[900]!,
         secondary: themeColor,
         secondaryVariant: themeColor,
-        background: Colors.grey[900],
-        surface: Colors.grey[900],
+        background: Colors.grey[900]!,
+        surface: Colors.grey[900]!,
         brightness: Brightness.dark,
         error: const Color(0xffcf6679),
         onPrimary: Colors.black,

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 /// 为选择器构造一个上下进出的页面过渡动画
 class SlidePageTransitionBuilder<T> extends PageRoute<T> {
   SlidePageTransitionBuilder({
-    @required this.builder,
+    required this.builder,
     this.transitionCurve = Curves.easeIn,
     this.transitionDuration = const Duration(milliseconds: 500),
   });
@@ -30,10 +30,10 @@ class SlidePageTransitionBuilder<T> extends PageRoute<T> {
   final bool maintainState = true;
 
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   Widget buildPage(
