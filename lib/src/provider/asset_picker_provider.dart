@@ -62,7 +62,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   bool get isAssetsEmpty => _isAssetsEmpty;
 
   set isAssetsEmpty(bool value) {
-    if (value == null || value == _isAssetsEmpty) {
+    if (value == _isAssetsEmpty) {
       return;
     }
     _isAssetsEmpty = value;
@@ -76,7 +76,6 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   bool get hasAssetsToDisplay => _hasAssetsToDisplay;
 
   set hasAssetsToDisplay(bool value) {
-    assert(value != null);
     if (value == _hasAssetsToDisplay) {
       return;
     }
@@ -100,7 +99,6 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   int get totalAssetsCount => _totalAssetsCount;
 
   set totalAssetsCount(int value) {
-    assert(value != null);
     if (value == _totalAssetsCount) {
       return;
     }
@@ -115,7 +113,6 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   bool get isSwitchingPath => _isSwitchingPath;
 
   set isSwitchingPath(bool value) {
-    assert(value != null);
     if (value == _isSwitchingPath) {
       return;
     }
@@ -128,7 +125,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   ///
   /// Using [Map] in order to save the thumb data for the first asset under the path.
   /// 使用[Map]来保存路径下第一个资源的缩略数据。
-  final Map<P, Uint8List?> _pathEntityList = <P, Uint8List>{};
+  final Map<P, Uint8List?> _pathEntityList = <P, Uint8List?>{};
 
   Map<P, Uint8List?> get pathEntityList => _pathEntityList;
 
@@ -153,7 +150,6 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   List<A> get currentAssets => _currentAssets;
 
   set currentAssets(List<A> value) {
-    assert(value != null);
     if (value == _currentAssets) {
       return;
     }
@@ -168,7 +164,6 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   List<A> get selectedAssets => _selectedAssets;
 
   set selectedAssets(List<A> value) {
-    assert(value != null);
     if (value == _selectedAssets) {
       return;
     }
@@ -227,7 +222,7 @@ class DefaultAssetPickerProvider
     this.sortPathDelegate = SortPathDelegate.common,
     this.filterOptions,
     int maxAssets = 9,
-    int pageSize = 320,
+    int pageSize = 80,
     int pathThumbSize = 80,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) : super(
@@ -262,8 +257,8 @@ class DefaultAssetPickerProvider
 
   @override
   Future<void> getAssetPathList() async {
-    /// Initial base options.
-    /// Enable need title for audios and image to get proper display.
+    // Initial base options.
+    // Enable need title for audios and image to get proper display.
     final FilterOptionGroup options = FilterOptionGroup()
       ..setOption(
         AssetType.audio,
@@ -277,7 +272,7 @@ class DefaultAssetPickerProvider
         ),
       );
 
-    /// Merge user's filter option into base options if it's not null.
+    // Merge user's filter option into base options if it's not null.
     if (filterOptions != null) {
       options.merge(filterOptions!);
     }
@@ -287,7 +282,7 @@ class DefaultAssetPickerProvider
       filterOption: options,
     );
 
-    /// Sort path using sort path delegate.
+    // Sort path using sort path delegate.
     Constants.sortPathDelegate.sort(_list);
 
     for (final AssetPathEntity pathEntity in _list) {
@@ -300,7 +295,7 @@ class DefaultAssetPickerProvider
       }
     }
 
-    /// Set first path entity as current path entity.
+    // Set first path entity as current path entity.
     if (_pathEntityList.isNotEmpty) {
       _currentPathEntity ??= pathEntityList.keys.elementAt(0);
     }

@@ -171,11 +171,7 @@ class FixedAppBarWrapper extends StatelessWidget {
     Key? key,
     required this.appBar,
     required this.body,
-  })   : assert(
-          appBar != null && body != null,
-          'All fields must not be null.',
-        ),
-        super(key: key);
+  }) : super(key: key);
 
   final FixedAppBar appBar;
   final Widget body;

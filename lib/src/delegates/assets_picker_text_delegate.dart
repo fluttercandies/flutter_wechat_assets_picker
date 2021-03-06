@@ -23,7 +23,7 @@ abstract class AssetsPickerTextDelegate {
   late final String gifIndicator;
 
   /// HEIC failed string.
-  /// HEIC类型资源加载失败的字段
+  /// HEIC 类型资源加载失败的字段
   late final String heicNotSupported;
 
   /// Load failed string for item.

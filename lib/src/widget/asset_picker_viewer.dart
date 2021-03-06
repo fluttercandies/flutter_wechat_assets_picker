@@ -38,9 +38,7 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
         builder: DefaultAssetPickerViewerBuilderDelegate(
           currentIndex: currentIndex,
           previewAssets: previewAssets,
-          provider: selectedAssets != null
-              ? AssetPickerViewerProvider<AssetEntity>(selectedAssets)
-              : null,
+          provider: AssetPickerViewerProvider<AssetEntity>(selectedAssets),
           themeData: themeData,
           previewThumbSize: previewThumbSize,
           specialPickerType: specialPickerType,

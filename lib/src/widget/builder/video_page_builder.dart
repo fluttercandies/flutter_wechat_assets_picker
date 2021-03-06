@@ -145,7 +145,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
         ),
         ValueListenableBuilder<bool>(
           valueListenable: isPlaying,
-          builder: (_, bool value, Widget? child) => GestureDetector(
+          builder: (_, bool value, __) => GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: value ? playButtonCallback : builder.switchDisplayingDetail,
             child: Center(

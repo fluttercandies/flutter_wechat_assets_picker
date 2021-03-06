@@ -230,9 +230,9 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// Execute scale animation when double tap.
   /// 双击时执行缩放动画
   void updateAnimation(ExtendedImageGestureState state) {
-    final double begin = state.gestureDetails.totalScale;
-    final double end = state.gestureDetails.totalScale == 1.0 ? 3.0 : 1.0;
-    final Offset pointerDownPosition = state.pointerDownPosition;
+    final double begin = state.gestureDetails!.totalScale!;
+    final double end = state.gestureDetails!.totalScale! == 1.0 ? 3.0 : 1.0;
+    final Offset pointerDownPosition = state.pointerDownPosition!;
 
     _doubleTapAnimation?.removeListener(_doubleTapListener);
     _doubleTapAnimationController
@@ -347,9 +347,21 @@ class DefaultAssetPickerViewerBuilderDelegate
         child: StreamBuilder<int>(
           initialData: currentIndex,
           stream: pageStreamController.stream,
-          builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
+          builder: (_, AsyncSnapshot<int> snapshot) {
             final AssetEntity asset = selectedAssets!.elementAt(index);
-            final bool isViewing = asset == currentAsset;
+            final bool isViewing = index == snapshot.data!;
+            final Widget _item = () {
+              switch (asset.type) {
+                case AssetType.image:
+                  return _imagePreviewItem(asset);
+                case AssetType.video:
+                  return _videoPreviewItem(asset);
+                case AssetType.audio:
+                  return _audioPreviewItem(asset);
+                default:
+                  return const SizedBox.shrink();
+              }
+            }();
             return GestureDetector(
               onTap: () {
                 if (previewAssets == selectedAssets) {
@@ -360,29 +372,17 @@ class DefaultAssetPickerViewerBuilderDelegate
                   List<AssetEntity>>(
                 selector: (_, AssetPickerViewerProvider<AssetEntity> p) =>
                     p.currentlySelectedAssets,
-                builder: (_, List<AssetEntity> currentlySelectedAssets, __) {
+                child: _item,
+                builder: (
+                  _,
+                  List<AssetEntity> currentlySelectedAssets,
+                  Widget? w,
+                ) {
                   final bool isSelected =
                       currentlySelectedAssets.contains(asset);
                   return Stack(
                     children: <Widget>[
-                      () {
-                        Widget item;
-                        switch (asset.type) {
-                          case AssetType.other:
-                            item = const SizedBox.shrink();
-                            break;
-                          case AssetType.image:
-                            item = _imagePreviewItem(asset);
-                            break;
-                          case AssetType.video:
-                            item = _videoPreviewItem(asset);
-                            break;
-                          case AssetType.audio:
-                            item = _audioPreviewItem(asset);
-                            break;
-                        }
-                        return item;
-                      }(),
+                      w!,
                       AnimatedContainer(
                         duration: kThemeAnimationDuration,
                         curve: Curves.easeInOut,
@@ -425,12 +425,12 @@ class DefaultAssetPickerViewerBuilderDelegate
       child: Container(
         padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
         color: themeData.canvasColor.withOpacity(0.85),
-        child: Column(
-          children: <Widget>[
-            ChangeNotifierProvider<
-                AssetPickerViewerProvider<AssetEntity>>.value(
-              value: provider!,
-              child: SizedBox(
+        child: ChangeNotifierProvider<
+            AssetPickerViewerProvider<AssetEntity>>.value(
+          value: provider!,
+          child: Column(
+            children: <Widget>[
+              SizedBox(
                 height: 90.0,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -439,31 +439,27 @@ class DefaultAssetPickerViewerBuilderDelegate
                   itemBuilder: bottomDetailItemBuilder,
                 ),
               ),
-            ),
-            Container(
-              height: 1.0,
-              color: themeData.dividerColor,
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    const Spacer(),
-                    if (isAppleOS && provider != null)
-                      ChangeNotifierProvider<
-                          AssetPickerViewerProvider<AssetEntity>>.value(
-                        value: provider!,
-                        child: confirmButton(context),
-                      )
-                    else
-                      selectButton(context),
-                  ],
+              Container(
+                height: 1.0,
+                color: themeData.dividerColor,
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      const Spacer(),
+                      if (isAppleOS && provider != null)
+                        confirmButton(context)
+                      else
+                        selectButton(context),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

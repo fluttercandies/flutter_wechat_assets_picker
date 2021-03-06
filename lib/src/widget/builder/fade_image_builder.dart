@@ -14,7 +14,11 @@ class FadeImageBuilder extends StatelessWidget {
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),
       duration: const Duration(milliseconds: 300),
-      builder: (_, double value, __) => Opacity(opacity: value, child: child),
+      builder: (_, double value, Widget? w) => Opacity(
+        opacity: value,
+        child: w,
+      ),
+      child: child,
     );
   }
 }

@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 class AssetPickerViewerProvider<A> extends ChangeNotifier {
   /// Copy selected assets for editing when constructing.
   /// 构造时深拷贝已选择的资源集合，用于后续编辑。
-  AssetPickerViewerProvider(List<A> assets) {
-    _currentlySelectedAssets = List<A>.from(assets);
+  AssetPickerViewerProvider(List<A>? assets) {
+    _currentlySelectedAssets = List<A>.from(assets ?? <A>[]);
   }
 
   /// Selected assets in the viewer.
@@ -20,7 +20,6 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
   List<A> get currentlySelectedAssets => _currentlySelectedAssets;
 
   set currentlySelectedAssets(List<A> value) {
-    assert(value != null);
     if (value == _currentlySelectedAssets) {
       return;
     }

@@ -704,56 +704,50 @@ class FileAssetPickerBuilder
     final double maxHeight = Screens.height * 0.825;
     return Selector<FileAssetPickerProvider, bool>(
       selector: (_, FileAssetPickerProvider p) => p.isSwitchingPath,
-      builder: (_, bool isSwitchingPath, __) {
-        return AnimatedPositioned(
+      builder: (_, bool isSwitchingPath, Widget? w) => AnimatedPositioned(
+        duration: switchingPathDuration,
+        curve: switchingPathCurve,
+        top: isAppleOS
+            ? !isSwitchingPath
+                ? -maxHeight
+                : appBarHeight
+            : -(!isSwitchingPath ? maxHeight : 1.0),
+        child: AnimatedOpacity(
           duration: switchingPathDuration,
           curve: switchingPathCurve,
-          top: isAppleOS
-              ? !isSwitchingPath
-                  ? -maxHeight
-                  : appBarHeight
-              : -(!isSwitchingPath ? maxHeight : 1.0),
-          child: AnimatedOpacity(
-            duration: switchingPathDuration,
-            curve: switchingPathCurve,
-            opacity: !isAppleOS || isSwitchingPath ? 1.0 : 0.0,
-            child: Container(
-              width: Screens.width,
-              height: maxHeight,
-              decoration: BoxDecoration(
-                borderRadius: isAppleOS
-                    ? const BorderRadius.only(
-                        bottomLeft: Radius.circular(10.0),
-                        bottomRight: Radius.circular(10.0),
-                      )
-                    : null,
-                color: theme.colorScheme.background,
-              ),
-              child:
-                  Selector<FileAssetPickerProvider, Map<Directory, Uint8List?>>(
-                selector: (_, FileAssetPickerProvider p) => p.pathEntityList,
-                builder: (_, Map<Directory, Uint8List?> pathEntityList, __) {
-                  return ListView.separated(
-                    padding: const EdgeInsets.only(top: 1.0),
-                    itemCount: pathEntityList.length,
-                    itemBuilder: (BuildContext _, int index) {
-                      return pathEntityWidget(
-                        context,
-                        pathEntityList.keys.elementAt(index),
-                      );
-                    },
-                    separatorBuilder: (BuildContext _, int __) => Container(
-                      margin: const EdgeInsets.only(left: 60.0),
-                      height: 1.0,
-                      color: theme.canvasColor,
-                    ),
-                  );
-                },
-              ),
+          opacity: !isAppleOS || isSwitchingPath ? 1.0 : 0.0,
+          child: Container(
+            width: Screens.width,
+            height: maxHeight,
+            decoration: BoxDecoration(
+              borderRadius: isAppleOS
+                  ? const BorderRadius.vertical(bottom: Radius.circular(10.0))
+                  : null,
+              color: theme.colorScheme.background,
             ),
+            child: w,
           ),
-        );
-      },
+        ),
+      ),
+      child: Selector<FileAssetPickerProvider, Map<Directory, Uint8List?>>(
+        selector: (_, FileAssetPickerProvider p) => p.pathEntityList,
+        builder: (_, Map<Directory, Uint8List?> pathEntityList, __) {
+          return ListView.separated(
+            padding: const EdgeInsets.only(top: 1.0),
+            itemCount: pathEntityList.length,
+            itemBuilder: (_, int index) => pathEntityWidget(
+              context: context,
+              list: pathEntityList,
+              index: index,
+            ),
+            separatorBuilder: (_, __) => Container(
+              margin: const EdgeInsets.only(left: 60.0),
+              height: 1.0,
+              color: theme.canvasColor,
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -817,15 +811,18 @@ class FileAssetPickerBuilder
   }
 
   @override
-  Widget pathEntityWidget(BuildContext context, Directory path) {
-    Widget builder(
-      BuildContext context,
-      Map<Directory, Uint8List?> pathEntityList,
-      Widget? child,
-    ) {
-      final Uint8List? thumbData = pathEntityList[path];
-      if (thumbData != null) {
-        return Image.memory(thumbData, fit: BoxFit.cover);
+  Widget pathEntityWidget({
+    required BuildContext context,
+    required Map<Directory, Uint8List?> list,
+    required int index,
+    bool isAudio = false,
+  }) {
+    final Directory path = list.keys.elementAt(index);
+    final Uint8List? data = list.values.elementAt(index);
+
+    Widget builder() {
+      if (data != null) {
+        return Image.memory(data, fit: BoxFit.cover);
       } else {
         return ColoredBox(
           color: theme.colorScheme.primary.withOpacity(0.12),
@@ -843,18 +840,7 @@ class FileAssetPickerBuilder
           child: Row(
             children: <Widget>[
               RepaintBoundary(
-                child: AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Selector<FileAssetPickerProvider,
-                      Map<Directory, Uint8List?>>(
-                    selector: (
-                      BuildContext _,
-                      FileAssetPickerProvider provider,
-                    ) =>
-                        provider.pathEntityList,
-                    builder: builder,
-                  ),
-                ),
+                child: AspectRatio(aspectRatio: 1.0, child: builder()),
               ),
               Expanded(
                 child: Padding(
@@ -1096,9 +1082,9 @@ class FileAssetPickerViewerBuilderDelegate
   }
 
   void updateAnimation(ExtendedImageGestureState state) {
-    final double begin = state.gestureDetails.totalScale;
-    final double end = state.gestureDetails.totalScale == 1.0 ? 3.0 : 1.0;
-    final Offset pointerDownPosition = state.pointerDownPosition;
+    final double begin = state.gestureDetails!.totalScale!;
+    final double end = state.gestureDetails!.totalScale! == 1.0 ? 3.0 : 1.0;
+    final Offset pointerDownPosition = state.pointerDownPosition!;
 
     _doubleTapAnimation?.removeListener(_doubleTapListener);
     _doubleTapAnimationController

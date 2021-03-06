@@ -10,14 +10,19 @@ import 'package:flutter/widgets.dart';
 
 // ignore: implementation_imports
 import 'package:flutter/src/material/constants.dart';
+
 // ignore: implementation_imports
 import 'package:flutter/src/material/debug.dart';
+
 // ignore: implementation_imports
 import 'package:flutter/src/material/material_state.dart';
+
 // ignore: implementation_imports
 import 'package:flutter/src/material/theme.dart';
+
 // ignore: implementation_imports
 import 'package:flutter/src/material/theme_data.dart';
+
 // ignore: implementation_imports
 import 'package:flutter/src/material/toggleable.dart';
 
@@ -80,9 +85,7 @@ class CustomCheckbox extends StatefulWidget {
     this.autofocus = false,
     this.shape,
     this.side,
-  })  : assert(tristate != null),
-        assert(tristate || value != null),
-        assert(autofocus != null),
+  })  : assert(tristate || value != null),
         super(key: key);
 
   /// Whether this checkbox is checked.
@@ -328,6 +331,7 @@ class _CustomCheckboxState extends State<CustomCheckbox>
   }
 
   bool _focused = false;
+
   void _handleFocusHighlightChanged(bool focused) {
     if (focused != _focused) {
       setState(() {
@@ -337,6 +341,7 @@ class _CustomCheckboxState extends State<CustomCheckbox>
   }
 
   bool _hovering = false;
+
   void _handleHoverChanged(bool hovering) {
     if (hovering != _hovering) {
       setState(() {
@@ -517,11 +522,7 @@ class _CheckboxRenderObjectWidget extends LeafRenderObjectWidget {
     required this.hovering,
     required this.shape,
     required this.side,
-  })   : assert(tristate != null),
-        assert(tristate || value != null),
-        assert(activeColor != null),
-        assert(inactiveColor != null),
-        assert(vsync != null),
+  })   : assert(tristate || value != null),
         super(key: key);
 
   final bool? value;
@@ -635,7 +636,9 @@ class _RenderCheckbox extends RenderToggleable {
 
   @override
   set value(bool? newValue) {
-    if (newValue == value) return;
+    if (newValue == value) {
+      return;
+    }
     _oldValue = value;
     super.value = newValue;
   }

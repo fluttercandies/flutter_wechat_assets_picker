@@ -14,11 +14,7 @@ class AssetPicker<A, P> extends StatelessWidget {
   const AssetPicker({
     Key? key,
     required this.builder,
-  })   : assert(
-          builder != null,
-          'Builder must be provided and not null.',
-        ),
-        super(key: key);
+  }) : super(key: key);
 
   final AssetPickerBuilderDelegate<A, P> builder;
 
@@ -28,8 +24,8 @@ class AssetPicker<A, P> extends StatelessWidget {
     BuildContext context, {
     required List<AssetEntity> selectedAssets,
     int maxAssets = 9,
-    int pageSize = 320,
-    int pathThumbSize = 200,
+    int pageSize = 80,
+    int pathThumbSize = 80,
     int gridCount = 4,
     RequestType requestType = RequestType.image,
     List<int>? previewThumbSize,
@@ -46,12 +42,12 @@ class AssetPicker<A, P> extends StatelessWidget {
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
-    if (maxAssets == null || maxAssets < 1) {
+    if (maxAssets < 1) {
       throw ArgumentError(
         'maxAssets must be greater than 1.',
       );
     }
-    if (pageSize != null && pageSize % gridCount != 0) {
+    if (pageSize % gridCount != 0) {
       throw ArgumentError(
         'pageSize must be a multiple of gridCount.',
       );
@@ -61,7 +57,7 @@ class AssetPicker<A, P> extends StatelessWidget {
         'Theme and theme color cannot be set at the same time.',
       );
     }
-    if (specialPickerType != null && requestType != null) {
+    if (specialPickerType != null && requestType != RequestType.image) {
       throw ArgumentError(
         'specialPickerType and requestType cannot be set at the same time.',
       );

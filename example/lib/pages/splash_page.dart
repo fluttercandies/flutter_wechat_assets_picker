@@ -27,15 +27,9 @@ class _SplashPageState extends State<SplashPage> {
           () {
             Navigator.of(context).pushReplacement(
               PageRouteBuilder<void>(
-                pageBuilder: (
-                  BuildContext _,
-                  Animation<double> __,
-                  Animation<double> ___,
-                ) {
-                  return const HomePage();
-                },
+                pageBuilder: (_, __, ___) => const HomePage(),
                 transitionsBuilder: (
-                  BuildContext _,
+                  _,
                   Animation<double> animation,
                   Animation<double> secondaryAnimation,
                   Widget child,
