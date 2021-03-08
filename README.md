@@ -54,6 +54,7 @@ This project follows the [all-contributors](https://github.com/all-contributors/
   * [Complete param usage](#complete-param-usage)
   * [Display selected assets](#display-selected-assets)
   * [Register assets change observe callback](#register-assets-change-observe-callback)
+  * [Customize with your own type or UI](#customize-with-your-own-type-or-ui)
 * [Classes Introduction](#classes-introduction-)
   * [`AssetEntity`](#assetentity)
 * [Frequent asked question](#frequent-asked-question-)
@@ -69,6 +70,7 @@ See [Migration Guide](doc/migration_guide.md).
 
 ## Features ✨
 
+- [x] ♻️ Fully implementable with delegate override.
 - [x] 💚 99% simillar to WeChat style.
 - [x] 📷 Image asset support
   - [x] 🔬HEIC/HEIF Image type support
@@ -214,12 +216,20 @@ Image(image: AssetEntityImageProvider(asset, isOriginal: false))
 Check the example for how it displays.
 
 ### Register assets change observe callback
+
 ```dart
 AssetPicker.registerObserve(); // Register callback.
 ```
 ```dart
 AssetPicker.unregisterObserve(); // Unregister callback.
 ```
+
+### Customize with your own type or UI
+
+`AssetPickerBuilderDelegate`, `AssetPickerViewerBuilderDelegate`, `AssetPickerProvider` and
+`AssetPickerViewerProvider` are all exposed and overridable. You can extends them and use your own
+type with generic type <A: Asset, P: Path>, then implement abstract methods. See the `Custom` page
+in the example which implements a picker with <File, Directory>.
 
 ## Classes Introduction 💭
 
