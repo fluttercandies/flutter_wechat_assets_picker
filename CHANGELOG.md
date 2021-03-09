@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking changes
 
 - Migrate to non-nullable by default.
-- Drop support for Flutter 1.17 .
 - `CustomItemBuilder` -> `SpecialItemBuilder`, `CustomItemPosition` -> `SpecialItemPosition` .
 - Abstract `AssetPickerBuilderDelegate<A, P>`, `AssetPickerViewerBuilderDelegate<A, P>`,
   `AssetPickerProvider<A, P>`, and minify the `AssetPickerViewerProvider<A>`. Support

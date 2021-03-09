@@ -100,7 +100,7 @@ Althought the package provide selection for assets, it still require users build
 
 ### Version constraints
 
-Flutter SDK: `>=1.17.0` .
+Flutter SDK: `>=2.0.0` .
 
 If you got an error about `resolve conflict` when running `flutter pub get` , please use `dependency_overrides` to solve it. See [here](#version-resolve-conflict-with-xxx-eg-dartx) .
 
