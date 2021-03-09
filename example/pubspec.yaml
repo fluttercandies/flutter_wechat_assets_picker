@@ -13,11 +13,11 @@ dependencies:
 
   wechat_assets_picker:
     path: ../
-  wechat_camera_picker: ^2.0.0-nullsafety.4
+  wechat_camera_picker: ^2.0.0
 
   extended_image: ^3.0.0
   path: ^1.8.0
-  path_provider: ^2.0.0
+  path_provider: ^2.0.1
   provider: ^5.0.0
 
 flutter:
