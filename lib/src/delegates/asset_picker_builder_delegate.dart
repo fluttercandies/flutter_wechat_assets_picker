@@ -1208,6 +1208,14 @@ class DefaultAssetPickerBuilderDelegate
     return Positioned.fill(
       child: GestureDetector(
         onTap: () async {
+          // While the special type is WeChat moment, picture and video cannot
+          // be selected at the same time. Video select should be banned if any
+          // picture is selected.
+          if (specialPickerType == SpecialPickerType.wechatMoment &&
+              asset.type == AssetType.video &&
+              provider.selectedAssets.isNotEmpty) {
+            return;
+          }
           final List<AssetEntity>? result =
               await AssetPickerViewer.pushToViewer(
             context,
