@@ -150,8 +150,9 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// GIF image type indicator.
   /// GIF类型图片指示
   Widget gifIndicator(BuildContext context, A asset) {
-    return Align(
-      alignment: AlignmentDirectional.bottomStart,
+    return PositionedDirectional(
+      start: 0,
+      bottom: 0,
       child: Container(
         width: double.maxFinite,
         height: 26.0,
@@ -801,6 +802,7 @@ class DefaultAssetPickerBuilderDelegate
               }
               final AssetEntity asset = provider.currentAssets.elementAt(index);
               loader = Stack(
+                fit: StackFit.expand,
                 children: <Widget>[
                   Positioned.fill(
                     child: RepaintBoundary(child: state.completedWidget),
@@ -1244,36 +1246,39 @@ class DefaultAssetPickerBuilderDelegate
   /// 将指示器的图标和文字设置为 [Colors.white]。
   @override
   Widget videoIndicator(BuildContext context, AssetEntity asset) {
-    return Container(
-      width: double.maxFinite,
-      height: 26.0,
-      alignment: AlignmentDirectional.bottomStart,
-      padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: AlignmentDirectional.bottomCenter,
-          end: AlignmentDirectional.topCenter,
-          colors: <Color>[theme.dividerColor, Colors.transparent],
+    return PositionedDirectional(
+      start: 0,
+      bottom: 0,
+      child: Container(
+        width: double.maxFinite,
+        height: 26.0,
+        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: AlignmentDirectional.bottomCenter,
+            end: AlignmentDirectional.topCenter,
+            colors: <Color>[theme.dividerColor, Colors.transparent],
+          ),
         ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          const Icon(Icons.videocam, size: 24.0, color: Colors.white),
-          Padding(
-            padding: const EdgeInsets.only(left: 4.0),
-            child: Text(
-              Constants.textDelegate.durationIndicatorBuilder(
-                Duration(seconds: asset.duration),
-              ),
-              style: const TextStyle(color: Colors.white, fontSize: 16.0),
-              strutStyle: const StrutStyle(
-                forceStrutHeight: true,
-                height: 1.4,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const Icon(Icons.videocam, size: 24.0, color: Colors.white),
+            Padding(
+              padding: const EdgeInsets.only(left: 4.0),
+              child: Text(
+                Constants.textDelegate.durationIndicatorBuilder(
+                  Duration(seconds: asset.duration),
+                ),
+                style: const TextStyle(color: Colors.white, fontSize: 16.0),
+                strutStyle: const StrutStyle(
+                  forceStrutHeight: true,
+                  height: 1.4,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -547,6 +547,7 @@ class FileAssetPickerBuilder
       asset,
     );
     return Stack(
+      fit: StackFit.expand,
       children: <Widget>[
         Positioned.fill(child: builder),
         selectIndicator(context, asset),
