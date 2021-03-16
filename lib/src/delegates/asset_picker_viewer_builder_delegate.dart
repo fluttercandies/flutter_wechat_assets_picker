@@ -85,7 +85,9 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
 
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
-  void dispose();
+  void dispose() {
+    pageStreamController.close();
+  }
 
   /// Split page builder according to type of asset.
   /// 根据资源类型使用不同的构建页
@@ -224,7 +226,7 @@ class DefaultAssetPickerViewerBuilderDelegate
   @override
   void dispose() {
     _doubleTapAnimationController.dispose();
-    pageStreamController.close();
+    super.dispose();
   }
 
   /// Execute scale animation when double tap.
