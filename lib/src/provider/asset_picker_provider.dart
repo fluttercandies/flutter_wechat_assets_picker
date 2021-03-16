@@ -21,10 +21,10 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
     this.maxAssets = 9,
     this.pageSize = 320,
     this.pathThumbSize = 80,
-    required List<A> selectedAssets,
+    List<A>? selectedAssets,
   }) {
-    if (selectedAssets.isNotEmpty) {
-      _selectedAssets = List<A>.from(selectedAssets);
+    if (selectedAssets?.isNotEmpty == true) {
+      _selectedAssets = List<A>.from(selectedAssets!);
     }
   }
 
@@ -217,7 +217,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 class DefaultAssetPickerProvider
     extends AssetPickerProvider<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerProvider({
-    required List<AssetEntity> selectedAssets,
+    List<AssetEntity>? selectedAssets,
     this.requestType = RequestType.image,
     this.sortPathDelegate = SortPathDelegate.common,
     this.filterOptions,

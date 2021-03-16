@@ -22,7 +22,7 @@ class AssetPicker<A, P> extends StatelessWidget {
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
-    required List<AssetEntity> selectedAssets,
+    List<AssetEntity>? selectedAssets,
     int maxAssets = 9,
     int pageSize = 80,
     int pathThumbSize = 80,
