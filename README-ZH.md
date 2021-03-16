@@ -39,8 +39,8 @@ Language: [English](README.md) | 中文简体
 * [常见问题](#常见问题-)
   * [`xxx` 版本获取冲突 (例如 `dartx`)](#xxx-版本获取冲突-例如-dartx)
   * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合)
-  * [如何更改“Recent”或其他路径的名称或属性？](#如何更改recent或其他路径的名称或属性)
-  * [从`File`或`Uint8List`创建`AssetEntity`的方法](#从file或uint8list创建assetentity的方法)
+  * [如何更改 'Recent' 或其他路径的名称或属性？](#如何更改-recent-或其他路径的名称或属性)
+  * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
   * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
 
 ## 迁移指南 ♻️
@@ -79,13 +79,13 @@ Language: [English](README.md) | 中文简体
 
 ### 版本限制
 
-Flutter SDK：`>=1.17.0` 。
+Flutter SDK：`>=2.0.0` 。
 
 如果在 `flutter pub get` 时遇到了失败问题，请使用 `dependency_overrides` 解决。参考[这里](#xxx-版本获取冲突-例如-dartx)。
 
 ### Flutter
 
-将`wechat_assets_picker`添加至`pubspec.yaml`引用。
+将 `wechat_assets_picker` 添加至 `pubspec.yaml` 引用。
 
 ```yaml
 dependencies:
@@ -145,26 +145,26 @@ platform :ios, '9.0'
 
 ## 使用方法 📖
 
-| 参数名                     | 类型                   | 描述                                      | 默认值             |
-| ------------------------- | --------------------- | ------------------------------------------------ | ------------------- |
-| maxAssets                 | `int`                 | 最多选择的图片数量                      | 9                   |
-| pageSize                  | `int`                 | 分页加载时每页加载的资源数量。**必须为网格数的倍数。** 设置为`null`可以取消分页。 | 320 (80 * 4) |
-| pathThumbSize             | `int`                 | 选择器的缩略图大小                      | 80                  |
-| gridCount                 | `int`                 | 选择器网格数量                        | 4                   |
-| previewThumbSize          | `List<int>`           | 预览时图片的缩略图大小                    | `null`                 |
-| requestType               | `RequestType`         | 选择器选择资源的类型                    | `RequestType.image` |
-| specialPickerType         | `SpecialPickerType`   | 提供一些特殊的选择器类型以整合非常规的选择行为 | `null` |
-| selectedAssets            | `List<AssetEntity>`   | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
-| themeColor                | `Color`               | 选择器的主题色  | `Color(0xff00bc56)` |
-| pickerTheme               | `ThemeData`           | 选择器的主题提供，包括查看器 | `null` |
-| sortPathDelegate          | `SortPathDeleage`     | 资源路径的排序实现，可自定义路径排序方法 | `CommonSortPathDelegate` |
-| textDelegate              | `DefaultAssetsPickerTextDelegate` | 选择器的文本代理构建，用于自定义文本 | `DefaultAssetsPickerTextDelegate()` |
-| filterOptions             | `FilterOptionGroup`   | 允许用户自定义资源过滤条件 | `null` |
-| specialItemBuilder        | `WidgetBuilder`       | 自定义item的构造方法 | `null` |
-| specialItemPosition       | `SpecialItemPosition` | 允许用户在选择器中添加一个自定义item，并指定位置。 | `SpecialPosition.none` |
-| allowSpecialItemWhenEmpty | `bool`                | 在资源为空时是否允许显示自定义item  | `false` |
-| routeCurve                | `Curve`               | 选择构造路由动画的曲线 | `Curves.easeIn` |
-| routeDuration             | `Duration`            | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
+| 参数名                     | 类型                    | 描述                                      | 默认值             |
+| ------------------------- | ---------------------- | ------------------------------------------------ | ------------------- |
+| selectedAssets            | `List<AssetEntity>?`   | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
+| maxAssets                 | `int`                  | 最多选择的图片数量                      | 9                   |
+| pageSize                  | `int`                  | 分页加载时每页加载的资源数量。**必须为网格数的倍数。** 设置为`null`可以取消分页。 | 320 (80 * 4) |
+| pathThumbSize             | `int`                  | 选择器的缩略图大小                      | 80                  |
+| gridCount                 | `int`                  | 选择器网格数量                        | 4                   |
+| requestType               | `RequestType`          | 选择器选择资源的类型                    | `RequestType.image` |
+| previewThumbSize          | `List<int>?`           | 预览时图片的缩略图大小                    | `null`                 |
+| specialPickerType         | `SpecialPickerType?`   | 提供一些特殊的选择器类型以整合非常规的选择行为 | `null` |
+| themeColor                | `Color?`               | 选择器的主题色  | `Color(0xff00bc56)` |
+| pickerTheme               | `ThemeData?`           | 选择器的主题提供，包括查看器 | `null` |
+| sortPathDelegate          | `SortPathDeleage?`     | 资源路径的排序实现，可自定义路径排序方法 | `CommonSortPathDelegate` |
+| textDelegate              | `DefaultAssetsPickerTextDelegate?` | 选择器的文本代理构建，用于自定义文本 | `DefaultAssetsPickerTextDelegate()` |
+| filterOptions             | `FilterOptionGroup?`   | 允许用户自定义资源过滤条件 | `null` |
+| specialItemBuilder        | `WidgetBuilder?`       | 自定义item的构造方法 | `null` |
+| specialItemPosition       | `SpecialItemPosition`  | 允许用户在选择器中添加一个自定义item，并指定位置。 | `SpecialPosition.none` |
+| allowSpecialItemWhenEmpty | `bool`                 | 在资源为空时是否允许显示自定义item  | `false` |
+| routeCurve                | `Curve`                | 选择构造路由动画的曲线 | `Curves.easeIn` |
+| routeDuration             | `Duration`             | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
 
 ### 简单的使用方法
 
@@ -324,7 +324,7 @@ dependency_overrides:
 
 如果再此之后你仍然需要路径，那么可以通过已获得的 `File` 对象获取： `file.absolutePath`。
 
-### 如何更改“Recent”或其他路径的名称或属性？
+### 如何更改 'Recent' 或其他路径的名称或属性？
 
 由 `photo_manager` 传递的 “Recent” 路径，包含了您设备上的所有的 `AssetEntity`。大部分的平台都会将这个路径命名为 “Recent”。尽管我们提供了自定义文字构建的能力，但是 `AssetPathEntity` 的名字或属性只能通过 `SortPathDelegate` 进行更改。这是你能访问到所有 `AssetPathEntity` 的唯一方法，或者说，是现阶段我们暴露出来的唯一方法。
 
@@ -356,7 +356,7 @@ class CustomSortPathDelegate extends SortPathDelegate {
 
 将你的构建传递至静态调用方法里，而后你就会看到你自定义了名称的路径。
 
-### 从`File`或`Uint8List`创建`AssetEntity`的方法
+### 从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法
 
 如果需要使用此库结合一些拍照需求，可通过以下方法将`File`或`Uint8List`转为`AssetEntity`。
 
