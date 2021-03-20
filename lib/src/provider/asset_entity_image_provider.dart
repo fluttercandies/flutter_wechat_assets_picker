@@ -10,7 +10,6 @@ import 'package:flutter/foundation.dart';
 
 import '../constants/constants.dart';
 
-@immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   const AssetEntityImageProvider(
     this.entity, {
@@ -120,6 +119,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   }
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(dynamic other) {
     if (other.runtimeType != runtimeType) {
       return false;
@@ -134,6 +134,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   }
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode {
     return hashValues(
       entity,

@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
 
-@immutable
 class AssetPicker<A, P> extends StatelessWidget {
   const AssetPicker({
     Key? key,
