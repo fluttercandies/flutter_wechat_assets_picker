@@ -291,6 +291,7 @@ class DefaultAssetPickerProvider
       if (requestType != RequestType.audio) {
         getFirstThumbFromPathEntity(pathEntity).then((Uint8List? data) {
           _pathEntityList[pathEntity] = data;
+          notifyListeners();
         });
       }
     }
