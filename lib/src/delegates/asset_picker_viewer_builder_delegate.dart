@@ -281,8 +281,7 @@ class DefaultAssetPickerViewerBuilderDelegate
         builder = ImagePageBuilder(
           asset: asset,
           state: viewerState,
-          previewThumbSize: previewThumbSize ??
-              <int>[Screens.widthPixels, Screens.widthPixels],
+          previewThumbSize: previewThumbSize,
         );
         break;
       case AssetType.video:
