@@ -15,8 +15,6 @@ import '../constants/constants.dart';
 /// By extending it you can customize how you can get all assets or paths,
 /// how to fetch the next page of assets, how to get the thumb data of a path.
 abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
-  /// Call [getAssetList] with route duration when constructing.
-  /// 构造时根据路由时长延时获取资源
   AssetPickerProvider({
     this.maxAssets = 9,
     this.pageSize = 320,
@@ -129,6 +127,15 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   Map<P, Uint8List?> get pathEntityList => _pathEntityList;
 
+  /// How many path has a valid thumb data.
+  /// 当前有多少目录已经正常载入了缩略图
+  ///
+  /// This getter provides a "Should Rebuild" condition judgement to [Selector]
+  /// with the path entities widget.
+  /// 它为目录部件展示部分的 [Selector] 提供了是否重建的条件。
+  int get validPathThumbCount =>
+      _pathEntityList.values.where((Uint8List? d) => d != null).length;
+
   /// The path which is currently using.
   /// 正在查看的资源路径
   P? _currentPathEntity;
@@ -216,6 +223,8 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
 class DefaultAssetPickerProvider
     extends AssetPickerProvider<AssetEntity, AssetPathEntity> {
+  /// Call [getAssetList] with route duration when constructing.
+  /// 构造时根据路由时长延时获取资源
   DefaultAssetPickerProvider({
     List<AssetEntity>? selectedAssets,
     this.requestType = RequestType.image,

@@ -906,16 +906,17 @@ class DefaultAssetPickerBuilderDelegate
           ),
         ),
       ),
-      child: Selector<DefaultAssetPickerProvider,
-          Map<AssetPathEntity, Uint8List?>>(
-        selector: (_, DefaultAssetPickerProvider p) => p.pathEntityList,
-        builder: (_, Map<AssetPathEntity, Uint8List?> pathEntityList, __) {
+      child: Selector<DefaultAssetPickerProvider, int>(
+        selector: (_, DefaultAssetPickerProvider p) => p.validPathThumbCount,
+        builder: (BuildContext c, int count, __) {
+          final Map<AssetPathEntity, Uint8List?> list =
+              c.watch<DefaultAssetPickerProvider>().pathEntityList;
           return ListView.separated(
             padding: const EdgeInsets.only(top: 1.0),
-            itemCount: pathEntityList.length,
+            itemCount: list.length,
             itemBuilder: (_, int index) => pathEntityWidget(
-              context: context,
-              list: pathEntityList,
+              context: c,
+              list: list,
               index: index,
               isAudio: isAudio,
             ),
