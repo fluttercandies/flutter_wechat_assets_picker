@@ -173,7 +173,7 @@ class FixedAppBarWrapper extends StatelessWidget {
     required this.body,
   }) : super(key: key);
 
-  final FixedAppBar appBar;
+  final PreferredSizeWidget appBar;
   final Widget body;
 
   @override
@@ -183,15 +183,15 @@ class FixedAppBarWrapper extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned.fill(
-            top: kToolbarHeight + MediaQuery.of(context).padding.top,
-            child: body,
+            top: MediaQuery.of(context).padding.top +
+                appBar.preferredSize.height,
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: body,
+            ),
           ),
-          PositionedDirectional(
-            top: 0.0,
-            start: 0.0,
-            end: 0.0,
-            child: appBar,
-          ),
+          Positioned.fill(bottom: null, child: appBar),
         ],
       ),
     );

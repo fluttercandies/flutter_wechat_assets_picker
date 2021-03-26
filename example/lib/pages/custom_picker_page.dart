@@ -463,7 +463,7 @@ class FileAssetPickerBuilder
   }
 
   @override
-  Widget appBar(BuildContext context) {
+  PreferredSizeWidget appBar(BuildContext context) {
     return AppBar(
       backgroundColor: theme.appBarTheme.color,
       centerTitle: isAppleOS,

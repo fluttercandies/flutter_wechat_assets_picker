@@ -382,7 +382,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
 
   /// Custom app bar for the picker.
   /// 选择器自定义的顶栏
-  Widget appBar(BuildContext context);
+  PreferredSizeWidget appBar(BuildContext context);
 
   /// Layout for Apple OS devices.
   /// 苹果系列设备的选择器布局
@@ -509,7 +509,7 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
-  FixedAppBar appBar(BuildContext context) {
+  PreferredSizeWidget appBar(BuildContext context) {
     return FixedAppBar(
       backgroundColor: theme.appBarTheme.color,
       centerTitle: isAppleOS,
