@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 5.0.5
 
 - Fix force cast null type issue with WeChat moment special pick type.
-- Improve app bar's type definition
+- Improve app bar's type definition.
 
 ## 5.0.4
 
@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 5.0.1
 
 - Fix video indicator layout issue.
-- Prevent video selec in wechat moment mode for edge cases.
+- Prevent video select in WeChat moment mode for edge cases.
 - Pickup fixes from `photo_manager`.
 
 ## 5.0.0
