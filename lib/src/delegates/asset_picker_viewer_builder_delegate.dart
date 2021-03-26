@@ -517,16 +517,23 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// 资源选择器将识别并一同返回。
   @override
   Widget confirmButton(BuildContext context) {
-    return ChangeNotifierProvider<AssetPickerViewerProvider<AssetEntity>>.value(
-      value: provider!,
-      child: Consumer<AssetPickerViewerProvider<AssetEntity>>(
-        builder: (_, AssetPickerViewerProvider<AssetEntity> provider, __) {
+    return ChangeNotifierProvider<
+        AssetPickerViewerProvider<AssetEntity>?>.value(
+      value: provider,
+      child: Consumer<AssetPickerViewerProvider<AssetEntity>?>(
+        builder: (_, AssetPickerViewerProvider<AssetEntity>? provider, __) {
+          assert(
+            specialPickerType == SpecialPickerType.wechatMoment ||
+                provider != null,
+            'Viewer provider must not be null'
+            'when the special type is not WeChat moment.',
+          );
           return MaterialButton(
             minWidth: () {
               if (specialPickerType == SpecialPickerType.wechatMoment) {
                 return 48.0;
               }
-              return provider.isSelectedNotEmpty ? 48.0 : 20.0;
+              return provider!.isSelectedNotEmpty ? 48.0 : 20.0;
             }(),
             height: 32.0,
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -534,7 +541,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               if (specialPickerType == SpecialPickerType.wechatMoment) {
                 return themeData.colorScheme.secondary;
               }
-              return provider.isSelectedNotEmpty
+              return provider!.isSelectedNotEmpty
                   ? themeData.colorScheme.secondary
                   : themeData.dividerColor;
             }(),
@@ -546,7 +553,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 if (specialPickerType == SpecialPickerType.wechatMoment) {
                   return Constants.textDelegate.confirm;
                 }
-                if (provider.isSelectedNotEmpty) {
+                if (provider!.isSelectedNotEmpty) {
                   return '${Constants.textDelegate.confirm}'
                       '(${provider.currentlySelectedAssets.length}'
                       '/'
@@ -559,7 +566,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                   if (specialPickerType == SpecialPickerType.wechatMoment) {
                     return themeData.textTheme.bodyText1?.color;
                   }
-                  return provider.isSelectedNotEmpty
+                  return provider!.isSelectedNotEmpty
                       ? themeData.textTheme.bodyText1?.color
                       : themeData.textTheme.caption?.color;
                 }(),
@@ -572,7 +579,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 Navigator.of(context).pop(<AssetEntity>[currentAsset]);
                 return;
               }
-              if (provider.isSelectedNotEmpty) {
+              if (provider!.isSelectedNotEmpty) {
                 Navigator.of(context).pop(provider.currentlySelectedAssets);
               }
             },
