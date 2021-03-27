@@ -82,6 +82,9 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 当没有资源时是否显示自定义item
   final bool allowSpecialItemWhenEmpty;
 
+  /// The [ScrollController] for the preview grid.
+  final ScrollController gridScrollController = ScrollController();
+
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
   ThemeData get theme => pickerTheme ?? AssetPicker.themeData(themeColor);
@@ -261,6 +264,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
         selector: (_, AssetPickerProvider<A, P> provider) =>
             provider.currentAssets,
         builder: (_, List<A> currentAssets, __) => GridView.builder(
+          controller: gridScrollController,
           padding: isAppleOS
               ? EdgeInsets.only(
                   top: Screens.topSafeHeight + kToolbarHeight,
@@ -1031,7 +1035,10 @@ class DefaultAssetPickerBuilderDelegate
       type: MaterialType.transparency,
       child: InkWell(
         splashFactory: InkSplash.splashFactory,
-        onTap: () => provider.switchPath(pathEntity),
+        onTap: () {
+          provider.switchPath(pathEntity);
+          gridScrollController.jumpTo(0);
+        },
         child: SizedBox(
           height: isAppleOS ? 64.0 : 52.0,
           child: Row(
