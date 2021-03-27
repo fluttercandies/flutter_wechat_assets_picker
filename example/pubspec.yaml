@@ -13,7 +13,7 @@ dependencies:
 
   wechat_assets_picker:
     path: ../
-  wechat_camera_picker: ^2.0.0
+  wechat_camera_picker: ^2.1.0
 
   extended_image: ^4.0.0
   path: ^1.8.0
