@@ -157,10 +157,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       start: 0,
       bottom: 0,
       child: Container(
-        width: double.maxFinite,
-        height: 26.0,
-        alignment: const FractionalOffset(0.1, 0.1),
-        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+        padding: const EdgeInsets.all(6.0),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: AlignmentDirectional.bottomCenter,
@@ -169,10 +166,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
           ),
         ),
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 2.0,
-            vertical: 2.0,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
           decoration: !isAppleOS
               ? BoxDecoration(
                   borderRadius: BorderRadius.circular(2.0),
