@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
 
 import '../constants/constants.dart';
+import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/custom_checkbox.dart';
 
 abstract class AssetPickerViewerBuilderDelegate<A, P> {
@@ -64,13 +65,23 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   /// 当前查看的索引
   int currentIndex;
 
+  /// Whether the viewer is under preview mode for selected assets.
+  /// 当前是否处于查看已选中资源的模式
+  late final bool isSelectedPreviewing = selectedAssets == previewAssets;
+
   /// Getter for the current asset.
   /// 当前资源的Getter
   A get currentAsset => previewAssets.elementAt(currentIndex);
 
-  /// Height for bottom detail widget.
-  /// 底部详情部件的高度
-  double get bottomDetailHeight => 140.0;
+  /// Height for bottom preview widget.
+  /// 底栏预览部件的高度
+  double get bottomPreviewHeight => 90.0;
+
+  /// Height for bottom bar widget.
+  /// 底栏部件的高度
+  double get bottomBarHeight => 50.0;
+
+  double get bottomDetailHeight => bottomPreviewHeight + bottomBarHeight;
 
   /// Whether the current platform is Apple OS.
   /// 当前平台是否为苹果系列系统
@@ -87,6 +98,36 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   /// 保留一个 dispose 方法与 [State] 同步。
   void dispose() {
     pageStreamController.close();
+  }
+
+  /// The length getter for selected assets currently.
+  /// 当前选中的资源的长度获取
+  int get selectedCount => selectedAssets?.length ?? 0;
+
+  /// Construct a notifier to notify
+  /// whether if a new asset is selected or unselected.
+  /// 构造一个通知器，在新资源选中或取消选中时通知。
+  late final ValueNotifier<int> selectedNotifier =
+      ValueNotifier<int>(selectedCount);
+
+  void unSelectAsset(A entity) {
+    provider?.unSelectAssetEntity(entity);
+    if (!isSelectedPreviewing) {
+      selectedAssets?.remove(entity);
+    }
+    if (selectedCount != selectedNotifier.value) {
+      selectedNotifier.value = selectedCount;
+    }
+  }
+
+  void selectAsset(A entity) {
+    provider?.selectAssetEntity(entity);
+    if (!isSelectedPreviewing) {
+      selectedAssets?.add(entity);
+    }
+    if (selectedCount != selectedNotifier.value) {
+      selectedNotifier.value = selectedCount;
+    }
   }
 
   /// Split page builder according to type of asset.
@@ -200,7 +241,8 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   /// [PageController] for assets preview [PageView].
   /// 查看图片资源的页面控制器
-  late final PageController pageController;
+  late final PageController pageController =
+      PageController(initialPage: currentIndex);
 
   /// Whether detail widgets displayed.
   /// 详情部件是否显示
@@ -220,7 +262,6 @@ class DefaultAssetPickerViewerBuilderDelegate
       parent: _doubleTapAnimationController,
       curve: Curves.easeInOut,
     );
-    pageController = PageController(initialPage: currentIndex);
   }
 
   @override
@@ -340,6 +381,74 @@ class DefaultAssetPickerViewerBuilderDelegate
   }
 
   @override
+  Widget bottomDetailBuilder(BuildContext context) {
+    final Color _backgroundColor = themeData.canvasColor.withOpacity(0.85);
+    return ValueListenableBuilder2<bool, int>(
+      firstNotifier: isDisplayingDetail,
+      secondNotifier: selectedNotifier,
+      builder: (_, bool value, int count, Widget? child) => AnimatedPositioned(
+        duration: kThemeAnimationDuration,
+        curve: Curves.easeInOut,
+        bottom: value ? 0.0 : -(Screens.bottomSafeHeight + bottomDetailHeight),
+        left: 0.0,
+        right: 0.0,
+        height: Screens.bottomSafeHeight + bottomDetailHeight,
+        child: child!,
+      ),
+      child: Container(
+        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
+        child: ChangeNotifierProvider<
+            AssetPickerViewerProvider<AssetEntity>>.value(
+          value: provider!,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              ValueListenableBuilder<int>(
+                valueListenable: selectedNotifier,
+                builder: (_, int count, __) => Container(
+                  width: count > 0 ? double.maxFinite : 0,
+                  height: 90,
+                  color: _backgroundColor,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    itemCount: count,
+                    itemBuilder: bottomDetailItemBuilder,
+                  ),
+                ),
+              ),
+              Container(
+                height: 50,
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      width: 1.0,
+                      color: themeData.dividerColor,
+                    ),
+                  ),
+                  color: _backgroundColor,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const Spacer(),
+                    if (isAppleOS && provider != null)
+                      confirmButton(context)
+                    else
+                      selectButton(context),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget bottomDetailItemBuilder(BuildContext context, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
@@ -350,7 +459,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           stream: pageStreamController.stream,
           builder: (_, AsyncSnapshot<int> snapshot) {
             final AssetEntity asset = selectedAssets!.elementAt(index);
-            final bool isViewing = index == snapshot.data!;
+            final bool isViewing = previewAssets[snapshot.data!] == asset;
             final Widget _item = () {
               switch (asset.type) {
                 case AssetType.image:
@@ -405,62 +514,6 @@ class DefaultAssetPickerViewerBuilderDelegate
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget bottomDetailBuilder(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isDisplayingDetail,
-      builder: (_, bool value, Widget? child) => AnimatedPositioned(
-        duration: kThemeAnimationDuration,
-        curve: Curves.easeInOut,
-        bottom: value ? 0.0 : -(Screens.bottomSafeHeight + bottomDetailHeight),
-        left: 0.0,
-        right: 0.0,
-        height: Screens.bottomSafeHeight + bottomDetailHeight,
-        child: child!,
-      ),
-      child: Container(
-        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-        color: themeData.canvasColor.withOpacity(0.85),
-        child: ChangeNotifierProvider<
-            AssetPickerViewerProvider<AssetEntity>>.value(
-          value: provider!,
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 90.0,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  itemCount: selectedAssets!.length,
-                  itemBuilder: bottomDetailItemBuilder,
-                ),
-              ),
-              Container(
-                height: 1.0,
-                color: themeData.dividerColor,
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      const Spacer(),
-                      if (isAppleOS && provider != null)
-                        confirmButton(context)
-                      else
-                        selectButton(context),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -537,14 +590,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             }(),
             height: 32.0,
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            color: () {
-              if (specialPickerType == SpecialPickerType.wechatMoment) {
-                return themeData.colorScheme.secondary;
-              }
-              return provider!.isSelectedNotEmpty
-                  ? themeData.colorScheme.secondary
-                  : themeData.dividerColor;
-            }(),
+            color: themeData.colorScheme.secondary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0),
             ),
@@ -562,14 +608,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 return Constants.textDelegate.confirm;
               }(),
               style: TextStyle(
-                color: () {
-                  if (specialPickerType == SpecialPickerType.wechatMoment) {
-                    return themeData.textTheme.bodyText1?.color;
-                  }
-                  return provider!.isSelectedNotEmpty
-                      ? themeData.textTheme.bodyText1?.color
-                      : themeData.textTheme.caption?.color;
-                }(),
+                color: themeData.textTheme.bodyText1?.color,
                 fontSize: 17.0,
                 fontWeight: FontWeight.normal,
               ),
@@ -581,6 +620,11 @@ class DefaultAssetPickerViewerBuilderDelegate
               }
               if (provider!.isSelectedNotEmpty) {
                 Navigator.of(context).pop(provider.currentlySelectedAssets);
+              } else {
+                selectAsset(currentAsset);
+                Navigator.of(context).pop(
+                  selectedAssets ?? <AssetEntity>[currentAsset],
+                );
               }
             },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -599,9 +643,9 @@ class DefaultAssetPickerViewerBuilderDelegate
         behavior: HitTestBehavior.opaque,
         onTap: () {
           if (isSelected) {
-            provider?.unSelectAssetEntity(asset);
+            unSelectAsset(asset);
           } else {
-            provider?.selectAssetEntity(asset);
+            selectAsset(asset);
           }
         },
         child: AnimatedContainer(
@@ -640,9 +684,9 @@ class DefaultAssetPickerViewerBuilderDelegate
       ),
       onChanged: (bool? value) {
         if (isSelected) {
-          provider?.unSelectAssetEntity(asset);
+          unSelectAsset(asset);
         } else {
-          provider?.selectAssetEntity(asset);
+          selectAsset(asset);
         }
       },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
