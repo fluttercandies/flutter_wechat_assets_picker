@@ -91,7 +91,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// 并非所有的系统版本都支持读取文件名，所以该方法有时无法返回正确的type。
   ImageFileType _getType() {
     ImageFileType? type;
-    final String? extension = entity.title?.split('.').last;
+    final String? extension =
+        entity.mimeType?.split('/').last ?? entity.title?.split('.').last;
     if (extension != null) {
       switch (extension.toLowerCase()) {
         case 'jpg':
