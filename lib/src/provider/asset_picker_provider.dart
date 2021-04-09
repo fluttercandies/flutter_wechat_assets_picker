@@ -268,18 +268,17 @@ class DefaultAssetPickerProvider
   Future<void> getAssetPathList() async {
     // Initial base options.
     // Enable need title for audios and image to get proper display.
-    final FilterOptionGroup options = FilterOptionGroup()
-      ..setOption(
-        AssetType.audio,
-        const FilterOption(needTitle: true),
-      )
-      ..setOption(
-        AssetType.image,
-        const FilterOption(
-          needTitle: true,
-          sizeConstraint: SizeConstraint(ignoreSize: true),
-        ),
-      );
+    final FilterOptionGroup options = FilterOptionGroup(
+      imageOption: const FilterOption(
+        needTitle: true,
+        sizeConstraint: SizeConstraint(ignoreSize: true),
+      ),
+      audioOption: const FilterOption(
+        needTitle: true,
+        sizeConstraint: SizeConstraint(ignoreSize: true),
+      ),
+      containsPathModified: true,
+    );
 
     // Merge user's filter option into base options if it's not null.
     if (filterOptions != null) {

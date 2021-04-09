@@ -29,6 +29,17 @@ class CommonSortPathDelegate extends SortPathDelegate {
 
   @override
   void sort(List<AssetPathEntity> list) {
+    if (list.any((AssetPathEntity e) => e.lastModified != null)) {
+      list.sort((AssetPathEntity path1, AssetPathEntity path2) {
+        if (path1.lastModified == null || path2.lastModified == null) {
+          return 0;
+        }
+        if (path2.lastModified!.isAfter(path1.lastModified!)) {
+          return 1;
+        }
+        return -1;
+      });
+    }
     list.sort((AssetPathEntity path1, AssetPathEntity path2) {
       if (path1.isAll) {
         return -1;
@@ -48,7 +59,7 @@ class CommonSortPathDelegate extends SortPathDelegate {
       if (_isScreenShot(path2)) {
         return 1;
       }
-      return otherSort(path1, path2);
+      return 0;
     });
   }
 
@@ -57,11 +68,10 @@ class CommonSortPathDelegate extends SortPathDelegate {
   }
 
   bool _isCamera(AssetPathEntity entity) {
-    return entity.name.toUpperCase() == 'camera'.toUpperCase();
+    return entity.name == 'Camera';
   }
 
   bool _isScreenShot(AssetPathEntity entity) {
-    return entity.name.toUpperCase() == 'screenshots'.toUpperCase() ||
-        entity.name.toUpperCase() == 'screenshot'.toUpperCase();
+    return entity.name == 'Screenshots' || entity.name == 'Screenshot';
   }
 }
