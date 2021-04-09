@@ -439,7 +439,7 @@ class DefaultAssetPickerBuilderDelegate
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
         );
 
-  /// Thumb size for the preview of images in the viewer.
+  /// Preview thumbnail size in the viewer.
   /// 预览时图片的缩略图大小
   ///
   /// This only works on images since other types does not have request

@@ -30,7 +30,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
         PickMethodModel(
           icon: '🖼️',
           name: 'Image picker',
-          description: 'Simply pick image from device.',
+          description: 'Only pick image from device.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -46,7 +46,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
         PickMethodModel(
           icon: '🎞',
           name: 'Video picker',
-          description: 'Simply pick video from device.',
+          description: 'Only pick video from device.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -62,7 +62,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
         PickMethodModel(
           icon: '🎶',
           name: 'Audio picker',
-          description: 'Simply pick audio from device.',
+          description: 'Only pick audio from device.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -78,7 +78,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
         PickMethodModel(
           icon: '📷',
           name: 'Pick from camera',
-          description: 'Allow pick asset through camera.',
+          description: 'Allow pick an asset through camera.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -129,8 +129,8 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
         PickMethodModel(
           icon: '🔲',
           name: '3 items grid',
-          description:
-              'Picker will served as 3 items on cross axis. (pageSize must be a multiple of gridCount)',
+          description: 'Picker will served as 3 items on cross axis. '
+              '(pageSize must be a multiple of gridCount)',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -172,8 +172,8 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
         ),
         PickMethodModel(
           icon: '🎭',
-          name: 'Wechat moment',
-          description: 'Pick assets just like the wechat moment pattern.',
+          name: 'WeChat moment',
+          description: 'Pick assets like the WeChat moment pattern.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,

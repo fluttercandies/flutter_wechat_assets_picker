@@ -13,13 +13,17 @@
 
 Language: English | [中文简体](README-ZH.md)
 
-An **assets picker** which looks like the one in WeChat, based on `photo_manager` for asset implementation, `extended_image` for image preview, `provider` to help controlling the state of the picker.
+An **assets picker** which looks like the one in WeChat,
+based on `photo_manager` for asset implementation,
+`extended_image` for image preview,
+and `provider` to help control the state of the picker.
 
-To take a photo or a video for assets, please check the detailed usage in the example, and head over to [wechat_camera_picker](https://fluttercandies.github.io/flutter_wechat_camera_picker/) .
+To take a photo or a video for assets, please check the detailed usage in the example, and head over to
+[wechat_camera_picker](https://fluttercandies.github.io/flutter_wechat_camera_picker/) .
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+Many thanks to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -36,7 +40,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+This project follows the
+[all-contributors](https://github.com/all-contributors/all-contributors) specification.
+Contributions of any kind welcomed!!
 
 ## Category 🗂
 
@@ -94,7 +100,8 @@ See [Migration Guide](guides/migration_guide.md).
 
 ## READ THIS FIRST ‼️
 
-Althought the package provide selection for assets, it still require users build their own methods to handle upload, image compress, etc. If you have any question about how to build it, please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
+Although the package provides assets selection, it still requires users to build their own methods
+to handle upload, image compress, etc. If you have any questions about how to build them, please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
 
 ## Preparing for use 🍭
 
@@ -102,7 +109,7 @@ Althought the package provide selection for assets, it still require users build
 
 Flutter SDK: `>=2.0.0` .
 
-If you got an error about `resolve conflict` when running `flutter pub get` , please use `dependency_overrides` to solve it. See [here](#version-resolve-conflict-with-xxx-eg-dartx) .
+If you got a `resolve conflict` error when running `flutter pub get` , please use `dependency_overrides` to fix it. See [here](#version-resolve-conflict-with-xxx-eg-dartx) .
 
 ### Flutter
 
@@ -130,12 +137,12 @@ See [Generated API](https://sjudd.github.io/glide/doc/generatedapi.html).
 
 ### iOS
 
-1. Define the minimum platform in `ios/Podfile` upper to *9.0*.
-```
+1. Platform version has to be at least *9.0*. Modify `ios/Podfile` and update accordingly.
+```ruby
 platform :ios, '9.0'
 ```
 
-2. Add following content to `info.plist`.
+2. Add the following content to `info.plist`.
 
 ```
 <key>NSAppTransportSecurity</key>
@@ -149,20 +156,18 @@ platform :ios, '9.0'
 
 ### MacOS
 
-Currently flutter desktop is still under development, so please be aware that any issues releated to the desktop version is not yet supported.
-
-1. Define the minimum platform in `macos/Podfile` upper to *10.15*.
-```
+1. Platform version has to be at least *10.15*. Modify `macos/Podfile` and update accordingly.
+```ruby
 platform :osx, '10.15'
 ```
 
-2. Use *Xcode* to open the `macos/Runner.xcworkspace`. Then follow screenshots to setup the minumum target version upper to *10.15*.
+2. Set the minimum deployment target to *10.15*. Use XCode to open `macos/Runner.xcworkspace` .
 
 3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
 
 4. ![step 2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67vd3f2j30jv04zgm5.jpg)
 
-5. Add the same thing as iOS does into `info.plist`.
+5. Follow the iOS instructions and modify `info.plist` accordingly.
 
 ## Usage 📖
 
@@ -170,20 +175,20 @@ platform :osx, '10.15'
 | ------------------------- | --------------------------- | ------------------------------------------------------------ | ----------------------------------- |
 | selectedAssets            | `List<AssetEntity>?`        | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
 | maxAssets                 | `int`                       | Maximum asset that the picker can pick.                      | 9                                   |
-| pageSize                  | `int`                       | Assets amount when assets loaded with paging. **Must be a multiple of `gridCount`.** Nullable for non paging. | 320 (80 * 4)                        |
-| pathThumbSize             | `int`                       | The size of thumb data in picker.                            | 80                                  |
+| pageSize                  | `int?`                      | Number of assets per page. **Must be a multiple of `gridCount`**. | 320 (80 * 4)                        |
+| pathThumbSize             | `int`                       | Thumbnail size.                                              | 80                                  |
 | gridCount                 | `int`                       | Grid count in picker.                                        | 4                                   |
 | requestType               | `RequestType`               | Request type for picker.                                     | `RequestType.image`                 |
-| previewThumbSize          | `List<int>?`                | Thumb size for the preview of images in the viewer.          | `null`                              |
-| specialPickerType         | `SpacialPickerType?`        | Provide some special picker types to integrate un-common pick pattern. | `null`                              |
-| themeColor                | `Color?`                    | Main theme color for the picker                              | `Color(0xff00bc56)`                 |
+| previewThumbSize          | `List<int>?`                | Preview thumbnail size in the viewer.                        | `null`                              |
+| specialPickerType         | `SpacialPickerType?`        | Provides the option to integrate a custom picker type.       | `null`                              |
+| themeColor                | `Color?`                    | Main theme color for the picker.                             | `Color(0xff00bc56)`                 |
 | pickerTheme               | `ThemeData?`                | Theme data provider for the picker and the viewer.           | `null`                              |
 | sortPathDelegate          | `SortPathDeleage?`          | Path entities sort delegate for the picker, sort paths as you want. | `CommonSortPathDelegate`            |
 | textDelegate              | `AssetsPickerTextDelegate?` | Text delegate for the picker, for customize the texts.       | `DefaultAssetsPickerTextDelegate()` |
 | filterOptions             | `FilterOptionGroup?`        | Allow users to customize assets filter options.              | `null`                              |
 | specialItemBuilder        | `WidgetBuilder?`            | The widget builder for the special item.                     | `null`                              |
 | specialItemPosition       | `SpecialItemPosition`       | Allow users set a special item in the picker with several positions. | `SpecialItemPosition.none`          |
-| allowSpecialItemWhenEmpty | `bool`                      | Whether the special item will display or not when assets is empty.  | `false`                             |
+| allowSpecialItemWhenEmpty | `bool`                      | Whether the special item will display or not when assets is empty. | `false`                             |
 | routeCurve                | `Curve`                     | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
 | routeDuration             | `Duration`                  | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
 

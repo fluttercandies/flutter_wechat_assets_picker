@@ -30,7 +30,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
         PickMethodModel(
           icon: '🖼️',
           name: 'Image picker',
-          description: 'Simply pick image from device.',
+          description: 'Only pick image from device.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -46,7 +46,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
         PickMethodModel(
           icon: '🎞',
           name: 'Video picker',
-          description: 'Simply pick video from device.',
+          description: 'Only pick video from device.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -62,7 +62,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
         PickMethodModel(
           icon: '🎶',
           name: 'Audio picker',
-          description: 'Simply pick audio from device.',
+          description: 'Only pick audio from device.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -78,7 +78,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
         PickMethodModel(
           icon: '📷',
           name: 'Pick from camera',
-          description: 'Allow pick asset through camera.',
+          description: 'Allow pick an asset through camera.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -130,8 +130,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
         PickMethodModel(
           icon: '🔲',
           name: '3 items grid',
-          description:
-              'Picker will served as 3 items on cross axis. (pageSize must be a multiple of gridCount)',
+          description: 'Picker will served as 3 items on cross axis. '
+              '(pageSize must be a multiple of gridCount)',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
@@ -195,7 +195,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
           icon: '🎚',
           name: 'Custom image preview thumb size',
           description:
-              'You can reduce the thumb size in order to get more quickly load speed.',
+              'You can reduce the thumb size to get more quickly load speed.',
           method: (
             BuildContext context,
             List<AssetEntity> assets,
