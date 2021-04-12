@@ -382,3 +382,11 @@ W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an
 
 `Glide` 通过注解来保证单例，防止单例或版本之间的冲突，而因为`photo_manager`使用了`Glide`提供部分图片功能，所以使用它的项目必须实现自己的`AppGlideModule`。 请移步[Android](#android)部分了解如何实现。
 
+
+## 致谢
+
+> IntelliJ IDEA 的每个方面都旨在最大化开发者生产力。结合智能编码辅助与符合人体工程学的设计，让开发不仅高效，更成为一种享受。
+
+感谢 [JetBrains](https://www.jetbrains.com/?from=fluttercandies) 为开源项目提供免费的 [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies) 等 IDE 的授权。
+
+[<img src=".github/jetbrains-variant.png" width="200"/>](https://www.jetbrains.com/?from=fluttercandies)

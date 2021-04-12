@@ -408,3 +408,11 @@ W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an
 ```
 
 `Glide` needs annotation to keep singleton, prevent conflict between instances and versions, so while the photo manager uses `Glide` to implement image features, the project which import this should define its own `AppGlideModule`. See [Android](#android) section for implementation.
+
+## Acknowledgement
+
+> Every aspect of IntelliJ IDEA has been designed to maximize developer productivity. Together, intelligent coding assistance and ergonomic design make development not only productive but also enjoyable.
+
+Thanks to [JetBrains](https://www.jetbrains.com/?from=fluttercandies) for allocating free open-source licenses for IDEs such as [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies).
+
+[<img src=".github/jetbrains-variant.png" width="200"/>](https://www.jetbrains.com/?from=fluttercandies)
