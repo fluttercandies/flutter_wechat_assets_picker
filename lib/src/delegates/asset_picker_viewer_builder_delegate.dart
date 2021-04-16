@@ -661,7 +661,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           child: Center(
             child: isSelected
                 ? Text(
-                    (currentIndex + 1).toString(),
+                    '${selectedAssets!.indexOf(asset) + 1}',
                     style: const TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
