@@ -17,6 +17,8 @@ Language: [English](README.md) | 中文简体
 
 拍照及录制视频，请查看 example 详细用法，并前往 [wechat_camera_picker](https://fluttercandies.github.io/flutter_wechat_camera_picker/README-ZH.html) 。
 
+所有的界面细节基于 微信 7.x 版本，将在微信版本更新后随时进行跟进。
+
 ## 目录 🗂
 
 * [迁移指南](#迁移指南-)

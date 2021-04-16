@@ -21,6 +21,8 @@ and `provider` to help control the state of the picker.
 To take a photo or a video for assets, please check the detailed usage in the example, and head over to
 [wechat_camera_picker](https://fluttercandies.github.io/flutter_wechat_camera_picker/) .
 
+All UI designs are based on WeChat 7.x, and it will be updated following the WeChat update in anytime.
+
 ## Contributors ✨
 
 Many thanks to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
