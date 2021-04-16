@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix selected assets not sync between thumbnail preview mode and grid view.
 - Fix wrong index displays in thumbnail preview mode.
+- Dependencies upgrade roll.
 
 ## 5.1.1
 
