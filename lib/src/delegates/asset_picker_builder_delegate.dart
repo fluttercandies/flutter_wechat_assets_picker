@@ -1139,9 +1139,13 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget selectIndicator(BuildContext context, AssetEntity asset) {
-    return Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-      selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
-      builder: (_, List<AssetEntity> selectedAssets, __) {
+    return Selector<DefaultAssetPickerProvider, int>(
+      selector: (_, DefaultAssetPickerProvider p) => p.selectedAssetsCount,
+      builder: (BuildContext context, int count, __) {
+        final List<AssetEntity> selectedAssets =
+            context.select<DefaultAssetPickerProvider, List<AssetEntity>>(
+          (DefaultAssetPickerProvider p) => p.selectedAssets,
+        );
         final bool selected = selectedAssets.contains(asset);
         final double indicatorSize = Screens.width / gridCount / 3;
         return Positioned(

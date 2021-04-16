@@ -178,6 +178,14 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// How many assets have been selected.
+  /// 当前有资源已经被选择
+  ///
+  /// This getter provides a "Should Rebuild" condition judgement to [Selector]
+  /// with the preview widget's selective part.
+  /// 它为预览部件的选中部分的 [Selector] 提供了是否重建的条件。
+  int get selectedAssetsCount => _selectedAssets.length;
+
   /// 选中资源是否为空
   bool get isSelectedNotEmpty => selectedAssets.isNotEmpty;
 
