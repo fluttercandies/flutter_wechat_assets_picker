@@ -76,8 +76,9 @@ See [Migration Guide](guides/migration_guide.md).
 
 ## Features ✨
 
-- [x] ♻️ Fully implementable with delegate override.
-- [x] 💚 99% simillar to WeChat style.
+- [x] ♻️ Fully implementable with delegate override
+- [x] 💚 99% simillar to WeChat style
+- [x] ⚡️ Adjustable performance according to parameters
 - [x] 📷 Image asset support
   - [x] 🔬HEIC/HEIF Image type support
 - [x] 🎥 Video asset support
