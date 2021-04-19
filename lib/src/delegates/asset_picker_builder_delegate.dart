@@ -1139,9 +1139,9 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget selectIndicator(BuildContext context, AssetEntity asset) {
-    return Selector<DefaultAssetPickerProvider, int>(
-      selector: (_, DefaultAssetPickerProvider p) => p.selectedAssetsCount,
-      builder: (BuildContext context, int count, __) {
+    return Selector<DefaultAssetPickerProvider, String>(
+      selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
+      builder: (BuildContext context, _, __) {
         final List<AssetEntity> selectedAssets =
             context.select<DefaultAssetPickerProvider, List<AssetEntity>>(
           (DefaultAssetPickerProvider p) => p.selectedAssets,
