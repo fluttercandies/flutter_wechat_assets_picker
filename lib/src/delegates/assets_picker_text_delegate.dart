@@ -141,7 +141,58 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
   String select = 'Select';
 
   @override
-  String unSupportedAssetType = 'Unsupported HEIC asset type.';
+  String unSupportedAssetType = 'Unsupported asset type.';
+
+  @override
+  String durationIndicatorBuilder(Duration duration) {
+    const String separator = ':';
+    final String minute = duration.inMinutes.toString().padLeft(2, '0');
+    final String second =
+        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
+            .toString()
+            .padLeft(2, '0');
+    return '$minute$separator$second';
+  }
+}
+
+/// [AssetsPickerTextDelegate] implements with Hebrew.
+/// 希伯来文字实现
+class HebrewTextDelegate implements AssetsPickerTextDelegate {
+  factory HebrewTextDelegate() => _instance;
+
+  HebrewTextDelegate._internal();
+
+  static final HebrewTextDelegate _instance = HebrewTextDelegate._internal();
+
+  @override
+  String confirm = 'אישור';
+
+  @override
+  String cancel = 'ביטול';
+
+  @override
+  String edit = 'עריכה';
+
+  @override
+  String gifIndicator = 'GIF';
+
+  @override
+  String heicNotSupported = 'קובץ HEIC לא נתמך.';
+
+  @override
+  String loadFailed = 'הטעינה נכשלה';
+
+  @override
+  String original = 'מקור';
+
+  @override
+  String preview = 'תצוגה מקדימה';
+
+  @override
+  String select = 'בחר';
+
+  @override
+  String unSupportedAssetType = 'סוג קובץ אינו נתמך';
 
   @override
   String durationIndicatorBuilder(Duration duration) {
