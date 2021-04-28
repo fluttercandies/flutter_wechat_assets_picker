@@ -17,6 +17,7 @@ class SingleAssetPage extends StatefulWidget {
 
 class _SingleAssetPageState extends State<SingleAssetPage> {
   final int maxAssetsCount = 1;
+  final bool showPreview = true;
 
   List<AssetEntity> assets = <AssetEntity>[];
 
@@ -40,6 +41,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.image,
+              showPreview: showPreview,
             );
           },
         ),
@@ -56,6 +58,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.video,
+              showPreview: showPreview,
             );
           },
         ),
@@ -72,6 +75,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.audio,
+              showPreview: showPreview,
             );
           },
         ),
@@ -107,6 +111,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
                   ),
                 );
               },
+              showPreview: showPreview,
             );
           },
         ),
@@ -123,6 +128,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.common,
+              showPreview: showPreview,
             );
           },
         ),
@@ -142,6 +148,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.all,
+              showPreview: showPreview,
             );
           },
         ),
@@ -167,6 +174,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
                     ),
                   ),
                 ),
+              showPreview: showPreview,
             );
           },
         ),
@@ -183,6 +191,7 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               specialPickerType: SpecialPickerType.wechatMoment,
+              showPreview: showPreview,
             );
           },
         ),

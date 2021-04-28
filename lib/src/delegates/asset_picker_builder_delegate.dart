@@ -35,6 +35,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     this.specialItemBuilder,
     this.loadingIndicatorBuilder,
     this.allowSpecialItemWhenEmpty = false,
+    this.showPreview = true,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -81,6 +82,10 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// Whether the special item will display or not when assets is empty.
   /// 当没有资源时是否显示自定义item
   final bool allowSpecialItemWhenEmpty;
+
+  /// Whether to show preview of the asset on click (or perform selection)
+  /// 通过单击预览项目
+  final bool showPreview;
 
   /// The [ScrollController] for the preview grid.
   final ScrollController gridScrollController = ScrollController();
@@ -328,7 +333,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       child: Row(children: <Widget>[
         if (!isSingleAssetMode || !isAppleOS) previewButton(context),
         if (isAppleOS) const Spacer(),
-        if (isAppleOS) confirmButton(context),
+        if (isAppleOS && (showPreview || !isSingleAssetMode)) confirmButton(context),
       ]),
     );
     if (isAppleOS) {
@@ -421,6 +426,7 @@ class DefaultAssetPickerBuilderDelegate
     WidgetBuilder? specialItemBuilder,
     IndicatorBuilder? loadingIndicatorBuilder,
     bool allowSpecialItemWhenEmpty = false,
+    bool showPreview = true,
     this.previewThumbSize,
     this.specialPickerType,
   })  : assert(
@@ -437,6 +443,7 @@ class DefaultAssetPickerBuilderDelegate
           specialItemBuilder: specialItemBuilder,
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
+          showPreview: showPreview,
         );
 
   /// Preview thumbnail size in the viewer.
@@ -491,7 +498,7 @@ class DefaultAssetPickerBuilderDelegate
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGridBuilder(context)),
-                            if (!isSingleAssetMode) bottomActionBar(context),
+                            if (!isSingleAssetMode && showPreview) bottomActionBar(context),
                           ],
                         ),
                       ),
@@ -513,7 +520,7 @@ class DefaultAssetPickerBuilderDelegate
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
-      actions: !isAppleOS ? <Widget>[confirmButton(context)] : null,
+      actions: !isAppleOS && (showPreview || !isSingleAssetMode) ? <Widget>[confirmButton(context)] : null,
       actionsPadding: const EdgeInsets.only(right: 14.0),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0.0,
     );
@@ -537,7 +544,7 @@ class DefaultAssetPickerBuilderDelegate
                               Positioned.fill(
                                 child: assetsGridBuilder(context),
                               ),
-                              if (!isSingleAssetMode || isAppleOS)
+                              if ((!isSingleAssetMode || isAppleOS) && showPreview)
                                 PositionedDirectional(
                                   bottom: 0.0,
                                   child: bottomActionBar(context),
@@ -1148,29 +1155,31 @@ class DefaultAssetPickerBuilderDelegate
         );
         final bool selected = selectedAssets.contains(asset);
         final double indicatorSize = Screens.width / gridCount / 3;
-        return Positioned(
-          top: 0.0,
-          right: 0.0,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              if (selected) {
-                provider.unSelectAsset(asset);
-              } else {
-                if (isSingleAssetMode) {
-                  provider.selectedAssets.clear();
-                }
-                provider.selectAsset(asset);
+        final GestureDetector selectorWidget = GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            if (selected) {
+              provider.unSelectAsset(asset);
+            } else {
+              if (isSingleAssetMode) {
+                provider.selectedAssets.clear();
               }
-            },
-            child: Container(
-              margin: EdgeInsets.all(
-                Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
-              ),
-              width: indicatorSize,
-              height: indicatorSize,
-              alignment: AlignmentDirectional.topEnd,
-              child: AnimatedContainer(
+              provider.selectAsset(asset);
+              if (isSingleAssetMode && !showPreview) {
+                Navigator.of(context).pop(provider.selectedAssets);
+              }
+            }
+          },
+          child: Container(
+            margin: EdgeInsets.all(
+              Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
+            ),
+            width: showPreview ? indicatorSize : null,
+            height: showPreview ? indicatorSize : null,
+            alignment: AlignmentDirectional.topEnd,
+            child: (!showPreview && isSingleAssetMode && !selected) ? 
+              Container() :
+              AnimatedContainer(
                 duration: switchingPathDuration,
                 width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
                 height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
@@ -1202,9 +1211,13 @@ class DefaultAssetPickerBuilderDelegate
                       : const SizedBox.shrink(),
                 ),
               ),
-            ),
           ),
         );
+        if (showPreview) {
+          return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
+        } else {
+          return selectorWidget;
+        }
       },
     );
   }

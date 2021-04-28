@@ -40,6 +40,7 @@ class AssetPicker<A, P> extends StatelessWidget {
     bool allowSpecialItemWhenEmpty = false,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
+    bool showPreview = true,
   }) async {
     if (maxAssets < 1) {
       throw ArgumentError(
@@ -102,6 +103,7 @@ class AssetPicker<A, P> extends StatelessWidget {
               specialItemBuilder: specialItemBuilder,
               loadingIndicatorBuilder: loadingIndicatorBuilder,
               allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
+              showPreview: showPreview,
             ),
           ),
         );
