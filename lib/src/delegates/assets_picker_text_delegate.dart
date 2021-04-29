@@ -50,6 +50,16 @@ abstract class AssetsPickerTextDelegate {
   /// to display the duration of the video or audio type of asset.
   /// 该字段用在选择器视频或音频部件上，用于显示视频或音频资源的时长。
   String durationIndicatorBuilder(Duration duration);
+
+  static String defaultDurationIndicatorBuilder(Duration duration) {
+    const String separator = ':';
+    final String minute = duration.inMinutes.toString().padLeft(2, '0');
+    final String second =
+        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
+            .toString()
+            .padLeft(2, '0');
+    return '$minute$separator$second';
+  }
 }
 
 /// Default text delegate implements with Chinese.
@@ -93,15 +103,8 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
   String unSupportedAssetType = '尚未支持的资源类型';
 
   @override
-  String durationIndicatorBuilder(Duration duration) {
-    const String separator = ':';
-    final String minute = duration.inMinutes.toString().padLeft(2, '0');
-    final String second =
-        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
-            .toString()
-            .padLeft(2, '0');
-    return '$minute$separator$second';
-  }
+  String durationIndicatorBuilder(Duration duration) =>
+      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
 
 /// [AssetsPickerTextDelegate] implements with English.
@@ -144,15 +147,8 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
   String unSupportedAssetType = 'Unsupported HEIC asset type.';
 
   @override
-  String durationIndicatorBuilder(Duration duration) {
-    const String separator = ':';
-    final String minute = duration.inMinutes.toString().padLeft(2, '0');
-    final String second =
-        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
-            .toString()
-            .padLeft(2, '0');
-    return '$minute$separator$second';
-  }
+  String durationIndicatorBuilder(Duration duration) =>
+      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
 
 /// [AssetsPickerTextDelegate] implements with Hebrew.
@@ -195,13 +191,6 @@ class HebrewTextDelegate implements AssetsPickerTextDelegate {
   String unSupportedAssetType = 'סוג קובץ אינו נתמך';
 
   @override
-  String durationIndicatorBuilder(Duration duration) {
-    const String separator = ':';
-    final String minute = duration.inMinutes.toString().padLeft(2, '0');
-    final String second =
-        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
-            .toString()
-            .padLeft(2, '0');
-    return '$minute$separator$second';
-  }
+  String durationIndicatorBuilder(Duration duration) =>
+      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
