@@ -188,7 +188,7 @@ class HebrewTextDelegate implements AssetsPickerTextDelegate {
   String select = 'בחר';
 
   @override
-  String unSupportedAssetType = 'סוג קובץ אינו נתמך';
+  String unSupportedAssetType = 'סוג קובץ HEIC אינו נתמך';
 
   @override
   String durationIndicatorBuilder(Duration duration) =>
