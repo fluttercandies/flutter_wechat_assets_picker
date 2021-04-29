@@ -62,6 +62,15 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "yanivshaked",
+      "name": "Yaniv Shaked",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13107481?v=4",
+      "profile": "https://github.com/yanivshaked",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
