@@ -141,7 +141,7 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
   String select = 'Select';
 
   @override
-  String unSupportedAssetType = 'Unsupported asset type.';
+  String unSupportedAssetType = 'Unsupported HEIC asset type.';
 
   @override
   String durationIndicatorBuilder(Duration duration) {
