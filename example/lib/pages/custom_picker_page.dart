@@ -935,66 +935,63 @@ class FileAssetPickerBuilder
           index = selectedAssets.indexWhere((File f) => f.path == asset.path);
         }
         final double indicatorSize = Screens.width / gridCount / 3;
-        final GestureDetector selectorWidget = GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            if (isSelected) {
-              provider.unSelectAsset(asset);
-            } else {
-              if (isSingleAssetMode) {
-                provider.selectedAssets.clear();
+        return Positioned(
+          top: 0.0,
+          right: 0.0,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              if (isSelected) {
+                provider.unSelectAsset(asset);
+              } else {
+                if (isSingleAssetMode) {
+                  provider.selectedAssets.clear();
+                }
+                provider.selectAsset(asset);
               }
-              provider.selectAsset(asset);
-              if (isSingleAssetMode && specialPickerType == SpecialPickerType.noPreview) {
-                Navigator.of(context).pop(provider.selectedAssets);
-              }
-            }
-          },
-          child: Container(
-            margin: EdgeInsets.all(
-              Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
-            ),
-            width: specialPickerType != SpecialPickerType.noPreview ? indicatorSize : null,
-            height: specialPickerType != SpecialPickerType.noPreview ? indicatorSize : null,
-            alignment: AlignmentDirectional.topEnd,
-            child: AnimatedContainer(
-              duration: switchingPathDuration,
-              width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
-              height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
-              decoration: BoxDecoration(
-                border: !isSelected
-                    ? Border.all(color: Colors.white, width: 2.0)
-                    : null,
-                color: isSelected ? themeColor : null,
-                shape: BoxShape.circle,
+            },
+            child: Container(
+              margin: EdgeInsets.all(
+                Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
               ),
-              child: AnimatedSwitcher(
+              width: indicatorSize,
+              height: indicatorSize,
+              alignment: AlignmentDirectional.topEnd,
+              child: AnimatedContainer(
                 duration: switchingPathDuration,
-                reverseDuration: switchingPathDuration,
-                child: isSelected
-                    ? isSingleAssetMode
-                        ? const Icon(Icons.check, size: 18.0)
-                        : Text(
-                            '${index + 1}',
-                            style: TextStyle(
-                              color: isSelected
-                                  ? theme.textTheme.bodyText1?.color
-                                  : null,
-                              fontSize: isAppleOS ? 16.0 : 14.0,
-                              fontWeight: isAppleOS
-                                  ? FontWeight.w600
-                                  : FontWeight.bold,
-                            ),
-                          )
-                    : const SizedBox.shrink(),
+                width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
+                height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
+                decoration: BoxDecoration(
+                  border: !isSelected
+                      ? Border.all(color: Colors.white, width: 2.0)
+                      : null,
+                  color: isSelected ? themeColor : null,
+                  shape: BoxShape.circle,
+                ),
+                child: AnimatedSwitcher(
+                  duration: switchingPathDuration,
+                  reverseDuration: switchingPathDuration,
+                  child: isSelected
+                      ? isSingleAssetMode
+                          ? const Icon(Icons.check, size: 18.0)
+                          : Text(
+                              '${index + 1}',
+                              style: TextStyle(
+                                color: isSelected
+                                    ? theme.textTheme.bodyText1?.color
+                                    : null,
+                                fontSize: isAppleOS ? 16.0 : 14.0,
+                                fontWeight: isAppleOS
+                                    ? FontWeight.w600
+                                    : FontWeight.bold,
+                              ),
+                            )
+                      : const SizedBox.shrink(),
+                ),
               ),
             ),
           ),
         );
-        if (specialPickerType != SpecialPickerType.noPreview) {
-          return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
-        }
-        return selectorWidget;
       },
     );
   }

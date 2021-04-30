@@ -35,7 +35,6 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     this.specialItemBuilder,
     this.loadingIndicatorBuilder,
     this.allowSpecialItemWhenEmpty = false,
-    this.specialPickerType,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -82,20 +81,6 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// Whether the special item will display or not when assets is empty.
   /// 当没有资源时是否显示自定义item
   final bool allowSpecialItemWhenEmpty;
-
-  /// The current special picker type for the picker.
-  /// 当前特殊选择类型
-  ///
-  /// There're several types which are special:
-  /// * [SpecialPickerType.wechatMoment] When user selected video, no more images
-  /// can be selected.
-  /// * [SpecialPickerType.noPreview] Disable preview of asset; Clicking on an
-  /// asset selects it.
-  ///
-  /// 这里包含一些特殊选择类型：
-  /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
-  /// * [SpecialPickerType.noPreview] 禁用资产预览； 单击资产将其选中。
-  final SpecialPickerType? specialPickerType;
 
   /// The [ScrollController] for the preview grid.
   final ScrollController gridScrollController = ScrollController();
@@ -343,7 +328,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       child: Row(children: <Widget>[
         if (!isSingleAssetMode || !isAppleOS) previewButton(context),
         if (isAppleOS) const Spacer(),
-        if (isAppleOS && ((specialPickerType != SpecialPickerType.noPreview) || !isSingleAssetMode)) confirmButton(context),
+        if (isAppleOS) confirmButton(context),
       ]),
     );
     if (isAppleOS) {
@@ -437,7 +422,7 @@ class DefaultAssetPickerBuilderDelegate
     IndicatorBuilder? loadingIndicatorBuilder,
     bool allowSpecialItemWhenEmpty = false,
     this.previewThumbSize,
-    SpecialPickerType? specialPickerType,
+    this.specialPickerType,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -452,7 +437,6 @@ class DefaultAssetPickerBuilderDelegate
           specialItemBuilder: specialItemBuilder,
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
-          specialPickerType: specialPickerType,
         );
 
   /// Preview thumbnail size in the viewer.
@@ -467,6 +451,20 @@ class DefaultAssetPickerBuilderDelegate
   /// Default is `null`, which will request the origin data.
   /// 默认为空，即读取原图。
   final List<int>? previewThumbSize;
+
+  /// The current special picker type for the picker.
+  /// 当前特殊选择类型
+  ///
+  /// There're several types which are special:
+  /// * [SpecialPickerType.wechatMoment] When user selected video, no more images
+  /// can be selected.
+  /// * [SpecialPickerType.noPreview] Disable preview of asset; Clicking on an
+  /// asset selects it.
+  ///
+  /// 这里包含一些特殊选择类型：
+  /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
+  /// * [SpecialPickerType.noPreview] 禁用资产预览； 单击资产将其选中。
+  final SpecialPickerType? specialPickerType;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
