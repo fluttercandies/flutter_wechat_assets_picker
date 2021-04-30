@@ -993,9 +993,7 @@ class FileAssetPickerBuilder
         );
         if (specialPickerType != SpecialPickerType.disablePreview) {
           return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
-        } else {
-          return selectorWidget;
-        }
+        return selectorWidget;
       },
     );
   }
