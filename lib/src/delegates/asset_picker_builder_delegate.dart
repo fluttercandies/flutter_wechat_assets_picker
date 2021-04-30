@@ -474,7 +474,7 @@ class DefaultAssetPickerBuilderDelegate
   /// 切换路径时的动画曲线
   Curve get switchingPathCurve => Curves.easeInOut;
 
-  /// [bool] Whether the preview of assets is enabled.
+  /// Whether the preview of assets is enabled.
   /// 资源的预览是否启用
   bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
 
