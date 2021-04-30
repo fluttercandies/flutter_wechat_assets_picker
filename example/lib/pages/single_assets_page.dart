@@ -17,7 +17,6 @@ class SingleAssetPage extends StatefulWidget {
 
 class _SingleAssetPageState extends State<SingleAssetPage> {
   final int maxAssetsCount = 1;
-  final SpecialPickerType?  specialPickerType = null;
 
   List<AssetEntity> assets = <AssetEntity>[];
 
@@ -41,7 +40,6 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.image,
-              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -58,7 +56,6 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.video,
-              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -75,7 +72,6 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.audio,
-              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -111,7 +107,6 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
                   ),
                 );
               },
-              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -128,7 +123,6 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.common,
-              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -148,7 +142,6 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.all,
-              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -174,7 +167,6 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
                     ),
                   ),
                 ),
-              specialPickerType: specialPickerType,
             );
           },
         ),
