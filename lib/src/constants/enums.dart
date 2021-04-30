@@ -16,7 +16,7 @@ enum SpecialPickerType {
   wechatMoment,
 
   /// Disable preview of assets.
-  /// 禁用资产预览
+  /// 禁用资源预览
   ///
   /// There is no preview mode when clicking grid items.
   /// In multiple select mode, any click (either on the select indicator or on
