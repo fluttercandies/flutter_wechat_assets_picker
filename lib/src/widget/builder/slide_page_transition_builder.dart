@@ -36,6 +36,9 @@ class SlidePageTransitionBuilder<T> extends PageRoute<T> {
   String? get barrierLabel => null;
 
   @override
+  bool canTransitionFrom(TransitionRoute<dynamic> previousRoute) => false;
+
+  @override
   Widget buildPage(
     BuildContext context,
     Animation<double> animation,
