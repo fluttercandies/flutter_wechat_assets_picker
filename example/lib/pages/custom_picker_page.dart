@@ -25,7 +25,8 @@ class CustomPickerPage extends StatefulWidget {
   _CustomPickerPageState createState() => _CustomPickerPageState();
 }
 
-class _CustomPickerPageState extends State<CustomPickerPage> {
+class _CustomPickerPageState extends State<CustomPickerPage>
+    with AutomaticKeepAliveClientMixin {
   final List<File> fileList = <File>[];
 
   bool isDisplayingDetail = true;
@@ -242,7 +243,12 @@ class _CustomPickerPageState extends State<CustomPickerPage> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: <Widget>[
         Expanded(

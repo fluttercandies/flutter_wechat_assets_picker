@@ -15,7 +15,8 @@ class SingleAssetPage extends StatefulWidget {
   _SingleAssetPageState createState() => _SingleAssetPageState();
 }
 
-class _SingleAssetPageState extends State<SingleAssetPage> {
+class _SingleAssetPageState extends State<SingleAssetPage>
+    with AutomaticKeepAliveClientMixin {
   final int maxAssetsCount = 1;
 
   List<AssetEntity> assets = <AssetEntity>[];
@@ -26,184 +27,36 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
 
   ThemeData get currentTheme => context.themeData;
 
-  List<PickMethodModel> get pickMethods => <PickMethodModel>[
-        PickMethodModel(
-          icon: '🖼️',
-          name: 'Image picker',
-          description: 'Only pick image from device.',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              requestType: RequestType.image,
-            );
-          },
-        ),
-        PickMethodModel(
-          icon: '🎞',
-          name: 'Video picker',
-          description: 'Only pick video from device.',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              requestType: RequestType.video,
-            );
-          },
-        ),
-        PickMethodModel(
-          icon: '🎶',
-          name: 'Audio picker',
-          description: 'Only pick audio from device.',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              requestType: RequestType.audio,
-            );
-          },
-        ),
-        PickMethodModel(
-          icon: '📷',
-          name: 'Pick from camera',
-          description: 'Allow pick an asset through camera.',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              requestType: RequestType.common,
-              specialItemPosition: SpecialItemPosition.prepend,
-              specialItemBuilder: (BuildContext context) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () async {
-                    final AssetEntity? result =
-                        await CameraPicker.pickFromCamera(
-                      context,
-                      enableRecording: true,
-                    );
-                    if (result != null) {
-                      Navigator.of(context).pop(<AssetEntity>[result]);
-                    }
-                  },
-                  child: const Center(
-                    child: Icon(Icons.camera_enhance, size: 42.0),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-        PickMethodModel(
-          icon: '📹',
-          name: 'Common picker',
-          description: 'Pick images and videos.',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              requestType: RequestType.common,
-            );
-          },
-        ),
-        PickMethodModel(
-          icon: '🔲',
-          name: '3 items grid',
-          description: 'Picker will served as 3 items on cross axis. '
-              '(pageSize must be a multiple of gridCount)',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              gridCount: 3,
-              pageSize: 120,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              requestType: RequestType.all,
-            );
-          },
-        ),
-        PickMethodModel(
-          icon: '⏳',
-          name: 'Custom filter options',
-          description: 'Add filter options for the picker.',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              requestType: RequestType.video,
-              filterOptions: FilterOptionGroup()
-                ..setOption(
-                  AssetType.video,
-                  const FilterOption(
-                    durationConstraint: DurationConstraint(
-                      max: Duration(minutes: 1),
-                    ),
-                  ),
-                ),
-            );
-          },
-        ),
-        PickMethodModel(
-          icon: '🎭',
-          name: 'WeChat moment',
-          description: 'Pick assets like the WeChat moment pattern.',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              specialPickerType: SpecialPickerType.wechatMoment,
-            );
-          },
-        ),
-        PickMethodModel(
-          icon: '🚀',
-          name: 'No preview',
-          description: 'Pick assets like the WhatsApp/MegaTok pattern.',
-          method: (
-            BuildContext context,
-            List<AssetEntity> assets,
-          ) async {
-            return await AssetPicker.pickAssets(
-              context,
-              maxAssets: maxAssetsCount,
-              selectedAssets: assets,
-              requestType: RequestType.common,
-              specialPickerType: SpecialPickerType.noPreview,
-            );
-          },
-        ),
-      ];
+  List<PickMethodModel> get pickMethods {
+    return <PickMethodModel>[
+      PickMethodModel.image(maxAssetsCount),
+      PickMethodModel.video(maxAssetsCount),
+      PickMethodModel.audio(maxAssetsCount),
+      PickMethodModel.camera(
+        maxAssetsCount: maxAssetsCount,
+        handleResult: (BuildContext context, AssetEntity result) =>
+            Navigator.of(context).pop(<AssetEntity>[result]),
+      ),
+      PickMethodModel.common(maxAssetsCount),
+      PickMethodModel.threeItemsGrid(maxAssetsCount),
+      PickMethodModel.customFilterOptions(maxAssetsCount),
+      PickMethodModel.prependItem(maxAssetsCount),
+      PickMethodModel(
+        icon: '🎭',
+        name: 'WeChat moment',
+        description: 'Pick assets like the WeChat moment pattern.',
+        method: (BuildContext context, List<AssetEntity> assets) {
+          return AssetPicker.pickAssets(
+            context,
+            maxAssets: maxAssetsCount,
+            selectedAssets: assets,
+            specialPickerType: SpecialPickerType.wechatMoment,
+          );
+        },
+      ),
+      PickMethodModel.noPreview(maxAssetsCount),
+    ];
+  }
 
   Future<void> selectAssets(PickMethodModel model) async {
     final List<AssetEntity>? result = await model.method(context, assets);
@@ -280,13 +133,15 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
     );
   }
 
-  Widget get methodListView => Expanded(
-        child: ListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          itemCount: pickMethods.length,
-          itemBuilder: methodItemBuilder,
-        ),
-      );
+  Widget get methodListView {
+    return Expanded(
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        itemCount: pickMethods.length,
+        itemBuilder: methodItemBuilder,
+      ),
+    );
+  }
 
   Widget _assetWidgetBuilder(AssetEntity asset) {
     Widget widget;
@@ -413,83 +268,92 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
     );
   }
 
-  Widget get selectedAssetsWidget => AnimatedContainer(
-        duration: kThemeChangeDuration,
-        curve: Curves.easeInOut,
-        height: assets.isNotEmpty
-            ? isDisplayingDetail
-                ? 120.0
-                : 80.0
-            : 40.0,
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 20.0,
-              child: GestureDetector(
-                onTap: () {
-                  if (assets.isNotEmpty) {
-                    setState(() {
-                      isDisplayingDetail = !isDisplayingDetail;
-                    });
-                  }
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const Text('Selected Assets'),
-                    if (assets.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Icon(
-                          isDisplayingDetail
-                              ? Icons.arrow_downward
-                              : Icons.arrow_upward,
-                          size: 18.0,
-                        ),
+  Widget get selectedAssetsWidget {
+    return AnimatedContainer(
+      duration: kThemeChangeDuration,
+      curve: Curves.easeInOut,
+      height: assets.isNotEmpty
+          ? isDisplayingDetail
+              ? 120.0
+              : 80.0
+          : 40.0,
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 20.0,
+            child: GestureDetector(
+              onTap: () {
+                if (assets.isNotEmpty) {
+                  setState(() {
+                    isDisplayingDetail = !isDisplayingDetail;
+                  });
+                }
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Text('Selected Assets'),
+                  if (assets.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Icon(
+                        isDisplayingDetail
+                            ? Icons.arrow_downward
+                            : Icons.arrow_upward,
+                        size: 18.0,
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
             ),
-            selectedAssetsListView,
-          ],
-        ),
-      );
+          ),
+          selectedAssetsListView,
+        ],
+      ),
+    );
+  }
 
-  Widget get selectedAssetsListView => Expanded(
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          scrollDirection: Axis.horizontal,
-          itemCount: assetsLength,
-          itemBuilder: (BuildContext _, int index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 16.0,
+  Widget get selectedAssetsListView {
+    return Expanded(
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        scrollDirection: Axis.horizontal,
+        itemCount: assetsLength,
+        itemBuilder: (BuildContext _, int index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8.0,
+              vertical: 16.0,
+            ),
+            child: AspectRatio(
+              aspectRatio: 1.0,
+              child: Stack(
+                children: <Widget>[
+                  Positioned.fill(child: _selectedAssetWidget(index)),
+                  AnimatedPositioned(
+                    duration: kThemeAnimationDuration,
+                    top: isDisplayingDetail ? 6.0 : -30.0,
+                    right: isDisplayingDetail ? 6.0 : -30.0,
+                    child: _selectedAssetDeleteButton(index),
+                  ),
+                ],
               ),
-              child: AspectRatio(
-                aspectRatio: 1.0,
-                child: Stack(
-                  children: <Widget>[
-                    Positioned.fill(child: _selectedAssetWidget(index)),
-                    AnimatedPositioned(
-                      duration: kThemeAnimationDuration,
-                      top: isDisplayingDetail ? 6.0 : -30.0,
-                      right: isDisplayingDetail ? 6.0 : -30.0,
-                      child: _selectedAssetDeleteButton(index),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      );
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: <Widget>[
         methodListView,
