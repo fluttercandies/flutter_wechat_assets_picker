@@ -25,7 +25,7 @@ enum SpecialPickerType {
   /// 用户在点击网格的 item 时无法进入预览。
   /// 在多选模式下无论点击选择指示还是 item 都将触发选择，
   /// 而在单选模式下将直接返回点击的资源。
-  noPreview
+  noPreview,
 }
 
 /// Provide an item slot for custom widget insertion.
