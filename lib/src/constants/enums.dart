@@ -6,7 +6,15 @@
 /// Provide some special picker types to integrate
 /// un-common pick pattern.
 /// 提供一些特殊的选择器类型以整合非常规的选择行为。
-enum SpecialPickerType { wechatMoment }
+enum SpecialPickerType { 
+  /// WeChat Moments mode
+  /// 微信朋友圈模式
+  wechatMoment, 
+
+  /// Disable preview of assets
+  /// 禁用资产预览
+  disablePreview 
+}
 
 /// Provide an item slot for custom widget insertion.
 /// 提供一个自定义位置供特殊item放入资源列表中。

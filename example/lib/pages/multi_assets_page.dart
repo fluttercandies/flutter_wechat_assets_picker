@@ -17,7 +17,7 @@ class MultiAssetsPage extends StatefulWidget {
 
 class _MultiAssetsPageState extends State<MultiAssetsPage> {
   final int maxAssetsCount = 9;
-  final bool showPreview = true;
+  final SpecialPickerType? specialPickerType = null;
 
   List<AssetEntity> assets = <AssetEntity>[];
 
@@ -41,7 +41,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.image,
-              showPreview: showPreview,
+              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -58,7 +58,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.video,
-              showPreview: showPreview,
+              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -75,7 +75,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.audio,
-              showPreview: showPreview,
+              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -112,7 +112,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                   ),
                 );
               },
-              showPreview: showPreview,
+              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -129,7 +129,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.common,
-              showPreview: showPreview,
+              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -149,7 +149,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.common,
-              showPreview: showPreview,
+              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -175,7 +175,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                     ),
                   ),
                 ),
-              showPreview: showPreview,
+              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -196,7 +196,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               specialItemBuilder: (BuildContext context) {
                 return const Center(child: Text('Custom Widget'));
               },
-              showPreview: showPreview,
+              specialPickerType: specialPickerType,
             );
           },
         ),
@@ -215,7 +215,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               selectedAssets: assets,
               requestType: RequestType.image,
               previewThumbSize: const <int>[300, 300],
-              showPreview: showPreview,
+              specialPickerType: specialPickerType,
             );
           },
         ),

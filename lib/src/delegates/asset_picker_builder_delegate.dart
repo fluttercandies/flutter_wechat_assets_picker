@@ -35,7 +35,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     this.specialItemBuilder,
     this.loadingIndicatorBuilder,
     this.allowSpecialItemWhenEmpty = false,
-    this.showPreview = true,
+    this.specialPickerType,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -83,9 +83,19 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 当没有资源时是否显示自定义item
   final bool allowSpecialItemWhenEmpty;
 
-  /// Whether to show preview of the asset on click (or perform selection)
-  /// 通过单击预览项目
-  final bool showPreview;
+  /// The current special picker type for the picker.
+  /// 当前特殊选择类型
+  ///
+  /// There're several types which are special:
+  /// * [SpecialPickerType.wechatMoment] When user selected video, no more images
+  /// can be selected.
+  /// * [SpecialPickerType.disablePreview] Disable preview of asset; Clicking on an
+  /// asset selects it.
+  ///
+  /// 这里包含一些特殊选择类型：
+  /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
+  /// * [SpecialPickerType.disablePreview] 禁用资产预览； 单击资产将其选中。
+  final SpecialPickerType? specialPickerType;
 
   /// The [ScrollController] for the preview grid.
   final ScrollController gridScrollController = ScrollController();
@@ -333,7 +343,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       child: Row(children: <Widget>[
         if (!isSingleAssetMode || !isAppleOS) previewButton(context),
         if (isAppleOS) const Spacer(),
-        if (isAppleOS && (showPreview || !isSingleAssetMode)) confirmButton(context),
+        if (isAppleOS && ((specialPickerType != SpecialPickerType.disablePreview) || !isSingleAssetMode)) confirmButton(context),
       ]),
     );
     if (isAppleOS) {
@@ -426,9 +436,8 @@ class DefaultAssetPickerBuilderDelegate
     WidgetBuilder? specialItemBuilder,
     IndicatorBuilder? loadingIndicatorBuilder,
     bool allowSpecialItemWhenEmpty = false,
-    bool showPreview = true,
     this.previewThumbSize,
-    this.specialPickerType,
+    SpecialPickerType? specialPickerType,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -443,7 +452,7 @@ class DefaultAssetPickerBuilderDelegate
           specialItemBuilder: specialItemBuilder,
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
-          showPreview: showPreview,
+          specialPickerType: specialPickerType,
         );
 
   /// Preview thumbnail size in the viewer.
@@ -458,17 +467,6 @@ class DefaultAssetPickerBuilderDelegate
   /// Default is `null`, which will request the origin data.
   /// 默认为空，即读取原图。
   final List<int>? previewThumbSize;
-
-  /// The current special picker type for the picker.
-  /// 当前特殊选择类型
-  ///
-  /// There're several types which are special:
-  /// * [SpecialPickerType.wechatMoment] When user selected video, no more images
-  /// can be selected.
-  ///
-  /// 这里包含一些特殊选择类型：
-  /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
-  final SpecialPickerType? specialPickerType;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
@@ -498,7 +496,7 @@ class DefaultAssetPickerBuilderDelegate
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGridBuilder(context)),
-                            if (!isSingleAssetMode && showPreview) bottomActionBar(context),
+                            if (!isSingleAssetMode && specialPickerType != SpecialPickerType.disablePreview) bottomActionBar(context),
                           ],
                         ),
                       ),
@@ -520,7 +518,7 @@ class DefaultAssetPickerBuilderDelegate
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
-      actions: !isAppleOS && (showPreview || !isSingleAssetMode) ? <Widget>[confirmButton(context)] : null,
+      actions: !isAppleOS && ((specialPickerType != SpecialPickerType.disablePreview) || !isSingleAssetMode) ? <Widget>[confirmButton(context)] : null,
       actionsPadding: const EdgeInsets.only(right: 14.0),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0.0,
     );
@@ -544,7 +542,7 @@ class DefaultAssetPickerBuilderDelegate
                               Positioned.fill(
                                 child: assetsGridBuilder(context),
                               ),
-                              if ((!isSingleAssetMode || isAppleOS) && showPreview)
+                              if ((!isSingleAssetMode || isAppleOS) && specialPickerType != SpecialPickerType.disablePreview)
                                 PositionedDirectional(
                                   bottom: 0.0,
                                   child: bottomActionBar(context),
@@ -1165,7 +1163,7 @@ class DefaultAssetPickerBuilderDelegate
                 provider.selectedAssets.clear();
               }
               provider.selectAsset(asset);
-              if (isSingleAssetMode && !showPreview) {
+              if (isSingleAssetMode && specialPickerType == SpecialPickerType.disablePreview) {
                 Navigator.of(context).pop(provider.selectedAssets);
               }
             }
@@ -1174,10 +1172,10 @@ class DefaultAssetPickerBuilderDelegate
             margin: EdgeInsets.all(
               Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
             ),
-            width: showPreview ? indicatorSize : null,
-            height: showPreview ? indicatorSize : null,
+            width: specialPickerType != SpecialPickerType.disablePreview ? indicatorSize : null,
+            height: specialPickerType != SpecialPickerType.disablePreview ? indicatorSize : null,
             alignment: AlignmentDirectional.topEnd,
-            child: (!showPreview && isSingleAssetMode && !selected) ? 
+            child: (specialPickerType == SpecialPickerType.disablePreview && isSingleAssetMode && !selected) ? 
               Container() :
               AnimatedContainer(
                 duration: switchingPathDuration,
@@ -1213,7 +1211,7 @@ class DefaultAssetPickerBuilderDelegate
               ),
           ),
         );
-        if (showPreview) {
+        if (specialPickerType != SpecialPickerType.disablePreview) {
           return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
         } else {
           return selectorWidget;
