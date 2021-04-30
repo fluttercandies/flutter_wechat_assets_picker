@@ -455,7 +455,7 @@ class DefaultAssetPickerBuilderDelegate
   /// The current special picker type for the picker.
   /// 当前特殊选择类型
   ///
-  /// There're several types which are special:
+  /// Several types which are special:
   /// * [SpecialPickerType.wechatMoment] When user selected video, no more images
   /// can be selected.
   /// * [SpecialPickerType.noPreview] Disable preview of asset; Clicking on an
@@ -474,8 +474,8 @@ class DefaultAssetPickerBuilderDelegate
   /// 切换路径时的动画曲线
   Curve get switchingPathCurve => Curves.easeInOut;
 
-  /// [bool] Does picker type enable preview.
-  /// 选择器类型是否启用预览
+  /// [bool] Whether the preview of assets is enabled.
+  /// 资源的预览是否启用
   bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
 
   @override
@@ -498,7 +498,8 @@ class DefaultAssetPickerBuilderDelegate
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGridBuilder(context)),
-                            if (!isSingleAssetMode && isPreviewEnabled) bottomActionBar(context),
+                            if (!isSingleAssetMode && isPreviewEnabled)
+                              bottomActionBar(context),
                           ],
                         ),
                       ),
@@ -520,7 +521,9 @@ class DefaultAssetPickerBuilderDelegate
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
-      actions: !isAppleOS && (isPreviewEnabled || !isSingleAssetMode) ? <Widget>[confirmButton(context)] : null,
+      actions: !isAppleOS && (isPreviewEnabled || !isSingleAssetMode)
+          ? <Widget>[confirmButton(context)]
+          : null,
       actionsPadding: const EdgeInsets.only(right: 14.0),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0.0,
     );
@@ -544,7 +547,8 @@ class DefaultAssetPickerBuilderDelegate
                               Positioned.fill(
                                 child: assetsGridBuilder(context),
                               ),
-                              if ((!isSingleAssetMode || isAppleOS) && isPreviewEnabled)
+                              if ((!isSingleAssetMode || isAppleOS) &&
+                                  isPreviewEnabled)
                                 PositionedDirectional(
                                   bottom: 0.0,
                                   child: bottomActionBar(context),
@@ -1155,6 +1159,36 @@ class DefaultAssetPickerBuilderDelegate
         );
         final bool selected = selectedAssets.contains(asset);
         final double indicatorSize = Screens.width / gridCount / 3;
+        final Widget innerSelector = AnimatedContainer(
+          duration: switchingPathDuration,
+          width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
+          height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
+          decoration: BoxDecoration(
+            border:
+                !selected ? Border.all(color: Colors.white, width: 2.0) : null,
+            color: selected ? themeColor : null,
+            shape: BoxShape.circle,
+          ),
+          child: AnimatedSwitcher(
+            duration: switchingPathDuration,
+            reverseDuration: switchingPathDuration,
+            child: selected
+                ? isSingleAssetMode
+                    ? const Icon(Icons.check, size: 18.0)
+                    : Text(
+                        '${selectedAssets.indexOf(asset) + 1}',
+                        style: TextStyle(
+                          color: selected
+                              ? theme.textTheme.bodyText1?.color
+                              : null,
+                          fontSize: isAppleOS ? 16.0 : 14.0,
+                          fontWeight:
+                              isAppleOS ? FontWeight.w600 : FontWeight.bold,
+                        ),
+                      )
+                : const SizedBox.shrink(),
+          ),
+        );
         final GestureDetector selectorWidget = GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
@@ -1177,47 +1211,15 @@ class DefaultAssetPickerBuilderDelegate
             width: isPreviewEnabled ? indicatorSize : null,
             height: isPreviewEnabled ? indicatorSize : null,
             alignment: AlignmentDirectional.topEnd,
-            child: (!isPreviewEnabled && isSingleAssetMode && !selected) ? 
-              Container() :
-              AnimatedContainer(
-                duration: switchingPathDuration,
-                width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
-                height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
-                decoration: BoxDecoration(
-                  border: !selected
-                      ? Border.all(color: Colors.white, width: 2.0)
-                      : null,
-                  color: selected ? themeColor : null,
-                  shape: BoxShape.circle,
-                ),
-                child: AnimatedSwitcher(
-                  duration: switchingPathDuration,
-                  reverseDuration: switchingPathDuration,
-                  child: selected
-                      ? isSingleAssetMode
-                          ? const Icon(Icons.check, size: 18.0)
-                          : Text(
-                              '${selectedAssets.indexOf(asset) + 1}',
-                              style: TextStyle(
-                                color: selected
-                                    ? theme.textTheme.bodyText1?.color
-                                    : null,
-                                fontSize: isAppleOS ? 16.0 : 14.0,
-                                fontWeight: isAppleOS
-                                    ? FontWeight.w600
-                                    : FontWeight.bold,
-                              ),
-                            )
-                      : const SizedBox.shrink(),
-                ),
-              ),
+            child: (!isPreviewEnabled && isSingleAssetMode && !selected)
+                ? const SizedBox.shrink()
+                : innerSelector,
           ),
         );
         if (isPreviewEnabled) {
           return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
-        } else {
-          return selectorWidget;
         }
+        return selectorWidget;
       },
     );
   }
@@ -1227,9 +1229,9 @@ class DefaultAssetPickerBuilderDelegate
     return Positioned.fill(
       child: GestureDetector(
         onTap: () async {
-          // While the special type is WeChat moment, picture and video cannot
+          // When the special type is WeChat Moment, pictures and videos cannot
           // be selected at the same time. Video select should be banned if any
-          // picture is selected.
+          // pictures are selected.
           if (specialPickerType == SpecialPickerType.wechatMoment &&
               asset.type == AssetType.video &&
               provider.selectedAssets.isNotEmpty) {
