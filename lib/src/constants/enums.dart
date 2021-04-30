@@ -14,6 +14,7 @@ enum SpecialPickerType {
   /// and those two asset types cannot be selected at the same time.
   /// 用户只可以选择 **一个视频** 或 **多个图片**，并且两种类型互斥。
   wechatMoment,
+
   /// Disable preview of assets.
   /// 禁用资产预览
   ///
