@@ -474,6 +474,10 @@ class DefaultAssetPickerBuilderDelegate
   /// 切换路径时的动画曲线
   Curve get switchingPathCurve => Curves.easeInOut;
 
+  /// [bool] Does picker type enable preview.
+  /// 选择器类型是否启用预览
+  bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
+
   @override
   Widget androidLayout(BuildContext context) {
     return FixedAppBarWrapper(
@@ -494,7 +498,7 @@ class DefaultAssetPickerBuilderDelegate
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGridBuilder(context)),
-                            if (!isSingleAssetMode && specialPickerType != SpecialPickerType.noPreview) bottomActionBar(context),
+                            if (!isSingleAssetMode && isPreviewEnabled) bottomActionBar(context),
                           ],
                         ),
                       ),
@@ -516,7 +520,7 @@ class DefaultAssetPickerBuilderDelegate
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
-      actions: !isAppleOS && ((specialPickerType != SpecialPickerType.noPreview) || !isSingleAssetMode) ? <Widget>[confirmButton(context)] : null,
+      actions: !isAppleOS && (isPreviewEnabled || !isSingleAssetMode) ? <Widget>[confirmButton(context)] : null,
       actionsPadding: const EdgeInsets.only(right: 14.0),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0.0,
     );
@@ -540,7 +544,7 @@ class DefaultAssetPickerBuilderDelegate
                               Positioned.fill(
                                 child: assetsGridBuilder(context),
                               ),
-                              if ((!isSingleAssetMode || isAppleOS) && specialPickerType != SpecialPickerType.noPreview)
+                              if ((!isSingleAssetMode || isAppleOS) && isPreviewEnabled)
                                 PositionedDirectional(
                                   bottom: 0.0,
                                   child: bottomActionBar(context),
@@ -1161,7 +1165,7 @@ class DefaultAssetPickerBuilderDelegate
                 provider.selectedAssets.clear();
               }
               provider.selectAsset(asset);
-              if (isSingleAssetMode && specialPickerType == SpecialPickerType.noPreview) {
+              if (isSingleAssetMode && !isPreviewEnabled) {
                 Navigator.of(context).pop(provider.selectedAssets);
               }
             }
@@ -1170,10 +1174,10 @@ class DefaultAssetPickerBuilderDelegate
             margin: EdgeInsets.all(
               Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
             ),
-            width: specialPickerType != SpecialPickerType.noPreview ? indicatorSize : null,
-            height: specialPickerType != SpecialPickerType.noPreview ? indicatorSize : null,
+            width: isPreviewEnabled ? indicatorSize : null,
+            height: isPreviewEnabled ? indicatorSize : null,
             alignment: AlignmentDirectional.topEnd,
-            child: (specialPickerType == SpecialPickerType.noPreview && isSingleAssetMode && !selected) ? 
+            child: (!isPreviewEnabled && isSingleAssetMode && !selected) ? 
               Container() :
               AnimatedContainer(
                 duration: switchingPathDuration,
@@ -1209,7 +1213,7 @@ class DefaultAssetPickerBuilderDelegate
               ),
           ),
         );
-        if (specialPickerType != SpecialPickerType.noPreview) {
+        if (isPreviewEnabled) {
           return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
         } else {
           return selectorWidget;
