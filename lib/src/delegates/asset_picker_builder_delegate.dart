@@ -455,12 +455,15 @@ class DefaultAssetPickerBuilderDelegate
   /// The current special picker type for the picker.
   /// 当前特殊选择类型
   ///
-  /// There're several types which are special:
+  /// Several types which are special:
   /// * [SpecialPickerType.wechatMoment] When user selected video, no more images
   /// can be selected.
+  /// * [SpecialPickerType.noPreview] Disable preview of asset; Clicking on an
+  /// asset selects it.
   ///
   /// 这里包含一些特殊选择类型：
   /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
+  /// * [SpecialPickerType.noPreview] 禁用资源预览。多选时单击资产将直接选中，单选时选中并返回。
   final SpecialPickerType? specialPickerType;
 
   /// [Duration] when triggering path switching.
@@ -470,6 +473,10 @@ class DefaultAssetPickerBuilderDelegate
   /// [Curve] when triggering path switching.
   /// 切换路径时的动画曲线
   Curve get switchingPathCurve => Curves.easeInOut;
+
+  /// Whether the preview of assets is enabled.
+  /// 资源的预览是否启用
+  bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
 
   @override
   Widget androidLayout(BuildContext context) {
@@ -491,7 +498,8 @@ class DefaultAssetPickerBuilderDelegate
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGridBuilder(context)),
-                            if (!isSingleAssetMode) bottomActionBar(context),
+                            if (!isSingleAssetMode && isPreviewEnabled)
+                              bottomActionBar(context),
                           ],
                         ),
                       ),
@@ -513,7 +521,9 @@ class DefaultAssetPickerBuilderDelegate
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
-      actions: !isAppleOS ? <Widget>[confirmButton(context)] : null,
+      actions: !isAppleOS && (isPreviewEnabled || !isSingleAssetMode)
+          ? <Widget>[confirmButton(context)]
+          : null,
       actionsPadding: const EdgeInsets.only(right: 14.0),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0.0,
     );
@@ -537,7 +547,8 @@ class DefaultAssetPickerBuilderDelegate
                               Positioned.fill(
                                 child: assetsGridBuilder(context),
                               ),
-                              if (!isSingleAssetMode || isAppleOS)
+                              if ((!isSingleAssetMode || isAppleOS) &&
+                                  isPreviewEnabled)
                                 PositionedDirectional(
                                   bottom: 0.0,
                                   child: bottomActionBar(context),
@@ -1148,63 +1159,67 @@ class DefaultAssetPickerBuilderDelegate
         );
         final bool selected = selectedAssets.contains(asset);
         final double indicatorSize = Screens.width / gridCount / 3;
-        return Positioned(
-          top: 0.0,
-          right: 0.0,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              if (selected) {
-                provider.unSelectAsset(asset);
-              } else {
-                if (isSingleAssetMode) {
-                  provider.selectedAssets.clear();
-                }
-                provider.selectAsset(asset);
-              }
-            },
-            child: Container(
-              margin: EdgeInsets.all(
-                Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
-              ),
-              width: indicatorSize,
-              height: indicatorSize,
-              alignment: AlignmentDirectional.topEnd,
-              child: AnimatedContainer(
-                duration: switchingPathDuration,
-                width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
-                height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
-                decoration: BoxDecoration(
-                  border: !selected
-                      ? Border.all(color: Colors.white, width: 2.0)
-                      : null,
-                  color: selected ? themeColor : null,
-                  shape: BoxShape.circle,
-                ),
-                child: AnimatedSwitcher(
-                  duration: switchingPathDuration,
-                  reverseDuration: switchingPathDuration,
-                  child: selected
-                      ? isSingleAssetMode
-                          ? const Icon(Icons.check, size: 18.0)
-                          : Text(
-                              '${selectedAssets.indexOf(asset) + 1}',
-                              style: TextStyle(
-                                color: selected
-                                    ? theme.textTheme.bodyText1?.color
-                                    : null,
-                                fontSize: isAppleOS ? 16.0 : 14.0,
-                                fontWeight: isAppleOS
-                                    ? FontWeight.w600
-                                    : FontWeight.bold,
-                              ),
-                            )
-                      : const SizedBox.shrink(),
-                ),
-              ),
-            ),
+        final Widget innerSelector = AnimatedContainer(
+          duration: switchingPathDuration,
+          width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
+          height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
+          decoration: BoxDecoration(
+            border:
+                !selected ? Border.all(color: Colors.white, width: 2.0) : null,
+            color: selected ? themeColor : null,
+            shape: BoxShape.circle,
+          ),
+          child: AnimatedSwitcher(
+            duration: switchingPathDuration,
+            reverseDuration: switchingPathDuration,
+            child: selected
+                ? isSingleAssetMode
+                    ? const Icon(Icons.check, size: 18.0)
+                    : Text(
+                        '${selectedAssets.indexOf(asset) + 1}',
+                        style: TextStyle(
+                          color: selected
+                              ? theme.textTheme.bodyText1?.color
+                              : null,
+                          fontSize: isAppleOS ? 16.0 : 14.0,
+                          fontWeight:
+                              isAppleOS ? FontWeight.w600 : FontWeight.bold,
+                        ),
+                      )
+                : const SizedBox.shrink(),
           ),
         );
+        final GestureDetector selectorWidget = GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            if (selected) {
+              provider.unSelectAsset(asset);
+            } else {
+              if (isSingleAssetMode) {
+                provider.selectedAssets.clear();
+              }
+              provider.selectAsset(asset);
+              if (isSingleAssetMode && !isPreviewEnabled) {
+                Navigator.of(context).pop(provider.selectedAssets);
+              }
+            }
+          },
+          child: Container(
+            margin: EdgeInsets.all(
+              Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
+            ),
+            width: isPreviewEnabled ? indicatorSize : null,
+            height: isPreviewEnabled ? indicatorSize : null,
+            alignment: AlignmentDirectional.topEnd,
+            child: (!isPreviewEnabled && isSingleAssetMode && !selected)
+                ? const SizedBox.shrink()
+                : innerSelector,
+          ),
+        );
+        if (isPreviewEnabled) {
+          return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
+        }
+        return selectorWidget;
       },
     );
   }
@@ -1214,9 +1229,9 @@ class DefaultAssetPickerBuilderDelegate
     return Positioned.fill(
       child: GestureDetector(
         onTap: () async {
-          // While the special type is WeChat moment, picture and video cannot
+          // When the special type is WeChat Moment, pictures and videos cannot
           // be selected at the same time. Video select should be banned if any
-          // picture is selected.
+          // pictures are selected.
           if (specialPickerType == SpecialPickerType.wechatMoment &&
               asset.type == AssetType.video &&
               provider.selectedAssets.isNotEmpty) {

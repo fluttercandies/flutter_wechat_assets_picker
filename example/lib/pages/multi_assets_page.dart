@@ -192,6 +192,23 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
           },
         ),
         PickMethodModel(
+          icon: '🚀',
+          name: 'No preview',
+          description: 'Pick assets like the WhatsApp/MegaTok pattern.',
+          method: (
+            BuildContext context,
+            List<AssetEntity> assets,
+          ) async {
+            return await AssetPicker.pickAssets(
+              context,
+              maxAssets: maxAssetsCount,
+              selectedAssets: assets,
+              requestType: RequestType.common,
+              specialPickerType: SpecialPickerType.noPreview,
+            );
+          },
+        ),
+        PickMethodModel(
           icon: '🎚',
           name: 'Custom image preview thumb size',
           description:
