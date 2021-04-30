@@ -463,7 +463,7 @@ class DefaultAssetPickerBuilderDelegate
   ///
   /// 这里包含一些特殊选择类型：
   /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
-  /// * [SpecialPickerType.noPreview] 禁用资产预览； 单击资产将其选中。
+  /// * [SpecialPickerType.noPreview] 禁用资源预览。多选时单击资产将直接选中，单选时选中并返回。
   final SpecialPickerType? specialPickerType;
 
   /// [Duration] when triggering path switching.
