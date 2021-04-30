@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 5.2.0
+
+- Add `SpecialPickerType.noPreview` to disable the preview when picking. (Thanks to @yanivshaked)
+
 ## 5.1.4
 
-- Add Hebrew language text delegate. (Thanks to @yanivshaked .)
+- Add Hebrew language text delegate. (Thanks to @yanivshaked)
 - Fix slide page route issue when integrate with the `get` package.
 
 ## 5.1.3
@@ -25,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 5.1.0
 
-- Reset to the top for the assets grid view after switching path.
+- Reset to the top for the asset grid view after switching path.
 - Add ability to select assets in any position of the picker.
 - Implement mime type for image type judgement.
 - Fix disappeared GIF's indicator.
@@ -207,7 +211,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.5.0
 
 - Bumping flutter sdk minimum version to `1.17.0`.
-- Declare API stability and compatibility with 1.0.0 ( more details at: https://github.com/flutter/flutter/wiki/Package-migration-to-1.0.0 ).
+- Declare API stability and compatibility with 1.0.0 
+  ( more details at: https://github.com/flutter/flutter/wiki/Package-migration-to-1.0.0 ).
 
 ## 1.4.1
 
