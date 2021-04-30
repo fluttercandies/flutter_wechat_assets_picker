@@ -194,6 +194,23 @@ class _SingleAssetPageState extends State<SingleAssetPage> {
             );
           },
         ),
+        PickMethodModel(
+          icon: '🚀',
+          name: 'No preview',
+          description: 'Pick assets like the WhatsApp/MegaTok pattern.',
+          method: (
+            BuildContext context,
+            List<AssetEntity> assets,
+          ) async {
+            return await AssetPicker.pickAssets(
+              context,
+              maxAssets: maxAssetsCount,
+              selectedAssets: assets,
+              requestType: RequestType.common,
+              specialPickerType: SpecialPickerType.noPreview,
+            );
+          },
+        ),
       ];
 
   Future<void> selectAssets(PickMethodModel model) async {

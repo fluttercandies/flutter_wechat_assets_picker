@@ -56,14 +56,13 @@ class AssetPicker<A, P> extends StatelessWidget {
         'Theme and theme color cannot be set at the same time.',
       );
     }
-    if (specialPickerType != null && requestType != RequestType.image) {
-      throw ArgumentError(
-        'specialPickerType and requestType cannot be set at the same time.',
-      );
-    } else {
-      if (specialPickerType == SpecialPickerType.wechatMoment) {
-        requestType = RequestType.common;
+    if (specialPickerType == SpecialPickerType.wechatMoment) {
+      if (requestType != RequestType.image) {
+        throw ArgumentError(
+          'SpecialPickerType.wechatMoment and requestType cannot be set at the same time.',
+        );
       }
+      requestType = RequestType.common;
     }
     if ((specialItemBuilder == null &&
             specialItemPosition != SpecialItemPosition.none) ||
