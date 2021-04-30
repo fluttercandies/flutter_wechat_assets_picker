@@ -945,7 +945,7 @@ class FileAssetPickerBuilder
                 provider.selectedAssets.clear();
               }
               provider.selectAsset(asset);
-              if (isSingleAssetMode && specialPickerType == SpecialPickerType.disablePreview) {
+              if (isSingleAssetMode && specialPickerType == SpecialPickerType.noPreview) {
                 Navigator.of(context).pop(provider.selectedAssets);
               }
             }
@@ -954,8 +954,8 @@ class FileAssetPickerBuilder
             margin: EdgeInsets.all(
               Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
             ),
-            width: specialPickerType != SpecialPickerType.disablePreview ? indicatorSize : null,
-            height: specialPickerType != SpecialPickerType.disablePreview ? indicatorSize : null,
+            width: specialPickerType != SpecialPickerType.noPreview ? indicatorSize : null,
+            height: specialPickerType != SpecialPickerType.noPreview ? indicatorSize : null,
             alignment: AlignmentDirectional.topEnd,
             child: AnimatedContainer(
               duration: switchingPathDuration,
@@ -991,8 +991,9 @@ class FileAssetPickerBuilder
             ),
           ),
         );
-        if (specialPickerType != SpecialPickerType.disablePreview) {
+        if (specialPickerType != SpecialPickerType.noPreview) {
           return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
+        }
         return selectorWidget;
       },
     );

@@ -89,12 +89,12 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// There're several types which are special:
   /// * [SpecialPickerType.wechatMoment] When user selected video, no more images
   /// can be selected.
-  /// * [SpecialPickerType.disablePreview] Disable preview of asset; Clicking on an
+  /// * [SpecialPickerType.noPreview] Disable preview of asset; Clicking on an
   /// asset selects it.
   ///
   /// 这里包含一些特殊选择类型：
   /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
-  /// * [SpecialPickerType.disablePreview] 禁用资产预览； 单击资产将其选中。
+  /// * [SpecialPickerType.noPreview] 禁用资产预览； 单击资产将其选中。
   final SpecialPickerType? specialPickerType;
 
   /// The [ScrollController] for the preview grid.
@@ -343,7 +343,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       child: Row(children: <Widget>[
         if (!isSingleAssetMode || !isAppleOS) previewButton(context),
         if (isAppleOS) const Spacer(),
-        if (isAppleOS && ((specialPickerType != SpecialPickerType.disablePreview) || !isSingleAssetMode)) confirmButton(context),
+        if (isAppleOS && ((specialPickerType != SpecialPickerType.noPreview) || !isSingleAssetMode)) confirmButton(context),
       ]),
     );
     if (isAppleOS) {
@@ -496,7 +496,7 @@ class DefaultAssetPickerBuilderDelegate
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGridBuilder(context)),
-                            if (!isSingleAssetMode && specialPickerType != SpecialPickerType.disablePreview) bottomActionBar(context),
+                            if (!isSingleAssetMode && specialPickerType != SpecialPickerType.noPreview) bottomActionBar(context),
                           ],
                         ),
                       ),
@@ -518,7 +518,7 @@ class DefaultAssetPickerBuilderDelegate
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
-      actions: !isAppleOS && ((specialPickerType != SpecialPickerType.disablePreview) || !isSingleAssetMode) ? <Widget>[confirmButton(context)] : null,
+      actions: !isAppleOS && ((specialPickerType != SpecialPickerType.noPreview) || !isSingleAssetMode) ? <Widget>[confirmButton(context)] : null,
       actionsPadding: const EdgeInsets.only(right: 14.0),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0.0,
     );
@@ -542,7 +542,7 @@ class DefaultAssetPickerBuilderDelegate
                               Positioned.fill(
                                 child: assetsGridBuilder(context),
                               ),
-                              if ((!isSingleAssetMode || isAppleOS) && specialPickerType != SpecialPickerType.disablePreview)
+                              if ((!isSingleAssetMode || isAppleOS) && specialPickerType != SpecialPickerType.noPreview)
                                 PositionedDirectional(
                                   bottom: 0.0,
                                   child: bottomActionBar(context),
@@ -1163,7 +1163,7 @@ class DefaultAssetPickerBuilderDelegate
                 provider.selectedAssets.clear();
               }
               provider.selectAsset(asset);
-              if (isSingleAssetMode && specialPickerType == SpecialPickerType.disablePreview) {
+              if (isSingleAssetMode && specialPickerType == SpecialPickerType.noPreview) {
                 Navigator.of(context).pop(provider.selectedAssets);
               }
             }
@@ -1172,10 +1172,10 @@ class DefaultAssetPickerBuilderDelegate
             margin: EdgeInsets.all(
               Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
             ),
-            width: specialPickerType != SpecialPickerType.disablePreview ? indicatorSize : null,
-            height: specialPickerType != SpecialPickerType.disablePreview ? indicatorSize : null,
+            width: specialPickerType != SpecialPickerType.noPreview ? indicatorSize : null,
+            height: specialPickerType != SpecialPickerType.noPreview ? indicatorSize : null,
             alignment: AlignmentDirectional.topEnd,
-            child: (specialPickerType == SpecialPickerType.disablePreview && isSingleAssetMode && !selected) ? 
+            child: (specialPickerType == SpecialPickerType.noPreview && isSingleAssetMode && !selected) ? 
               Container() :
               AnimatedContainer(
                 duration: switchingPathDuration,
@@ -1211,7 +1211,7 @@ class DefaultAssetPickerBuilderDelegate
               ),
           ),
         );
-        if (specialPickerType != SpecialPickerType.disablePreview) {
+        if (specialPickerType != SpecialPickerType.noPreview) {
           return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
         } else {
           return selectorWidget;
