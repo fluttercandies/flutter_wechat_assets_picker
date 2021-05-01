@@ -528,11 +528,11 @@ class DefaultAssetPickerBuilderDelegate
       leading: backButton(context),
       // Condition for displaying the confirm button:
       // - On Android, show if preview is enabled or if multi asset mode.
-      //   meaning: If no preview and single asset mode, do not show confirm button,
+      //   If no preview and single asset mode, do not show confirm button,
       //   because any click on an asset selects it.
-      // - On iOS, show if no preview and multi asset mode; This is because for iOS
-      //   the bottomActionBar has the confirm button, but if no preview,
-      //   bottomActionBar isn't displayed.
+      // - On iOS, show if no preview and multi asset mode. This is because for iOS
+      //   the [bottomActionBar] has the confirm button, but if no preview,
+      //   [bottomActionBar] is not displayed.
       actions: (!isAppleOS || !isPreviewEnabled) &&
               (isPreviewEnabled || !isSingleAssetMode)
           ? <Widget>[confirmButton(context)]
