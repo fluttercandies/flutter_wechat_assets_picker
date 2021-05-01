@@ -526,7 +526,8 @@ class DefaultAssetPickerBuilderDelegate
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
-      actions: !isAppleOS && (isPreviewEnabled || !isSingleAssetMode)
+      actions: (!isAppleOS || !isPreviewEnabled) &&
+              (isPreviewEnabled || !isSingleAssetMode)
           ? <Widget>[confirmButton(context)]
           : null,
       actionsPadding: const EdgeInsets.only(right: 14.0),
