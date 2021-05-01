@@ -1250,12 +1250,12 @@ class DefaultAssetPickerBuilderDelegate
             return;
           }
           final List<AssetEntity> _current;
-          final List<AssetEntity> _selected;
+          final List<AssetEntity>? _selected;
           final int _index;
           if (isWeChatMoment) {
             if (asset.type == AssetType.video) {
               _current = <AssetEntity>[asset];
-              _selected = <AssetEntity>[];
+              _selected = null;
               _index = 0;
             } else {
               _current = provider.currentAssets
