@@ -41,6 +41,19 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
       PickMethodModel.threeItemsGrid(maxAssetsCount),
       PickMethodModel.customFilterOptions(maxAssetsCount),
       PickMethodModel.prependItem(maxAssetsCount),
+      PickMethodModel(
+        icon: '🎭',
+        name: 'WeChat Moment',
+        description: 'Pick assets like the WeChat Moment pattern.',
+        method: (BuildContext context, List<AssetEntity> assets) {
+          return AssetPicker.pickAssets(
+            context,
+            maxAssets: maxAssetsCount,
+            selectedAssets: assets,
+            specialPickerType: SpecialPickerType.wechatMoment,
+          );
+        },
+      ),
       PickMethodModel.noPreview(maxAssetsCount),
       PickMethodModel(
         icon: '🎚',
