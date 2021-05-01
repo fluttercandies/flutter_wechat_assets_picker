@@ -754,7 +754,9 @@ class DefaultAssetPickerViewerBuilderDelegate
               children: <Widget>[
                 Positioned.fill(
                   child: ExtendedImageGesturePageView.builder(
-                    physics: const CustomScrollPhysics(),
+                    physics: previewAssets.length == 1
+                        ? const CustomClampingScrollPhysics()
+                        : const CustomBouncingScrollPhysics(),
                     controller: pageController,
                     itemCount: previewAssets.length,
                     itemBuilder: assetPageBuilder,

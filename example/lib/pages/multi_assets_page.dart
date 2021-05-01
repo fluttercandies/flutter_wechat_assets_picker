@@ -49,7 +49,6 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
           return AssetPicker.pickAssets(
             context,
             maxAssets: maxAssetsCount,
-            selectedAssets: assets,
             specialPickerType: SpecialPickerType.wechatMoment,
           );
         },
