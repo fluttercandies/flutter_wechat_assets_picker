@@ -474,6 +474,11 @@ class DefaultAssetPickerBuilderDelegate
   /// 切换路径时的动画曲线
   Curve get switchingPathCurve => Curves.easeInOut;
 
+  /// Whether the [SpecialPickerType.wechatMoment] is enabled.
+  /// 当前是否为微信朋友圈选择模式
+  bool get isWeChatMoment =>
+      specialPickerType == SpecialPickerType.wechatMoment;
+
   /// Whether the preview of assets is enabled.
   /// 资源的预览是否启用
   bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
@@ -650,8 +655,7 @@ class DefaultAssetPickerBuilderDelegate
     return Stack(
       children: <Widget>[
         builder,
-        if (specialPickerType != SpecialPickerType.wechatMoment ||
-            asset.type != AssetType.video)
+        if (!isWeChatMoment || asset.type != AssetType.video)
           selectIndicator(context, asset),
       ],
     );
@@ -1108,13 +1112,21 @@ class DefaultAssetPickerBuilderDelegate
       builder: (_, bool isSelectedNotEmpty, __) => GestureDetector(
         onTap: isSelectedNotEmpty
             ? () async {
+                final List<AssetEntity> _selected;
+                if (isWeChatMoment) {
+                  _selected = provider.selectedAssets
+                      .where((AssetEntity e) => e.type == AssetType.image)
+                      .toList();
+                } else {
+                  _selected = provider.selectedAssets;
+                }
                 final List<AssetEntity>? result =
                     await AssetPickerViewer.pushToViewer(
                   context,
                   currentIndex: 0,
-                  previewAssets: provider.selectedAssets,
+                  previewAssets: _selected,
                   previewThumbSize: previewThumbSize,
-                  selectedAssets: provider.selectedAssets,
+                  selectedAssets: _selected,
                   selectorProvider: provider as DefaultAssetPickerProvider,
                   themeData: theme,
                 );
@@ -1232,22 +1244,41 @@ class DefaultAssetPickerBuilderDelegate
           // When the special type is WeChat Moment, pictures and videos cannot
           // be selected at the same time. Video select should be banned if any
           // pictures are selected.
-          if (specialPickerType == SpecialPickerType.wechatMoment &&
+          if (isWeChatMoment &&
               asset.type == AssetType.video &&
               provider.selectedAssets.isNotEmpty) {
             return;
           }
+          final List<AssetEntity> _current;
+          final List<AssetEntity> _selected;
+          final int _index;
+          if (isWeChatMoment) {
+            if (asset.type == AssetType.video) {
+              _current = <AssetEntity>[asset];
+              _selected = <AssetEntity>[];
+              _index = 0;
+            } else {
+              _current = provider.currentAssets
+                  .where((AssetEntity e) => e.type == AssetType.image)
+                  .toList();
+              _selected = provider.selectedAssets;
+              _index = _current.indexOf(asset);
+            }
+          } else {
+            _current = provider.currentAssets;
+            _selected = provider.selectedAssets;
+            _index = index;
+          }
           final List<AssetEntity>? result =
               await AssetPickerViewer.pushToViewer(
             context,
-            currentIndex: index,
-            previewAssets: provider.currentAssets,
+            currentIndex: _index,
+            previewAssets: _current,
             themeData: theme,
             previewThumbSize: previewThumbSize,
-            selectedAssets: provider.selectedAssets,
+            selectedAssets: _selected,
             selectorProvider: provider as DefaultAssetPickerProvider,
-            specialPickerType:
-                asset.type == AssetType.video ? specialPickerType : null,
+            specialPickerType: specialPickerType,
           );
           if (result != null) {
             Navigator.of(context).pop(result);

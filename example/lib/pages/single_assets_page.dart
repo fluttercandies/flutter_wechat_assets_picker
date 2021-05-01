@@ -41,19 +41,6 @@ class _SingleAssetPageState extends State<SingleAssetPage>
       PickMethodModel.threeItemsGrid(maxAssetsCount),
       PickMethodModel.customFilterOptions(maxAssetsCount),
       PickMethodModel.prependItem(maxAssetsCount),
-      PickMethodModel(
-        icon: '🎭',
-        name: 'WeChat moment',
-        description: 'Pick assets like the WeChat moment pattern.',
-        method: (BuildContext context, List<AssetEntity> assets) {
-          return AssetPicker.pickAssets(
-            context,
-            maxAssets: maxAssetsCount,
-            selectedAssets: assets,
-            specialPickerType: SpecialPickerType.wechatMoment,
-          );
-        },
-      ),
       PickMethodModel.noPreview(maxAssetsCount),
     ];
   }
