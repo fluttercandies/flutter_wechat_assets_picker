@@ -248,6 +248,11 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// 详情部件是否显示
   final ValueNotifier<bool> isDisplayingDetail = ValueNotifier<bool>(true);
 
+  /// Whether the [SpecialPickerType.wechatMoment] is enabled.
+  /// 当前是否为微信朋友圈选择模式
+  bool get isWeChatMoment =>
+      specialPickerType == SpecialPickerType.wechatMoment;
+
   @override
   void initStateAndTicker(
     AssetPickerViewerState<AssetEntity, AssetPathEntity> s,
@@ -555,8 +560,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               ),
             const Spacer(),
             if (isAppleOS && provider != null) selectButton(context),
-            if (!isAppleOS && provider != null ||
-                specialPickerType == SpecialPickerType.wechatMoment)
+            if (!isAppleOS && provider != null || isWeChatMoment)
               confirmButton(context),
           ],
         ),
@@ -576,14 +580,13 @@ class DefaultAssetPickerViewerBuilderDelegate
       child: Consumer<AssetPickerViewerProvider<AssetEntity>?>(
         builder: (_, AssetPickerViewerProvider<AssetEntity>? provider, __) {
           assert(
-            specialPickerType == SpecialPickerType.wechatMoment ||
-                provider != null,
+            isWeChatMoment || provider != null,
             'Viewer provider must not be null'
             'when the special type is not WeChat moment.',
           );
           return MaterialButton(
             minWidth: () {
-              if (specialPickerType == SpecialPickerType.wechatMoment) {
+              if (isWeChatMoment) {
                 return 48.0;
               }
               return provider!.isSelectedNotEmpty ? 48.0 : 20.0;
@@ -596,7 +599,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             ),
             child: Text(
               () {
-                if (specialPickerType == SpecialPickerType.wechatMoment) {
+                if (isWeChatMoment) {
                   return Constants.textDelegate.confirm;
                 }
                 if (provider!.isSelectedNotEmpty) {
@@ -614,7 +617,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               ),
             ),
             onPressed: () {
-              if (specialPickerType == SpecialPickerType.wechatMoment) {
+              if (isWeChatMoment) {
                 Navigator.of(context).pop(<AssetEntity>[currentAsset]);
                 return;
               }
