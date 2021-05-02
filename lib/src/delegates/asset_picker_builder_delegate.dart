@@ -1283,7 +1283,6 @@ class DefaultAssetPickerBuilderDelegate
             currentIndex: _index,
             previewAssets: _current,
             themeData: theme,
-            previewThumbSize: previewThumbSize,
             selectedAssets: _selected,
             selectorProvider: provider as DefaultAssetPickerProvider,
             specialPickerType: specialPickerType,
