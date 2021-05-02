@@ -1107,10 +1107,9 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget previewButton(BuildContext context) {
-    return Selector<DefaultAssetPickerProvider, bool>(
-      selector: (_, DefaultAssetPickerProvider p) => p.isSelectedNotEmpty,
-      builder: (_, bool isSelectedNotEmpty, __) => GestureDetector(
-        onTap: isSelectedNotEmpty
+    return Consumer<DefaultAssetPickerProvider>(
+      builder: (_, DefaultAssetPickerProvider provider, __) => GestureDetector(
+        onTap: provider.isSelectedNotEmpty
             ? () async {
                 final List<AssetEntity> _selected;
                 if (isWeChatMoment) {
@@ -1127,7 +1126,7 @@ class DefaultAssetPickerBuilderDelegate
                   previewAssets: _selected,
                   previewThumbSize: previewThumbSize,
                   selectedAssets: _selected,
-                  selectorProvider: provider as DefaultAssetPickerProvider,
+                  selectorProvider: provider,
                   themeData: theme,
                   maxAssets: provider.maxAssets,
                 );
@@ -1138,23 +1137,17 @@ class DefaultAssetPickerBuilderDelegate
             : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-            selector: (_, DefaultAssetPickerProvider provider) =>
-                provider.selectedAssets,
-            builder: (_, List<AssetEntity> selectedAssets, __) {
-              return Text(
-                isSelectedNotEmpty
-                    ? '${Constants.textDelegate.preview}'
-                        '(${provider.selectedAssets.length})'
-                    : Constants.textDelegate.preview,
-                style: TextStyle(
-                  color: isSelectedNotEmpty
-                      ? null
-                      : theme.textTheme.caption?.color,
-                  fontSize: 18.0,
-                ),
-              );
-            },
+          child: Text(
+            provider.isSelectedNotEmpty
+                ? '${Constants.textDelegate.preview}'
+                    '(${provider.selectedAssets.length})'
+                : Constants.textDelegate.preview,
+            style: TextStyle(
+              color: provider.isSelectedNotEmpty
+                  ? null
+                  : theme.textTheme.caption?.color,
+              fontSize: 18.0,
+            ),
           ),
         ),
       ),
