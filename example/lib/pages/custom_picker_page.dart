@@ -1066,6 +1066,7 @@ class FileAssetPickerViewerBuilderDelegate
           currentIndex: currentIndex,
           selectedAssets: selectedAssets,
           selectorProvider: selectorProvider,
+          maxAssets: selectorProvider!.maxAssets,
         );
 
   bool isDisplayingDetail = true;

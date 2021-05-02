@@ -1129,6 +1129,7 @@ class DefaultAssetPickerBuilderDelegate
                   selectedAssets: _selected,
                   selectorProvider: provider as DefaultAssetPickerProvider,
                   themeData: theme,
+                  maxAssets: provider.maxAssets,
                 );
                 if (result != null) {
                   Navigator.of(context).pop(result);
@@ -1279,6 +1280,7 @@ class DefaultAssetPickerBuilderDelegate
             selectedAssets: _selected,
             selectorProvider: provider as DefaultAssetPickerProvider,
             specialPickerType: specialPickerType,
+            maxAssets: provider.maxAssets,
           );
           if (result != null) {
             Navigator.of(context).pop(result);
