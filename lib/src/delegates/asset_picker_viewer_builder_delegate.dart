@@ -21,7 +21,7 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
     this.selectorProvider,
     this.provider,
     this.selectedAssets,
-    required this.maxAssets,
+    this.maxAssets,
   });
 
   /// [ChangeNotifier] for photo selector viewer.
@@ -68,7 +68,7 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
 
   /// Maximum count for asset selection.
   /// 资源选择的最大数量
-  final int maxAssets;
+  final int? maxAssets;
 
   /// Whether the viewer is under preview mode for selected assets.
   /// 当前是否处于查看已选中资源的模式
@@ -126,7 +126,7 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   }
 
   void selectAsset(A entity) {
-    if (selectedCount >= maxAssets) {
+    if (maxAssets != null && selectedCount >= maxAssets!) {
       return;
     }
     provider?.selectAssetEntity(entity);
@@ -211,7 +211,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     List<AssetEntity>? selectedAssets,
     this.previewThumbSize,
     this.specialPickerType,
-    required int maxAssets,
+    int? maxAssets,
   }) : super(
           currentIndex: currentIndex,
           previewAssets: previewAssets,

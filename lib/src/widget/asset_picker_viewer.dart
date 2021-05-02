@@ -32,7 +32,7 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
     List<int>? previewThumbSize,
     List<AssetEntity>? selectedAssets,
     SpecialPickerType? specialPickerType,
-    int maxAssets = 9,
+    int? maxAssets,
   }) async {
     try {
       final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
