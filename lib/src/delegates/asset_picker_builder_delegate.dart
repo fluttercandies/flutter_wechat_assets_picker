@@ -422,6 +422,7 @@ class DefaultAssetPickerBuilderDelegate
     IndicatorBuilder? loadingIndicatorBuilder,
     bool allowSpecialItemWhenEmpty = false,
     this.previewThumbSize,
+    this.gridThumbSize,
     this.specialPickerType,
   })  : assert(
           pickerTheme == null || themeColor == null,
@@ -448,9 +449,22 @@ class DefaultAssetPickerBuilderDelegate
   /// 该参数仅生效于图片类型的资源，因为其他资源不需要请求缩略图数据。
   /// 预览图片的速度可以通过适当降低它的数值来提升。
   ///
-  /// Default is `null`, which will request the origin data.
+  /// Default is `null`, which will use default value.
   /// 默认为空，即读取原图。
   final List<int>? previewThumbSize;
+
+  /// Thumbnail size in the grid.
+  /// 预览时网络的缩略图大小
+  ///
+  /// This only works on images since other types does not have request
+  /// for thumb data. The speed of preview can be raised by reducing it.
+  ///
+  /// 该参数仅生效于图片类型的资源，因为其他资源不需要请求缩略图数据。
+  /// 预览图片的速度可以通过适当降低它的数值来提升。
+  ///
+  /// Default is `null`, which will use default value.
+  /// 默认为空，即读取原图。
+  final List<int>? gridThumbSize;
 
   /// The current special picker type for the picker.
   /// 当前特殊选择类型
@@ -802,8 +816,11 @@ class DefaultAssetPickerBuilderDelegate
     int index,
     AssetEntity asset,
   ) {
-    final AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(asset, isOriginal: false, thumbSize: previewThumbSize ?? Constants.defaultPreviewThumbSize);
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
+      asset,
+      isOriginal: false,
+      thumbSize: gridThumbSize ?? Constants.defaultGridThumbSize,
+    );
     return RepaintBoundary(
       child: ExtendedImage(
         image: imageProvider,
