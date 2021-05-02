@@ -803,7 +803,7 @@ class DefaultAssetPickerBuilderDelegate
     AssetEntity asset,
   ) {
     final AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(asset, isOriginal: false);
+        AssetEntityImageProvider(asset, isOriginal: false, thumbSize: previewThumbSize ?? Constants.defaultPreviewThumbSize);
     return RepaintBoundary(
       child: ExtendedImage(
         image: imageProvider,
