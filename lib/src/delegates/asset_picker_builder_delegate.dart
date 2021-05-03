@@ -1107,50 +1107,58 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget previewButton(BuildContext context) {
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (_, DefaultAssetPickerProvider provider, __) => GestureDetector(
-        onTap: provider.isSelectedNotEmpty
-            ? () async {
-                final List<AssetEntity> _selected;
-                if (isWeChatMoment) {
-                  _selected = provider.selectedAssets
-                      .where((AssetEntity e) => e.type == AssetType.image)
-                      .toList();
-                } else {
-                  _selected = provider.selectedAssets;
-                }
-                final List<AssetEntity>? result =
-                    await AssetPickerViewer.pushToViewer(
-                  context,
-                  currentIndex: 0,
-                  previewAssets: _selected,
-                  previewThumbSize: previewThumbSize,
-                  selectedAssets: _selected,
-                  selectorProvider: provider,
-                  themeData: theme,
-                  maxAssets: provider.maxAssets,
-                );
-                if (result != null) {
-                  Navigator.of(context).pop(result);
-                }
-              }
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Text(
-            provider.isSelectedNotEmpty
-                ? '${Constants.textDelegate.preview}'
-                    '(${provider.selectedAssets.length})'
-                : Constants.textDelegate.preview,
-            style: TextStyle(
-              color: provider.isSelectedNotEmpty
-                  ? null
-                  : theme.textTheme.caption?.color,
-              fontSize: 18.0,
+    return Selector<DefaultAssetPickerProvider, bool>(
+      selector: (_, DefaultAssetPickerProvider p) => p.isSelectedNotEmpty,
+      builder: (BuildContext c, bool isSelectedNotEmpty, Widget? child) {
+        return GestureDetector(
+          onTap: () async {
+            if (!isSelectedNotEmpty) {
+              return;
+            }
+            final List<AssetEntity> _selected;
+            if (isWeChatMoment) {
+              _selected = provider.selectedAssets
+                  .where((AssetEntity e) => e.type == AssetType.image)
+                  .toList();
+            } else {
+              _selected = provider.selectedAssets;
+            }
+            final List<AssetEntity>? result =
+                await AssetPickerViewer.pushToViewer(
+              context,
+              currentIndex: 0,
+              previewAssets: _selected,
+              previewThumbSize: previewThumbSize,
+              selectedAssets: _selected,
+              selectorProvider: provider as DefaultAssetPickerProvider,
+              themeData: theme,
+              maxAssets: provider.maxAssets,
+            );
+            if (result != null) {
+              Navigator.of(context).pop(result);
+            }
+          },
+          child: Selector<DefaultAssetPickerProvider, String>(
+            selector: (_, DefaultAssetPickerProvider p) =>
+                p.selectedDescriptions,
+            builder: (_, __, ___) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Text(
+                isSelectedNotEmpty
+                    ? '${Constants.textDelegate.preview}'
+                        '(${provider.selectedAssets.length})'
+                    : Constants.textDelegate.preview,
+                style: TextStyle(
+                  color: isSelectedNotEmpty
+                      ? null
+                      : theme.textTheme.caption?.color,
+                  fontSize: 18.0,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
