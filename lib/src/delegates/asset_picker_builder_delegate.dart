@@ -775,7 +775,7 @@ class DefaultAssetPickerBuilderDelegate
           child: Text(
             provider.isSelectedNotEmpty && !isSingleAssetMode
                 ? '${Constants.textDelegate.confirm}'
-                    '(${provider.selectedAssets.length}/${provider.maxAssets})'
+                    ' (${provider.selectedAssets.length}/${provider.maxAssets})'
                 : Constants.textDelegate.confirm,
             style: TextStyle(
               color: provider.isSelectedNotEmpty
@@ -954,64 +954,87 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget pathEntitySelector(BuildContext context) {
-    return UnconstrainedBox(
-      child: GestureDetector(
-        onTap: () => provider.isSwitchingPath = !provider.isSwitchingPath,
-        child: Container(
-          height: appBarItemHeight,
-          constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
-          padding: const EdgeInsets.only(left: 12.0, right: 6.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(999),
-            color: theme.dividerColor,
+    return Row(
+      children: <Widget>[
+        Text(
+          '${Constants.textDelegate.folder}:',
+          style: const TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.normal,
           ),
-          child: Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
-            selector: (_, DefaultAssetPickerProvider p) => p.currentPathEntity,
-            builder: (_, AssetPathEntity? p, Widget? w) => Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                if (p != null)
-                  Flexible(
-                    child: Text(
-                      p.name,
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.normal,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(width: 5),
+        Directionality(
+          // Display of folder name: lock the direction to ltr
+          textDirection: TextDirection.ltr,
+          child: UnconstrainedBox(
+            child: GestureDetector(
+              onTap: () => provider.isSwitchingPath = !provider.isSwitchingPath,
+              child: Selector<DefaultAssetPickerProvider, bool>(
+                selector: (_, DefaultAssetPickerProvider p) =>
+                    p.isSelectedNotEmpty,
+                builder: (_, bool isSelectedNotEmpty, __) => Container(
+                  height: appBarItemHeight,
+                  constraints: BoxConstraints(
+                      maxWidth:
+                          Screens.width * (isSelectedNotEmpty ? 0.35 : 0.45)),
+                  padding: const EdgeInsets.only(left: 12.0, right: 6.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(999),
+                    color: theme.dividerColor,
+                  ),
+                  child: Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
+                    selector: (_, DefaultAssetPickerProvider p) =>
+                        p.currentPathEntity,
+                    builder: (_, AssetPathEntity? p, Widget? w) => Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        if (p != null)
+                          Flexible(
+                            child: Text(
+                              p.name,
+                              style: const TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.normal,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        w!,
+                      ],
                     ),
-                  ),
-                w!,
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 5.0),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: theme.iconTheme.color!.withOpacity(0.5),
-                ),
-                child: Selector<DefaultAssetPickerProvider, bool>(
-                  selector: (_, DefaultAssetPickerProvider p) =>
-                      p.isSwitchingPath,
-                  builder: (_, bool isSwitchingPath, Widget? w) =>
-                      Transform.rotate(
-                    angle: isSwitchingPath ? math.pi : 0.0,
-                    alignment: Alignment.center,
-                    child: w,
-                  ),
-                  child: Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 20.0,
-                    color: theme.colorScheme.primary,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: theme.iconTheme.color!.withOpacity(0.5),
+                        ),
+                        child: Selector<DefaultAssetPickerProvider, bool>(
+                          selector: (_, DefaultAssetPickerProvider p) =>
+                              p.isSwitchingPath,
+                          builder: (_, bool isSwitchingPath, Widget? w) =>
+                              Transform.rotate(
+                            angle: isSwitchingPath ? math.pi : 0.0,
+                            alignment: Alignment.center,
+                            child: w,
+                          ),
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            size: 20.0,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 

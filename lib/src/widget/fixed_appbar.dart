@@ -86,52 +86,57 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
       _title = Center(child: _title);
     }
 
-    Widget child = Container(
-      width: Screens.width,
-      height: (height ?? kToolbarHeight) + MediaQuery.of(context).padding.top,
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: Stack(
-        children: <Widget>[
-          if (automaticallyImplyLeading && Navigator.of(context).canPop())
-            leading ?? const BackButton(),
-          if (_title != null)
-            Positioned(
-              top: 0.0,
-              bottom: 0.0,
-              left: automaticallyImplyLeading && Navigator.of(context).canPop()
-                  ? _effectiveHeight
-                  : 0.0,
-              right: _effectiveHeight,
-              child: Align(
-                alignment: centerTitle
-                    ? Alignment.center
-                    : AlignmentDirectional.centerStart,
-                child: DefaultTextStyle(
-                  child: _title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(fontSize: 23.0),
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
+    Widget child = Directionality(
+      textDirection: Constants.textDelegate.textDirection,
+      child: Container(
+        width: Screens.width,
+        height: (height ?? kToolbarHeight) + MediaQuery.of(context).padding.top,
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        child: Stack(
+          children: <Widget>[
+            if (automaticallyImplyLeading && Navigator.of(context).canPop())
+              leading ?? const BackButton(),
+            if (_title != null)
+              Positioned(
+                top: 0.0,
+                bottom: 0.0,
+                left:
+                    automaticallyImplyLeading && Navigator.of(context).canPop()
+                        ? _effectiveHeight
+                        : 0.0,
+                right: _effectiveHeight,
+                child: Align(
+                  alignment: centerTitle
+                      ? Alignment.center
+                      : AlignmentDirectional.centerStart,
+                  child: DefaultTextStyle(
+                    child: _title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontSize: 23.0),
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
-            ),
-          if (automaticallyImplyLeading &&
-              Navigator.of(context).canPop() &&
-              (actions?.isEmpty ?? true))
-            const SizedBox(width: kMinInteractiveDimension)
-          else if (actions?.isNotEmpty == true)
-            PositionedDirectional(
-              end: 0.0,
-              height: kToolbarHeight,
-              child: Padding(
-                padding: actionsPadding ?? EdgeInsets.zero,
-                child: Row(mainAxisSize: MainAxisSize.min, children: actions!),
+            if (automaticallyImplyLeading &&
+                Navigator.of(context).canPop() &&
+                (actions?.isEmpty ?? true))
+              const SizedBox(width: kMinInteractiveDimension)
+            else if (actions?.isNotEmpty == true)
+              PositionedDirectional(
+                end: 0.0,
+                height: kToolbarHeight,
+                child: Padding(
+                  padding: actionsPadding ?? EdgeInsets.zero,
+                  child:
+                      Row(mainAxisSize: MainAxisSize.min, children: actions!),
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
 
