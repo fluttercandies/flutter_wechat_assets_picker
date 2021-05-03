@@ -42,6 +42,10 @@ abstract class AssetsPickerTextDelegate {
   /// 选择按钮的字段
   late final String select;
 
+  /// Select string for folder label.
+  /// 文件夹标签字段
+  late final String folder;
+
   /// Un-supported asset type string for assets that belongs to [AssetType.other].
   /// 未支持的资源类型的字段
   late final String unSupportedAssetType;
@@ -100,6 +104,9 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
   String select = '选择';
 
   @override
+  String folder = '文件夹';
+
+  @override
   String unSupportedAssetType = '尚未支持的资源类型';
 
   @override
@@ -144,6 +151,9 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
   String select = 'Select';
 
   @override
+  String folder = 'Folder';
+
+  @override
   String unSupportedAssetType = 'Unsupported HEIC asset type.';
 
   @override
@@ -186,6 +196,9 @@ class HebrewTextDelegate implements AssetsPickerTextDelegate {
 
   @override
   String select = 'בחר';
+
+  @override
+  String folder = 'תיקייה';
 
   @override
   String unSupportedAssetType = 'סוג קובץ HEIC אינו נתמך';
