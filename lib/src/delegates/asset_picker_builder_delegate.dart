@@ -1117,39 +1117,41 @@ class DefaultAssetPickerBuilderDelegate
   Widget previewButton(BuildContext context) {
     return Selector<DefaultAssetPickerProvider, bool>(
       selector: (_, DefaultAssetPickerProvider p) => p.isSelectedNotEmpty,
-      builder: (_, bool isSelectedNotEmpty, __) => GestureDetector(
-        onTap: isSelectedNotEmpty
-            ? () async {
-                final List<AssetEntity> _selected;
-                if (isWeChatMoment) {
-                  _selected = provider.selectedAssets
-                      .where((AssetEntity e) => e.type == AssetType.image)
-                      .toList();
-                } else {
-                  _selected = provider.selectedAssets;
-                }
-                final List<AssetEntity>? result =
-                    await AssetPickerViewer.pushToViewer(
-                  context,
-                  currentIndex: 0,
-                  previewAssets: _selected,
-                  previewThumbSize: previewThumbSize,
-                  selectedAssets: _selected,
-                  selectorProvider: provider as DefaultAssetPickerProvider,
-                  themeData: theme,
-                );
-                if (result != null) {
-                  Navigator.of(context).pop(result);
-                }
-              }
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-            selector: (_, DefaultAssetPickerProvider provider) =>
-                provider.selectedAssets,
-            builder: (_, List<AssetEntity> selectedAssets, __) {
-              return Text(
+      builder: (BuildContext c, bool isSelectedNotEmpty, Widget? child) {
+        return GestureDetector(
+          onTap: () async {
+            if (!isSelectedNotEmpty) {
+              return;
+            }
+            final List<AssetEntity> _selected;
+            if (isWeChatMoment) {
+              _selected = provider.selectedAssets
+                  .where((AssetEntity e) => e.type == AssetType.image)
+                  .toList();
+            } else {
+              _selected = provider.selectedAssets;
+            }
+            final List<AssetEntity>? result =
+                await AssetPickerViewer.pushToViewer(
+              context,
+              currentIndex: 0,
+              previewAssets: _selected,
+              previewThumbSize: previewThumbSize,
+              selectedAssets: _selected,
+              selectorProvider: provider as DefaultAssetPickerProvider,
+              themeData: theme,
+              maxAssets: provider.maxAssets,
+            );
+            if (result != null) {
+              Navigator.of(context).pop(result);
+            }
+          },
+          child: Selector<DefaultAssetPickerProvider, String>(
+            selector: (_, DefaultAssetPickerProvider p) =>
+                p.selectedDescriptions,
+            builder: (_, __, ___) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Text(
                 isSelectedNotEmpty
                     ? '${Constants.textDelegate.preview}'
                         '(${provider.selectedAssets.length})'
@@ -1160,11 +1162,11 @@ class DefaultAssetPickerBuilderDelegate
                       : theme.textTheme.caption?.color,
                   fontSize: 18.0,
                 ),
-              );
-            },
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -1287,6 +1289,7 @@ class DefaultAssetPickerBuilderDelegate
             selectedAssets: _selected,
             selectorProvider: provider as DefaultAssetPickerProvider,
             specialPickerType: specialPickerType,
+            maxAssets: provider.maxAssets,
           );
           if (result != null) {
             Navigator.of(context).pop(result);
