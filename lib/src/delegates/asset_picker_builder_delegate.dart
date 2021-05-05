@@ -443,27 +443,25 @@ class DefaultAssetPickerBuilderDelegate
   /// Preview thumbnail size in the viewer.
   /// 预览时图片的缩略图大小
   ///
-  /// This only works on images since other types does not have request
-  /// for thumb data. The speed of preview can be raised by reducing it.
-  ///
-  /// 该参数仅生效于图片类型的资源，因为其他资源不需要请求缩略图数据。
+  /// This only works on images and videos since other types does not have to
+  /// request for the thumbnail data. The preview can speed up by reducing it.
+  /// 该参数仅生效于图片和视频类型的资源，因为其他资源不需要请求缩略图数据。
   /// 预览图片的速度可以通过适当降低它的数值来提升。
   ///
-  /// Default is `null`, which will use default value.
+  /// Default is `null`, which will request the origin data.
   /// 默认为空，即读取原图。
   final List<int>? previewThumbSize;
 
   /// Thumbnail size in the grid.
   /// 预览时网络的缩略图大小
   ///
-  /// This only works on images since other types does not have request
-  /// for thumb data. The speed of preview can be raised by reducing it.
-  ///
-  /// 该参数仅生效于图片类型的资源，因为其他资源不需要请求缩略图数据。
+  /// This only works on images and videos since other types does not have to
+  /// request for the thumbnail data. The preview can speed up by reducing it.
+  /// 该参数仅生效于图片和视频类型的资源，因为其他资源不需要请求缩略图数据。
   /// 预览图片的速度可以通过适当降低它的数值来提升。
   ///
   /// Default is `null`, which will use default value.
-  /// 默认为空，即读取原图。
+  /// 默认为空时使用 [Constants.defaultGridThumbSize]。
   final List<int>? gridThumbSize;
 
   /// The current special picker type for the picker.
