@@ -421,8 +421,8 @@ class DefaultAssetPickerBuilderDelegate
     WidgetBuilder? specialItemBuilder,
     IndicatorBuilder? loadingIndicatorBuilder,
     bool allowSpecialItemWhenEmpty = false,
+    this.gridThumbSize = Constants.defaultGridThumbSize,
     this.previewThumbSize,
-    this.gridThumbSize,
     this.specialPickerType,
   })  : assert(
           pickerTheme == null || themeColor == null,
@@ -440,6 +440,19 @@ class DefaultAssetPickerBuilderDelegate
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
         );
 
+  /// Thumbnail size in the grid.
+  /// 预览时网络的缩略图大小
+  ///
+  /// This only works on images and videos since other types does not have to
+  /// request for the thumbnail data. The preview can speed up by reducing it.
+  /// 该参数仅生效于图片和视频类型的资源，因为其他资源不需要请求缩略图数据。
+  /// 预览图片的速度可以通过适当降低它的数值来提升。
+  ///
+  /// This cannot be `null` or a large value since you shouldn't use the
+  /// original data for the grid.
+  /// 该值不能为空或者非常大，因为在网格中使用原数据不是一个好的决定。
+  final int gridThumbSize;
+
   /// Preview thumbnail size in the viewer.
   /// 预览时图片的缩略图大小
   ///
@@ -451,18 +464,6 @@ class DefaultAssetPickerBuilderDelegate
   /// Default is `null`, which will request the origin data.
   /// 默认为空，即读取原图。
   final List<int>? previewThumbSize;
-
-  /// Thumbnail size in the grid.
-  /// 预览时网络的缩略图大小
-  ///
-  /// This only works on images and videos since other types does not have to
-  /// request for the thumbnail data. The preview can speed up by reducing it.
-  /// 该参数仅生效于图片和视频类型的资源，因为其他资源不需要请求缩略图数据。
-  /// 预览图片的速度可以通过适当降低它的数值来提升。
-  ///
-  /// Default is `null`, which will use default value.
-  /// 默认为空时使用 [Constants.defaultGridThumbSize]。
-  final List<int>? gridThumbSize;
 
   /// The current special picker type for the picker.
   /// 当前特殊选择类型
@@ -817,7 +818,7 @@ class DefaultAssetPickerBuilderDelegate
     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
       asset,
       isOriginal: false,
-      thumbSize: gridThumbSize ?? Constants.defaultGridThumbSize,
+      thumbSize: <int>[gridThumbSize, gridThumbSize],
     );
     return RepaintBoundary(
       child: ExtendedImage(

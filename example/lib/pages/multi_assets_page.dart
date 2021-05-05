@@ -65,7 +65,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
             selectedAssets: assets,
             requestType: RequestType.image,
             previewThumbSize: const <int>[150, 150],
-            gridThumbSize: const <int>[80, 80],
+            gridThumbSize: 80,
           );
         },
       ),

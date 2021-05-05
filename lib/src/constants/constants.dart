@@ -45,7 +45,7 @@ class Constants {
       DefaultAssetsPickerTextDelegate();
   static SortPathDelegate sortPathDelegate = SortPathDelegate.common;
 
-  static const List<int> defaultGridThumbSize = <int>[200, 200];
+  static const int defaultGridThumbSize = 200;
 }
 
 /// Log only in debug mode.
