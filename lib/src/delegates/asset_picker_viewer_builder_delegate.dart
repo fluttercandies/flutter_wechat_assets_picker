@@ -369,7 +369,8 @@ class DefaultAssetPickerViewerBuilderDelegate
         child: ExtendedImage(
           image: AssetEntityImageProvider(
             asset,
-            isOriginal: false,
+            isOriginal: previewThumbSize == null,
+            thumbSize: previewThumbSize,
           ),
           fit: BoxFit.cover,
         ),
