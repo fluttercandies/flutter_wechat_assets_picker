@@ -14,7 +14,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   const AssetEntityImageProvider(
     this.entity, {
     this.scale = 1.0,
-    this.thumbSize = Constants.defaultPreviewThumbSize,
+    this.thumbSize,
     this.isOriginal = true,
   }) : assert(
           isOriginal || thumbSize?.length == 2,
