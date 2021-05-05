@@ -153,10 +153,11 @@ platform :ios, '9.0'
 | selectedAssets            | `List<AssetEntity>?`   | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。 | `null`              |
 | maxAssets                 | `int`                  | 最多选择的图片数量                      | 9                   |
 | pageSize                  | `int`                  | 分页加载时每页加载的资源数量。**必须为网格数的倍数。** 设置为`null`可以取消分页。 | 320 (80 * 4) |
-| pathThumbSize             | `int`                  | 选择器的缩略图大小                      | 80                  |
+| gridThumbSize             | `int`                  | 预览网格的缩略图大小                     | 200                  |
+| pathThumbSize             | `int`                  | 路径选择器的缩略图大小                    | 80                  |
+| previewThumbSize          | `List<int>?`           | 预览时图片的缩略图大小                    | `null`                 |
 | gridCount                 | `int`                  | 选择器网格数量                        | 4                   |
 | requestType               | `RequestType`          | 选择器选择资源的类型                    | `RequestType.image` |
-| previewThumbSize          | `List<int>?`           | 预览时图片的缩略图大小                    | `null`                 |
 | specialPickerType         | `SpecialPickerType?`   | 提供一些特殊的选择器类型以整合非常规的选择行为 | `null` |
 | themeColor                | `Color?`               | 选择器的主题色  | `Color(0xff00bc56)` |
 | pickerTheme               | `ThemeData?`           | 选择器的主题提供，包括查看器 | `null` |

@@ -181,10 +181,11 @@ platform :osx, '10.15'
 | selectedAssets            | `List<AssetEntity>?`        | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
 | maxAssets                 | `int`                       | Maximum asset that the picker can pick.                      | 9                                   |
 | pageSize                  | `int?`                      | Number of assets per page. **Must be a multiple of `gridCount`**. | 320 (80 * 4)                        |
-| pathThumbSize             | `int`                       | Thumbnail size.                                              | 80                                  |
+| gridThumbSize             | `int`                       | Thumbnail size for the grid's item.                          | 200                                 |
+| pathThumbSize             | `int`                       | Thumbnail size for the path selector.                        | 80                                  |
+| previewThumbSize          | `List<int>?`                | Preview thumbnail size in the viewer.                        | `null`                              |
 | gridCount                 | `int`                       | Grid count in picker.                                        | 4                                   |
 | requestType               | `RequestType`               | Request type for picker.                                     | `RequestType.image`                 |
-| previewThumbSize          | `List<int>?`                | Preview thumbnail size in the viewer.                        | `null`                              |
 | specialPickerType         | `SpacialPickerType?`        | Provides the option to integrate a custom picker type.       | `null`                              |
 | themeColor                | `Color?`                    | Main theme color for the picker.                             | `Color(0xff00bc56)`                 |
 | pickerTheme               | `ThemeData?`                | Theme data provider for the picker and the viewer.           | `null`                              |
