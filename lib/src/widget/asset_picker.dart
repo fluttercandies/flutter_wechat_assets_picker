@@ -26,6 +26,7 @@ class AssetPicker<A, P> extends StatelessWidget {
     int pageSize = 80,
     int pathThumbSize = 80,
     int gridCount = 4,
+    bool useRootNavigator = true,
     RequestType requestType = RequestType.image,
     List<int>? previewThumbSize,
     SpecialPickerType? specialPickerType,
@@ -106,7 +107,7 @@ class AssetPicker<A, P> extends StatelessWidget {
         );
         final List<AssetEntity>? result = await Navigator.of(
           context,
-          rootNavigator: true,
+          rootNavigator: useRootNavigator,
         ).push<List<AssetEntity>>(
           SlidePageTransitionBuilder<List<AssetEntity>>(
             builder: picker,
