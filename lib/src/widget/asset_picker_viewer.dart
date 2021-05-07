@@ -32,6 +32,7 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
     List<int>? previewThumbSize,
     List<AssetEntity>? selectedAssets,
     SpecialPickerType? specialPickerType,
+    int? maxAssets,
   }) async {
     try {
       final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
@@ -46,6 +47,7 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
           specialPickerType: specialPickerType,
           selectedAssets: selectedAssets,
           selectorProvider: selectorProvider,
+          maxAssets: maxAssets,
         ),
       );
       final PageRouteBuilder<List<AssetEntity>> pageRoute =

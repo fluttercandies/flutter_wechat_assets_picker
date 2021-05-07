@@ -57,15 +57,15 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
       PickMethodModel(
         icon: '🎚',
         name: 'Custom image preview thumb size',
-        description:
-            'You can reduce the thumb size to get more quickly load speed.',
+        description: 'You can reduce the thumb size to get faster load speed.',
         method: (BuildContext context, List<AssetEntity> assets) {
           return AssetPicker.pickAssets(
             context,
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
             requestType: RequestType.image,
-            previewThumbSize: const <int>[300, 300],
+            previewThumbSize: const <int>[150, 150],
+            gridThumbSize: 80,
           );
         },
       ),

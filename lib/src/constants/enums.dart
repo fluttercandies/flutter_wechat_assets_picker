@@ -6,7 +6,7 @@
 /// Provide some special picker types to integrate
 /// un-common pick pattern.
 /// 提供一些特殊的选择器类型以整合非常规的选择行为。
-enum SpecialPickerType { 
+enum SpecialPickerType {
   /// WeChat Moments mode.
   /// 微信朋友圈模式
   ///

@@ -21,6 +21,7 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
     this.selectorProvider,
     this.provider,
     this.selectedAssets,
+    this.maxAssets,
   });
 
   /// [ChangeNotifier] for photo selector viewer.
@@ -64,6 +65,10 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   /// Current previewing index in assets.
   /// 当前查看的索引
   int currentIndex;
+
+  /// Maximum count for asset selection.
+  /// 资源选择的最大数量
+  final int? maxAssets;
 
   /// Whether the viewer is under preview mode for selected assets.
   /// 当前是否处于查看已选中资源的模式
@@ -121,6 +126,9 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   }
 
   void selectAsset(A entity) {
+    if (maxAssets != null && selectedCount >= maxAssets!) {
+      return;
+    }
     provider?.selectAssetEntity(entity);
     if (!isSelectedPreviewing) {
       selectedAssets?.add(entity);
@@ -203,6 +211,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     List<AssetEntity>? selectedAssets,
     this.previewThumbSize,
     this.specialPickerType,
+    int? maxAssets,
   }) : super(
           currentIndex: currentIndex,
           previewAssets: previewAssets,
@@ -210,6 +219,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           themeData: themeData,
           selectedAssets: selectedAssets,
           selectorProvider: selectorProvider,
+          maxAssets: maxAssets,
         );
 
   /// Thumb size for the preview of images in the viewer.
@@ -359,7 +369,8 @@ class DefaultAssetPickerViewerBuilderDelegate
         child: ExtendedImage(
           image: AssetEntityImageProvider(
             asset,
-            isOriginal: false,
+            isOriginal: previewThumbSize == null,
+            thumbSize: previewThumbSize,
           ),
           fit: BoxFit.cover,
         ),
