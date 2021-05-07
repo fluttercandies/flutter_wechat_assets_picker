@@ -2,10 +2,15 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/4/7 10:25
 ///
+import 'package:flutter/material.dart';
 
 /// Text delegate that controls text in widgets.
 /// 控制部件中的文字实现
 abstract class AssetsPickerTextDelegate {
+  /// Text direction of language (LTR/RTL)
+  /// 语言文字方向
+  late final TextDirection textDirection;
+
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
   late final String confirm;
@@ -73,6 +78,9 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
       DefaultAssetsPickerTextDelegate._internal();
 
   @override
+  TextDirection textDirection = TextDirection.ltr;
+
+  @override
   String confirm = '确认';
 
   @override
@@ -117,6 +125,9 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
   static final EnglishTextDelegate _instance = EnglishTextDelegate._internal();
 
   @override
+  TextDirection textDirection = TextDirection.ltr;
+
+  @override
   String confirm = 'Confirm';
 
   @override
@@ -159,6 +170,9 @@ class HebrewTextDelegate implements AssetsPickerTextDelegate {
   HebrewTextDelegate._internal();
 
   static final HebrewTextDelegate _instance = HebrewTextDelegate._internal();
+
+  @override
+  TextDirection textDirection = TextDirection.rtl;
 
   @override
   String confirm = 'אישור';
