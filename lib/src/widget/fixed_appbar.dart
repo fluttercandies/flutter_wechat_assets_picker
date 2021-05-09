@@ -89,7 +89,9 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
     Widget child = Container(
       width: Screens.width,
       height: (height ?? kToolbarHeight) + MediaQuery.of(context).padding.top,
-      padding: EdgeInsetsDirectional.only(top: MediaQuery.of(context).padding.top),
+      padding: EdgeInsetsDirectional.only(
+        top: MediaQuery.of(context).padding.top,
+      ),
       child: Stack(
         children: <Widget>[
           if (automaticallyImplyLeading && Navigator.of(context).canPop())
