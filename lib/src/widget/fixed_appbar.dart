@@ -41,7 +41,7 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// Padding for actions.
   /// 尾部操作部分的内边距
-  final EdgeInsetsGeometry? actionsPadding;
+  final EdgeInsetsDirectional? actionsPadding;
 
   /// This widget appears across the bottom of the app bar.
   /// 显示在顶栏下方的 widget
@@ -89,19 +89,19 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
     Widget child = Container(
       width: Screens.width,
       height: (height ?? kToolbarHeight) + MediaQuery.of(context).padding.top,
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      padding: EdgeInsetsDirectional.only(top: MediaQuery.of(context).padding.top),
       child: Stack(
         children: <Widget>[
           if (automaticallyImplyLeading && Navigator.of(context).canPop())
             leading ?? const BackButton(),
           if (_title != null)
-            Positioned(
+            PositionedDirectional(
               top: 0.0,
               bottom: 0.0,
-              left: automaticallyImplyLeading && Navigator.of(context).canPop()
+              start: automaticallyImplyLeading && Navigator.of(context).canPop()
                   ? _effectiveHeight
                   : 0.0,
-              right: _effectiveHeight,
+              end: _effectiveHeight,
               child: Align(
                 alignment: centerTitle
                     ? Alignment.center

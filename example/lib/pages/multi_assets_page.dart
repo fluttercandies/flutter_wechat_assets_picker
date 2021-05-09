@@ -151,7 +151,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
 
   Widget get methodListView => Expanded(
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 10.0),
+          padding: const EdgeInsetsDirectional.only(bottom: 10.0),
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             itemCount: pickMethods.length,
@@ -182,11 +182,11 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
       color: context.themeData.dividerColor,
       child: Stack(
         children: <Widget>[
-          AnimatedPositioned(
+          AnimatedPositionedDirectional(
             duration: kThemeAnimationDuration,
             top: 0.0,
-            left: 0.0,
-            right: 0.0,
+            start: 0.0,
+            end: 0.0,
             bottom: isDisplayingDetail ? 20.0 : 0.0,
             child: Center(
               child: Icon(
@@ -195,10 +195,10 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
               ),
             ),
           ),
-          AnimatedPositioned(
+          AnimatedPositionedDirectional(
             duration: kThemeAnimationDuration,
-            left: 0.0,
-            right: 0.0,
+            start: 0.0,
+            end: 0.0,
             bottom: isDisplayingDetail ? 0.0 : -20.0,
             height: 20.0,
             child: Text(

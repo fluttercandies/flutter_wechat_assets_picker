@@ -402,17 +402,18 @@ class DefaultAssetPickerViewerBuilderDelegate
     return ValueListenableBuilder2<bool, int>(
       firstNotifier: isDisplayingDetail,
       secondNotifier: selectedNotifier,
-      builder: (_, bool value, int count, Widget? child) => AnimatedPositioned(
+      builder: (_, bool value, int count, Widget? child) =>
+          AnimatedPositionedDirectional(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
         bottom: value ? 0.0 : -(Screens.bottomSafeHeight + bottomDetailHeight),
-        left: 0.0,
-        right: 0.0,
+        start: 0.0,
+        end: 0.0,
         height: Screens.bottomSafeHeight + bottomDetailHeight,
         child: child!,
       ),
       child: Container(
-        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
+        padding: EdgeInsetsDirectional.only(bottom: Screens.bottomSafeHeight),
         child: ChangeNotifierProvider<
             AssetPickerViewerProvider<AssetEntity>>.value(
           value: provider!,
@@ -540,17 +541,20 @@ class DefaultAssetPickerViewerBuilderDelegate
   Widget appBar(BuildContext context) {
     return ValueListenableBuilder<bool>(
       valueListenable: isDisplayingDetail,
-      builder: (_, bool value, Widget? child) => AnimatedPositioned(
+      builder: (_, bool value, Widget? child) => AnimatedPositionedDirectional(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
         top: value ? 0.0 : -(Screens.topSafeHeight + kToolbarHeight),
-        left: 0.0,
-        right: 0.0,
+        start: 0.0,
+        end: 0.0,
         height: Screens.topSafeHeight + kToolbarHeight,
         child: child!,
       ),
       child: Container(
-        padding: EdgeInsets.only(top: Screens.topSafeHeight, right: 12.0),
+        padding: EdgeInsetsDirectional.only(
+          top: Screens.topSafeHeight,
+          end: 12.0,
+        ),
         color: themeData.canvasColor.withOpacity(0.85),
         child: Row(
           children: <Widget>[
@@ -615,7 +619,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 }
                 if (provider!.isSelectedNotEmpty) {
                   return '${Constants.textDelegate.confirm}'
-                      '(${provider.currentlySelectedAssets.length}'
+                      ' (${provider.currentlySelectedAssets.length}'
                       '/'
                       '${selectorProvider!.maxAssets})';
                 }
@@ -652,7 +656,7 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// 苹果系列系统的选择按钮
   Widget _appleOSSelectButton(bool isSelected, AssetEntity asset) {
     return Padding(
-      padding: const EdgeInsets.only(right: 10.0),
+      padding: const EdgeInsetsDirectional.only(end: 10.0),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {

@@ -140,10 +140,10 @@ class _CustomPickerPageState extends State<CustomPickerPage>
               child: Stack(
                 children: <Widget>[
                   Positioned.fill(child: _selectedAssetWidget(index)),
-                  AnimatedPositioned(
+                  AnimatedPositionedDirectional(
                     duration: kThemeAnimationDuration,
                     top: isDisplayingDetail ? 6.0 : -30.0,
-                    right: isDisplayingDetail ? 6.0 : -30.0,
+                    end: isDisplayingDetail ? 6.0 : -30.0,
                     child: _selectedAssetDeleteButton(index),
                   ),
                 ],
@@ -740,7 +740,7 @@ class FileAssetPickerBuilder
         selector: (_, FileAssetPickerProvider p) => p.pathEntityList,
         builder: (_, Map<Directory, Uint8List?> pathEntityList, __) {
           return ListView.separated(
-            padding: const EdgeInsets.only(top: 1.0),
+            padding: const EdgeInsetsDirectional.only(top: 1.0),
             itemCount: pathEntityList.length,
             itemBuilder: (_, int index) => pathEntityWidget(
               context: context,
@@ -748,7 +748,7 @@ class FileAssetPickerBuilder
               index: index,
             ),
             separatorBuilder: (_, __) => Container(
-              margin: const EdgeInsets.only(left: 60.0),
+              margin: const EdgeInsetsDirectional.only(start: 60.0),
               height: 1.0,
               color: theme.canvasColor,
             ),
@@ -770,7 +770,7 @@ class FileAssetPickerBuilder
             child: Container(
               height: appBarItemHeight,
               constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
-              padding: const EdgeInsets.only(left: 12.0, right: 6.0),
+              padding: const EdgeInsetsDirectional.only(start: 12.0, end: 6.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(999),
                 color: theme.dividerColor,
@@ -791,7 +791,7 @@ class FileAssetPickerBuilder
                       ),
                     ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
+                    padding: const EdgeInsetsDirectional.only(start: 5.0),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -851,9 +851,12 @@ class FileAssetPickerBuilder
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 20.0),
+                  padding: const EdgeInsetsDirectional.only(
+                    start: 15.0,
+                    end: 20.0,
+                  ),
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
+                    padding: const EdgeInsetsDirectional.only(end: 10.0),
                     child: Text(
                       path.path,
                       style: const TextStyle(fontSize: 18.0),
@@ -1160,7 +1163,7 @@ class FileAssetPickerViewerBuilderDelegate
       right: 0.0,
       height: Screens.bottomSafeHeight + bottomDetailHeight,
       child: Container(
-        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
+        padding: EdgeInsetsDirectional.only(bottom: Screens.bottomSafeHeight),
         color: themeData.canvasColor.withOpacity(0.85),
         child: Column(
           children: <Widget>[
@@ -1272,7 +1275,10 @@ class FileAssetPickerViewerBuilderDelegate
       right: 0.0,
       height: Screens.topSafeHeight + kToolbarHeight,
       child: Container(
-        padding: EdgeInsets.only(top: Screens.topSafeHeight, right: 12.0),
+        padding: EdgeInsetsDirectional.only(
+          top: Screens.topSafeHeight,
+          end: 12.0,
+        ),
         color: themeData.canvasColor.withOpacity(0.85),
         child: Row(
           children: <Widget>[
@@ -1454,7 +1460,7 @@ class FileAssetPickerViewerBuilderDelegate
 
   Widget _appleOSSelectButton(bool isSelected, File asset) {
     return Padding(
-      padding: const EdgeInsets.only(right: 10.0),
+      padding: const EdgeInsetsDirectional.only(end: 10.0),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
