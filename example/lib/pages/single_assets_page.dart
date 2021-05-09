@@ -186,11 +186,7 @@ class _SingleAssetPageState extends State<SingleAssetPage>
 
   Widget _imageAssetWidget(AssetEntity asset) {
     return Image(
-      image: AssetEntityImageProvider(
-        asset,
-        isOriginal: false,
-        thumbSize: <int>[100, 100],
-      ),
+      image: AssetEntityImageProvider(asset, isOriginal: false),
       fit: BoxFit.cover,
     );
   }

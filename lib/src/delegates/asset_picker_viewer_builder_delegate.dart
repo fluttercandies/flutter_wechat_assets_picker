@@ -367,11 +367,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     return Positioned.fill(
       child: RepaintBoundary(
         child: ExtendedImage(
-          image: AssetEntityImageProvider(
-            asset,
-            isOriginal: previewThumbSize == null,
-            thumbSize: previewThumbSize,
-          ),
+          image: AssetEntityImageProvider(asset, isOriginal: false),
           fit: BoxFit.cover,
         ),
       ),
@@ -388,7 +384,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           Center(
             child: Icon(
               Icons.video_library,
-              color: themeData.colorScheme.surface.withOpacity(0.54),
+              color: themeData.iconTheme.color?.withOpacity(0.54),
             ),
           ),
         ],
