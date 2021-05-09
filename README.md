@@ -55,21 +55,22 @@ See [Migration Guide](guides/migration_guide.md).
 
 ## Features ✨
 
-- [x] ♻️ Fully implementable with delegate override
-- [x] 💚 99% simillar to WeChat style
-- [x] ⚡️ Adjustable performance according to parameters
-- [x] 📷 Image asset support
-  - [x] 🔬HEIC/HEIF Image type support
-- [x] 🎥 Video asset support
-- [x] 🎶 Audio asset support
-- [x] 1️⃣ Single asset mode
-- [x] 💱 i18n support
-- [x] ➕ Special item builder (prepend/append) support
-- [x] 🗂 Custom sort path delegate support
-- [x] 📝 Custom text delegate support
-- [x] ⏳ Custom filter options support ( `photo_manager` )
-- [x] 🎏 Custom theme entirely
-- [x] 💻 MacOS support
+- ♻️ Fully implementable with delegates override
+- 💚 99% simillar to WeChat style
+- ⚡️ Adjustable performance according to parameters
+- 📷 Image asset support
+  - 🔬 HEIC/HEIF Image type support
+- 🎥 Video asset support
+- 🎶 Audio asset support
+- 1️⃣ Single asset mode
+- 💱 i18n support
+  - ⏪ RTL language support
+- ➕ Special item builder (prepend/append) support
+- 🗂 Custom sort path delegate support
+- 📝 Custom text delegate support
+- ⏳ Custom filter options support ( `photo_manager` )
+- 🎏 Custom theme entirely
+- 💻 MacOS support
 
 ## Screenshots 📸
 
