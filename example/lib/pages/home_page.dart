@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget get header => Container(
-        margin: const EdgeInsets.only(top: 30.0),
+        margin: const EdgeInsetsDirectional.only(top: 30.0),
         height: 60.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -4,6 +4,7 @@
 ///
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'constants/extensions.dart';
@@ -41,6 +42,16 @@ class MyApp extends StatelessWidget {
           child: w!,
         );
       },
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        GlobalWidgetsLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const <Locale>[
+        Locale('zh'), // Chinese
+        // Locale('iw'), // Hebrew
+      ],
+      locale: const Locale('zh'),
     );
   }
 }

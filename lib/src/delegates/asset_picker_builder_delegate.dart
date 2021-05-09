@@ -155,6 +155,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   Widget gifIndicator(BuildContext context, A asset) {
     return PositionedDirectional(
       start: 0,
+      end: 0,
       bottom: 0,
       child: Container(
         padding: const EdgeInsets.all(6.0),
@@ -260,7 +261,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
         builder: (_, List<A> currentAssets, __) => GridView.builder(
           controller: gridScrollController,
           padding: isAppleOS
-              ? EdgeInsets.only(
+              ? EdgeInsetsDirectional.only(
                   top: Screens.topSafeHeight + kToolbarHeight,
                   bottom: bottomActionBarHeight,
                 )
@@ -319,9 +320,9 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     Widget child = Container(
       width: Screens.width,
       height: bottomActionBarHeight + Screens.bottomSafeHeight,
-      padding: EdgeInsets.only(
-        left: 20.0,
-        right: 20.0,
+      padding: EdgeInsetsDirectional.only(
+        start: 20.0,
+        end: 20.0,
         bottom: Screens.bottomSafeHeight,
       ),
       color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
@@ -550,7 +551,7 @@ class DefaultAssetPickerBuilderDelegate
               (isPreviewEnabled || !isSingleAssetMode)
           ? <Widget>[confirmButton(context)]
           : null,
-      actionsPadding: const EdgeInsets.only(right: 14.0),
+      actionsPadding: const EdgeInsetsDirectional.only(end: 14.0),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0.0,
     );
   }
@@ -727,7 +728,7 @@ class DefaultAssetPickerBuilderDelegate
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 4.0),
+        padding: const EdgeInsetsDirectional.only(start: 4.0),
         child: Text(
           Constants.textDelegate.durationIndicatorBuilder(
             Duration(seconds: asset.duration),
@@ -754,7 +755,7 @@ class DefaultAssetPickerBuilderDelegate
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(left: 4.0, right: 30.0),
+            padding: const EdgeInsetsDirectional.only(start: 4.0, end: 30.0),
             child: Text(
               asset.title ?? '',
               style: const TextStyle(fontSize: 16.0),
@@ -788,7 +789,7 @@ class DefaultAssetPickerBuilderDelegate
           child: Text(
             provider.isSelectedNotEmpty && !isSingleAssetMode
                 ? '${Constants.textDelegate.confirm}'
-                    '(${provider.selectedAssets.length}/${provider.maxAssets})'
+                    ' (${provider.selectedAssets.length}/${provider.maxAssets})'
                 : Constants.textDelegate.confirm,
             style: TextStyle(
               color: provider.isSelectedNotEmpty
@@ -918,7 +919,8 @@ class DefaultAssetPickerBuilderDelegate
             RequestType.audio;
     return Selector<DefaultAssetPickerProvider, bool>(
       selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
-      builder: (_, bool isSwitchingPath, Widget? w) => AnimatedPositioned(
+      builder: (_, bool isSwitchingPath, Widget? w) =>
+          AnimatedPositionedDirectional(
         duration: switchingPathDuration,
         curve: switchingPathCurve,
         top: isAppleOS
@@ -949,7 +951,7 @@ class DefaultAssetPickerBuilderDelegate
           final Map<AssetPathEntity, Uint8List?> list =
               c.watch<DefaultAssetPickerProvider>().pathEntityList;
           return ListView.separated(
-            padding: const EdgeInsets.only(top: 1.0),
+            padding: const EdgeInsetsDirectional.only(top: 1.0),
             itemCount: list.length,
             itemBuilder: (_, int index) => pathEntityWidget(
               context: c,
@@ -958,7 +960,7 @@ class DefaultAssetPickerBuilderDelegate
               isAudio: isAudio,
             ),
             separatorBuilder: (BuildContext _, int __) => Container(
-              margin: const EdgeInsets.only(left: 60.0),
+              margin: const EdgeInsetsDirectional.only(start: 60.0),
               height: 1.0,
               color: theme.canvasColor,
             ),
@@ -976,7 +978,7 @@ class DefaultAssetPickerBuilderDelegate
         child: Container(
           height: appBarItemHeight,
           constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
-          padding: const EdgeInsets.only(left: 12.0, right: 6.0),
+          padding: const EdgeInsetsDirectional.only(start: 12.0, end: 6.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
             color: theme.dividerColor,
@@ -1002,7 +1004,7 @@ class DefaultAssetPickerBuilderDelegate
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.only(left: 5.0),
+              padding: const EdgeInsetsDirectional.only(start: 5.0),
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -1081,12 +1083,15 @@ class DefaultAssetPickerBuilderDelegate
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 20.0),
+                  padding: const EdgeInsetsDirectional.only(
+                    start: 15.0,
+                    end: 20.0,
+                  ),
                   child: Row(
                     children: <Widget>[
                       Flexible(
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
+                          padding: const EdgeInsetsDirectional.only(end: 10.0),
                           child: Text(
                             pathEntity.name,
                             style: const TextStyle(fontSize: 18.0),
@@ -1170,7 +1175,7 @@ class DefaultAssetPickerBuilderDelegate
               child: Text(
                 isSelectedNotEmpty
                     ? '${Constants.textDelegate.preview}'
-                        '(${provider.selectedAssets.length})'
+                        ' (${provider.selectedAssets.length})'
                     : Constants.textDelegate.preview,
                 style: TextStyle(
                   color: isSelectedNotEmpty
@@ -1255,7 +1260,11 @@ class DefaultAssetPickerBuilderDelegate
           ),
         );
         if (isPreviewEnabled) {
-          return Positioned(top: 0.0, right: 0.0, child: selectorWidget);
+          return PositionedDirectional(
+            top: 0.0,
+            end: 0.0,
+            child: selectorWidget,
+          );
         }
         return selectorWidget;
       },
@@ -1337,6 +1346,7 @@ class DefaultAssetPickerBuilderDelegate
   Widget videoIndicator(BuildContext context, AssetEntity asset) {
     return PositionedDirectional(
       start: 0,
+      end: 0,
       bottom: 0,
       child: Container(
         width: double.maxFinite,
@@ -1353,16 +1363,19 @@ class DefaultAssetPickerBuilderDelegate
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const Icon(Icons.videocam, size: 24.0, color: Colors.white),
-            Padding(
-              padding: const EdgeInsets.only(left: 4.0),
-              child: Text(
-                Constants.textDelegate.durationIndicatorBuilder(
-                  Duration(seconds: asset.duration),
-                ),
-                style: const TextStyle(color: Colors.white, fontSize: 16.0),
-                strutStyle: const StrutStyle(
-                  forceStrutHeight: true,
-                  height: 1.4,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.only(start: 4.0),
+                child: Text(
+                  Constants.textDelegate.durationIndicatorBuilder(
+                    Duration(seconds: asset.duration),
+                  ),
+                  style: const TextStyle(color: Colors.white, fontSize: 16.0),
+                  strutStyle: const StrutStyle(
+                    forceStrutHeight: true,
+                    height: 1.4,
+                  ),
+                  maxLines: 1,
                 ),
               ),
             ),
