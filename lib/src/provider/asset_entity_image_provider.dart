@@ -14,7 +14,10 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   const AssetEntityImageProvider(
     this.entity, {
     this.scale = 1.0,
-    this.thumbSize,
+    this.thumbSize = const <int>[
+      Constants.defaultGridThumbSize,
+      Constants.defaultGridThumbSize,
+    ],
     this.isOriginal = true,
   }) : assert(
           isOriginal || thumbSize?.length == 2,
@@ -68,7 +71,18 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     assert(key == this);
     Uint8List? data;
     if (isOriginal) {
-      if (imageFileType == ImageFileType.heic) {
+      if (key.entity.type == AssetType.audio ||
+          key.entity.type == AssetType.other) {
+        throw UnsupportedError(
+          'Image data for the ${key.entity.type} is not supported.',
+        );
+      }
+      if (key.entity.type == AssetType.video) {
+        data = await key.entity.thumbDataWithSize(
+          Constants.defaultGridThumbSize,
+          Constants.defaultGridThumbSize,
+        );
+      } else if (imageFileType == ImageFileType.heic) {
         data = await (await key.entity.file)?.readAsBytes();
       } else {
         data = await key.entity.originBytes;
