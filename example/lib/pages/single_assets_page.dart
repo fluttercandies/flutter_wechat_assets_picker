@@ -7,7 +7,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 import '../constants/extensions.dart';
-import '../constants/picker_model.dart';
+import '../constants/picker_method.dart';
 import '../main.dart';
 
 class SingleAssetPage extends StatefulWidget {
@@ -27,25 +27,25 @@ class _SingleAssetPageState extends State<SingleAssetPage>
 
   ThemeData get currentTheme => context.themeData;
 
-  List<PickMethodModel> get pickMethods {
-    return <PickMethodModel>[
-      PickMethodModel.image(maxAssetsCount),
-      PickMethodModel.video(maxAssetsCount),
-      PickMethodModel.audio(maxAssetsCount),
-      PickMethodModel.camera(
+  List<PickMethod> get pickMethods {
+    return <PickMethod>[
+      PickMethod.image(maxAssetsCount),
+      PickMethod.video(maxAssetsCount),
+      PickMethod.audio(maxAssetsCount),
+      PickMethod.camera(
         maxAssetsCount: maxAssetsCount,
         handleResult: (BuildContext context, AssetEntity result) =>
             Navigator.of(context).pop(<AssetEntity>[result]),
       ),
-      PickMethodModel.common(maxAssetsCount),
-      PickMethodModel.threeItemsGrid(maxAssetsCount),
-      PickMethodModel.customFilterOptions(maxAssetsCount),
-      PickMethodModel.prependItem(maxAssetsCount),
-      PickMethodModel.noPreview(maxAssetsCount),
+      PickMethod.common(maxAssetsCount),
+      PickMethod.threeItemsGrid(maxAssetsCount),
+      PickMethod.customFilterOptions(maxAssetsCount),
+      PickMethod.prependItem(maxAssetsCount),
+      PickMethod.noPreview(maxAssetsCount),
     ];
   }
 
-  Future<void> selectAssets(PickMethodModel model) async {
+  Future<void> selectAssets(PickMethod model) async {
     final List<AssetEntity>? result = await model.method(context, assets);
     if (result != null) {
       assets = List<AssetEntity>.from(result);
@@ -65,26 +65,24 @@ class _SingleAssetPageState extends State<SingleAssetPage>
   }
 
   Widget methodItemBuilder(BuildContext _, int index) {
-    final PickMethodModel model = pickMethods[index];
+    final PickMethod model = pickMethods[index];
     return InkWell(
       onTap: () => selectAssets(model),
       child: Container(
-        height: 72.0,
         padding: const EdgeInsets.symmetric(
           horizontal: 30.0,
           vertical: 10.0,
         ),
         child: Row(
           children: <Widget>[
-            AspectRatio(
-              aspectRatio: 1.0,
-              child: Container(
-                margin: const EdgeInsets.all(2.0),
-                child: Center(
-                  child: Text(
-                    model.icon,
-                    style: const TextStyle(fontSize: 24.0),
-                  ),
+            Container(
+              margin: const EdgeInsets.all(2.0),
+              width: 48,
+              height: 48,
+              child: Center(
+                child: Text(
+                  model.icon,
+                  style: const TextStyle(fontSize: 24.0),
                 ),
               ),
             ),
@@ -101,19 +99,15 @@ class _SingleAssetPageState extends State<SingleAssetPage>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 5),
                   Text(
                     model.description,
                     style: context.themeData.textTheme.caption,
-                    maxLines: 2,
-                    overflow: TextOverflow.fade,
                   ),
                 ],
               ),
             ),
-            const Icon(
-              Icons.chevron_right,
-              color: Colors.grey,
-            ),
+            const Icon(Icons.chevron_right, color: Colors.grey),
           ],
         ),
       ),

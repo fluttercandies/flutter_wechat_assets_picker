@@ -9,7 +9,7 @@ import '../constants/extensions.dart';
 import '../constants/resource.dart';
 import '../constants/screens.dart';
 
-import 'custom_picker_page.dart';
+import '../customs/custom_picker_page.dart';
 import 'multi_assets_page.dart';
 import 'single_assets_page.dart';
 
@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                   children: <Widget>[
                     MultiAssetsPage(),
                     SingleAssetPage(),
-                    CustomPickerPage(),
+                    CustomPickersPage(),
                   ],
                 ),
               ),

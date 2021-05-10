@@ -1,37 +1,49 @@
 ///
 /// [Author] Alex (https://github.com/AlexV525)
-/// [Date] 2020-11-01 02:05
+/// [Date] 2021/5/10 16:44
 ///
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-import '../constants/extensions.dart';
-import '../constants/screens.dart';
+import '../../constants/screens.dart';
 
 const Color themeColor = Color(0xff00bc56);
 
-class CustomPickerPage extends StatefulWidget {
+const List<String> imagesExtensions = <String>[
+  'jpg',
+  'jpeg',
+  'webp',
+  'gif',
+  'bmp',
+  'wbmp',
+  'tiff',
+  'heic',
+];
+
+class DirectoryFileAssetPicker extends StatefulWidget {
+  const DirectoryFileAssetPicker({Key? key}) : super(key: key);
+
   @override
-  _CustomPickerPageState createState() => _CustomPickerPageState();
+  _DirectoryFileAssetPickerState createState() =>
+      _DirectoryFileAssetPickerState();
 }
 
-class _CustomPickerPageState extends State<CustomPickerPage>
+class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
     with AutomaticKeepAliveClientMixin {
   final List<File> fileList = <File>[];
 
   bool isDisplayingDetail = true;
 
-  ThemeData get currentTheme => context.themeData;
+  ThemeData get currentTheme => Theme.of(context);
 
   Future<void> callPicker() async {
     final FileAssetPickerProvider provider = FileAssetPickerProvider(
@@ -249,56 +261,48 @@ class _CustomPickerPageState extends State<CustomPickerPage>
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: DefaultTextStyle.merge(
-            style: const TextStyle(fontSize: 18),
-            textAlign: TextAlign.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                paddingText(
-                  'This is a custom picker built for `File`.\n'
-                  'By browsing this picker, we want you to know that '
-                  'you can build your own picker components using '
-                  'the entity\'s type you desired.',
-                ),
-                paddingText(
-                  'In this page, picker will grab files from '
-                  '`getExternalStorageDirectory`, Then check whether '
-                  'it contains images.',
-                ),
-                paddingText(
-                  'Put files into the path to see how this custom picker work.',
-                ),
-                TextButton(
-                  onPressed: callPicker,
-                  child: const Text(
-                    '🎁 Call the Picker',
-                    style: TextStyle(fontSize: 22),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Directory+File picker')),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: DefaultTextStyle.merge(
+              style: const TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  paddingText(
+                    'This is a custom picker built for `File`.\n'
+                    'By browsing this picker, we want you to know that '
+                    'you can build your own picker components using '
+                    'the entity\'s type you desired.',
                   ),
-                ),
-              ],
+                  paddingText(
+                    'In this page, picker will grab files from '
+                    '`getExternalStorageDirectory`, Then check whether '
+                    'it contains images.',
+                  ),
+                  paddingText(
+                    'Put files into the path to see how this custom picker work.',
+                  ),
+                  TextButton(
+                    onPressed: callPicker,
+                    child: const Text(
+                      '🎁 Call the Picker',
+                      style: TextStyle(fontSize: 22),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        selectedAssetsWidget,
-      ],
+          selectedAssetsWidget,
+        ],
+      ),
     );
   }
 }
-
-const List<String> imagesExtensions = <String>[
-  'jpg',
-  'jpeg',
-  'webp',
-  'gif',
-  'bmp',
-  'wbmp',
-  'tiff',
-  'heic',
-];
 
 class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   FileAssetPickerProvider({
@@ -1313,7 +1317,7 @@ class FileAssetPickerViewerBuilderDelegate
       child: Theme(
         data: themeData,
         child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: themeData.brightness.isDark
+          value: themeData.brightness == Brightness.dark
               ? SystemUiOverlayStyle.light
               : SystemUiOverlayStyle.dark,
           child: Material(

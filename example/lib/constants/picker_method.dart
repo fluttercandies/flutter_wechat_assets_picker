@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
-class PickMethodModel {
-  const PickMethodModel({
+class PickMethod {
+  const PickMethod({
     required this.icon,
     required this.name,
     required this.description,
     required this.method,
   });
 
-  factory PickMethodModel.image(int maxAssetsCount) {
-    return PickMethodModel(
+  factory PickMethod.image(int maxAssetsCount) {
+    return PickMethod(
       icon: '🖼️',
       name: 'Image picker',
       description: 'Only pick image from device.',
@@ -30,8 +30,8 @@ class PickMethodModel {
     );
   }
 
-  factory PickMethodModel.video(int maxAssetsCount) {
-    return PickMethodModel(
+  factory PickMethod.video(int maxAssetsCount) {
+    return PickMethod(
       icon: '🎞',
       name: 'Video picker',
       description: 'Only pick video from device.',
@@ -46,8 +46,8 @@ class PickMethodModel {
     );
   }
 
-  factory PickMethodModel.audio(int maxAssetsCount) {
-    return PickMethodModel(
+  factory PickMethod.audio(int maxAssetsCount) {
+    return PickMethod(
       icon: '🎶',
       name: 'Audio picker',
       description: 'Only pick audio from device.',
@@ -62,11 +62,11 @@ class PickMethodModel {
     );
   }
 
-  factory PickMethodModel.camera({
+  factory PickMethod.camera({
     required int maxAssetsCount,
     required Function(BuildContext, AssetEntity) handleResult,
   }) {
-    return PickMethodModel(
+    return PickMethod(
       icon: '📷',
       name: 'Pick from camera',
       description: 'Allow pick an asset through camera.',
@@ -99,8 +99,8 @@ class PickMethodModel {
     );
   }
 
-  factory PickMethodModel.common(int maxAssetsCount) {
-    return PickMethodModel(
+  factory PickMethod.common(int maxAssetsCount) {
+    return PickMethod(
       icon: '📹',
       name: 'Common picker',
       description: 'Pick images and videos.',
@@ -115,8 +115,8 @@ class PickMethodModel {
     );
   }
 
-  factory PickMethodModel.threeItemsGrid(int maxAssetsCount) {
-    return PickMethodModel(
+  factory PickMethod.threeItemsGrid(int maxAssetsCount) {
+    return PickMethod(
       icon: '🔲',
       name: '3 items grid',
       description: 'Picker will served as 3 items on cross axis. '
@@ -134,8 +134,8 @@ class PickMethodModel {
     );
   }
 
-  factory PickMethodModel.customFilterOptions(int maxAssetsCount) {
-    return PickMethodModel(
+  factory PickMethod.customFilterOptions(int maxAssetsCount) {
+    return PickMethod(
       icon: '⏳',
       name: 'Custom filter options',
       description: 'Add filter options for the picker.',
@@ -162,8 +162,8 @@ class PickMethodModel {
     );
   }
 
-  factory PickMethodModel.prependItem(int maxAssetsCount) {
-    return PickMethodModel(
+  factory PickMethod.prependItem(int maxAssetsCount) {
+    return PickMethod(
       icon: '➕',
       name: 'Prepend special item',
       description: 'A special item will prepend to the assets grid.',
@@ -185,8 +185,8 @@ class PickMethodModel {
     );
   }
 
-  factory PickMethodModel.noPreview(int maxAssetsCount) {
-    return PickMethodModel(
+  factory PickMethod.noPreview(int maxAssetsCount) {
+    return PickMethod(
       icon: '👁️‍🗨️',
       name: 'No preview',
       description: 'Pick assets like the WhatsApp/MegaTok pattern.',
@@ -209,7 +209,7 @@ class PickMethodModel {
   final String name;
   final String description;
   final Future<List<AssetEntity>?> Function(
-    BuildContext,
-    List<AssetEntity>,
+    BuildContext context,
+    List<AssetEntity> selectedAssets,
   ) method;
 }

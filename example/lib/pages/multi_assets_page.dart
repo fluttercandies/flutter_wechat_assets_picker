@@ -7,7 +7,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 import '../constants/extensions.dart';
-import '../constants/picker_model.dart';
+import '../constants/picker_method.dart';
 import '../main.dart';
 
 class MultiAssetsPage extends StatefulWidget {
@@ -27,21 +27,21 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
 
   ThemeData get currentTheme => context.themeData;
 
-  List<PickMethodModel> get pickMethods {
-    return <PickMethodModel>[
-      PickMethodModel.image(maxAssetsCount),
-      PickMethodModel.video(maxAssetsCount),
-      PickMethodModel.audio(maxAssetsCount),
-      PickMethodModel.camera(
+  List<PickMethod> get pickMethods {
+    return <PickMethod>[
+      PickMethod.image(maxAssetsCount),
+      PickMethod.video(maxAssetsCount),
+      PickMethod.audio(maxAssetsCount),
+      PickMethod.camera(
         maxAssetsCount: maxAssetsCount,
         handleResult: (BuildContext context, AssetEntity result) =>
             Navigator.of(context).pop(<AssetEntity>[...assets, result]),
       ),
-      PickMethodModel.common(maxAssetsCount),
-      PickMethodModel.threeItemsGrid(maxAssetsCount),
-      PickMethodModel.customFilterOptions(maxAssetsCount),
-      PickMethodModel.prependItem(maxAssetsCount),
-      PickMethodModel(
+      PickMethod.common(maxAssetsCount),
+      PickMethod.threeItemsGrid(maxAssetsCount),
+      PickMethod.customFilterOptions(maxAssetsCount),
+      PickMethod.prependItem(maxAssetsCount),
+      PickMethod(
         icon: '🎭',
         name: 'WeChat Moment',
         description: 'Pick assets like the WeChat Moment pattern.',
@@ -53,8 +53,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
           );
         },
       ),
-      PickMethodModel.noPreview(maxAssetsCount),
-      PickMethodModel(
+      PickMethod.noPreview(maxAssetsCount),
+      PickMethod(
         icon: '🎚',
         name: 'Custom image preview thumb size',
         description: 'You can reduce the thumb size to get faster load speed.',
@@ -72,7 +72,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
     ];
   }
 
-  Future<void> selectAssets(PickMethodModel model) async {
+  Future<void> selectAssets(PickMethod model) async {
     final List<AssetEntity>? result = await model.method(context, assets);
     if (result != null) {
       assets = List<AssetEntity>.from(result);
@@ -92,26 +92,24 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
   }
 
   Widget methodItemBuilder(BuildContext _, int index) {
-    final PickMethodModel model = pickMethods[index];
+    final PickMethod model = pickMethods[index];
     return InkWell(
       onTap: () => selectAssets(model),
       child: Container(
-        height: 72.0,
         padding: const EdgeInsets.symmetric(
           horizontal: 30.0,
           vertical: 10.0,
         ),
         child: Row(
           children: <Widget>[
-            AspectRatio(
-              aspectRatio: 1.0,
-              child: Container(
-                margin: const EdgeInsets.all(2.0),
-                child: Center(
-                  child: Text(
-                    model.icon,
-                    style: const TextStyle(fontSize: 24.0),
-                  ),
+            Container(
+              margin: const EdgeInsets.all(2.0),
+              width: 48,
+              height: 48,
+              child: Center(
+                child: Text(
+                  model.icon,
+                  style: const TextStyle(fontSize: 24.0),
                 ),
               ),
             ),
@@ -130,35 +128,33 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(height: 5),
                   Text(
                     model.description,
                     style: context.themeData.textTheme.caption,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
-            const Icon(
-              Icons.chevron_right,
-              color: Colors.grey,
-            ),
+            const Icon(Icons.chevron_right, color: Colors.grey),
           ],
         ),
       ),
     );
   }
 
-  Widget get methodListView => Expanded(
-        child: Padding(
-          padding: const EdgeInsetsDirectional.only(bottom: 10.0),
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            itemCount: pickMethods.length,
-            itemBuilder: methodItemBuilder,
-          ),
+  Widget get methodListView {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsetsDirectional.only(bottom: 10.0),
+        child: ListView.builder(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          itemCount: pickMethods.length,
+          itemBuilder: methodItemBuilder,
         ),
-      );
+      ),
+    );
+  }
 
   Widget _assetWidgetBuilder(AssetEntity asset) {
     Widget widget;
