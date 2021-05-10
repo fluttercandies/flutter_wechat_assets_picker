@@ -23,6 +23,9 @@ To take a photo or a video for assets, please check the detailed usage in the ex
 
 All UI designs are based on WeChat 7.x, and it will be updated following the WeChat update in anytime.
 
+*Note:* You can file PRs to create your own implementation if you found your implementation might be useful for others.
+See [Contribute custom implementations](example/lib/customs/CONTRIBUTING.md) for more details.
+
 ## Category 🗂
 
 * [Migration Guide](#migration-guide-)
