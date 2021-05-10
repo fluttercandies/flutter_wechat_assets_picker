@@ -111,7 +111,7 @@ class AssetPicker<A, P> extends StatelessWidget {
           context,
           rootNavigator: useRootNavigator,
         ).push<List<AssetEntity>>(
-          SlidePageTransitionBuilder<List<AssetEntity>>(
+          AssetPickerPageRoute<List<AssetEntity>>(
             builder: picker,
             transitionCurve: routeCurve,
             transitionDuration: routeDuration,

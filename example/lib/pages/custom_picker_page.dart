@@ -47,7 +47,7 @@ class _CustomPickerPageState extends State<CustomPickerPage>
       context,
       rootNavigator: true,
     ).push<List<File>>(
-      SlidePageTransitionBuilder<List<File>>(
+      AssetPickerPageRoute<List<File>>(
         builder: picker,
         transitionCurve: Curves.easeIn,
         transitionDuration: const Duration(milliseconds: 300),
@@ -1507,64 +1507,6 @@ class FileAssetPickerViewerBuilderDelegate
         }
       },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    );
-  }
-}
-
-class SlidePageTransitionBuilder<T> extends PageRoute<T> {
-  SlidePageTransitionBuilder({
-    required this.builder,
-    this.transitionCurve = Curves.easeIn,
-    this.transitionDuration = const Duration(milliseconds: 500),
-  });
-
-  final Widget builder;
-
-  final Curve transitionCurve;
-
-  @override
-  final Duration transitionDuration;
-
-  @override
-  final bool opaque = true;
-
-  @override
-  final bool barrierDismissible = false;
-
-  @override
-  final bool maintainState = true;
-
-  @override
-  Color? get barrierColor => null;
-
-  @override
-  String? get barrierLabel => null;
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return builder;
-  }
-
-  @override
-  Widget buildTransitions(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(0, 1),
-        end: Offset.zero,
-      ).animate(CurvedAnimation(
-        curve: transitionCurve,
-        parent: animation,
-      )),
-      child: child,
     );
   }
 }
