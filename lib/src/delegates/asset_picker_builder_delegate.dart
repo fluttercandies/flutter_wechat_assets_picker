@@ -636,7 +636,9 @@ class DefaultAssetPickerBuilderDelegate
     List<AssetEntity> currentAssets,
   ) {
     final AssetPathEntity? currentPathEntity =
-        context.read<DefaultAssetPickerProvider>().currentPathEntity;
+        context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
+      (DefaultAssetPickerProvider p) => p.currentPathEntity,
+    );
 
     int currentIndex;
     switch (specialItemPosition) {
@@ -658,10 +660,11 @@ class DefaultAssetPickerBuilderDelegate
       return const SizedBox.shrink();
     }
 
+    final int _length = currentAssets.length;
     if (currentPathEntity.isAll &&
         specialItemPosition != SpecialItemPosition.none) {
       if ((index == 0 && specialItemPosition == SpecialItemPosition.prepend) ||
-          (index == currentAssets.length &&
+          (index == _length &&
               specialItemPosition == SpecialItemPosition.append)) {
         return specialItemBuilder!(context);
       }
@@ -671,8 +674,10 @@ class DefaultAssetPickerBuilderDelegate
       currentIndex = index;
     }
 
-    if (index == currentAssets.length - gridCount * 3 &&
-        context.read<DefaultAssetPickerProvider>().hasMoreToLoad) {
+    if (index == _length - gridCount * 3 &&
+        context.select<DefaultAssetPickerProvider, bool>(
+          (DefaultAssetPickerProvider p) => p.hasMoreToLoad,
+        )) {
       provider.loadMoreAssets();
     }
 
@@ -705,7 +710,9 @@ class DefaultAssetPickerBuilderDelegate
     List<AssetEntity> currentAssets,
   ) {
     final AssetPathEntity? currentPathEntity =
-        context.read<DefaultAssetPickerProvider>().currentPathEntity;
+        context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
+      (DefaultAssetPickerProvider p) => p.currentPathEntity,
+    );
 
     if (currentPathEntity == null &&
         specialItemPosition != SpecialItemPosition.none) {
@@ -714,20 +721,17 @@ class DefaultAssetPickerBuilderDelegate
 
     /// Return actual length if current path is all.
     /// 如果当前目录是全部内容，则返回实际的内容数量。
+    final int _length = currentAssets.length;
     if (!currentPathEntity!.isAll) {
-      return currentAssets.length;
+      return _length;
     }
-    int length;
     switch (specialItemPosition) {
       case SpecialItemPosition.none:
-        length = currentAssets.length;
-        break;
+        return _length;
       case SpecialItemPosition.prepend:
       case SpecialItemPosition.append:
-        length = currentAssets.length + 1;
-        break;
+        return _length + 1;
     }
-    return length;
   }
 
   @override
@@ -893,10 +897,7 @@ class DefaultAssetPickerBuilderDelegate
         return IgnorePointer(
           ignoring: !isSwitchingPath,
           child: GestureDetector(
-            onTap: () {
-              context.read<DefaultAssetPickerProvider>().isSwitchingPath =
-                  false;
-            },
+            onTap: () => provider.isSwitchingPath = false,
             child: AnimatedOpacity(
               duration: switchingPathDuration,
               opacity: isSwitchingPath ? 1.0 : 0.0,
@@ -913,7 +914,9 @@ class DefaultAssetPickerBuilderDelegate
     final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
     final double maxHeight = Screens.height * 0.825;
     final bool isAudio =
-        context.read<DefaultAssetPickerProvider>().requestType ==
+        context.select<DefaultAssetPickerProvider, RequestType>(
+              (DefaultAssetPickerProvider p) => p.requestType,
+            ) ==
             RequestType.audio;
     return Selector<DefaultAssetPickerProvider, bool>(
       selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
@@ -945,25 +948,27 @@ class DefaultAssetPickerBuilderDelegate
       ),
       child: Selector<DefaultAssetPickerProvider, int>(
         selector: (_, DefaultAssetPickerProvider p) => p.validPathThumbCount,
-        builder: (BuildContext c, int count, __) {
-          final Map<AssetPathEntity, Uint8List?> list =
-              c.watch<DefaultAssetPickerProvider>().pathEntityList;
-          return ListView.separated(
-            padding: const EdgeInsetsDirectional.only(top: 1.0),
-            itemCount: list.length,
-            itemBuilder: (_, int index) => pathEntityWidget(
-              context: c,
-              list: list,
-              index: index,
-              isAudio: isAudio,
-            ),
-            separatorBuilder: (BuildContext _, int __) => Container(
-              margin: const EdgeInsetsDirectional.only(start: 60.0),
-              height: 1.0,
-              color: theme.canvasColor,
-            ),
-          );
-        },
+        builder: (_, int count, __) => Selector<DefaultAssetPickerProvider,
+            Map<AssetPathEntity, Uint8List?>>(
+          selector: (_, DefaultAssetPickerProvider p) => p.pathEntityList,
+          builder: (BuildContext c, Map<AssetPathEntity, Uint8List?> list, __) {
+            return ListView.separated(
+              padding: const EdgeInsetsDirectional.only(top: 1.0),
+              itemCount: list.length,
+              itemBuilder: (_, int index) => pathEntityWidget(
+                context: c,
+                list: list,
+                index: index,
+                isAudio: isAudio,
+              ),
+              separatorBuilder: (BuildContext _, int __) => Container(
+                margin: const EdgeInsetsDirectional.only(start: 60.0),
+                height: 1.0,
+                color: theme.canvasColor,
+              ),
+            );
+          },
+        ),
       ),
     );
   }
