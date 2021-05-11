@@ -258,6 +258,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
         selector: (_, AssetPickerProvider<A, P> provider) =>
             provider.currentAssets,
         builder: (_, List<A> currentAssets, __) => CustomScrollView(
+          controller: gridScrollController,
           slivers: <Widget>[
             if (isAppleOS)
               SliverPadding(
