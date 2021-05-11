@@ -53,7 +53,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
     super.dispose();
   }
 
-  /// Whether there're any assets on the devices.
+  /// Whether there are assets on the devices.
   /// 设备上是否有资源文件
   bool _isAssetsEmpty = false;
 
@@ -67,7 +67,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Whether there're any assets that can be displayed.
+  /// Whether there are any assets can be displayed.
   /// 是否有资源可供显示
   bool _hasAssetsToDisplay = false;
 
@@ -81,7 +81,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Whether there're more assets waiting for load.
+  /// Whether more assets are waiting for a load.
   /// 是否还有更多资源可以加载
   bool get hasMoreToLoad => _currentAssets.length < _totalAssetsCount;
 

@@ -792,7 +792,7 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   /// It'll pop with [AssetPickerProvider.selectedAssets]
-  /// when there're any assets chosen.
+  /// when there are any assets were chosen.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   @override
   Widget confirmButton(BuildContext context) {
