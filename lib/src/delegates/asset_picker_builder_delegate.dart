@@ -268,9 +268,9 @@ abstract class AssetPickerBuilderDelegate<A, P> {
               ),
             SliverGrid(
               delegate: SliverChildBuilderDelegate(
-                (BuildContext c, int index) => SizedBox(
+                (_, int index) => Builder(
                   key: ValueKey<int>(index),
-                  child: assetGridItemBuilder(
+                  builder: (BuildContext c) => assetGridItemBuilder(
                     c,
                     index,
                     currentAssets,
@@ -913,11 +913,8 @@ class DefaultAssetPickerBuilderDelegate
   Widget pathEntityListWidget(BuildContext context) {
     final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
     final double maxHeight = Screens.height * 0.825;
-    final bool isAudio =
-        context.select<DefaultAssetPickerProvider, RequestType>(
-              (DefaultAssetPickerProvider p) => p.requestType,
-            ) ==
-            RequestType.audio;
+    final bool isAudio = (provider as DefaultAssetPickerProvider).requestType ==
+        RequestType.audio;
     return Selector<DefaultAssetPickerProvider, bool>(
       selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
       builder: (_, bool isSwitchingPath, Widget? w) =>
