@@ -23,8 +23,7 @@ class AssetEntityGridItemBuilder extends StatefulWidget {
   AssetEntityGridItemWidgetState createState() => AssetEntityGridItemWidgetState();
 }
 
-class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder>
-    with AutomaticKeepAliveClientMixin {
+class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
   AssetEntityImageProvider get imageProvider => widget.image;
 
   Widget? child;
@@ -66,12 +65,8 @@ class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder>
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   @mustCallSuper
   Widget build(BuildContext context) {
-    super.build(context);
     child ??= newChild;
     return child!;
   }
