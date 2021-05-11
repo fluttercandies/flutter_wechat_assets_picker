@@ -155,7 +155,6 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   Widget gifIndicator(BuildContext context, A asset) {
     return PositionedDirectional(
       start: 0,
-      end: 0,
       bottom: 0,
       child: Container(
         padding: const EdgeInsets.all(6.0),
