@@ -9,9 +9,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:extended_image/extended_image.dart';
 
 import '../constants/constants.dart';
+import '../widget/builder/asset_grid_item_builder.dart';
 
 typedef IndicatorBuilder = Widget Function(
   BuildContext context,
@@ -821,46 +821,28 @@ class DefaultAssetPickerBuilderDelegate
       isOriginal: false,
       thumbSize: <int>[gridThumbSize, gridThumbSize],
     );
-    return RepaintBoundary(
-      child: ExtendedImage(
-        image: imageProvider,
-        fit: BoxFit.cover,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader = const SizedBox.shrink();
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = const ColoredBox(color: Color(0x10ffffff));
-              break;
-            case LoadState.completed:
-              SpecialImageType? type;
-              if (imageProvider.imageFileType == ImageFileType.gif) {
-                type = SpecialImageType.gif;
-              } else if (imageProvider.imageFileType == ImageFileType.heic) {
-                type = SpecialImageType.heic;
-              }
-              final AssetEntity asset = provider.currentAssets.elementAt(index);
-              loader = Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  Positioned.fill(
-                    child: RepaintBoundary(child: state.completedWidget),
-                  ),
-                  selectedBackdrop(context, index, asset),
-                  if (type == SpecialImageType.gif) // 如果为GIF则显示标识
-                    gifIndicator(context, asset),
-                  if (asset.type == AssetType.video) // 如果为视频则显示标识
-                    videoIndicator(context, asset),
-                ],
-              );
-              loader = FadeImageBuilder(child: loader);
-              break;
-            case LoadState.failed:
-              loader = failedItemBuilder(context);
-              break;
-          }
-          return loader;
-        },
-      ),
+    SpecialImageType? type;
+    if (imageProvider.imageFileType == ImageFileType.gif) {
+      type = SpecialImageType.gif;
+    } else if (imageProvider.imageFileType == ImageFileType.heic) {
+      type = SpecialImageType.heic;
+    }
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: RepaintBoundary(
+            child: AssetGridItemBuilder(
+              image: imageProvider,
+              failedItemBuilder: failedItemBuilder,
+            ),
+          ),
+        ),
+        selectedBackdrop(context, index, asset),
+        if (type == SpecialImageType.gif) // 如果为GIF则显示标识
+          gifIndicator(context, asset),
+        if (asset.type == AssetType.video) // 如果为视频则显示标识
+          videoIndicator(context, asset),
+      ],
     );
   }
 
