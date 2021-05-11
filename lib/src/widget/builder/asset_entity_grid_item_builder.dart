@@ -9,8 +9,8 @@ import '../../constants/constants.dart';
 import '../../provider/asset_entity_image_provider.dart';
 import 'fade_image_builder.dart';
 
-class AssetGridItemBuilder extends StatefulWidget {
-  const AssetGridItemBuilder({
+class AssetEntityGridItemBuilder extends StatefulWidget {
+  const AssetEntityGridItemBuilder({
     Key? key,
     required this.image,
     required this.failedItemBuilder,
@@ -20,10 +20,10 @@ class AssetGridItemBuilder extends StatefulWidget {
   final WidgetBuilder failedItemBuilder;
 
   @override
-  AssetGridItemWidgetState createState() => AssetGridItemWidgetState();
+  AssetEntityGridItemWidgetState createState() => AssetEntityGridItemWidgetState();
 }
 
-class AssetGridItemWidgetState extends State<AssetGridItemBuilder>
+class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder>
     with AutomaticKeepAliveClientMixin {
   AssetEntityImageProvider get imageProvider => widget.image;
 

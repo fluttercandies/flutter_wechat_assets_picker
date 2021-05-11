@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
-import '../widget/builder/asset_grid_item_builder.dart';
+import '../widget/builder/asset_entity_grid_item_builder.dart';
 
 typedef IndicatorBuilder = Widget Function(
   BuildContext context,
@@ -831,7 +831,7 @@ class DefaultAssetPickerBuilderDelegate
       children: <Widget>[
         Positioned.fill(
           child: RepaintBoundary(
-            child: AssetGridItemBuilder(
+            child: AssetEntityGridItemBuilder(
               image: imageProvider,
               failedItemBuilder: failedItemBuilder,
             ),
