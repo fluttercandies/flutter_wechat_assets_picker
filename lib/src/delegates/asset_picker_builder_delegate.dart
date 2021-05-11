@@ -9,9 +9,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:extended_image/extended_image.dart';
 
 import '../constants/constants.dart';
+import '../widget/builder/asset_entity_grid_item_builder.dart';
 
 typedef IndicatorBuilder = Widget Function(
   BuildContext context,
@@ -257,25 +257,41 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       child: Selector<AssetPickerProvider<A, P>, List<A>>(
         selector: (_, AssetPickerProvider<A, P> provider) =>
             provider.currentAssets,
-        builder: (_, List<A> currentAssets, __) => GridView.builder(
-          controller: gridScrollController,
-          padding: isAppleOS
-              ? EdgeInsetsDirectional.only(
+        builder: (_, List<A> currentAssets, __) => CustomScrollView(
+          slivers: <Widget>[
+            if (isAppleOS)
+              SliverPadding(
+                padding: EdgeInsetsDirectional.only(
                   top: Screens.topSafeHeight + kToolbarHeight,
+                ),
+              ),
+            SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (_, int index) => Builder(
+                  key: ValueKey<int>(index),
+                  builder: (BuildContext c) => assetGridItemBuilder(
+                    c,
+                    index,
+                    currentAssets,
+                  ),
+                ),
+                childCount: assetsGridItemCount(_, currentAssets),
+                findChildIndexCallback: (Key? key) =>
+                    (key as ValueKey<int>?)?.value,
+              ),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: gridCount,
+                mainAxisSpacing: itemSpacing,
+                crossAxisSpacing: itemSpacing,
+              ),
+            ),
+            if (isAppleOS)
+              SliverPadding(
+                padding: EdgeInsetsDirectional.only(
                   bottom: bottomActionBarHeight,
-                )
-              : EdgeInsets.zero,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: gridCount,
-            mainAxisSpacing: itemSpacing,
-            crossAxisSpacing: itemSpacing,
-          ),
-          itemCount: assetsGridItemCount(_, currentAssets),
-          itemBuilder: (BuildContext c, int index) => assetGridItemBuilder(
-            c,
-            index,
-            currentAssets,
-          ),
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -619,7 +635,9 @@ class DefaultAssetPickerBuilderDelegate
     List<AssetEntity> currentAssets,
   ) {
     final AssetPathEntity? currentPathEntity =
-        context.read<DefaultAssetPickerProvider>().currentPathEntity;
+        context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
+      (DefaultAssetPickerProvider p) => p.currentPathEntity,
+    );
 
     int currentIndex;
     switch (specialItemPosition) {
@@ -641,10 +659,11 @@ class DefaultAssetPickerBuilderDelegate
       return const SizedBox.shrink();
     }
 
+    final int _length = currentAssets.length;
     if (currentPathEntity.isAll &&
         specialItemPosition != SpecialItemPosition.none) {
       if ((index == 0 && specialItemPosition == SpecialItemPosition.prepend) ||
-          (index == currentAssets.length &&
+          (index == _length &&
               specialItemPosition == SpecialItemPosition.append)) {
         return specialItemBuilder!(context);
       }
@@ -654,8 +673,10 @@ class DefaultAssetPickerBuilderDelegate
       currentIndex = index;
     }
 
-    if (index == currentAssets.length - gridCount * 3 &&
-        context.read<DefaultAssetPickerProvider>().hasMoreToLoad) {
+    if (index == _length - gridCount * 3 &&
+        context.select<DefaultAssetPickerProvider, bool>(
+          (DefaultAssetPickerProvider p) => p.hasMoreToLoad,
+        )) {
       provider.loadMoreAssets();
     }
 
@@ -688,7 +709,9 @@ class DefaultAssetPickerBuilderDelegate
     List<AssetEntity> currentAssets,
   ) {
     final AssetPathEntity? currentPathEntity =
-        context.read<DefaultAssetPickerProvider>().currentPathEntity;
+        context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
+      (DefaultAssetPickerProvider p) => p.currentPathEntity,
+    );
 
     if (currentPathEntity == null &&
         specialItemPosition != SpecialItemPosition.none) {
@@ -697,20 +720,17 @@ class DefaultAssetPickerBuilderDelegate
 
     /// Return actual length if current path is all.
     /// 如果当前目录是全部内容，则返回实际的内容数量。
+    final int _length = currentAssets.length;
     if (!currentPathEntity!.isAll) {
-      return currentAssets.length;
+      return _length;
     }
-    int length;
     switch (specialItemPosition) {
       case SpecialItemPosition.none:
-        length = currentAssets.length;
-        break;
+        return _length;
       case SpecialItemPosition.prepend:
       case SpecialItemPosition.append:
-        length = currentAssets.length + 1;
-        break;
+        return _length + 1;
     }
-    return length;
   }
 
   @override
@@ -771,7 +791,7 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   /// It'll pop with [AssetPickerProvider.selectedAssets]
-  /// when there're any assets chosen.
+  /// when there are any assets were chosen.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   @override
   Widget confirmButton(BuildContext context) {
@@ -820,46 +840,28 @@ class DefaultAssetPickerBuilderDelegate
       isOriginal: false,
       thumbSize: <int>[gridThumbSize, gridThumbSize],
     );
-    return RepaintBoundary(
-      child: ExtendedImage(
-        image: imageProvider,
-        fit: BoxFit.cover,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader = const SizedBox.shrink();
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = const ColoredBox(color: Color(0x10ffffff));
-              break;
-            case LoadState.completed:
-              SpecialImageType? type;
-              if (imageProvider.imageFileType == ImageFileType.gif) {
-                type = SpecialImageType.gif;
-              } else if (imageProvider.imageFileType == ImageFileType.heic) {
-                type = SpecialImageType.heic;
-              }
-              final AssetEntity asset = provider.currentAssets.elementAt(index);
-              loader = Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  Positioned.fill(
-                    child: RepaintBoundary(child: state.completedWidget),
-                  ),
-                  selectedBackdrop(context, index, asset),
-                  if (type == SpecialImageType.gif) // 如果为GIF则显示标识
-                    gifIndicator(context, asset),
-                  if (asset.type == AssetType.video) // 如果为视频则显示标识
-                    videoIndicator(context, asset),
-                ],
-              );
-              loader = FadeImageBuilder(child: loader);
-              break;
-            case LoadState.failed:
-              loader = failedItemBuilder(context);
-              break;
-          }
-          return loader;
-        },
-      ),
+    SpecialImageType? type;
+    if (imageProvider.imageFileType == ImageFileType.gif) {
+      type = SpecialImageType.gif;
+    } else if (imageProvider.imageFileType == ImageFileType.heic) {
+      type = SpecialImageType.heic;
+    }
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: RepaintBoundary(
+            child: AssetEntityGridItemBuilder(
+              image: imageProvider,
+              failedItemBuilder: failedItemBuilder,
+            ),
+          ),
+        ),
+        selectedBackdrop(context, index, asset),
+        if (type == SpecialImageType.gif) // 如果为GIF则显示标识
+          gifIndicator(context, asset),
+        if (asset.type == AssetType.video) // 如果为视频则显示标识
+          videoIndicator(context, asset),
+      ],
     );
   }
 
@@ -894,10 +896,7 @@ class DefaultAssetPickerBuilderDelegate
         return IgnorePointer(
           ignoring: !isSwitchingPath,
           child: GestureDetector(
-            onTap: () {
-              context.read<DefaultAssetPickerProvider>().isSwitchingPath =
-                  false;
-            },
+            onTap: () => provider.isSwitchingPath = false,
             child: AnimatedOpacity(
               duration: switchingPathDuration,
               opacity: isSwitchingPath ? 1.0 : 0.0,
@@ -913,9 +912,8 @@ class DefaultAssetPickerBuilderDelegate
   Widget pathEntityListWidget(BuildContext context) {
     final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
     final double maxHeight = Screens.height * 0.825;
-    final bool isAudio =
-        context.read<DefaultAssetPickerProvider>().requestType ==
-            RequestType.audio;
+    final bool isAudio = (provider as DefaultAssetPickerProvider).requestType ==
+        RequestType.audio;
     return Selector<DefaultAssetPickerProvider, bool>(
       selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
       builder: (_, bool isSwitchingPath, Widget? w) =>
@@ -946,25 +944,27 @@ class DefaultAssetPickerBuilderDelegate
       ),
       child: Selector<DefaultAssetPickerProvider, int>(
         selector: (_, DefaultAssetPickerProvider p) => p.validPathThumbCount,
-        builder: (BuildContext c, int count, __) {
-          final Map<AssetPathEntity, Uint8List?> list =
-              c.watch<DefaultAssetPickerProvider>().pathEntityList;
-          return ListView.separated(
-            padding: const EdgeInsetsDirectional.only(top: 1.0),
-            itemCount: list.length,
-            itemBuilder: (_, int index) => pathEntityWidget(
-              context: c,
-              list: list,
-              index: index,
-              isAudio: isAudio,
-            ),
-            separatorBuilder: (BuildContext _, int __) => Container(
-              margin: const EdgeInsetsDirectional.only(start: 60.0),
-              height: 1.0,
-              color: theme.canvasColor,
-            ),
-          );
-        },
+        builder: (_, int count, __) => Selector<DefaultAssetPickerProvider,
+            Map<AssetPathEntity, Uint8List?>>(
+          selector: (_, DefaultAssetPickerProvider p) => p.pathEntityList,
+          builder: (BuildContext c, Map<AssetPathEntity, Uint8List?> list, __) {
+            return ListView.separated(
+              padding: const EdgeInsetsDirectional.only(top: 1.0),
+              itemCount: list.length,
+              itemBuilder: (_, int index) => pathEntityWidget(
+                context: c,
+                list: list,
+                index: index,
+                isAudio: isAudio,
+              ),
+              separatorBuilder: (BuildContext _, int __) => Container(
+                margin: const EdgeInsetsDirectional.only(start: 60.0),
+                height: 1.0,
+                color: theme.canvasColor,
+              ),
+            );
+          },
+        ),
       ),
     );
   }

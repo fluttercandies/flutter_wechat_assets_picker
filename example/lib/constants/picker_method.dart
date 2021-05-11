@@ -178,7 +178,9 @@ class PickMethod {
           requestType: RequestType.common,
           specialItemPosition: SpecialItemPosition.prepend,
           specialItemBuilder: (BuildContext context) {
-            return const Center(child: Text('Custom Widget'));
+            return const Center(
+              child: Text('Custom Widget', textAlign: TextAlign.center),
+            );
           },
         );
       },

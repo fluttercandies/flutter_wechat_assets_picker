@@ -579,8 +579,8 @@ class DefaultAssetPickerViewerBuilderDelegate
     );
   }
 
-  /// It'll pop with [AssetPickerProvider.selectedAssets] when there're any
-  /// assets chosen. The [PhotoSelector] will recognize and pop too.
+  /// It'll pop with [AssetPickerProvider.selectedAssets] when there are
+  /// any assets were chosen. Then, the assets picker will pop too.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   /// 资源选择器将识别并一同返回。
   @override
