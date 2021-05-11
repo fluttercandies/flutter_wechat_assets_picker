@@ -258,25 +258,41 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       child: Selector<AssetPickerProvider<A, P>, List<A>>(
         selector: (_, AssetPickerProvider<A, P> provider) =>
             provider.currentAssets,
-        builder: (_, List<A> currentAssets, __) => GridView.builder(
-          controller: gridScrollController,
-          padding: isAppleOS
-              ? EdgeInsetsDirectional.only(
+        builder: (_, List<A> currentAssets, __) => CustomScrollView(
+          slivers: <Widget>[
+            if (isAppleOS)
+              SliverPadding(
+                padding: EdgeInsetsDirectional.only(
                   top: Screens.topSafeHeight + kToolbarHeight,
+                ),
+              ),
+            SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext c, int index) => SizedBox(
+                  key: ValueKey<int>(index),
+                  child: assetGridItemBuilder(
+                    c,
+                    index,
+                    currentAssets,
+                  ),
+                ),
+                childCount: assetsGridItemCount(_, currentAssets),
+                findChildIndexCallback: (Key? key) =>
+                    (key as ValueKey<int>?)?.value,
+              ),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: gridCount,
+                mainAxisSpacing: itemSpacing,
+                crossAxisSpacing: itemSpacing,
+              ),
+            ),
+            if (isAppleOS)
+              SliverPadding(
+                padding: EdgeInsetsDirectional.only(
                   bottom: bottomActionBarHeight,
-                )
-              : EdgeInsets.zero,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: gridCount,
-            mainAxisSpacing: itemSpacing,
-            crossAxisSpacing: itemSpacing,
-          ),
-          itemCount: assetsGridItemCount(_, currentAssets),
-          itemBuilder: (BuildContext c, int index) => assetGridItemBuilder(
-            c,
-            index,
-            currentAssets,
-          ),
+                ),
+              ),
+          ],
         ),
       ),
     );
