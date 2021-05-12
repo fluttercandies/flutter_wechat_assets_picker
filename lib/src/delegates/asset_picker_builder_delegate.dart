@@ -252,6 +252,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// The main grid view builder for assets.
   /// 主要的资源查看网格部件
   Widget assetsGridBuilder(BuildContext context) {
+    final int hashCode = provider.currentPathEntity?.hashCode ?? 0;
     return ColoredBox(
       color: theme.canvasColor,
       child: Selector<AssetPickerProvider<A, P>, List<A>>(
@@ -269,7 +270,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
             SliverGrid(
               delegate: SliverChildBuilderDelegate(
                 (_, int index) => Builder(
-                  key: ValueKey<int>(index),
+                  key: ValueKey<int>(index + hashCode),
                   builder: (BuildContext c) => assetGridItemBuilder(
                     c,
                     index,
@@ -277,8 +278,8 @@ abstract class AssetPickerBuilderDelegate<A, P> {
                   ),
                 ),
                 childCount: assetsGridItemCount(_, currentAssets),
-                findChildIndexCallback: (Key? key) =>
-                    (key as ValueKey<int>?)?.value,
+                findChildIndexCallback: (Key key) =>
+                    (key as ValueKey<int>).value - hashCode,
               ),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: gridCount,
