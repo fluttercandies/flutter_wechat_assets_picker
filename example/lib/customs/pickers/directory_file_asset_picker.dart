@@ -557,6 +557,7 @@ class FileAssetPickerBuilder
       asset,
     );
     return Stack(
+      key: ValueKey<String>(asset.path),
       fit: StackFit.expand,
       children: <Widget>[
         Positioned.fill(child: builder),
@@ -1043,6 +1044,11 @@ class FileAssetPickerBuilder
   @override
   Widget videoIndicator(BuildContext context, File asset) {
     return const SizedBox.shrink();
+  }
+
+  @override
+  int findChildIndexBuilder(String id, List<File> currentAssets) {
+    return currentAssets.indexWhere((File file) => file.path == id);
   }
 }
 

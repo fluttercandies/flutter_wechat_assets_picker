@@ -252,7 +252,6 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// The main grid view builder for assets.
   /// 主要的资源查看网格部件
   Widget assetsGridBuilder(BuildContext context) {
-    final int hashCode = provider.currentPathEntity?.hashCode ?? 0;
     return ColoredBox(
       color: theme.canvasColor,
       child: Selector<AssetPickerProvider<A, P>, List<A>>(
@@ -270,7 +269,6 @@ abstract class AssetPickerBuilderDelegate<A, P> {
             SliverGrid(
               delegate: SliverChildBuilderDelegate(
                 (_, int index) => Builder(
-                  key: ValueKey<int>(index + hashCode),
                   builder: (BuildContext c) => assetGridItemBuilder(
                     c,
                     index,
@@ -278,8 +276,15 @@ abstract class AssetPickerBuilderDelegate<A, P> {
                   ),
                 ),
                 childCount: assetsGridItemCount(_, currentAssets),
-                findChildIndexCallback: (Key key) =>
-                    (key as ValueKey<int>).value - hashCode,
+                findChildIndexCallback: (Key? key) {
+                  if (key is ValueKey<String>) {
+                    return findChildIndexBuilder(
+                      key.value,
+                      currentAssets,
+                    );
+                  }
+                  return null;
+                },
               ),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: gridCount,
@@ -298,6 +303,10 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       ),
     );
   }
+
+  /// Indicates how would the grid found a reusable [RenderObject] through [id].
+  /// 为 Grid 布局指示如何找到可复用的 [RenderObject]。
+  int findChildIndexBuilder(String id, List<A> currentAssets);
 
   /// The function which return items count for the assets' grid.
   /// 为资源列表提供内容数量计算的方法
@@ -697,12 +706,22 @@ class DefaultAssetPickerBuilderDelegate
         break;
     }
     return Stack(
+      key: ValueKey<String>(asset.id),
       children: <Widget>[
         builder,
         if (!isWeChatMoment || asset.type != AssetType.video)
           selectIndicator(context, asset),
       ],
     );
+  }
+
+  @override
+  int findChildIndexBuilder(String id, List<AssetEntity> currentAssets) {
+    int index = currentAssets.indexWhere((AssetEntity e) => e.id == id);
+    if (specialItemPosition == SpecialItemPosition.prepend) {
+      index += 1;
+    }
+    return index;
   }
 
   @override
