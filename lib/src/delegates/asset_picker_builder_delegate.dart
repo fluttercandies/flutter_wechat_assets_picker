@@ -261,9 +261,9 @@ abstract class AssetPickerBuilderDelegate<A, P> {
           controller: gridScrollController,
           slivers: <Widget>[
             if (isAppleOS)
-              SliverPadding(
-                padding: EdgeInsetsDirectional.only(
-                  top: Screens.topSafeHeight + kToolbarHeight,
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: Screens.topSafeHeight + kToolbarHeight,
                 ),
               ),
             SliverGrid(
@@ -293,9 +293,9 @@ abstract class AssetPickerBuilderDelegate<A, P> {
               ),
             ),
             if (isAppleOS)
-              SliverPadding(
-                padding: EdgeInsetsDirectional.only(
-                  bottom: bottomActionBarHeight,
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: Screens.bottomSafeHeight + bottomActionBarHeight,
                 ),
               ),
           ],
