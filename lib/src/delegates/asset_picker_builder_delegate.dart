@@ -306,7 +306,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
 
   /// Indicates how would the grid found a reusable [RenderObject] through [id].
   /// 为 Grid 布局指示如何找到可复用的 [RenderObject]。
-  int findChildIndexBuilder(String id, List<A> currentAssets);
+  int? findChildIndexBuilder(String id, List<A> currentAssets) => null;
 
   /// The function which return items count for the assets' grid.
   /// 为资源列表提供内容数量计算的方法
