@@ -1020,7 +1020,9 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   bool get tristate => _tristate;
   bool _tristate;
   set tristate(bool value) {
-    if (value == _tristate) return;
+    if (value == _tristate) {
+      return;
+    }
     _tristate = value;
     markNeedsSemanticsUpdate();
   }
@@ -1031,7 +1033,9 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   Color get activeColor => _activeColor;
   Color _activeColor;
   set activeColor(Color value) {
-    if (value == _activeColor) return;
+    if (value == _activeColor) {
+      return;
+    }
     _activeColor = value;
     markNeedsPaint();
   }
