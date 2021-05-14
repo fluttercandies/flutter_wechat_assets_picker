@@ -194,3 +194,47 @@ class HebrewTextDelegate implements AssetsPickerTextDelegate {
   String durationIndicatorBuilder(Duration duration) =>
       AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
+
+/// [AssetsPickerTextDelegate] implements with Russian.
+/// Локализация на русский язык.
+class RussianTextDelegate implements AssetsPickerTextDelegate {
+  factory RussianTextDelegate() => _instance;
+
+  RussianTextDelegate._internal();
+
+  static final RussianTextDelegate _instance = RussianTextDelegate._internal();
+
+  @override
+  String confirm = 'Готово';
+
+  @override
+  String cancel = 'Отмена';
+
+  @override
+  String edit = 'Изменить';
+
+  @override
+  String gifIndicator = 'GIF';
+
+  @override
+  String heicNotSupported = 'Формат HEIC не поддерживается.';
+
+  @override
+  String loadFailed = 'Ошибка при загрузке';
+
+  @override
+  String original = 'Исходное';
+
+  @override
+  String preview = 'Предпросмотр';
+
+  @override
+  String select = 'Выбрать';
+
+  @override
+  String unSupportedAssetType = 'Неподдерживаемый формат ресурса.';
+
+  @override
+  String durationIndicatorBuilder(Duration duration) =>
+      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+}
