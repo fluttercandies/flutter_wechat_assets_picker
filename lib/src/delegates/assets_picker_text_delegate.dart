@@ -194,3 +194,47 @@ class HebrewTextDelegate implements AssetsPickerTextDelegate {
   String durationIndicatorBuilder(Duration duration) =>
       AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
+
+/// [AssetsPickerTextDelegate] implementiert mit der deutschen Übersetzung.
+/// Deutsche Textimplementierung.
+class GermanTextDelegate implements AssetsPickerTextDelegate {
+  factory GermanTextDelegate() => _instance;
+
+  GermanTextDelegate._internal();
+
+  static final GermanTextDelegate _instance = GermanTextDelegate._internal();
+
+  @override
+  String confirm = 'Bestätigen';
+
+  @override
+  String cancel = 'Abbrechen';
+
+  @override
+  String edit = 'Bearbeiten';
+
+  @override
+  String gifIndicator = 'GIF';
+
+  @override
+  String heicNotSupported = 'HEIC Format ist nicht unterstützt.';
+
+  @override
+  String loadFailed = 'Ladevorgang ist fehlgeschlagen';
+
+  @override
+  String original = 'Ursprung';
+
+  @override
+  String preview = 'Vorschau';
+
+  @override
+  String select = 'Auswählen';
+
+  @override
+  String unSupportedAssetType = 'HEIC Format ist nicht unterstützt.';
+
+  @override
+  String durationIndicatorBuilder(Duration duration) =>
+      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+}
