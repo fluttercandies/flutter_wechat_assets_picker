@@ -197,8 +197,8 @@ class HebrewTextDelegate implements AssetsPickerTextDelegate {
 
 
 
-/// [AssetsPickerTextDelegate] implements with German.
-/// 英文文字实现
+/// [AssetsPickerTextDelegate] implementiert mit der deutschen Übersetzung.
+/// Deutsche Textimplementierung
 class GermanTextDelegate implements AssetsPickerTextDelegate {
   factory GermanTextDelegate() => _instance;
 
@@ -207,7 +207,7 @@ class GermanTextDelegate implements AssetsPickerTextDelegate {
   static final GermanTextDelegate _instance = GermanTextDelegate._internal();
 
   @override
-  String confirm = 'Bestätige';
+  String confirm = 'Bestätigen';
 
   @override
   String cancel = 'Abbrechen';
