@@ -23,6 +23,12 @@ import 'package:flutter/src/material/theme.dart';
 // ignore: implementation_imports
 import 'package:flutter/src/material/theme_data.dart';
 
+// Duration of the animation that moves the toggle from one state to another.
+const Duration _kToggleDuration = Duration(milliseconds: 200);
+
+// Duration of the fade animation for the reaction when focus and hover occur.
+const Duration _kReactionFadeDuration = Duration(milliseconds: 50);
+
 /// A material design checkbox.
 ///
 /// The checkbox itself does not maintain any state. Instead, when the state of
@@ -773,16 +779,6 @@ class _RenderCheckbox extends RenderToggleable {
     }
   }
 }
-
-// Copyright 2014 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-// Duration of the animation that moves the toggle from one state to another.
-const Duration _kToggleDuration = Duration(milliseconds: 200);
-
-// Duration of the fade animation for the reaction when focus and hover occur.
-const Duration _kReactionFadeDuration = Duration(milliseconds: 50);
 
 /// A base class for material style toggleable controls with toggle animations.
 ///
