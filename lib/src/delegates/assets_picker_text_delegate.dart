@@ -195,10 +195,8 @@ class HebrewTextDelegate implements AssetsPickerTextDelegate {
       AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
 
-
-
 /// [AssetsPickerTextDelegate] implementiert mit der deutschen Übersetzung.
-/// Deutsche Textimplementierung
+/// Deutsche Textimplementierung.
 class GermanTextDelegate implements AssetsPickerTextDelegate {
   factory GermanTextDelegate() => _instance;
 
