@@ -28,7 +28,7 @@ See [Contribute custom implementations](example/lib/customs/CONTRIBUTING.md) for
 
 ## Category 🗂
 
-* [Migration Guide](#migration-guide-)
+* [Migration Guide](#migration-guide-%EF%B8%8F)
 * [Features](#features-)
 * [Screenshots](#screenshots-)
 * [Preparing for use](#preparing-for-use-)
@@ -217,9 +217,9 @@ AssetPicker.unregisterObserve(); // Unregister callback.
 ### Customize with your own type or UI
 
 `AssetPickerBuilderDelegate`, `AssetPickerViewerBuilderDelegate`, `AssetPickerProvider` and
-`AssetPickerViewerProvider` are all exposed and overridable. You can extends them and use your own
-type with generic type <A: Asset, P: Path>, then implement abstract methods. See the `Custom` page
-in the example which implements a picker with <File, Directory>.
+`AssetPickerViewerProvider` are all exposed and overridable. You can extend them and use your own
+type with generic type `<A: Asset, P: Path>`, then implement abstract methods. See the `Custom` page
+in the example which has an implementation based on `<File, Directory>` types.
 
 ## Classes Introduction 💭
 

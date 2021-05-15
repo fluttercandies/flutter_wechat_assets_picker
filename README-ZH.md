@@ -24,7 +24,7 @@ Language: [English](README.md) | 中文简体
 
 ## 目录 🗂
 
-* [迁移指南](#迁移指南-)
+* [迁移指南](#迁移指南-%EF%B8%8F)
 * [特性](#特性-)
 * [截图](#截图-)
 * [准备工作](#准备工作-)
@@ -211,12 +211,12 @@ AssetPicker.registerObserve(); // 注册回调
 AssetPicker.unregisterObserve(); // 取消注册回调
 ```
 
-### Customize with your own type or UI
+### 自定义类型或 UI
 
 `AssetPickerBuilderDelegate`、`AssetPickerViewerBuilderDelegate`、`AssetPickerProvider` 及
-`AssetPickerViewerProvider` 均已暴露且可重载。使用者可以使用自定义的泛型类型 <A: 资源, P: 路径>，配合继承与
-重载，实现对应抽象类和类中的方法。更多用法请查看示例中的 `Custom` 页面，该页面实现了以 <File, Directory> 为
-类型基础的选择器。
+`AssetPickerViewerProvider` 均已暴露且可重载。使用者可以使用自定义的泛型类型 `<A: 资源, P: 路径>`，
+配合继承与重载，实现对应抽象类和类中的方法。更多用法请查看示例中的 `Custom` 页面，该页面包含一个以
+`<File, Directory>` 为类型基础的选择器。
 
 ## 类介绍 💭
 
