@@ -108,7 +108,6 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
 }
 
 /// [AssetsPickerTextDelegate] implements with English.
-/// 英文文字实现
 class EnglishTextDelegate implements AssetsPickerTextDelegate {
   factory EnglishTextDelegate() => _instance;
 
