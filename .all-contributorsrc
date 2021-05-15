@@ -93,6 +93,15 @@
         "bug",
         "translation"
       ]
+    },
+    {
+      "login": "greymag",
+      "name": "greymag",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1502131?v=4",
+      "profile": "https://github.com/greymag",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
