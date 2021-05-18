@@ -756,7 +756,7 @@ class DefaultAssetPickerViewerBuilderDelegate
       child: Theme(
         data: themeData,
         child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: appBarTheme.systemOverlayStyle ??
+          value: themeData.appBarTheme.systemOverlayStyle ??
               (themeData.brightness.isDark
                   ? SystemUiOverlayStyle.light
                   : SystemUiOverlayStyle.dark),
