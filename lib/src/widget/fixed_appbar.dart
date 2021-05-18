@@ -146,7 +146,7 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-    final themeData = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: themeData.appBarTheme.systemOverlayStyle ??
           ((themeData.appBarTheme.brightness ?? Brightness.dark).isDark
