@@ -93,7 +93,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// the brightness of the theme data.
   /// 根据主题返回状态栏的明暗样式
   SystemUiOverlayStyle get overlayStyle =>
-      theme.appBarTheme?.systemOverlayStyle ??
+      theme.appBarTheme.systemOverlayStyle ??
       (theme.brightness == Brightness.light
           ? SystemUiOverlayStyle.dark
           : SystemUiOverlayStyle.light);
