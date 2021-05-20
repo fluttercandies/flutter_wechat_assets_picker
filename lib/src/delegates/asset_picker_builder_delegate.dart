@@ -92,9 +92,11 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// Return a system ui overlay style according to
   /// the brightness of the theme data.
   /// 根据主题返回状态栏的明暗样式
-  SystemUiOverlayStyle get overlayStyle => theme.brightness == Brightness.light
-      ? SystemUiOverlayStyle.dark
-      : SystemUiOverlayStyle.light;
+  SystemUiOverlayStyle get overlayStyle =>
+      theme.appBarTheme.systemOverlayStyle ??
+      (theme.effectiveBrightness.isDark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark);
 
   /// Whether the current platform is Apple OS.
   /// 当前平台是否苹果系列系统 (iOS & MacOS)
