@@ -17,3 +17,7 @@ extension BrightnessExtension on Brightness {
 extension ColorExtension on Color {
   bool get isTransparent => this == Colors.transparent;
 }
+
+extension ThemeDataExtension on ThemeData {
+  Brightness get effectiveBrightness => appBarTheme.brightness ?? brightness;
+}
