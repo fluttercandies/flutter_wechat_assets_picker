@@ -20,7 +20,8 @@ class AssetEntityGridItemBuilder extends StatefulWidget {
   final WidgetBuilder failedItemBuilder;
 
   @override
-  AssetEntityGridItemWidgetState createState() => AssetEntityGridItemWidgetState();
+  AssetEntityGridItemWidgetState createState() =>
+      AssetEntityGridItemWidgetState();
 }
 
 class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {

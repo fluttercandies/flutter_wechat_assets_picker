@@ -525,7 +525,7 @@ class _CheckboxRenderObjectWidget extends LeafRenderObjectWidget {
     required this.hovering,
     required this.shape,
     required this.side,
-  })  : assert(tristate || value != null),
+  })   : assert(tristate || value != null),
         super(key: key);
 
   final bool? value;
@@ -614,7 +614,7 @@ class _RenderCheckbox extends RenderToggleable {
     required this.shape,
     required this.side,
     required TickerProvider vsync,
-  })  : _oldValue = value,
+  })   : _oldValue = value,
         super(
           value: value,
           tristate: tristate,
