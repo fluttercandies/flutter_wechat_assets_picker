@@ -102,6 +102,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "NaikSoftware",
+      "name": "Nickolay Savchenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4218994?v=4",
+      "profile": "https://github.com/NaikSoftware",
+      "contributions": [
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
