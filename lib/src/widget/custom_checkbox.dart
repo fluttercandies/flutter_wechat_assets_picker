@@ -525,7 +525,7 @@ class _CheckboxRenderObjectWidget extends LeafRenderObjectWidget {
     required this.hovering,
     required this.shape,
     required this.side,
-  })   : assert(tristate || value != null),
+  })  : assert(tristate || value != null),
         super(key: key);
 
   final bool? value;
@@ -614,7 +614,7 @@ class _RenderCheckbox extends RenderToggleable {
     required this.shape,
     required this.side,
     required TickerProvider vsync,
-  })   : _oldValue = value,
+  })  : _oldValue = value,
         super(
           value: value,
           tristate: tristate,
@@ -930,6 +930,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// True if this toggleable has the input focus.
   bool get hasFocus => _hasFocus;
   bool _hasFocus;
+
   set hasFocus(bool value) {
     if (value == _hasFocus) {
       return;
@@ -946,6 +947,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// True if this toggleable is being hovered over by a pointer.
   bool get hovering => _hovering;
   bool _hovering;
+
   set hovering(bool value) {
     if (value == _hovering) {
       return;
@@ -962,6 +964,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// The [TickerProvider] for the [AnimationController]s that run the animations.
   TickerProvider get vsync => _vsync;
   TickerProvider _vsync;
+
   set vsync(TickerProvider value) {
     if (value == _vsync) {
       return;
@@ -982,6 +985,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// the new value.
   bool? get value => _value;
   bool? _value;
+
   set value(bool? value) {
     assert(tristate || value != null);
     if (value == _value) {
@@ -1015,6 +1019,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// considered to be in its third or "indeterminate" state.
   bool get tristate => _tristate;
   bool _tristate;
+
   set tristate(bool value) {
     if (value == _tristate) {
       return;
@@ -1028,6 +1033,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// For example, a checkbox should use this color when checked.
   Color get activeColor => _activeColor;
   Color _activeColor;
+
   set activeColor(Color value) {
     if (value == _activeColor) {
       return;
@@ -1041,6 +1047,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// For example, a checkbox should use this color when unchecked.
   Color get inactiveColor => _inactiveColor;
   Color _inactiveColor;
+
   set inactiveColor(Color value) {
     if (value == _inactiveColor) {
       return;
@@ -1057,6 +1064,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// Defaults to the [activeColor] at alpha [kRadialReactionAlpha].
   Color get hoverColor => _hoverColor;
   Color _hoverColor;
+
   set hoverColor(Color value) {
     if (value == _hoverColor) {
       return;
@@ -1073,6 +1081,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// Defaults to the [activeColor] at alpha [kRadialReactionAlpha].
   Color get focusColor => _focusColor;
   Color _focusColor;
+
   set focusColor(Color value) {
     if (value == _focusColor) {
       return;
@@ -1090,6 +1099,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// Defaults to the [activeColor] at alpha [kRadialReactionAlpha].
   Color? get reactionColor => _reactionColor;
   Color? _reactionColor;
+
   set reactionColor(Color? value) {
     if (value == _reactionColor) {
       return;
@@ -1107,6 +1117,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// Defaults to the [activeColor] at alpha [kRadialReactionAlpha].
   Color? get inactiveReactionColor => _inactiveReactionColor;
   Color? _inactiveReactionColor;
+
   set inactiveReactionColor(Color? value) {
     if (value == _inactiveReactionColor) {
       return;
@@ -1118,6 +1129,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// The splash radius for the radial reaction.
   double get splashRadius => _splashRadius;
   double _splashRadius;
+
   set splashRadius(double value) {
     if (value == _splashRadius) {
       return;
@@ -1137,6 +1149,7 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   /// displayed using a grey color and its value cannot be changed.
   ValueChanged<bool?>? get onChanged => _onChanged;
   ValueChanged<bool?>? _onChanged;
+
   set onChanged(ValueChanged<bool?>? value) {
     if (value == _onChanged) {
       return;
