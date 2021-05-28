@@ -42,7 +42,7 @@ Language: [English](README.md) | 中文简体
 * [类介绍](#类介绍-)
   * [`AssetEntity`](#assetentity)
 * [常见问题](#常见问题-)
-  * [`xxx` 版本获取冲突 (例如 `dartx`)](#xxx-版本获取冲突-例如-dartx)
+  * [编译时报错 `Unresolved reference: R`](#编译时报错-unresolved-reference-r)
   * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合)
   * [如何更改 'Recent' 或其他路径的名称或属性？](#如何更改-recent-或其他路径的名称或属性)
   * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
@@ -308,21 +308,19 @@ Future<AssetEntity> refreshProperties() async;
 
 ## 常见问题 ❔
 
-### `xxx` 版本获取冲突 (例如 `dartx`)
+### 编译时报错 `Unresolved reference: R`
 
-`dartx` 或其他依赖可能因为某些原因使用了与你的项目不同的版本。如果你遇到了与下面内容类似的错误：:
+```groovy
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerDeleteManager.kt: (116, 36): Unresolved reference: R
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerDeleteManager.kt: (119, 36): Unresolved reference: createTrashRequest
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerPlugin.kt: (341, 84): Unresolved reference: R
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\utils\Android30DbUtils.kt: (34, 34): Unresolved reference: R
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\utils\IDBUtils.kt: (27, 67): Unresolved reference: R
 
+FAILURE: Build failed with an exception.
 ```
-Because dartx >=0.2.0 <0.5.0 depends on collection >=1.14.11 <1.15.0 and every version of flutter from sdk depends on collection 1.15.0-nullsafety, dartx >=0.2.0 <0.5.0 is incompatible with flutter from sdk.
-So, because wechat_assets_picker_demo depends on both flutter any from sdk and dartx ^0.4.2, version solving failed.
-```
 
-将以下代码添加至你的 `pubspec.yaml`：
-
-```yaml
-dependency_overrides:
-  dartx: ^0.4.2
-```
+请执行 `flutter clean`。
 
 ### 如何获取资源的路径以进行上传或编辑等操作的整合？
 

@@ -45,8 +45,8 @@ See [Contribute custom implementations](example/lib/customs/CONTRIBUTING.md) for
   * [Customize with your own type or UI](#customize-with-your-own-type-or-ui)
 * [Classes Introduction](#classes-introduction-)
   * [`AssetEntity`](#assetentity)
-* [Frequent asked question](#frequent-asked-question-)
-  * [Version resolve conflict with `xxx` (e.g. `dartx`)](#version-resolve-conflict-with-xxx-eg-dartx)
+* [Frequently asked question](#frequently-asked-question-)
+  * [Build failed with `Unresolved reference: R`](#build-failed-with-unresolved-reference-r)
   * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
   * [How can I change the name of "Recent" or other entities name/properties?](#how-can-i-change-the-name-of-recent-or-other-entities-nameproperties)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
@@ -309,23 +309,21 @@ Future<String> getMediaUrl();
 Future<AssetEntity> refreshProperties() async;
 ```
 
-## Frequent asked question ❔
+## Frequently asked question ❔
 
-### Version resolve conflict with `xxx` (e.g. `dartx`)
+### Build failed with `Unresolved reference: R`
 
-For some reasons `dartx` or other packages may require a different version than yours. If you're facing this issue, and the error looks like:
+```groovy
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerDeleteManager.kt: (116, 36): Unresolved reference: R
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerDeleteManager.kt: (119, 36): Unresolved reference: createTrashRequest
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerPlugin.kt: (341, 84): Unresolved reference: R
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\utils\Android30DbUtils.kt: (34, 34): Unresolved reference: R
+e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\utils\IDBUtils.kt: (27, 67): Unresolved reference: R
 
+FAILURE: Build failed with an exception.
 ```
-Because dartx >=0.2.0 <0.5.0 depends on collection >=1.14.11 <1.15.0 and every version of flutter from sdk depends on collection 1.15.0-nullsafety, dartx >=0.2.0 <0.5.0 is incompatible with flutter from sdk.
-So, because wechat_assets_picker_demo depends on both flutter any from sdk and dartx ^0.4.2, version solving failed.
-```
 
-Please add the code below to make it work.
-
-```yaml
-dependency_overrides:
-  dartx: ^0.4.2
-```
+Run `flutter clean` first.
 
 ### How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?
 
