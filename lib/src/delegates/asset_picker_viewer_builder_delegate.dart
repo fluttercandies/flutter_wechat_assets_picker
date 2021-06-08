@@ -595,9 +595,14 @@ class DefaultAssetPickerViewerBuilderDelegate
             'Viewer provider must not be null'
             'when the special type is not WeChat moment.',
           );
+          // Check whether any videos in selected assets.
+          final bool _hasVideos = selectedAssets?.any(
+                (AssetEntity e) => e.type == AssetType.video,
+              ) ??
+              false;
           return MaterialButton(
             minWidth: () {
-              if (isWeChatMoment) {
+              if (isWeChatMoment && _hasVideos) {
                 return 48.0;
               }
               return provider!.isSelectedNotEmpty ? 48.0 : 20.0;
@@ -610,7 +615,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             ),
             child: Text(
               () {
-                if (isWeChatMoment) {
+                if (isWeChatMoment && _hasVideos) {
                   return Constants.textDelegate.confirm;
                 }
                 if (provider!.isSelectedNotEmpty) {
@@ -628,7 +633,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               ),
             ),
             onPressed: () {
-              if (isWeChatMoment) {
+              if (isWeChatMoment && _hasVideos) {
                 Navigator.of(context).pop(<AssetEntity>[currentAsset]);
                 return;
               }
