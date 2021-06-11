@@ -19,8 +19,7 @@ class AssetPicker<A, P> extends StatelessWidget {
 
   /// Static method to push with the navigator.
   /// 跳转至选择器的静态方法
-  static Future<List<AssetEntity>?> pickAssets(
-    BuildContext context, {
+  static Future<List<AssetEntity>?> pickAssets(BuildContext context, {
     List<AssetEntity>? selectedAssets,
     int maxAssets = 9,
     int pageSize = 80,
@@ -67,14 +66,18 @@ class AssetPicker<A, P> extends StatelessWidget {
       requestType = RequestType.common;
     }
     if ((specialItemBuilder == null &&
-            specialItemPosition != SpecialItemPosition.none) ||
+        specialItemPosition != SpecialItemPosition.none) ||
         (specialItemBuilder != null &&
             specialItemPosition == SpecialItemPosition.none)) {
       throw ArgumentError('Custom item didn\'t set properly.');
     }
 
     try {
-      final bool isPermissionGranted = await PhotoManager.requestPermission();
+      final bool isPermissionGranted =
+          (await PhotoManager.requestPermissionExtend() ==
+              PermissionState.authorized) ||
+              (await PhotoManager.requestPermissionExtend() ==
+                  PermissionState.limited);
       if (isPermissionGranted) {
         final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
           maxAssets: maxAssets,
@@ -87,7 +90,7 @@ class AssetPicker<A, P> extends StatelessWidget {
           routeDuration: routeDuration,
         );
         final Widget picker =
-            ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+        ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
           value: provider,
           child: AssetPicker<AssetEntity, AssetPathEntity>(
             key: Constants.pickerKey,
