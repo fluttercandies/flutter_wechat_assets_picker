@@ -70,12 +70,12 @@ class AssetPicker<A, P> extends StatelessWidget {
             specialItemPosition != SpecialItemPosition.none) ||
         (specialItemBuilder != null &&
             specialItemPosition == SpecialItemPosition.none)) {
-      throw ArgumentError('Custom item didn\'t set properly.');
+      throw ArgumentError('Custom item did not set properly.');
     }
 
     try {
-      final bool isPermissionGranted = await PhotoManager.requestPermission();
-      if (isPermissionGranted) {
+      final PermissionState _ps = await PhotoManager.requestPermissionExtend();
+      if (_ps == PermissionState.authorized || _ps == PermissionState.limited) {
         final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
           maxAssets: maxAssets,
           pageSize: pageSize,
