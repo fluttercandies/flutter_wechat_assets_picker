@@ -118,9 +118,8 @@ class AssetPicker<A, P> extends StatelessWidget {
           ),
         );
         return result;
-      } else {
-        return null;
       }
+      return null;
     } catch (e) {
       realDebugPrint('Error when calling assets picker: $e');
       return null;

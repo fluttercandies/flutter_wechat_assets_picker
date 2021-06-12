@@ -227,9 +227,8 @@ abstract class AssetPickerBuilderDelegate<A, P> {
           }
           if (isAssetsEmpty) {
             return const Text('Nothing here.');
-          } else {
-            return w!;
           }
+          return w!;
         },
         child: PlatformProgressIndicator(
           color: theme.iconTheme.color,
@@ -397,12 +396,11 @@ abstract class AssetPickerBuilderDelegate<A, P> {
               ),
             ),
           );
-        } else {
-          return IconButton(
-            onPressed: Navigator.of(context).maybePop,
-            icon: const Icon(Icons.close),
-          );
         }
+        return IconButton(
+          onPressed: Navigator.of(context).maybePop,
+          icon: const Icon(Icons.close),
+        );
       }(),
     );
   }
@@ -896,12 +894,11 @@ class DefaultAssetPickerBuilderDelegate
         builder: (_, bool isAssetsEmpty, __) {
           if (isAssetsEmpty) {
             return const Text('Nothing here.');
-          } else {
-            return PlatformProgressIndicator(
-              color: theme.iconTheme.color,
-              size: Screens.width / gridCount / 3,
-            );
           }
+          return PlatformProgressIndicator(
+            color: theme.iconTheme.color,
+            size: Screens.width / gridCount / 3,
+          );
         },
       ),
     );
@@ -1081,11 +1078,8 @@ class DefaultAssetPickerBuilderDelegate
       // 但通过 `File` 读取的文件对象仍然存在，使得返回的数据为空。
       if (data != null) {
         return Image.memory(data, fit: BoxFit.cover);
-      } else {
-        return ColoredBox(
-          color: theme.colorScheme.primary.withOpacity(0.12),
-        );
       }
+      return ColoredBox(color: theme.colorScheme.primary.withOpacity(0.12));
     }
 
     return Material(
@@ -1139,14 +1133,13 @@ class DefaultAssetPickerBuilderDelegate
                 selector: (_, DefaultAssetPickerProvider p) =>
                     p.currentPathEntity,
                 builder: (_, AssetPathEntity? currentPathEntity, __) {
-                  if (currentPathEntity != pathEntity) {
-                    return const SizedBox.shrink();
-                  } else {
+                  if (currentPathEntity == pathEntity) {
                     return AspectRatio(
                       aspectRatio: 1.0,
                       child: Icon(Icons.check, color: themeColor, size: 26.0),
                     );
                   }
+                  return const SizedBox.shrink();
                 },
               ),
             ],
@@ -1259,14 +1252,14 @@ class DefaultAssetPickerBuilderDelegate
           onTap: () {
             if (selected) {
               provider.unSelectAsset(asset);
-            } else {
-              if (isSingleAssetMode) {
-                provider.selectedAssets.clear();
-              }
-              provider.selectAsset(asset);
-              if (isSingleAssetMode && !isPreviewEnabled) {
-                Navigator.of(context).pop(provider.selectedAssets);
-              }
+              return;
+            }
+            if (isSingleAssetMode) {
+              provider.selectedAssets.clear();
+            }
+            provider.selectAsset(asset);
+            if (isSingleAssetMode && !isPreviewEnabled) {
+              Navigator.of(context).pop(provider.selectedAssets);
             }
           },
           child: Container(

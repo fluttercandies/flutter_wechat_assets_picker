@@ -639,12 +639,12 @@ class DefaultAssetPickerViewerBuilderDelegate
               }
               if (provider!.isSelectedNotEmpty) {
                 Navigator.of(context).pop(provider.currentlySelectedAssets);
-              } else {
-                selectAsset(currentAsset);
-                Navigator.of(context).pop(
-                  selectedAssets ?? <AssetEntity>[currentAsset],
-                );
+                return;
               }
+              selectAsset(currentAsset);
+              Navigator.of(context).pop(
+                selectedAssets ?? <AssetEntity>[currentAsset],
+              );
             },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           );
@@ -663,9 +663,9 @@ class DefaultAssetPickerViewerBuilderDelegate
         onTap: () {
           if (isSelected) {
             unSelectAsset(asset);
-          } else {
-            selectAsset(asset);
+            return;
           }
+          selectAsset(asset);
         },
         child: AnimatedContainer(
           duration: kThemeAnimationDuration,
@@ -704,9 +704,9 @@ class DefaultAssetPickerViewerBuilderDelegate
       onChanged: (bool? value) {
         if (isSelected) {
           unSelectAsset(asset);
-        } else {
-          selectAsset(asset);
+          return;
         }
+        selectAsset(asset);
       },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
@@ -737,9 +737,8 @@ class DefaultAssetPickerViewerBuilderDelegate
                       currentlySelectedAssets.contains(asset);
                   if (isAppleOS) {
                     return _appleOSSelectButton(isSelected, asset);
-                  } else {
-                    return _androidSelectButton(isSelected, asset);
                   }
+                  return _androidSelectButton(isSelected, asset);
                 },
               ),
             );

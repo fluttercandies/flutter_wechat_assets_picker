@@ -355,12 +355,11 @@ class DefaultAssetPickerProvider
             .toList();
     if (assets.isNotEmpty && currentAssets.contains(assets[0])) {
       return;
-    } else {
-      final List<AssetEntity> tempList = <AssetEntity>[];
-      tempList.addAll(_currentAssets);
-      tempList.addAll(assets);
-      currentAssets = tempList;
     }
+    final List<AssetEntity> tempList = <AssetEntity>[];
+    tempList.addAll(_currentAssets);
+    tempList.addAll(assets);
+    currentAssets = tempList;
   }
 
   @override
