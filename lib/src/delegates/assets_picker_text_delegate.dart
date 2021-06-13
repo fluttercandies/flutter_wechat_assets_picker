@@ -281,3 +281,48 @@ class RussianTextDelegate implements AssetsPickerTextDelegate {
   String durationIndicatorBuilder(Duration duration) =>
       AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
+
+/// [AssetsPickerTextDelegate] implements with Japanese.
+/// 日本語の TextDelegate
+class JapaneseTextDelegate implements AssetsPickerTextDelegate {
+  factory JapaneseTextDelegate() => _instance;
+
+  JapaneseTextDelegate._internal();
+
+  static final JapaneseTextDelegate _instance =
+      JapaneseTextDelegate._internal();
+
+  @override
+  String confirm = '決定';
+
+  @override
+  String cancel = 'キャンセル';
+
+  @override
+  String edit = '編集';
+
+  @override
+  String gifIndicator = 'GIF';
+
+  @override
+  String heicNotSupported = 'HEIC フォーマットはサポートしていません。';
+
+  @override
+  String loadFailed = '読み込みに失敗しました。';
+
+  @override
+  String original = '元の画像';
+
+  @override
+  String preview = 'プレビュー';
+
+  @override
+  String select = '選択';
+
+  @override
+  String unSupportedAssetType = 'HEIC フォーマットはサポートしていません。';
+
+  @override
+  String durationIndicatorBuilder(Duration duration) =>
+      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+}
