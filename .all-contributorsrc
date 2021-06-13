@@ -111,6 +111,15 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "KosukeSaigusa",
+      "name": "Kosuke Saigusa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13669049?v=4",
+      "profile": "https://github.com/KosukeSaigusa",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
