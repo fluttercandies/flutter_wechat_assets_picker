@@ -282,8 +282,8 @@ class RussianTextDelegate implements AssetsPickerTextDelegate {
       AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
 
-/// [AssetsPickerTextDelegate] implements with Russian.
-/// Локализация на русский язык.
+/// [AssetsPickerTextDelegate] implements with Japanese.
+/// 日本語の TextDelegate
 class JapaneseTextDelegate implements AssetsPickerTextDelegate {
   factory JapaneseTextDelegate() => _instance;
 
