@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 5.5.6
+
+- Add Japanese language text delegate. (Thanks to @KosukeSaigusa)
+- Fix video judge condition with WeChat Moment mode.
+- Fix wrong position for the confirm button on iOS with WeChat Moment mode.
+
 ## 5.5.5
 
 - Migrate permissions check to the new API in `photo_manager`.
