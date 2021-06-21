@@ -263,6 +263,13 @@ class DefaultAssetPickerViewerBuilderDelegate
   bool get isWeChatMoment =>
       specialPickerType == SpecialPickerType.wechatMoment;
 
+  /// Whether there are videos in preview/selected assets.
+  /// 当前正在预览或已选的资源是否有视频
+  bool get hasVideo =>
+      previewAssets.any((AssetEntity e) => e.type == AssetType.video) ||
+      (selectedAssets?.any((AssetEntity e) => e.type == AssetType.video) ??
+          false);
+
   @override
   void initStateAndTicker(
     AssetPickerViewerState<AssetEntity, AssetPathEntity> s,
@@ -595,14 +602,9 @@ class DefaultAssetPickerViewerBuilderDelegate
             'Viewer provider must not be null'
             'when the special type is not WeChat moment.',
           );
-          // Check whether any videos in selected assets.
-          final bool _hasVideos = selectedAssets?.any(
-                (AssetEntity e) => e.type == AssetType.video,
-              ) ??
-              false;
           return MaterialButton(
             minWidth: () {
-              if (isWeChatMoment && _hasVideos) {
+              if (isWeChatMoment && hasVideo) {
                 return 48.0;
               }
               return provider!.isSelectedNotEmpty ? 48.0 : 20.0;
@@ -615,7 +617,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             ),
             child: Text(
               () {
-                if (isWeChatMoment && _hasVideos) {
+                if (isWeChatMoment && hasVideo) {
                   return Constants.textDelegate.confirm;
                 }
                 if (provider!.isSelectedNotEmpty) {
@@ -633,7 +635,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               ),
             ),
             onPressed: () {
-              if (isWeChatMoment && _hasVideos) {
+              if (isWeChatMoment && hasVideo) {
                 Navigator.of(context).pop(<AssetEntity>[currentAsset]);
                 return;
               }
@@ -784,7 +786,8 @@ class DefaultAssetPickerViewerBuilderDelegate
                   ),
                 ),
                 appBar(context),
-                if (selectedAssets != null) bottomDetailBuilder(context),
+                if (selectedAssets != null || (isWeChatMoment && hasVideo))
+                  bottomDetailBuilder(context),
               ],
             ),
           ),
