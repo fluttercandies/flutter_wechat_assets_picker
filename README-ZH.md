@@ -47,6 +47,7 @@ Language: [English](README.md) | 中文简体
   * [如何更改 'Recent' 或其他路径的名称或属性？](#如何更改-recent-或其他路径的名称或属性)
   * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
   * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
+  * [禁用媒体位置权限](#禁用媒体位置权限)
 
 ## 迁移指南 ♻️
 

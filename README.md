@@ -51,6 +51,7 @@ See [Contribute custom implementations](example/lib/customs/CONTRIBUTING.md) for
   * [How can I change the name of "Recent" or other entities name/properties?](#how-can-i-change-the-name-of-recent-or-other-entities-nameproperties)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
+  * [Disable `ACCESS_MEDIA_LOCATION` permission](#disable-access_media_location-permission)
 
 ## Migration Guide ♻️
 
