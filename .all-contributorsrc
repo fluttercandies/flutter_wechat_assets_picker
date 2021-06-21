@@ -120,6 +120,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "Jon-Millent",
+      "name": "三闻书店",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17584565?v=4",
+      "profile": "https://github.com/Jon-Millent",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
