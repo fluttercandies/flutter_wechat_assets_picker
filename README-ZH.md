@@ -388,9 +388,11 @@ W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an
 
 `Glide` 通过注解来保证单例，防止单例或版本之间的冲突，而因为`photo_manager`使用了`Glide`提供部分图片功能，所以使用它的项目必须实现自己的`AppGlideModule`。 请移步[Android](#android)部分了解如何实现。
 
-### 删除媒体位置权限
-Android默认包含`ACCESS_MEDIA_LOCATION`权限。
-这个权限是在 Android Q 中引入的。如果你的应用不需要这个权限，你需要在你的应用中的 Android manifest 中添加以下节点。
+### 禁用媒体位置权限
+Android 将默认包含 `ACCESS_MEDIA_LOCATION` 权限。
+这个权限是在 Android Q 中引入的。
+如果你的应用不需要这个权限，
+你需要在你的应用中的 `AndroidManifest.xml` 中添加以下节点内容：
 ```xml
 <uses-permission
   android:name="android.permission.ACCESS_MEDIA_LOCATION"

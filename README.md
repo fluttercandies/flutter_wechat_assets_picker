@@ -392,9 +392,11 @@ W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an
 
 `Glide` needs annotation to keep singleton, prevent conflict between instances and versions, so while the photo manager uses `Glide` to implement image features, the project which import this should define its own `AppGlideModule`. See [Android](#android) section for implementation.
 
-### Remove Media Location permission
+### Disable `ACCESS_MEDIA_LOCATION` permission
 Android contains `ACCESS_MEDIA_LOCATION` permission by default.
-This permission is introduced in Android Q. If your app doesn't need this permission, you need to add the following node to the Android manifest in your app.
+This permission is introduced in Android Q.
+If your app doesn't need the permission,
+you need to add the following node to the `AndroidManifest.xml` in your app:
 
 ```xml
 <uses-permission
