@@ -405,39 +405,39 @@ class DefaultAssetPickerViewerBuilderDelegate
     return ValueListenableBuilder2<bool, int>(
       firstNotifier: isDisplayingDetail,
       secondNotifier: selectedNotifier,
-      builder: (_, bool value, int count, Widget? child) =>
-          AnimatedPositionedDirectional(
+      builder: (_, bool v, __, Widget? child) => AnimatedPositionedDirectional(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        bottom: value ? 0.0 : -(Screens.bottomSafeHeight + bottomDetailHeight),
-        start: 0.0,
-        end: 0.0,
+        bottom: v ? 0 : -(Screens.bottomSafeHeight + bottomDetailHeight),
+        start: 0,
+        end: 0,
         height: Screens.bottomSafeHeight + bottomDetailHeight,
         child: child!,
       ),
-      child: Container(
+      child: Padding(
         padding: EdgeInsetsDirectional.only(bottom: Screens.bottomSafeHeight),
         child: ChangeNotifierProvider<
-            AssetPickerViewerProvider<AssetEntity>>.value(
-          value: provider!,
+            AssetPickerViewerProvider<AssetEntity>?>.value(
+          value: provider,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              ValueListenableBuilder<int>(
-                valueListenable: selectedNotifier,
-                builder: (_, int count, __) => Container(
-                  width: count > 0 ? double.maxFinite : 0,
-                  height: 90,
-                  color: _backgroundColor,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    itemCount: count,
-                    itemBuilder: bottomDetailItemBuilder,
+              if (provider != null)
+                ValueListenableBuilder<int>(
+                  valueListenable: selectedNotifier,
+                  builder: (_, int count, __) => Container(
+                    width: count > 0 ? double.maxFinite : 0,
+                    height: 90,
+                    color: _backgroundColor,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      itemCount: count,
+                      itemBuilder: bottomDetailItemBuilder,
+                    ),
                   ),
                 ),
-              ),
               Container(
                 height: 50,
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -454,7 +454,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     const Spacer(),
-                    if (isAppleOS && provider != null)
+                    if (isAppleOS && (provider != null || isWeChatMoment))
                       confirmButton(context)
                     else
                       selectButton(context),
@@ -498,18 +498,18 @@ class DefaultAssetPickerViewerBuilderDelegate
                   pageController.jumpToPage(index);
                 }
               },
-              child: Selector<AssetPickerViewerProvider<AssetEntity>,
-                  List<AssetEntity>>(
-                selector: (_, AssetPickerViewerProvider<AssetEntity> p) =>
-                    p.currentlySelectedAssets,
+              child: Selector<AssetPickerViewerProvider<AssetEntity>?,
+                  List<AssetEntity>?>(
+                selector: (_, AssetPickerViewerProvider<AssetEntity>? p) =>
+                    p?.currentlySelectedAssets,
                 child: _item,
                 builder: (
                   _,
-                  List<AssetEntity> currentlySelectedAssets,
+                  List<AssetEntity>? currentlySelectedAssets,
                   Widget? w,
                 ) {
                   final bool isSelected =
-                      currentlySelectedAssets.contains(asset);
+                      currentlySelectedAssets?.contains(asset) ?? false;
                   return Stack(
                     children: <Widget>[
                       w!,
@@ -578,7 +578,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               ),
             const Spacer(),
             if (isAppleOS && provider != null) selectButton(context),
-            if (!isAppleOS && provider != null || isWeChatMoment)
+            if (!isAppleOS && (provider != null || isWeChatMoment))
               confirmButton(context),
           ],
         ),
