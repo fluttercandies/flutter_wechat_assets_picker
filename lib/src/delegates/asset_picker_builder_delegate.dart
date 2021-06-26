@@ -41,7 +41,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
         ),
         themeColor =
             pickerTheme?.colorScheme.secondary ?? themeColor ?? C.themeColor {
-    Constants.textDelegate = textDelegate ?? DefaultAssetsPickerTextDelegate();
+    Constants.textDelegate = textDelegate ?? AssetsPickerTextDelegate();
   }
 
   /// [ChangeNotifier] for asset picker.

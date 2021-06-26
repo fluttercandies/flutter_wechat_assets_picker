@@ -384,8 +384,7 @@ class FileAssetPickerBuilder
     required FileAssetPickerProvider provider,
   }) : super(provider: provider);
 
-  AssetsPickerTextDelegate get textDelegate =>
-      DefaultAssetsPickerTextDelegate();
+  AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
 
   Duration get switchingPathDuration => kThemeAnimationDuration * 1.5;
 
@@ -1091,8 +1090,7 @@ class FileAssetPickerViewerBuilderDelegate
 
   late final PageController pageController;
 
-  AssetsPickerTextDelegate get textDelegate =>
-      DefaultAssetsPickerTextDelegate();
+  AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
 
   void switchDisplayingDetail({bool? value}) {
     isDisplayingDetail = value ?? !isDisplayingDetail;
