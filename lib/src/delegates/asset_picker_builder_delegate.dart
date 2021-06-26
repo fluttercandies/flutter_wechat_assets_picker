@@ -910,80 +910,76 @@ class DefaultAssetPickerBuilderDelegate
   /// 当选择器正在选择路径时，它会出现。用户点击它时，列表会折叠收起。
   @override
   Widget pathEntityListBackdrop(BuildContext context) {
-    return Selector<DefaultAssetPickerProvider, bool>(
-      selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
-      builder: (BuildContext context, bool isSwitchingPath, __) {
-        return IgnorePointer(
+    return Positioned.fill(
+      child: Selector<DefaultAssetPickerProvider, bool>(
+        selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
+        builder: (_, bool isSwitchingPath, __) => IgnorePointer(
           ignoring: !isSwitchingPath,
           child: GestureDetector(
             onTap: () => provider.isSwitchingPath = false,
             child: AnimatedOpacity(
               duration: switchingPathDuration,
-              opacity: isSwitchingPath ? 1.0 : 0.0,
-              child: Container(color: Colors.black.withOpacity(0.75)),
+              opacity: isSwitchingPath ? .75 : 0,
+              child: const ColoredBox(color: Colors.black),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
   @override
   Widget pathEntityListWidget(BuildContext context) {
-    final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
-    final double maxHeight = Screens.height * 0.825;
-    final bool isAudio = (provider as DefaultAssetPickerProvider).requestType ==
-        RequestType.audio;
-    return Selector<DefaultAssetPickerProvider, bool>(
-      selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
-      builder: (_, bool isSwitchingPath, Widget? w) =>
-          AnimatedPositionedDirectional(
-        duration: switchingPathDuration,
-        curve: switchingPathCurve,
-        top: isAppleOS
-            ? !isSwitchingPath
-                ? -maxHeight
-                : appBarHeight
-            : -(!isSwitchingPath ? maxHeight : 1.0),
-        child: AnimatedOpacity(
+    return Positioned.fill(
+      bottom: null,
+      child: Selector<DefaultAssetPickerProvider, bool>(
+        selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
+        builder: (_, bool isSwitchingPath, Widget? w) => AnimatedAlign(
           duration: switchingPathDuration,
           curve: switchingPathCurve,
-          opacity: !isAppleOS || isSwitchingPath ? 1.0 : 0.0,
-          child: Container(
-            width: Screens.width,
-            height: maxHeight,
-            decoration: BoxDecoration(
-              borderRadius: isAppleOS
-                  ? const BorderRadius.vertical(bottom: Radius.circular(10.0))
-                  : null,
-              color: theme.colorScheme.background,
+          alignment: Alignment.bottomCenter,
+          heightFactor: isSwitchingPath ? 1 : 0,
+          child: AnimatedOpacity(
+            duration: switchingPathDuration,
+            curve: switchingPathCurve,
+            opacity: !isAppleOS || isSwitchingPath ? 1.0 : 0.0,
+            child: Container(
+              height: Screens.height * 0.8,
+              decoration: BoxDecoration(
+                borderRadius: isAppleOS
+                    ? const BorderRadius.vertical(bottom: Radius.circular(10.0))
+                    : null,
+                color: theme.colorScheme.background,
+              ),
+              child: w,
             ),
-            child: w,
           ),
         ),
-      ),
-      child: Selector<DefaultAssetPickerProvider, int>(
-        selector: (_, DefaultAssetPickerProvider p) => p.validPathThumbCount,
-        builder: (_, int count, __) => Selector<DefaultAssetPickerProvider,
-            Map<AssetPathEntity, Uint8List?>>(
-          selector: (_, DefaultAssetPickerProvider p) => p.pathEntityList,
-          builder: (BuildContext c, Map<AssetPathEntity, Uint8List?> list, __) {
-            return ListView.separated(
-              padding: const EdgeInsetsDirectional.only(top: 1.0),
-              itemCount: list.length,
-              itemBuilder: (_, int index) => pathEntityWidget(
-                context: c,
-                list: list,
-                index: index,
-                isAudio: isAudio,
-              ),
-              separatorBuilder: (BuildContext _, int __) => Container(
-                margin: const EdgeInsetsDirectional.only(start: 60.0),
-                height: 1.0,
-                color: theme.canvasColor,
-              ),
-            );
-          },
+        child: Selector<DefaultAssetPickerProvider, int>(
+          selector: (_, DefaultAssetPickerProvider p) => p.validPathThumbCount,
+          builder: (_, int count, __) => Selector<DefaultAssetPickerProvider,
+              Map<AssetPathEntity, Uint8List?>>(
+            selector: (_, DefaultAssetPickerProvider p) => p.pathEntityList,
+            builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
+              return ListView.separated(
+                padding: const EdgeInsetsDirectional.only(top: 1.0),
+                itemCount: list.length,
+                itemBuilder: (BuildContext c, int index) => pathEntityWidget(
+                  context: c,
+                  list: list,
+                  index: index,
+                  isAudio:
+                      (provider as DefaultAssetPickerProvider).requestType ==
+                          RequestType.audio,
+                ),
+                separatorBuilder: (_, __) => Container(
+                  margin: const EdgeInsetsDirectional.only(start: 60.0),
+                  height: 1.0,
+                  color: theme.canvasColor,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
