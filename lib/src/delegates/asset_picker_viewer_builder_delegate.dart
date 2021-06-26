@@ -494,8 +494,8 @@ class DefaultAssetPickerViewerBuilderDelegate
             }();
             return GestureDetector(
               onTap: () {
-                if (previewAssets == selectedAssets) {
-                  pageController.jumpToPage(index);
+                if (previewAssets != selectedAssets) {
+                  pageController.jumpToPage(previewAssets.indexOf(asset));
                 }
               },
               child: Selector<AssetPickerViewerProvider<AssetEntity>?,
