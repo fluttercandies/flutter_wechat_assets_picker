@@ -49,6 +49,8 @@ class AssetsPickerTextDelegate {
   /// "Unable to access all assets in album".
   String get unableToAccessAll => '无法访问所有资源';
 
+  String get viewingLimitedAssetsTip => '应用只能访问部分资源和相册';
+
   String get accessAllTip => '你已设置应用只能访问设备部分资源，'
       '建议允许访问「所有资源」';
 
@@ -56,6 +58,8 @@ class AssetsPickerTextDelegate {
 
   /// "Continue accessing some assets".
   String get accessLimitedAssets => '继续访问部分资源';
+
+  String get accessiblePathName => '可访问的资源';
 
   /// This is used in video asset item in the picker, in order
   /// to display the duration of the video or audio type of asset.
@@ -107,6 +111,10 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
   String get unableToAccessAll => 'Unable to access all assets on the device';
 
   @override
+  String get viewingLimitedAssetsTip =>
+      'Only view assets and albums accessible to app.';
+
+  @override
   String get accessAllTip => 'App can only access some assets on the device.'
       'Go to system settings and allow app to access all assets on the device.';
 
@@ -115,6 +123,9 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get accessLimitedAssets => 'Continue accessing some assets';
+
+  @override
+  String get accessiblePathName => 'Accessible assets';
 }
 
 /// [AssetsPickerTextDelegate] implements with Hebrew.
