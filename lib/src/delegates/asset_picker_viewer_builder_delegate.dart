@@ -556,7 +556,7 @@ class DefaultAssetPickerViewerBuilderDelegate
       child: Container(
         padding: EdgeInsetsDirectional.only(
           top: Screens.topSafeHeight,
-          end: 12.0,
+          end: 14.0,
         ),
         color: themeData.canvasColor.withOpacity(0.85),
         child: Row(
