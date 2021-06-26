@@ -348,7 +348,11 @@ class DefaultAssetPickerViewerBuilderDelegate
         );
         break;
       case AssetType.video:
-        builder = VideoPageBuilder(asset: asset, state: viewerState);
+        builder = VideoPageBuilder(
+          asset: asset,
+          state: viewerState,
+          hasOnlyOneVideoAndMoment: isWeChatMoment && hasVideo,
+        );
         break;
       case AssetType.other:
         builder = Center(
@@ -395,6 +399,30 @@ class DefaultAssetPickerViewerBuilderDelegate
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// The back button when previewing video in [SpecialPickerType.wechatMoment].
+  /// 使用 [SpecialPickerType.wechatMoment] 预览视频时的返回按钮
+  Widget momentVideoBackButton(BuildContext context) {
+    return PositionedDirectional(
+      start: 16,
+      top: context.mediaQuery.padding.top + 16,
+      child: GestureDetector(
+        onTap: Navigator.of(context).maybePop,
+        child: Container(
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: themeData.iconTheme.color,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.keyboard_return_rounded,
+            color: themeData.canvasColor,
+            size: 18,
+          ),
+        ),
       ),
     );
   }
@@ -790,9 +818,19 @@ class DefaultAssetPickerViewerBuilderDelegate
                     scrollDirection: Axis.horizontal,
                   ),
                 ),
-                appBar(context),
-                if (selectedAssets != null || (isWeChatMoment && hasVideo))
-                  bottomDetailBuilder(context),
+                if (isWeChatMoment && hasVideo) ...<Widget>[
+                  momentVideoBackButton(context),
+                  PositionedDirectional(
+                    end: 16,
+                    bottom: context.mediaQuery.padding.bottom + 16,
+                    child: confirmButton(context),
+                  ),
+                ] else ...<Widget>[
+                  appBar(context),
+                  if (selectedAssets != null ||
+                      (isWeChatMoment && hasVideo && isAppleOS))
+                    bottomDetailBuilder(context),
+                ],
               ],
             ),
           ),
