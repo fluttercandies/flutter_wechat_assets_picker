@@ -622,7 +622,7 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
-  /// There're several conditions within this builder:
+  /// There are several conditions within this builder:
   ///  * Return [specialItemBuilder] while the current path is all and
   ///    [specialItemPosition] is not equal to [SpecialItemPosition.none].
   ///  * Return item builder according to the asset's type.
