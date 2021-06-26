@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
+import '../widget/builder/value_listenable_builder_2.dart';
 
 typedef IndicatorBuilder = Widget Function(
   BuildContext context,
@@ -27,6 +28,7 @@ typedef IndicatorBuilder = Widget Function(
 abstract class AssetPickerBuilderDelegate<A, P> {
   AssetPickerBuilderDelegate({
     required this.provider,
+    required this.initialPermission,
     this.gridCount = 4,
     Color? themeColor,
     AssetsPickerTextDelegate? textDelegate,
@@ -47,6 +49,10 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// [ChangeNotifier] for asset picker.
   /// 资源选择器状态保持
   final AssetPickerProvider<A, P> provider;
+
+  /// The [PermissionState] when the picker is called.
+  /// 当选择器被拉起时的权限状态
+  final PermissionState initialPermission;
 
   /// Assets count for the picker.
   /// 资源网格数
@@ -116,11 +122,24 @@ abstract class AssetPickerBuilderDelegate<A, P> {
 
   /// Blur radius in Apple OS layout mode.
   /// 苹果系列系统布局方式下的模糊度
-  double get appleOSBlurRadius => 15.0;
+  double get appleOSBlurRadius => 10.0;
 
   /// Height for bottom action bar.
   /// 底部操作栏的高度
   double get bottomActionBarHeight => kToolbarHeight / 1.1;
+
+  /// Notifier for the current [PermissionState].
+  /// 当前 [PermissionState] 的监听
+  late final ValueNotifier<PermissionState> permission =
+      ValueNotifier<PermissionState>(
+    initialPermission,
+  );
+  final ValueNotifier<bool> permissionOverlayHidden =
+      ValueNotifier<bool>(false);
+
+  /// Whether the permission is limited currently.
+  /// 当前的权限是否为受限
+  bool get isPermissionLimited => permission.value == PermissionState.limited;
 
   /// Path entity select widget builder.
   /// 路径选择部件构建
@@ -341,11 +360,41 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 预览已选资源的按钮
   Widget previewButton(BuildContext context);
 
+  /// The tip widget displays when the access is limited.
+  /// 当访问受限时在底部展示的提示
+  Widget accessLimitedBottomTip(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
+      child: Row(
+        children: <Widget>[
+          const SizedBox(width: 5),
+          Icon(
+            Icons.warning,
+            color: Colors.orange[400]!.withOpacity(.8),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Text(
+              Constants.textDelegate.accessAllTip,
+              style: context.themeData.textTheme.caption?.copyWith(
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Icon(
+            Icons.keyboard_arrow_right,
+            color: context.themeData.iconTheme.color?.withOpacity(.5),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Action bar widget aligned to bottom.
   /// 底部操作栏部件
   Widget bottomActionBar(BuildContext context) {
     Widget child = Container(
-      width: Screens.width,
       height: bottomActionBarHeight + Screens.bottomSafeHeight,
       padding: EdgeInsetsDirectional.only(
         start: 20.0,
@@ -360,6 +409,12 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       ]),
     );
     if (isAppleOS) {
+      if (isPermissionLimited) {
+        child = Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[accessLimitedBottomTip(context), child],
+        );
+      }
       child = ClipRect(
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(
@@ -417,6 +472,97 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// Android设备的选择器布局
   Widget androidLayout(BuildContext context);
 
+  /// The overlay when the permission is limited on iOS.
+  Widget iOSPermissionOverlay(BuildContext context) {
+    final Size size = context.mediaQuery.size;
+    final Widget _closeButton = Container(
+      margin: const EdgeInsetsDirectional.only(start: 16, top: 4),
+      alignment: AlignmentDirectional.centerStart,
+      child: IconButton(
+        onPressed: Navigator.of(context).maybePop,
+        icon: const Icon(Icons.clear, size: 32),
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints.tight(const Size.square(32)),
+      ),
+    );
+
+    final Widget _limitedTips = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            Constants.textDelegate.unableToAccessAll,
+            style: const TextStyle(fontSize: 22),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: size.height / 30),
+          Text(
+            Constants.textDelegate.accessAllTip,
+            style: const TextStyle(fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+
+    final Widget _goToSettingsButton = MaterialButton(
+      elevation: 0,
+      minWidth: size.width / 2,
+      height: appBarItemHeight * 1.25,
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      color: themeColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Text(
+        Constants.textDelegate.goToSystemSettings,
+        style: const TextStyle(fontSize: 17.0),
+      ),
+      onPressed: () {},
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+
+    final Widget _accessLimitedButton = GestureDetector(
+      onTap: () => permissionOverlayHidden.value = true,
+      child: Text(
+        Constants.textDelegate.accessLimitedAssets,
+        style: TextStyle(
+          color: Color.lerp(
+            context.themeData.iconTheme.color?.withOpacity(.5),
+            Colors.blue,
+            0.3,
+          ),
+        ),
+      ),
+    );
+
+    return ValueListenableBuilder2<PermissionState, bool>(
+      firstNotifier: permission,
+      secondNotifier: permissionOverlayHidden,
+      builder: (_, PermissionState ps, bool isHidden, __) {
+        if (ps.isAuth || isHidden) {
+          return const SizedBox.shrink();
+        }
+        return Positioned.fill(
+          child: Container(
+            padding: context.mediaQuery.padding,
+            color: context.themeData.canvasColor,
+            child: Column(
+              children: <Widget>[
+                _closeButton,
+                Expanded(child: _limitedTips),
+                _goToSettingsButton,
+                SizedBox(height: size.height / 18),
+                _accessLimitedButton,
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   /// Yes, the build method.
   /// 没错，是它是它就是它，我们亲爱的 build 方法~
   Widget build(BuildContext context) {
@@ -426,9 +572,15 @@ abstract class AssetPickerBuilderDelegate<A, P> {
         data: theme,
         child: ChangeNotifierProvider<AssetPickerProvider<A, P>>.value(
           value: provider,
-          child: Material(
+          builder: (BuildContext c, __) => Material(
             color: theme.canvasColor,
-            child: isAppleOS ? appleOSLayout(context) : androidLayout(context),
+            child: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                if (isAppleOS) appleOSLayout(c) else androidLayout(c),
+                if (Platform.isIOS) iOSPermissionOverlay(c),
+              ],
+            ),
           ),
         ),
       ),
@@ -440,6 +592,7 @@ class DefaultAssetPickerBuilderDelegate
     extends AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerBuilderDelegate({
     required DefaultAssetPickerProvider provider,
+    required PermissionState initialPermission,
     int gridCount = 4,
     Color? themeColor,
     AssetsPickerTextDelegate? textDelegate,
@@ -457,6 +610,7 @@ class DefaultAssetPickerBuilderDelegate
         ),
         super(
           provider: provider,
+          initialPermission: initialPermission,
           gridCount: gridCount,
           themeColor: themeColor,
           textDelegate: textDelegate,
@@ -602,8 +756,8 @@ class DefaultAssetPickerBuilderDelegate
                               ),
                               if ((!isSingleAssetMode || isAppleOS) &&
                                   isPreviewEnabled)
-                                PositionedDirectional(
-                                  bottom: 0.0,
+                                Positioned.fill(
+                                  top: null,
                                   child: bottomActionBar(context),
                                 ),
                             ],
@@ -931,6 +1085,7 @@ class DefaultAssetPickerBuilderDelegate
   @override
   Widget pathEntityListWidget(BuildContext context) {
     return Positioned.fill(
+      top: isAppleOS ? context.mediaQuery.padding.top + kToolbarHeight : 0,
       bottom: null,
       child: Selector<DefaultAssetPickerProvider, bool>(
         selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
@@ -955,31 +1110,61 @@ class DefaultAssetPickerBuilderDelegate
             ),
           ),
         ),
-        child: Selector<DefaultAssetPickerProvider, int>(
-          selector: (_, DefaultAssetPickerProvider p) => p.validPathThumbCount,
-          builder: (_, int count, __) => Selector<DefaultAssetPickerProvider,
-              Map<AssetPathEntity, Uint8List?>>(
-            selector: (_, DefaultAssetPickerProvider p) => p.pathEntityList,
-            builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
-              return ListView.separated(
-                padding: const EdgeInsetsDirectional.only(top: 1.0),
-                itemCount: list.length,
-                itemBuilder: (BuildContext c, int index) => pathEntityWidget(
-                  context: c,
-                  list: list,
-                  index: index,
-                  isAudio:
-                      (provider as DefaultAssetPickerProvider).requestType ==
-                          RequestType.audio,
+        child: Column(
+          children: <Widget>[
+            ValueListenableBuilder<PermissionState>(
+              valueListenable: permission,
+              builder: (_, PermissionState ps, __) {
+                if (isPermissionLimited) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    child: Text(
+                      Constants.textDelegate.viewingLimitedAssetsTip,
+                      style: context.themeData.textTheme.caption?.copyWith(
+                        fontSize: 15,
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            Expanded(
+              child: Selector<DefaultAssetPickerProvider, int>(
+                selector: (_, DefaultAssetPickerProvider p) =>
+                    p.validPathThumbCount,
+                builder: (_, int count, __) => Selector<
+                    DefaultAssetPickerProvider,
+                    Map<AssetPathEntity, Uint8List?>>(
+                  selector: (_, DefaultAssetPickerProvider p) =>
+                      p.pathEntityList,
+                  builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
+                    return ListView.separated(
+                      padding: const EdgeInsetsDirectional.only(top: 1.0),
+                      itemCount: list.length,
+                      itemBuilder: (BuildContext c, int index) =>
+                          pathEntityWidget(
+                        context: c,
+                        list: list,
+                        index: index,
+                        isAudio: (provider as DefaultAssetPickerProvider)
+                                .requestType ==
+                            RequestType.audio,
+                      ),
+                      separatorBuilder: (_, __) => Container(
+                        margin: const EdgeInsetsDirectional.only(start: 60.0),
+                        height: 1.0,
+                        color: theme.canvasColor,
+                      ),
+                    );
+                  },
                 ),
-                separatorBuilder: (_, __) => Container(
-                  margin: const EdgeInsetsDirectional.only(start: 60.0),
-                  height: 1.0,
-                  color: theme.canvasColor,
-                ),
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -1006,7 +1191,9 @@ class DefaultAssetPickerBuilderDelegate
                 if (p != null)
                   Flexible(
                     child: Text(
-                      p.name,
+                      isPermissionLimited && p.isAll
+                          ? Constants.textDelegate.accessiblePathName
+                          : p.name,
                       style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.normal,
@@ -1105,7 +1292,9 @@ class DefaultAssetPickerBuilderDelegate
                         child: Padding(
                           padding: const EdgeInsetsDirectional.only(end: 10.0),
                           child: Text(
-                            pathEntity.name,
+                            isPermissionLimited && pathEntity.isAll
+                                ? Constants.textDelegate.accessiblePathName
+                                : pathEntity.name,
                             style: const TextStyle(fontSize: 18.0),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

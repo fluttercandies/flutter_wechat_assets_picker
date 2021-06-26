@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
 
-class AssetPicker<A, P> extends StatelessWidget {
+class AssetPicker<A, P> extends StatefulWidget {
   const AssetPicker({
     Key? key,
     required this.builder,
@@ -17,11 +17,12 @@ class AssetPicker<A, P> extends StatelessWidget {
 
   final AssetPickerBuilderDelegate<A, P> builder;
 
-  static Future<void> permissionCheck() async {
+  static Future<PermissionState> permissionCheck() async {
     final PermissionState _ps = await PhotoManager.requestPermissionExtend();
     if (_ps != PermissionState.authorized && _ps != PermissionState.limited) {
       throw StateError('Permission state error with $_ps.');
     }
+    return _ps;
   }
 
   /// Static method to push with the navigator.
@@ -80,7 +81,7 @@ class AssetPicker<A, P> extends StatelessWidget {
       throw ArgumentError('Custom item did not set properly.');
     }
 
-    await permissionCheck();
+    final PermissionState _ps = await permissionCheck();
 
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       maxAssets: maxAssets,
@@ -99,6 +100,7 @@ class AssetPicker<A, P> extends StatelessWidget {
         key: Constants.pickerKey,
         builder: DefaultAssetPickerBuilderDelegate(
           provider: provider,
+          initialPermission: _ps,
           gridCount: gridCount,
           textDelegate: textDelegate,
           themeColor: themeColor,
@@ -230,7 +232,35 @@ class AssetPicker<A, P> extends StatelessWidget {
   }
 
   @override
+  AssetPickerState<A, P> createState() => AssetPickerState<A, P>();
+}
+
+class AssetPickerState<A, P> extends State<AssetPicker<A, P>>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      PhotoManager.requestPermissionExtend().then(
+        (PermissionState ps) => widget.builder.permission.value = ps,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return builder.build(context);
+    return widget.builder.build(context);
   }
 }

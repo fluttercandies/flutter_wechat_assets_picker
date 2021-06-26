@@ -382,7 +382,7 @@ class FileAssetPickerBuilder
     extends AssetPickerBuilderDelegate<File, Directory> {
   FileAssetPickerBuilder({
     required FileAssetPickerProvider provider,
-  }) : super(provider: provider);
+  }) : super(provider: provider, initialPermission: PermissionState.authorized);
 
   AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
 
