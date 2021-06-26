@@ -17,7 +17,7 @@ class AssetPicker<A, P> extends StatelessWidget {
 
   final AssetPickerBuilderDelegate<A, P> builder;
 
-  static Future<void> _permissionCheck() async {
+  static Future<void> permissionCheck() async {
     final PermissionState _ps = await PhotoManager.requestPermissionExtend();
     if (_ps != PermissionState.authorized && _ps != PermissionState.limited) {
       throw StateError('Permission state error with $_ps.');
@@ -80,7 +80,7 @@ class AssetPicker<A, P> extends StatelessWidget {
       throw ArgumentError('Custom item did not set properly.');
     }
 
-    await _permissionCheck();
+    await permissionCheck();
 
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       maxAssets: maxAssets,
@@ -136,7 +136,7 @@ class AssetPicker<A, P> extends StatelessWidget {
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
-    await _permissionCheck();
+    await permissionCheck();
 
     final Widget picker =
         ChangeNotifierProvider<AssetPickerProvider<A, P>>.value(
