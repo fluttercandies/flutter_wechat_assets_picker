@@ -7,7 +7,6 @@ import 'package:extended_image/extended_image.dart';
 
 import '../../constants/constants.dart';
 import '../../provider/asset_entity_image_provider.dart';
-import 'fade_image_builder.dart';
 
 class AssetEntityGridItemBuilder extends StatefulWidget {
   const AssetEntityGridItemBuilder({
@@ -40,9 +39,7 @@ class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
             loader = const ColoredBox(color: Color(0x10ffffff));
             break;
           case LoadState.completed:
-            loader = FadeImageBuilder(
-              child: RepaintBoundary(child: state.completedWidget),
-            );
+            loader = RepaintBoundary(child: state.completedWidget);
             break;
           case LoadState.failed:
             loader = widget.failedItemBuilder(context);
