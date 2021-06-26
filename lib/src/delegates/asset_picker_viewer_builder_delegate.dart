@@ -401,7 +401,7 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   @override
   Widget bottomDetailBuilder(BuildContext context) {
-    final Color _backgroundColor = themeData.canvasColor.withOpacity(0.85);
+    final Color _backgroundColor = themeData.primaryColor.withOpacity(.9);
     return ValueListenableBuilder2<bool, int>(
       firstNotifier: isDisplayingDetail,
       secondNotifier: selectedNotifier,
@@ -445,7 +445,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                   border: Border(
                     top: BorderSide(
                       width: 1.0,
-                      color: themeData.dividerColor,
+                      color: themeData.canvasColor,
                     ),
                   ),
                   color: _backgroundColor,
@@ -554,32 +554,37 @@ class DefaultAssetPickerViewerBuilderDelegate
         child: child!,
       ),
       child: Container(
-        padding: EdgeInsetsDirectional.only(
-          top: Screens.topSafeHeight,
-          end: 14.0,
-        ),
-        color: themeData.canvasColor.withOpacity(0.85),
-        child: Row(
+        padding: EdgeInsetsDirectional.only(top: Screens.topSafeHeight),
+        color: themeData.canvasColor,
+        child: Stack(
+          fit: StackFit.expand,
           children: <Widget>[
-            const BackButton(),
+            Row(
+              children: <Widget>[
+                const BackButton(),
+                const Spacer(),
+                if (isAppleOS && provider != null) selectButton(context),
+                if (!isAppleOS && (provider != null || isWeChatMoment))
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 14),
+                    child: confirmButton(context),
+                  ),
+              ],
+            ),
             if (!isAppleOS && specialPickerType == null)
               StreamBuilder<int>(
                 initialData: currentIndex,
                 stream: pageStreamController.stream,
-                builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
-                  return Text(
+                builder: (_, AsyncSnapshot<int> snapshot) => Center(
+                  child: Text(
                     '${snapshot.data! + 1}/${previewAssets.length}',
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
-            const Spacer(),
-            if (isAppleOS && provider != null) selectButton(context),
-            if (!isAppleOS && (provider != null || isWeChatMoment))
-              confirmButton(context),
           ],
         ),
       ),
