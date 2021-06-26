@@ -49,8 +49,8 @@ class AssetsPickerTextDelegate {
   /// "Unable to access all assets in album".
   String get unableToAccessAll => '无法访问所有资源';
 
-  String get accessAllTip => '目前应用只能访问部分资源。'
-      '请前往系统设置允许应用访问所有资源。';
+  String get accessAllTip => '你已设置应用只能访问设备部分资源，'
+      '建议允许访问「所有资源」';
 
   String get goToSystemSettings => '前往系统设置';
 
