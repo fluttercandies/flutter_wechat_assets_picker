@@ -283,3 +283,59 @@ class JapaneseTextDelegate extends AssetsPickerTextDelegate {
   @override
   String get unSupportedAssetType => 'HEIC フォーマットはサポートしていません。';
 }
+
+/// [AssetsPickerTextDelegate] implements with Arabic.
+/// 阿拉伯文字实现
+class ArabicTextDelegate extends AssetsPickerTextDelegate {
+  @override
+  String get confirm => 'تؤكد';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get heicNotSupported => 'نوع HEIC غير مدعوم.';
+
+  @override
+  String get loadFailed => 'فشل التحميل';
+
+  @override
+  String get original => 'أصلي';
+
+  @override
+  String get preview => 'معاينة';
+
+  @override
+  String get select => 'تحديد';
+
+  @override
+  String get unSupportedAssetType => 'نوع HEIC غير مدعوم';
+
+  @override
+  String get unableToAccessAll =>
+      'لا يمكن الوصول إلى جميع الملفات الموجودة على الجهاز';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'إظهار الملفات والألبومات التي يمكن للتطبيق الوصول إليها فقط.';
+
+  @override
+  String get accessAllTip =>
+      'يمكن للتطبيق الوصول فقط إلى بعض الملفات الموجودة على الجهاز.'
+      'افتح إعدادات النظام واسمح للتطبيق بالوصول إلى جميع الملفات الموجودة على الجهاز';
+
+  @override
+  String get goToSystemSettings => 'افتح إعدادات النظام';
+
+  @override
+  String get accessLimitedAssets => 'تواصل مع وصول محدود';
+
+  @override
+  String get accessiblePathName => 'ملفات يمكن الوصول إليها';
+}
