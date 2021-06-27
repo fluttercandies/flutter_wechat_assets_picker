@@ -160,6 +160,26 @@ class HebrewTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get unSupportedAssetType => 'סוג קובץ HEIC אינו נתמך';
+
+  @override
+  String get unableToAccessAll => 'לא ניתן לגשת לכל הקבצים במכשיר';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'הצג רק קבצים ואלבומים נגישים לאפליקציה.';
+
+  @override
+  String get accessAllTip => 'האפליקציה יכולה לגשת רק לחלק מהקבצים במכשיר.'
+      'פתח הגדרות מערכת ואפשר לאפליקציה גישה לכל הקבצים במכשיר';
+
+  @override
+  String get goToSystemSettings => 'פתח הגדרות מערכת';
+
+  @override
+  String get accessLimitedAssets => 'המשך גישה מוגבלת';
+
+  @override
+  String get accessiblePathName => 'קבצים נגישים';
 }
 
 /// [AssetsPickerTextDelegate] implementiert mit der deutschen Übersetzung.
