@@ -122,7 +122,7 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
   String get goToSystemSettings => 'Go to system settings';
 
   @override
-  String get accessLimitedAssets => 'Continue accessing some assets';
+  String get accessLimitedAssets => 'Continue with limited access';
 
   @override
   String get accessiblePathName => 'Accessible assets';
