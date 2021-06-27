@@ -76,6 +76,7 @@ class AssetsPickerTextDelegate {
 }
 
 /// [AssetsPickerTextDelegate] implements with English.
+/// English Localization
 class EnglishTextDelegate extends AssetsPickerTextDelegate {
   @override
   String get confirm => 'Confirm';
@@ -129,7 +130,7 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
 }
 
 /// [AssetsPickerTextDelegate] implements with Hebrew.
-/// 希伯来文字实现
+/// תרגום בשפה העברית
 class HebrewTextDelegate extends AssetsPickerTextDelegate {
   @override
   String get confirm => 'אישור';
@@ -285,7 +286,7 @@ class JapaneseTextDelegate extends AssetsPickerTextDelegate {
 }
 
 /// [AssetsPickerTextDelegate] implements with Arabic.
-/// 阿拉伯文字实现
+/// الترجمة العربية
 class ArabicTextDelegate extends AssetsPickerTextDelegate {
   @override
   String get confirm => 'تؤكد';
