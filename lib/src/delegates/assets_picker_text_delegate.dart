@@ -239,7 +239,7 @@ class RussianTextDelegate extends AssetsPickerTextDelegate {
   String get loadFailed => 'Ошибка при загрузке';
 
   @override
-  String get original => 'Исходное';
+  String get original => 'Оригинал';
 
   @override
   String get preview => 'Предпросмотр';
@@ -249,6 +249,27 @@ class RussianTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get unSupportedAssetType => 'Неподдерживаемый формат ресурса.';
+
+  @override
+  String get unableToAccessAll => 'Не все файлы доступны на устройстве';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'Показать только файлы которые доступны приложению.';
+
+  @override
+  String get accessAllTip =>
+      'У приложение доступ только к некоторым файлам на устройстве.'
+      'Откройте настройки системы и разрешите приложению доступ ко всем файлам на устройстве';
+
+  @override
+  String get goToSystemSettings => 'Открыть настройки системы';
+
+  @override
+  String get accessLimitedAssets => 'Продолжить с ограниченным доступом';
+
+  @override
+  String get accessiblePathName => 'Доступные файлы';
 }
 
 /// [AssetsPickerTextDelegate] implements with Japanese.
