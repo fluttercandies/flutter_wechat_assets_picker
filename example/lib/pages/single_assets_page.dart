@@ -37,6 +37,7 @@ class _SingleAssetPageState extends State<SingleAssetPage>
         handleResult: (BuildContext context, AssetEntity result) =>
             Navigator.of(context).pop(<AssetEntity>[result]),
       ),
+      PickMethod.cameraAndStay(maxAssetsCount: maxAssetsCount),
       PickMethod.common(maxAssetsCount),
       PickMethod.threeItemsGrid(maxAssetsCount),
       PickMethod.customFilterOptions(maxAssetsCount),
