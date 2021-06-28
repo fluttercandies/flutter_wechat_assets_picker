@@ -363,12 +363,12 @@ class DefaultAssetPickerProvider
   }
 
   @override
-  void switchPath(AssetPathEntity pathEntity) {
+  Future<void> switchPath(AssetPathEntity pathEntity) async {
     _isSwitchingPath = false;
     _currentPathEntity = pathEntity;
     _totalAssetsCount = pathEntity.assetCount;
     notifyListeners();
-    getAssetsFromEntity(0, currentPathEntity!);
+    await getAssetsFromEntity(0, currentPathEntity!);
   }
 
   @override
