@@ -363,30 +363,33 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// The tip widget displays when the access is limited.
   /// 当访问受限时在底部展示的提示
   Widget accessLimitedBottomTip(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
-      child: Row(
-        children: <Widget>[
-          const SizedBox(width: 5),
-          Icon(
-            Icons.warning,
-            color: Colors.orange[400]!.withOpacity(.8),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Text(
-              Constants.textDelegate.accessAllTip,
-              style: context.themeData.textTheme.caption?.copyWith(
-                fontSize: 14,
+    return GestureDetector(
+      onTap: PhotoManager.openSetting,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
+        child: Row(
+          children: <Widget>[
+            const SizedBox(width: 5),
+            Icon(
+              Icons.warning,
+              color: Colors.orange[400]!.withOpacity(.8),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Text(
+                Constants.textDelegate.accessAllTip,
+                style: context.themeData.textTheme.caption?.copyWith(
+                  fontSize: 14,
+                ),
               ),
             ),
-          ),
-          Icon(
-            Icons.keyboard_arrow_right,
-            color: context.themeData.iconTheme.color?.withOpacity(.5),
-          ),
-        ],
+            Icon(
+              Icons.keyboard_arrow_right,
+              color: context.themeData.iconTheme.color?.withOpacity(.5),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -519,7 +522,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
         Constants.textDelegate.goToSystemSettings,
         style: const TextStyle(fontSize: 17.0),
       ),
-      onPressed: () {},
+      onPressed: PhotoManager.openSetting,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
 
