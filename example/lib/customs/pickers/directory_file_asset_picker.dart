@@ -534,58 +534,115 @@ class FileAssetPickerBuilder
 
   @override
   Widget assetsGridBuilder(BuildContext context) {
-    return ColoredBox(
-      color: theme.canvasColor,
-      child: Selector<FileAssetPickerProvider, List<File>>(
-        selector: (_, FileAssetPickerProvider provider) =>
-            provider.currentAssets,
-        builder: (_, List<File> currentAssets, __) => CustomScrollView(
-          controller: gridScrollController,
-          slivers: <Widget>[
-            if (isAppleOS)
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: Screens.topSafeHeight + kToolbarHeight,
-                ),
-              ),
-            SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (_, int index) => Builder(
-                  builder: (BuildContext c) => assetGridItemBuilder(
-                    c,
-                    index,
-                    currentAssets,
-                  ),
-                ),
-                childCount: assetsGridItemCount(
-                  context: _,
-                  assets: currentAssets,
-                ),
-                findChildIndexCallback: (Key? key) {
-                  if (key is ValueKey<String>) {
-                    return findChildIndexBuilder(
-                      id: key.value,
-                      assets: currentAssets,
-                    );
-                  }
-                  return null;
-                },
-              ),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: gridCount,
-                mainAxisSpacing: itemSpacing,
-                crossAxisSpacing: itemSpacing,
+    int totalCount = provider.currentAssets.length;
+    if (specialItemPosition != SpecialItemPosition.none) {
+      totalCount += 1;
+    }
+    final int placeholderCount;
+    if (isAppleOS && totalCount % gridCount != 0) {
+      placeholderCount = gridCount - totalCount % gridCount;
+    } else {
+      placeholderCount = 0;
+    }
+    final int row = (totalCount + placeholderCount) ~/ gridCount;
+    final double dividedSpacing = itemSpacing / gridCount;
+    final double topPadding =
+        MediaQuery.of(context).padding.top + kToolbarHeight;
+
+    Widget _sliverGrid(BuildContext ctx, List<File> assets) {
+      return SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          (_, int index) => Builder(
+            builder: (BuildContext c) {
+              if (isAppleOS) {
+                if (index < placeholderCount) {
+                  return const SizedBox.shrink();
+                }
+                index -= placeholderCount;
+              }
+              return Directionality(
+                textDirection: Directionality.of(context),
+                child: assetGridItemBuilder(c, index, assets),
+              );
+            },
+          ),
+          childCount: assetsGridItemCount(
+            context: ctx,
+            assets: assets,
+            placeholderCount: placeholderCount,
+          ),
+          findChildIndexCallback: (Key? key) {
+            if (key is ValueKey<String>) {
+              return findChildIndexBuilder(
+                id: key.value,
+                assets: assets,
+                placeholderCount: placeholderCount,
+              );
+            }
+            return null;
+          },
+        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: gridCount,
+          mainAxisSpacing: itemSpacing,
+          crossAxisSpacing: itemSpacing,
+        ),
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (BuildContext c, BoxConstraints constraints) {
+        final double _itemSize = constraints.maxWidth / gridCount;
+        // Use [ScrollView.anchor] to determine where is the first place of
+        // the [SliverGrid]. Each row needs [dividedSpacing] to calculate,
+        // then minus one times of [itemSpacing] because spacing's count in the
+        // cross axis is always less than the rows.
+        final double anchor = math.min(
+          (row * (_itemSize + dividedSpacing) + topPadding - itemSpacing) /
+              constraints.maxHeight,
+          1,
+        );
+
+        return Directionality(
+          textDirection: effectiveGridDirection(context),
+          child: ColoredBox(
+            color: theme.canvasColor,
+            child: Selector<FileAssetPickerProvider, List<File>>(
+              selector: (_, FileAssetPickerProvider provider) =>
+                  provider.currentAssets,
+              builder: (_, List<File> assets, __) => CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: gridScrollController,
+                anchor: isAppleOS ? anchor : 0,
+                center: isAppleOS ? gridRevertKey : null,
+                slivers: <Widget>[
+                  if (isAppleOS)
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height:
+                            MediaQuery.of(context).padding.top + kToolbarHeight,
+                      ),
+                    ),
+                  _sliverGrid(_, assets),
+                  // Ignore the gap when the [anchor] is not equal to 1.
+                  if (isAppleOS && anchor == 1)
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: MediaQuery.of(context).padding.bottom +
+                            bottomActionBarHeight,
+                      ),
+                    ),
+                  if (isAppleOS)
+                    SliverToBoxAdapter(
+                      key: gridRevertKey,
+                      child: const SizedBox.shrink(),
+                    ),
+                ],
               ),
             ),
-            if (isAppleOS)
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: Screens.bottomSafeHeight + bottomActionBarHeight,
-                ),
-              ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
