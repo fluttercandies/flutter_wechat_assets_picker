@@ -408,7 +408,7 @@ class DefaultAssetPickerViewerBuilderDelegate
   Widget momentVideoBackButton(BuildContext context) {
     return PositionedDirectional(
       start: 16,
-      top: context.mediaQuery.padding.top + 16,
+      top: context.topPadding + 16,
       child: GestureDetector(
         onTap: Navigator.of(context).maybePop,
         child: Container(
@@ -436,14 +436,14 @@ class DefaultAssetPickerViewerBuilderDelegate
       builder: (_, bool v, __, Widget? child) => AnimatedPositionedDirectional(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        bottom: v ? 0 : -(Screens.bottomSafeHeight + bottomDetailHeight),
+        bottom: v ? 0 : -(context.bottomPadding + bottomDetailHeight),
         start: 0,
         end: 0,
-        height: Screens.bottomSafeHeight + bottomDetailHeight,
+        height: context.bottomPadding + bottomDetailHeight,
         child: child!,
       ),
       child: Padding(
-        padding: EdgeInsetsDirectional.only(bottom: Screens.bottomSafeHeight),
+        padding: EdgeInsetsDirectional.only(bottom: context.bottomPadding),
         child: ChangeNotifierProvider<
             AssetPickerViewerProvider<AssetEntity>?>.value(
           value: provider,
@@ -575,14 +575,14 @@ class DefaultAssetPickerViewerBuilderDelegate
       builder: (_, bool value, Widget? child) => AnimatedPositionedDirectional(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        top: value ? 0.0 : -(Screens.topSafeHeight + kToolbarHeight),
+        top: value ? 0.0 : -(context.topPadding + kToolbarHeight),
         start: 0.0,
         end: 0.0,
-        height: Screens.topSafeHeight + kToolbarHeight,
+        height: context.topPadding + kToolbarHeight,
         child: child!,
       ),
       child: Container(
-        padding: EdgeInsetsDirectional.only(top: Screens.topSafeHeight),
+        padding: EdgeInsetsDirectional.only(top: context.topPadding),
         color: themeData.canvasColor,
         child: Stack(
           fit: StackFit.expand,
@@ -822,7 +822,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                   momentVideoBackButton(context),
                   PositionedDirectional(
                     end: 16,
-                    bottom: context.mediaQuery.padding.bottom + 16,
+                    bottom: context.bottomPadding + 16,
                     child: confirmButton(context),
                   ),
                 ] else ...<Widget>[

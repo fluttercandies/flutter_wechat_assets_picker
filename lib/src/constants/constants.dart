@@ -35,7 +35,6 @@ export 'colors.dart';
 export 'custom_scroll_physics.dart';
 export 'enums.dart';
 export 'extensions.dart';
-export 'screens.dart';
 
 class Constants {
   const Constants._();

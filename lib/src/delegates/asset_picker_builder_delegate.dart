@@ -264,7 +264,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
         },
         child: PlatformProgressIndicator(
           color: theme.iconTheme.color,
-          size: Screens.width / gridCount / 3,
+          size: context.mediaQuery.size.width / gridCount / 3,
         ),
       ),
     );
@@ -388,7 +388,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     Widget child = Container(
       height: bottomActionBarHeight + context.bottomPadding,
       padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
-        bottom: Screens.bottomSafeHeight,
+        bottom: context.bottomPadding,
       ),
       color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
       child: Row(children: <Widget>[
@@ -787,7 +787,7 @@ class DefaultAssetPickerBuilderDelegate
     // [gridCount] since every grid item is squeezed by the [itemSpacing],
     // and it's actual size is reduced with [itemSpacing / gridCount].
     final double dividedSpacing = itemSpacing / gridCount;
-    final double topPadding = context.mediaQuery.padding.top + kToolbarHeight;
+    final double topPadding = context.topPadding + kToolbarHeight;
 
     Widget _sliverGrid(BuildContext ctx, List<AssetEntity> assets) {
       return SliverGrid(
@@ -860,15 +860,11 @@ class DefaultAssetPickerBuilderDelegate
                 center: isAppleOS ? gridRevertKey : null,
                 slivers: <Widget>[
                   if (isAppleOS)
-                    SliverGap.v(
-                      context.mediaQuery.padding.top + kToolbarHeight,
-                    ),
+                    SliverGap.v(context.topPadding + kToolbarHeight),
                   _sliverGrid(_, assets),
                   // Ignore the gap when the [anchor] is not equal to 1.
                   if (isAppleOS && anchor == 1)
-                    SliverGap.v(
-                      context.mediaQuery.padding.bottom + bottomSectionHeight,
-                    ),
+                    SliverGap.v(context.bottomPadding + bottomSectionHeight),
                   if (isAppleOS)
                     SliverToBoxAdapter(
                       key: gridRevertKey,
@@ -1164,7 +1160,7 @@ class DefaultAssetPickerBuilderDelegate
           }
           return PlatformProgressIndicator(
             color: theme.iconTheme.color,
-            size: Screens.width / gridCount / 3,
+            size: context.mediaQuery.size.width / gridCount / 3,
           );
         },
       ),
@@ -1198,7 +1194,7 @@ class DefaultAssetPickerBuilderDelegate
   @override
   Widget pathEntityListWidget(BuildContext context) {
     return Positioned.fill(
-      top: isAppleOS ? context.mediaQuery.padding.top + kToolbarHeight : 0,
+      top: isAppleOS ? context.topPadding + kToolbarHeight : 0,
       bottom: null,
       child: Selector<DefaultAssetPickerProvider, bool>(
         selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
@@ -1212,7 +1208,7 @@ class DefaultAssetPickerBuilderDelegate
             curve: switchingPathCurve,
             opacity: !isAppleOS || isSwitchingPath ? 1.0 : 0.0,
             child: Container(
-              height: Screens.height * 0.8,
+              height: context.mediaQuery.size.height * (isAppleOS ? .6 : .8),
               decoration: BoxDecoration(
                 borderRadius: isAppleOS
                     ? const BorderRadius.vertical(bottom: Radius.circular(10.0))
@@ -1227,23 +1223,30 @@ class DefaultAssetPickerBuilderDelegate
           children: <Widget>[
             ValueListenableBuilder<PermissionState>(
               valueListenable: permission,
-              builder: (_, PermissionState ps, __) {
+              builder: (_, PermissionState ps, Widget? child) {
                 if (isPermissionLimited) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                    child: Text(
-                      Constants.textDelegate.viewingLimitedAssetsTip,
-                      style: context.themeData.textTheme.caption?.copyWith(
-                        fontSize: 15,
-                      ),
-                    ),
-                  );
+                  return child!;
                 }
                 return const SizedBox.shrink();
               },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                child: Text.rich(
+                  TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: Constants.textDelegate.viewingLimitedAssetsTip,
+                      ),
+                    ],
+                  ),
+                  style: context.themeData.textTheme.caption?.copyWith(
+                    fontSize: 15,
+                  ),
+                ),
+              ),
             ),
             Expanded(
               child: Selector<DefaultAssetPickerProvider, int>(
@@ -1290,7 +1293,9 @@ class DefaultAssetPickerBuilderDelegate
         onTap: () => provider.isSwitchingPath = !provider.isSwitchingPath,
         child: Container(
           height: appBarItemHeight,
-          constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
+          constraints: BoxConstraints(
+            maxWidth: context.mediaQuery.size.width * 0.5,
+          ),
           padding: const EdgeInsetsDirectional.only(start: 12.0, end: 6.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
@@ -1514,7 +1519,8 @@ class DefaultAssetPickerBuilderDelegate
           (DefaultAssetPickerProvider p) => p.selectedAssets,
         );
         final bool selected = selectedAssets.contains(asset);
-        final double indicatorSize = Screens.width / gridCount / 3;
+        final double indicatorSize =
+            context.mediaQuery.size.width / gridCount / 3;
         final Widget innerSelector = AnimatedContainer(
           duration: switchingPathDuration,
           width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
@@ -1562,7 +1568,7 @@ class DefaultAssetPickerBuilderDelegate
           },
           child: Container(
             margin: EdgeInsets.all(
-              Screens.width / gridCount / (isAppleOS ? 12.0 : 15.0),
+              context.mediaQuery.size.width / gridCount / (isAppleOS ? 12 : 15),
             ),
             width: isPreviewEnabled ? indicatorSize : null,
             height: isPreviewEnabled ? indicatorSize : null,
