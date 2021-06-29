@@ -51,6 +51,8 @@ class AssetsPickerTextDelegate {
 
   String get viewingLimitedAssetsTip => '应用只能访问部分资源和相册';
 
+  String get changeAccessibleLimitedAssets => '设置可访问的资源';
+
   String get accessAllTip => '你已设置应用只能访问设备部分资源，'
       '建议允许访问「所有资源」';
 
@@ -114,6 +116,10 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
   @override
   String get viewingLimitedAssetsTip =>
       'Only view assets and albums accessible to app.';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'Change accessible limited assets';
 
   @override
   String get accessAllTip => 'App can only access some assets on the device.'

@@ -8,6 +8,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
@@ -107,6 +108,14 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       (theme.effectiveBrightness.isDark
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark);
+
+  /// The color for interactive texts.
+  /// 可交互的文字的颜色
+  Color interactiveTextColor(BuildContext context) => Color.lerp(
+        context.themeData.iconTheme.color?.withOpacity(.7) ?? Colors.white,
+        Colors.blueAccent,
+        0.4,
+      )!;
 
   /// Whether the current platform is Apple OS.
   /// 当前平台是否苹果系列系统 (iOS & MacOS)
@@ -514,13 +523,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       onTap: () => permissionOverlayHidden.value = true,
       child: Text(
         Constants.textDelegate.accessLimitedAssets,
-        style: TextStyle(
-          color: Color.lerp(
-            context.themeData.iconTheme.color?.withOpacity(.5),
-            Colors.blue,
-            0.3,
-          ),
-        ),
+        style: TextStyle(color: interactiveTextColor(context)),
       ),
     );
 
@@ -1239,6 +1242,13 @@ class DefaultAssetPickerBuilderDelegate
                     children: <TextSpan>[
                       TextSpan(
                         text: Constants.textDelegate.viewingLimitedAssetsTip,
+                      ),
+                      TextSpan(
+                        text: ' '
+                            '${Constants.textDelegate.changeAccessibleLimitedAssets}',
+                        style: TextStyle(color: interactiveTextColor(context)),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = PhotoManager.presentLimited,
                       ),
                     ],
                   ),
