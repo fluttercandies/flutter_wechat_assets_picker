@@ -192,6 +192,9 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   /// 选中资源是否为空
   bool get isSelectedNotEmpty => selectedAssets.isNotEmpty;
 
+  /// 是否已经选择了最大数量的资源
+  bool get selectedMaximumAssets => selectedAssets.length == maxAssets;
+
   /// Get assets path entities.
   /// 获取所有的资源路径
   Future<void> getAssetPathList();
