@@ -269,68 +269,42 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     );
   }
 
+  /// The effective direction for the assets grid.
+  /// 网格实际的方向
+  ///
+  /// By default, the direction will be reversed if it's iOS/macOS.
+  /// 默认情况下，在 iOS/macOS 上方向会反向。
+  TextDirection effectiveGridDirection(BuildContext context) {
+    final TextDirection _od = Directionality.of(context);
+    if (isAppleOS) {
+      if (_od == TextDirection.ltr) {
+        return TextDirection.rtl;
+      }
+      return TextDirection.ltr;
+    }
+    return _od;
+  }
+
   /// The main grid view builder for assets.
   /// 主要的资源查看网格部件
-  Widget assetsGridBuilder(BuildContext context) {
-    return ColoredBox(
-      color: theme.canvasColor,
-      child: Selector<AssetPickerProvider<A, P>, List<A>>(
-        selector: (_, AssetPickerProvider<A, P> provider) =>
-            provider.currentAssets,
-        builder: (_, List<A> currentAssets, __) => CustomScrollView(
-          controller: gridScrollController,
-          slivers: <Widget>[
-            if (isAppleOS)
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: Screens.topSafeHeight + kToolbarHeight,
-                ),
-              ),
-            SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (_, int index) => Builder(
-                  builder: (BuildContext c) => assetGridItemBuilder(
-                    c,
-                    index,
-                    currentAssets,
-                  ),
-                ),
-                childCount: assetsGridItemCount(_, currentAssets),
-                findChildIndexCallback: (Key? key) {
-                  if (key is ValueKey<String>) {
-                    return findChildIndexBuilder(
-                      key.value,
-                      currentAssets,
-                    );
-                  }
-                  return null;
-                },
-              ),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: gridCount,
-                mainAxisSpacing: itemSpacing,
-                crossAxisSpacing: itemSpacing,
-              ),
-            ),
-            if (isAppleOS)
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: Screens.bottomSafeHeight + bottomActionBarHeight,
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget assetsGridBuilder(BuildContext context);
 
   /// Indicates how would the grid found a reusable [RenderObject] through [id].
   /// 为 Grid 布局指示如何找到可复用的 [RenderObject]。
-  int? findChildIndexBuilder(String id, List<A> currentAssets) => null;
+  int? findChildIndexBuilder({
+    required String id,
+    required List<A> assets,
+    int placeholderCount = 0,
+  }) =>
+      null;
 
   /// The function which return items count for the assets' grid.
   /// 为资源列表提供内容数量计算的方法
-  int assetsGridItemCount(BuildContext context, List<A> currentAssets);
+  int assetsGridItemCount({
+    required BuildContext context,
+    required List<A> assets,
+    int placeholderCount = 0,
+  });
 
   /// The item builder for the assets' grid.
   /// 资源列表项的构建
@@ -680,6 +654,8 @@ class DefaultAssetPickerBuilderDelegate
   /// 资源的预览是否启用
   bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
 
+  final GlobalKey _gridRevertKey = GlobalKey();
+
   @override
   Widget androidLayout(BuildContext context) {
     return FixedAppBarWrapper(
@@ -779,6 +755,118 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
+  @override
+  Widget assetsGridBuilder(BuildContext context) {
+    // First, we need the count of the assets.
+    final int totalCount = provider.currentPathEntity!.assetCount;
+    // Then we use the total count to calculate how many placeholders we need.
+    final int _placeholderCount;
+    if (isAppleOS) {
+      _placeholderCount =
+          totalCount % gridCount == 0 ? 0 : gridCount - totalCount % gridCount;
+    } else {
+      _placeholderCount = 0;
+    }
+
+    Widget _sliverGrid(BuildContext c, List<AssetEntity> assets) {
+      return SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          (_, int index) => Builder(
+            builder: (BuildContext c) {
+              if (isAppleOS) {
+                if (index < _placeholderCount) {
+                  return const SizedBox.shrink();
+                }
+                index -= _placeholderCount;
+              }
+              return Directionality(
+                textDirection: Directionality.of(context),
+                child: assetGridItemBuilder(c, index, assets),
+              );
+            },
+          ),
+          childCount: assetsGridItemCount(
+            context: c,
+            assets: assets,
+            placeholderCount: _placeholderCount,
+          ),
+          findChildIndexCallback: (Key? key) {
+            if (key is ValueKey<String>) {
+              return findChildIndexBuilder(
+                id: key.value,
+                assets: assets,
+                placeholderCount: _placeholderCount,
+              );
+            }
+            return null;
+          },
+        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: gridCount,
+          mainAxisSpacing: itemSpacing,
+          crossAxisSpacing: itemSpacing,
+        ),
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (BuildContext c, BoxConstraints constraints) {
+        final double topPadding = c.mediaQuery.padding.top + kToolbarHeight;
+        final double bottomPadding =
+            c.mediaQuery.padding.bottom + bottomActionBarHeight;
+        final double verticalPadding = topPadding + bottomPadding;
+
+        final int _count = totalCount + _placeholderCount;
+        final double _wWidth = constraints.maxWidth;
+        final double _wHeight = constraints.maxHeight - topPadding;
+        final double _itemSize = _wWidth / gridCount;
+        final double anchor;
+        if (_count <= gridCount) {
+          anchor = verticalPadding / _wHeight;
+        } else {
+          anchor = math.min(
+            _count ~/ gridCount * _itemSize / _wHeight,
+            1,
+          );
+        }
+
+        return Directionality(
+          textDirection: effectiveGridDirection(context),
+          child: ColoredBox(
+            color: theme.canvasColor,
+            child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
+              selector: (_, DefaultAssetPickerProvider provider) =>
+                  provider.currentAssets,
+              builder: (BuildContext c, List<AssetEntity> assets, __) {
+                return CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  controller: gridScrollController,
+                  anchor: isAppleOS ? anchor : 0,
+                  center: isAppleOS ? _gridRevertKey : null,
+                  slivers: <Widget>[
+                    if (isAppleOS)
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height:
+                              context.mediaQuery.padding.top + kToolbarHeight,
+                        ),
+                      ),
+                    _sliverGrid(c, assets),
+                    if (isAppleOS)
+                      SliverToBoxAdapter(
+                        key: _gridRevertKey,
+                        child: const SizedBox.shrink(),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   /// There are several conditions within this builder:
   ///  * Return [specialItemBuilder] while the current path is all and
   ///    [specialItemPosition] is not equal to [SpecialItemPosition.none].
@@ -873,19 +961,25 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
-  int findChildIndexBuilder(String id, List<AssetEntity> currentAssets) {
-    int index = currentAssets.indexWhere((AssetEntity e) => e.id == id);
+  int findChildIndexBuilder({
+    required String id,
+    required List<AssetEntity> assets,
+    int placeholderCount = 0,
+  }) {
+    int index = assets.indexWhere((AssetEntity e) => e.id == id);
     if (specialItemPosition == SpecialItemPosition.prepend) {
       index += 1;
     }
+    index += placeholderCount;
     return index;
   }
 
   @override
-  int assetsGridItemCount(
-    BuildContext context,
-    List<AssetEntity> currentAssets,
-  ) {
+  int assetsGridItemCount({
+    required BuildContext context,
+    required List<AssetEntity> assets,
+    int placeholderCount = 0,
+  }) {
     final AssetPathEntity? currentPathEntity =
         context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
       (DefaultAssetPickerProvider p) => p.currentPathEntity,
@@ -898,7 +992,7 @@ class DefaultAssetPickerBuilderDelegate
 
     /// Return actual length if current path is all.
     /// 如果当前目录是全部内容，则返回实际的内容数量。
-    final int _length = currentAssets.length;
+    final int _length = assets.length + placeholderCount;
     if (!currentPathEntity!.isAll) {
       return _length;
     }

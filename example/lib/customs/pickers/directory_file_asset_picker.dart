@@ -533,6 +533,63 @@ class FileAssetPickerBuilder
   }
 
   @override
+  Widget assetsGridBuilder(BuildContext context) {
+    return ColoredBox(
+      color: theme.canvasColor,
+      child: Selector<FileAssetPickerProvider, List<File>>(
+        selector: (_, FileAssetPickerProvider provider) =>
+            provider.currentAssets,
+        builder: (_, List<File> currentAssets, __) => CustomScrollView(
+          controller: gridScrollController,
+          slivers: <Widget>[
+            if (isAppleOS)
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: Screens.topSafeHeight + kToolbarHeight,
+                ),
+              ),
+            SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (_, int index) => Builder(
+                  builder: (BuildContext c) => assetGridItemBuilder(
+                    c,
+                    index,
+                    currentAssets,
+                  ),
+                ),
+                childCount: assetsGridItemCount(
+                  context: _,
+                  assets: currentAssets,
+                ),
+                findChildIndexCallback: (Key? key) {
+                  if (key is ValueKey<String>) {
+                    return findChildIndexBuilder(
+                      id: key.value,
+                      assets: currentAssets,
+                    );
+                  }
+                  return null;
+                },
+              ),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: gridCount,
+                mainAxisSpacing: itemSpacing,
+                crossAxisSpacing: itemSpacing,
+              ),
+            ),
+            if (isAppleOS)
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: Screens.bottomSafeHeight + bottomActionBarHeight,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget assetGridItemBuilder(
     BuildContext context,
     int index,
@@ -566,18 +623,22 @@ class FileAssetPickerBuilder
   }
 
   @override
-  int assetsGridItemCount(BuildContext context, List<File> currentAssets) {
+  int assetsGridItemCount({
+    required BuildContext context,
+    required List<File> assets,
+    int placeholderCount = 0,
+  }) {
     int length;
     switch (specialItemPosition) {
       case SpecialItemPosition.none:
-        length = currentAssets.length;
+        length = assets.length;
         break;
       case SpecialItemPosition.prepend:
       case SpecialItemPosition.append:
-        length = currentAssets.length + 1;
+        length = assets.length + 1;
         break;
     }
-    return length;
+    return length + placeholderCount;
   }
 
   @override
@@ -1046,8 +1107,12 @@ class FileAssetPickerBuilder
   }
 
   @override
-  int findChildIndexBuilder(String id, List<File> currentAssets) {
-    return currentAssets.indexWhere((File file) => file.path == id);
+  int findChildIndexBuilder({
+    required String id,
+    required List<File> assets,
+    int placeholderCount = 0,
+  }) {
+    return assets.indexWhere((File file) => file.path == id);
   }
 }
 
