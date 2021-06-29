@@ -255,6 +255,21 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 资源是否已选的指示器
   Widget selectIndicator(BuildContext context, A asset);
 
+  /// Indicator when the asset cannot be selected.
+  /// 当资源无法被选中时的遮罩
+  Widget itemBannedIndicator(BuildContext context, A asset) {
+    return Consumer<AssetPickerProvider<A, P>>(
+      builder: (_, AssetPickerProvider<A, P> p, __) {
+        if (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) {
+          return Container(
+            color: theme.colorScheme.background.withOpacity(.85),
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
   /// Loading indicator.
   /// 加载指示器
   Widget loadingIndicator(BuildContext context) {
@@ -652,7 +667,7 @@ class DefaultAssetPickerBuilderDelegate
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
-  Duration get switchingPathDuration => kThemeAnimationDuration * 1.5;
+  Duration get switchingPathDuration => kThemeAnimationDuration;
 
   /// [Curve] when triggering path switching.
   /// 切换路径时的动画曲线
@@ -971,6 +986,7 @@ class DefaultAssetPickerBuilderDelegate
         builder,
         if (!isWeChatMoment || asset.type != AssetType.video)
           selectIndicator(context, asset),
+        itemBannedIndicator(context, asset),
       ],
     );
   }
@@ -1199,98 +1215,104 @@ class DefaultAssetPickerBuilderDelegate
     return Positioned.fill(
       top: isAppleOS ? context.topPadding + kToolbarHeight : 0,
       bottom: null,
-      child: Selector<DefaultAssetPickerProvider, bool>(
-        selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
-        builder: (_, bool isSwitchingPath, Widget? w) => AnimatedAlign(
-          duration: switchingPathDuration,
-          curve: switchingPathCurve,
-          alignment: Alignment.bottomCenter,
-          heightFactor: isSwitchingPath ? 1 : 0,
-          child: AnimatedOpacity(
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(10.0),
+        ),
+        child: Selector<DefaultAssetPickerProvider, bool>(
+          selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
+          builder: (_, bool isSwitchingPath, Widget? w) => AnimatedAlign(
             duration: switchingPathDuration,
             curve: switchingPathCurve,
-            opacity: !isAppleOS || isSwitchingPath ? 1.0 : 0.0,
-            child: Container(
-              height: context.mediaQuery.size.height * (isAppleOS ? .6 : .8),
-              decoration: BoxDecoration(
-                borderRadius: isAppleOS
-                    ? const BorderRadius.vertical(bottom: Radius.circular(10.0))
-                    : null,
+            alignment: Alignment.bottomCenter,
+            heightFactor: isSwitchingPath ? 1 : 0,
+            child: AnimatedOpacity(
+              duration: switchingPathDuration,
+              curve: switchingPathCurve,
+              opacity: !isAppleOS || isSwitchingPath ? 1.0 : 0.0,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight:
+                      context.mediaQuery.size.height * (isAppleOS ? .6 : .8),
+                ),
                 color: theme.colorScheme.background,
+                child: w,
               ),
-              child: w,
             ),
           ),
-        ),
-        child: Column(
-          children: <Widget>[
-            ValueListenableBuilder<PermissionState>(
-              valueListenable: permission,
-              builder: (_, PermissionState ps, Widget? child) {
-                if (isPermissionLimited) {
-                  return child!;
-                }
-                return const SizedBox.shrink();
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
-                child: Text.rich(
-                  TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: Constants.textDelegate.viewingLimitedAssetsTip,
-                      ),
-                      TextSpan(
-                        text: ' '
-                            '${Constants.textDelegate.changeAccessibleLimitedAssets}',
-                        style: TextStyle(color: interactiveTextColor(context)),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = PhotoManager.presentLimited,
-                      ),
-                    ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ValueListenableBuilder<PermissionState>(
+                valueListenable: permission,
+                builder: (_, PermissionState ps, Widget? child) {
+                  if (isPermissionLimited) {
+                    return child!;
+                  }
+                  return const SizedBox.shrink();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
                   ),
-                  style: context.themeData.textTheme.caption?.copyWith(
-                    fontSize: 15,
+                  child: Text.rich(
+                    TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: Constants.textDelegate.viewingLimitedAssetsTip,
+                        ),
+                        TextSpan(
+                          text: ' '
+                              '${Constants.textDelegate.changeAccessibleLimitedAssets}',
+                          style:
+                              TextStyle(color: interactiveTextColor(context)),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = PhotoManager.presentLimited,
+                        ),
+                      ],
+                    ),
+                    style: context.themeData.textTheme.caption?.copyWith(
+                      fontSize: 15,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Selector<DefaultAssetPickerProvider, int>(
-                selector: (_, DefaultAssetPickerProvider p) =>
-                    p.validPathThumbCount,
-                builder: (_, int count, __) => Selector<
-                    DefaultAssetPickerProvider,
-                    Map<AssetPathEntity, Uint8List?>>(
+              Flexible(
+                child: Selector<DefaultAssetPickerProvider, int>(
                   selector: (_, DefaultAssetPickerProvider p) =>
-                      p.pathEntityList,
-                  builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
-                    return ListView.separated(
-                      padding: const EdgeInsetsDirectional.only(top: 1.0),
-                      itemCount: list.length,
-                      itemBuilder: (BuildContext c, int index) =>
-                          pathEntityWidget(
-                        context: c,
-                        list: list,
-                        index: index,
-                        isAudio: (provider as DefaultAssetPickerProvider)
-                                .requestType ==
-                            RequestType.audio,
-                      ),
-                      separatorBuilder: (_, __) => Container(
-                        margin: const EdgeInsetsDirectional.only(start: 60.0),
-                        height: 1.0,
-                        color: theme.canvasColor,
-                      ),
-                    );
-                  },
+                      p.validPathThumbCount,
+                  builder: (_, int count, __) => Selector<
+                      DefaultAssetPickerProvider,
+                      Map<AssetPathEntity, Uint8List?>>(
+                    selector: (_, DefaultAssetPickerProvider p) =>
+                        p.pathEntityList,
+                    builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
+                      return ListView.separated(
+                        padding: const EdgeInsetsDirectional.only(top: 1.0),
+                        shrinkWrap: true,
+                        itemCount: list.length,
+                        itemBuilder: (BuildContext c, int i) =>
+                            pathEntityWidget(
+                          context: c,
+                          list: list,
+                          index: i,
+                          isAudio: (provider as DefaultAssetPickerProvider)
+                                  .requestType ==
+                              RequestType.audio,
+                        ),
+                        separatorBuilder: (_, __) => Container(
+                          margin: const EdgeInsetsDirectional.only(start: 60.0),
+                          height: 1.0,
+                          color: theme.canvasColor,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1520,7 +1542,25 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
+  Widget itemBannedIndicator(BuildContext context, AssetEntity asset) {
+    return Consumer<DefaultAssetPickerProvider>(
+      builder: (_, DefaultAssetPickerProvider p, __) {
+        if ((!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
+            (isWeChatMoment &&
+                asset.type == AssetType.video &&
+                p.selectedAssets.isNotEmpty)) {
+          return Container(
+            color: theme.colorScheme.background.withOpacity(.85),
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  @override
   Widget selectIndicator(BuildContext context, AssetEntity asset) {
+    final Duration duration = switchingPathDuration * 0.75;
     return Selector<DefaultAssetPickerProvider, String>(
       selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
       builder: (BuildContext context, _, __) {
@@ -1532,7 +1572,7 @@ class DefaultAssetPickerBuilderDelegate
         final double indicatorSize =
             context.mediaQuery.size.width / gridCount / 3;
         final Widget innerSelector = AnimatedContainer(
-          duration: switchingPathDuration,
+          duration: duration,
           width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
           height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
           decoration: BoxDecoration(
@@ -1542,22 +1582,10 @@ class DefaultAssetPickerBuilderDelegate
             shape: BoxShape.circle,
           ),
           child: AnimatedSwitcher(
-            duration: switchingPathDuration,
-            reverseDuration: switchingPathDuration,
+            duration: duration,
+            reverseDuration: duration,
             child: selected
-                ? isSingleAssetMode
-                    ? const Icon(Icons.check, size: 18.0)
-                    : Text(
-                        '${selectedAssets.indexOf(asset) + 1}',
-                        style: TextStyle(
-                          color: selected
-                              ? theme.textTheme.bodyText1?.color
-                              : null,
-                          fontSize: isAppleOS ? 16.0 : 14.0,
-                          fontWeight:
-                              isAppleOS ? FontWeight.w600 : FontWeight.bold,
-                        ),
-                      )
+                ? const Icon(Icons.check, size: 18.0)
                 : const SizedBox.shrink(),
           ),
         );
@@ -1602,15 +1630,23 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget selectedBackdrop(BuildContext context, int index, AssetEntity asset) {
+    bool selectedAllAndNotSelected() =>
+        !provider.selectedAssets.contains(asset) &&
+        provider.selectedMaximumAssets;
+    bool selectedPhotosAndIsVideo() =>
+        isWeChatMoment &&
+        asset.type == AssetType.video &&
+        provider.selectedAssets.isNotEmpty;
+
     return Positioned.fill(
       child: GestureDetector(
         onTap: () async {
+          // When we reached the maximum select count and the asset
+          // is not selected, do nothing.
           // When the special type is WeChat Moment, pictures and videos cannot
           // be selected at the same time. Video select should be banned if any
           // pictures are selected.
-          if (isWeChatMoment &&
-              asset.type == AssetType.video &&
-              provider.selectedAssets.isNotEmpty) {
+          if (selectedAllAndNotSelected() || selectedPhotosAndIsVideo()) {
             return;
           }
           final List<AssetEntity> _current;
@@ -1652,12 +1688,27 @@ class DefaultAssetPickerBuilderDelegate
         child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
           selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
           builder: (_, List<AssetEntity> selectedAssets, __) {
-            final bool selected = selectedAssets.contains(asset);
+            final int index = selectedAssets.indexOf(asset);
+            final bool selected = index != -1;
             return AnimatedContainer(
               duration: switchingPathDuration,
               color: selected
-                  ? theme.colorScheme.primary.withOpacity(0.45)
-                  : Colors.black.withOpacity(0.1),
+                  ? theme.colorScheme.primary.withOpacity(.45)
+                  : Colors.black.withOpacity(.1),
+              child: selected && !isSingleAssetMode
+                  ? Container(
+                      alignment: AlignmentDirectional.topStart,
+                      padding: const EdgeInsets.all(14),
+                      child: Text(
+                        '${index + 1}',
+                        style: TextStyle(
+                          color: theme.textTheme.bodyText1?.color
+                              ?.withOpacity(.75),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             );
           },
         ),
