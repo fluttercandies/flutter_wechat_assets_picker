@@ -99,6 +99,47 @@ class PickMethod {
     );
   }
 
+  factory PickMethod.cameraAndStay({required int maxAssetsCount}) {
+    return PickMethod(
+      icon: '📸',
+      name: 'Pick from camera and stay',
+      description: 'Take a photo or video with the camera picker, '
+          'select the result and stay in the entities list.',
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          maxAssets: maxAssetsCount,
+          selectedAssets: assets,
+          requestType: RequestType.common,
+          specialItemPosition: SpecialItemPosition.prepend,
+          specialItemBuilder: (BuildContext context) {
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () async {
+                final AssetEntity? result = await CameraPicker.pickFromCamera(
+                  context,
+                  enableRecording: true,
+                );
+                if (result != null) {
+                  final AssetPicker<AssetEntity, AssetPathEntity> picker =
+                      context.findAncestorWidgetOfExactType()!;
+                  final DefaultAssetPickerProvider p =
+                      picker.builder.provider as DefaultAssetPickerProvider;
+                  await p.currentPathEntity!.refreshPathProperties();
+                  await p.switchPath(p.currentPathEntity!);
+                  p.selectAsset(result);
+                }
+              },
+              child: const Center(
+                child: Icon(Icons.camera_enhance, size: 42.0),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   factory PickMethod.common(int maxAssetsCount) {
     return PickMethod(
       icon: '📹',
