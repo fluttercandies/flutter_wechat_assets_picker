@@ -176,6 +176,9 @@ class HebrewTextDelegate extends AssetsPickerTextDelegate {
       'הצג רק קבצים ואלבומים נגישים לאפליקציה.';
 
   @override
+  String get changeAccessibleLimitedAssets => 'אפשר גישה לקבצים נוספים';
+
+  @override
   String get accessAllTip => 'האפליקציה יכולה לגשת רק לחלק מהקבצים במכשיר.'
       'פתח הגדרות מערכת ואפשר לאפליקציה גישה לכל הקבצים במכשיר';
 
@@ -262,6 +265,10 @@ class RussianTextDelegate extends AssetsPickerTextDelegate {
   @override
   String get viewingLimitedAssetsTip =>
       'Показать только файлы, которые доступны приложению.';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'Разрешить доступ к дополнительным файлам';
 
   @override
   String get accessAllTip =>
@@ -352,6 +359,9 @@ class ArabicTextDelegate extends AssetsPickerTextDelegate {
   @override
   String get viewingLimitedAssetsTip =>
       'إظهار الملفات والألبومات التي يمكن للتطبيق الوصول إليها فقط.';
+
+  @override
+  String get changeAccessibleLimitedAssets => 'السماح بالوصول إلى ملفات إضافية';
 
   @override
   String get accessAllTip =>
