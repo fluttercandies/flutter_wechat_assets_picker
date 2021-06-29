@@ -91,6 +91,10 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// The [ScrollController] for the preview grid.
   final ScrollController gridScrollController = ScrollController();
 
+  /// The [GlobalKey] for [assetsGridBuilder] to locate the [ScrollView.center].
+  /// [assetsGridBuilder] 用于定位 [ScrollView.center] 的 [GlobalKey]
+  final GlobalKey gridRevertKey = GlobalKey();
+
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
   ThemeData get theme => pickerTheme ?? AssetPicker.themeData(themeColor);
@@ -654,8 +658,6 @@ class DefaultAssetPickerBuilderDelegate
   /// 资源的预览是否启用
   bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
 
-  final GlobalKey _gridRevertKey = GlobalKey();
-
   @override
   Widget androidLayout(BuildContext context) {
     return FixedAppBarWrapper(
@@ -846,7 +848,7 @@ class DefaultAssetPickerBuilderDelegate
                 physics: const AlwaysScrollableScrollPhysics(),
                 controller: gridScrollController,
                 anchor: isAppleOS ? anchor : 0,
-                center: isAppleOS ? _gridRevertKey : null,
+                center: isAppleOS ? gridRevertKey : null,
                 slivers: <Widget>[
                   if (isAppleOS)
                     SliverGap.v(
@@ -860,7 +862,7 @@ class DefaultAssetPickerBuilderDelegate
                     ),
                   if (isAppleOS)
                     SliverToBoxAdapter(
-                      key: _gridRevertKey,
+                      key: gridRevertKey,
                       child: const SizedBox.shrink(),
                     ),
                 ],
