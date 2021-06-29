@@ -28,6 +28,7 @@ export '../widget/builder/fade_image_builder.dart';
 export '../widget/builder/image_page_builder.dart';
 export '../widget/builder/video_page_builder.dart';
 export '../widget/fixed_appbar.dart';
+export '../widget/gaps.dart';
 export '../widget/platform_progress_indicator.dart';
 
 export 'colors.dart';
