@@ -163,6 +163,15 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 当前的权限是否为受限
   bool get isPermissionLimited => permission.value == PermissionState.limited;
 
+  /// Keep a dispose method to sync with [State].
+  /// 保留一个 dispose 方法与 [State] 同步。
+  void dispose() {
+    provider.dispose();
+    gridScrollController.dispose();
+    permission.dispose();
+    permissionOverlayHidden.dispose();
+  }
+
   /// Path entity select widget builder.
   /// 路径选择部件构建
   Widget pathEntitySelector(BuildContext context);

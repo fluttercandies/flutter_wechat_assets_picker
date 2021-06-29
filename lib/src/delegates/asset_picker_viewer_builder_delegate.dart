@@ -107,6 +107,7 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
   void dispose() {
+    provider?.dispose();
     pageStreamController.close();
     previewingListController.dispose();
     selectedNotifier.dispose();

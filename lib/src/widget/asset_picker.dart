@@ -256,6 +256,7 @@ class AssetPickerState<A, P> extends State<AssetPicker<A, P>>
   @override
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
+    widget.builder.dispose();
     super.dispose();
   }
 
