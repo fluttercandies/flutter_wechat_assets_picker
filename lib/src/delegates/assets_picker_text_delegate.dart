@@ -119,7 +119,7 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get changeAccessibleLimitedAssets =>
-      'Change accessible limited assets';
+      'Update limited access assets list';
 
   @override
   String get accessAllTip => 'App can only access some assets on the device.'
