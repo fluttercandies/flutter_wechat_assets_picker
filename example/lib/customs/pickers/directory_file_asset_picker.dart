@@ -629,7 +629,7 @@ class FileAssetPickerBuilder
                     SliverToBoxAdapter(
                       child: SizedBox(
                         height: MediaQuery.of(context).padding.bottom +
-                            bottomActionBarHeight,
+                            bottomSectionHeight,
                       ),
                     ),
                   if (isAppleOS)

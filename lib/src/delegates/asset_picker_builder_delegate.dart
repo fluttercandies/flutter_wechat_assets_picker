@@ -128,9 +128,18 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 苹果系列系统布局方式下的模糊度
   double get appleOSBlurRadius => 10.0;
 
+  /// Height for the bottom occupied section.
+  /// 底部区域占用的高度
+  double get bottomSectionHeight =>
+      bottomActionBarHeight + permissionLimitedBarHeight;
+
   /// Height for bottom action bar.
   /// 底部操作栏的高度
   double get bottomActionBarHeight => kToolbarHeight / 1.1;
+
+  /// Height for the permission limited bar.
+  /// 权限受限栏的高度
+  double get permissionLimitedBarHeight => isPermissionLimited ? 75 : 0;
 
   /// Notifier for the current [PermissionState].
   /// 当前 [PermissionState] 的监听
@@ -344,7 +353,8 @@ abstract class AssetPickerBuilderDelegate<A, P> {
     return GestureDetector(
       onTap: PhotoManager.openSetting,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        height: permissionLimitedBarHeight,
         color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
         child: Row(
           children: <Widget>[
@@ -376,10 +386,8 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 底部操作栏部件
   Widget bottomActionBar(BuildContext context) {
     Widget child = Container(
-      height: bottomActionBarHeight + Screens.bottomSafeHeight,
-      padding: EdgeInsetsDirectional.only(
-        start: 20.0,
-        end: 20.0,
+      height: bottomActionBarHeight + context.bottomPadding,
+      padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
         bottom: Screens.bottomSafeHeight,
       ),
       color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
@@ -389,23 +397,21 @@ abstract class AssetPickerBuilderDelegate<A, P> {
         if (isAppleOS) confirmButton(context),
       ]),
     );
-    if (isAppleOS) {
-      if (isPermissionLimited) {
-        child = Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[accessLimitedBottomTip(context), child],
-        );
-      }
-      child = ClipRect(
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(
-            sigmaX: appleOSBlurRadius,
-            sigmaY: appleOSBlurRadius,
-          ),
-          child: child,
-        ),
+    if (isPermissionLimited) {
+      child = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[accessLimitedBottomTip(context), child],
       );
     }
+    child = ClipRect(
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(
+          sigmaX: appleOSBlurRadius,
+          sigmaY: appleOSBlurRadius,
+        ),
+        child: child,
+      ),
+    );
     return child;
   }
 
@@ -826,14 +832,17 @@ class DefaultAssetPickerBuilderDelegate
 
     return LayoutBuilder(
       builder: (BuildContext c, BoxConstraints constraints) {
-        final double _itemSize = constraints.maxWidth / gridCount;
+        final double itemSize = constraints.maxWidth / gridCount;
+        // Reduce [permissionLimitedBarHeight] for the final height.
+        final double height =
+            constraints.maxHeight - permissionLimitedBarHeight;
         // Use [ScrollView.anchor] to determine where is the first place of
         // the [SliverGrid]. Each row needs [dividedSpacing] to calculate,
         // then minus one times of [itemSpacing] because spacing's count in the
         // cross axis is always less than the rows.
         final double anchor = math.min(
-          (row * (_itemSize + dividedSpacing) + topPadding - itemSpacing) /
-              constraints.maxHeight,
+          (row * (itemSize + dividedSpacing) + topPadding - itemSpacing) /
+              height,
           1,
         );
 
@@ -858,7 +867,7 @@ class DefaultAssetPickerBuilderDelegate
                   // Ignore the gap when the [anchor] is not equal to 1.
                   if (isAppleOS && anchor == 1)
                     SliverGap.v(
-                      context.mediaQuery.padding.bottom + bottomActionBarHeight,
+                      context.mediaQuery.padding.bottom + bottomSectionHeight,
                     ),
                   if (isAppleOS)
                     SliverToBoxAdapter(
