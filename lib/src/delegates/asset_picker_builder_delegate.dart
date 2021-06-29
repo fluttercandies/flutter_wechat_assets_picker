@@ -758,26 +758,39 @@ class DefaultAssetPickerBuilderDelegate
   @override
   Widget assetsGridBuilder(BuildContext context) {
     // First, we need the count of the assets.
-    final int totalCount = provider.currentPathEntity!.assetCount;
-    // Then we use the total count to calculate how many placeholders we need.
-    final int _placeholderCount;
-    if (isAppleOS) {
-      _placeholderCount =
-          totalCount % gridCount == 0 ? 0 : gridCount - totalCount % gridCount;
-    } else {
-      _placeholderCount = 0;
+    int totalCount = provider.currentPathEntity!.assetCount;
+    // If user chose a special item's position, add 1 count.
+    if (specialItemPosition != SpecialItemPosition.none) {
+      totalCount += 1;
     }
+    // Then we use the [totalCount] to calculate how many placeholders we need.
+    final int placeholderCount;
+    if (isAppleOS && totalCount % gridCount != 0) {
+      // When there are left items that not filled into one row, filled the row
+      // with placeholders.
+      placeholderCount = gridCount - totalCount % gridCount;
+    } else {
+      // Otherwise, we don't need placeholders.
+      placeholderCount = 0;
+    }
+    // Calculate rows count.
+    final int row = (totalCount + placeholderCount) ~/ gridCount;
+    // Here we got a magic calculation. [itemSpacing] needs to be divided by
+    // [gridCount] since every grid item is squeezed by the [itemSpacing],
+    // and it's actual size is reduced with [itemSpacing / gridCount].
+    final double dividedSpacing = itemSpacing / gridCount;
+    final double topPadding = context.mediaQuery.padding.top + kToolbarHeight;
 
-    Widget _sliverGrid(BuildContext c, List<AssetEntity> assets) {
+    Widget _sliverGrid(BuildContext ctx, List<AssetEntity> assets) {
       return SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (_, int index) => Builder(
             builder: (BuildContext c) {
               if (isAppleOS) {
-                if (index < _placeholderCount) {
+                if (index < placeholderCount) {
                   return const SizedBox.shrink();
                 }
-                index -= _placeholderCount;
+                index -= placeholderCount;
               }
               return Directionality(
                 textDirection: Directionality.of(context),
@@ -786,16 +799,16 @@ class DefaultAssetPickerBuilderDelegate
             },
           ),
           childCount: assetsGridItemCount(
-            context: c,
+            context: ctx,
             assets: assets,
-            placeholderCount: _placeholderCount,
+            placeholderCount: placeholderCount,
           ),
           findChildIndexCallback: (Key? key) {
             if (key is ValueKey<String>) {
               return findChildIndexBuilder(
                 id: key.value,
                 assets: assets,
-                placeholderCount: _placeholderCount,
+                placeholderCount: placeholderCount,
               );
             }
             return null;
@@ -811,24 +824,16 @@ class DefaultAssetPickerBuilderDelegate
 
     return LayoutBuilder(
       builder: (BuildContext c, BoxConstraints constraints) {
-        final double topPadding = c.mediaQuery.padding.top + kToolbarHeight;
-        final double bottomPadding =
-            c.mediaQuery.padding.bottom + bottomActionBarHeight;
-        final double verticalPadding = topPadding + bottomPadding;
-
-        final int _count = totalCount + _placeholderCount;
-        final double _wWidth = constraints.maxWidth;
-        final double _wHeight = constraints.maxHeight - topPadding;
-        final double _itemSize = _wWidth / gridCount;
-        final double anchor;
-        if (_count <= gridCount) {
-          anchor = verticalPadding / _wHeight;
-        } else {
-          anchor = math.min(
-            _count ~/ gridCount * _itemSize / _wHeight,
-            1,
-          );
-        }
+        final double _itemSize = constraints.maxWidth / gridCount;
+        // Use [ScrollView.anchor] to determine where is the first place of
+        // the [SliverGrid]. Each row needs [dividedSpacing] to calculate,
+        // then minus one times of [itemSpacing] because spacing's count in the
+        // cross axis is always less than the rows.
+        final double anchor = math.min(
+          (row * (_itemSize + dividedSpacing) + topPadding - itemSpacing) /
+              constraints.maxHeight,
+          1,
+        );
 
         return Directionality(
           textDirection: effectiveGridDirection(context),
@@ -837,29 +842,29 @@ class DefaultAssetPickerBuilderDelegate
             child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
               selector: (_, DefaultAssetPickerProvider provider) =>
                   provider.currentAssets,
-              builder: (BuildContext c, List<AssetEntity> assets, __) {
-                return CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  controller: gridScrollController,
-                  anchor: isAppleOS ? anchor : 0,
-                  center: isAppleOS ? _gridRevertKey : null,
-                  slivers: <Widget>[
-                    if (isAppleOS)
-                      SliverToBoxAdapter(
-                        child: SizedBox(
-                          height:
-                              context.mediaQuery.padding.top + kToolbarHeight,
-                        ),
-                      ),
-                    _sliverGrid(c, assets),
-                    if (isAppleOS)
-                      SliverToBoxAdapter(
-                        key: _gridRevertKey,
-                        child: const SizedBox.shrink(),
-                      ),
-                  ],
-                );
-              },
+              builder: (_, List<AssetEntity> assets, __) => CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: gridScrollController,
+                anchor: isAppleOS ? anchor : 0,
+                center: isAppleOS ? _gridRevertKey : null,
+                slivers: <Widget>[
+                  if (isAppleOS)
+                    SliverGap.v(
+                      context.mediaQuery.padding.top + kToolbarHeight,
+                    ),
+                  _sliverGrid(_, assets),
+                  // Ignore the gap when the [anchor] is not equal to 1.
+                  if (isAppleOS && anchor == 1)
+                    SliverGap.v(
+                      context.mediaQuery.padding.bottom + bottomActionBarHeight,
+                    ),
+                  if (isAppleOS)
+                    SliverToBoxAdapter(
+                      key: _gridRevertKey,
+                      child: const SizedBox.shrink(),
+                    ),
+                ],
+              ),
             ),
           ),
         );
