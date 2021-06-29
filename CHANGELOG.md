@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 6.0.0
+## 6.0.0-dev.1
 
 Sync everything with WeChat 8.x .
 
@@ -14,6 +14,7 @@ Sync everything with WeChat 8.x .
 - Request more assets on iOS when the permission is limited.
 - Fit the assets' grid's layout as the iOS `Photos` app (reverted and start from the bottom).
 - Add Arabic language text delegate.
+- Allow using `AssetPicker` and `AssetPickerViewer` directly with delegates.
 
 ### Improvements
 
@@ -23,6 +24,7 @@ Sync everything with WeChat 8.x .
 - Grid items has removed fade builder for more straight feedback after it gets loaded.
 - Better interaction when jumping between previewing assets.
 - Path entities list layout structure performance & structure improved.
+- More precise thumbnail's option for iOS.
 
 ### Breaking changes
 
