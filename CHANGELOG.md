@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 6.0.0
+
+Sync everything with WeChat 8.x .
+
+### New features
+
+- Change the permission from the app settings when it's limited.
+- Request more assets on iOS when the permission is limited.
+- Fit the assets' grid's layout as the iOS `Photos` app (reverted and start from the bottom).
+- Add Arabic language text delegate.
+
+### Improvements
+
+- Items that being banned from select (reached max assets or type conflict)
+  will have a stronger color cover to indicate.
+- Video preview in the [SpecialPickerType.wechatMoment] is completely different from other previews.
+- Grid items has removed fade builder for more straight feedback after it gets loaded.
+- Better interaction when jumping between previewing assets.
+- Path entities list layout structure performance & structure improved.
+
+### Breaking changes
+
+Multiple refactoring happened with delegates,
+see [Migration Guide](guides/migration_guide.md) for more details.
+
 ## 5.5.7
 
 - Make `switchPath` method in `AssetPickerProvider` async.
