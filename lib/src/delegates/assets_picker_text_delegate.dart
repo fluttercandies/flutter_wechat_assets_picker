@@ -224,6 +224,28 @@ class GermanTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get unSupportedAssetType => 'HEIC Format ist nicht unterstützt.';
+
+  @override
+  String get unableToAccessAll => 'Zugriff nicht möglich';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'Zeigen Sie nur Dateien und Alben an, auf die die App zugreifen kann';
+
+  @override
+  String get accessAllTip => 'Die App kann nur auf einige der Dateien auf dem Gerät zugreifen. '
+      'Öffnen Sie die Systemeinstellungen und erlauben Sie der App, '
+      'auf alle Dateien auf dem Gerät zuzugreifen';
+
+  @override
+  String get goToSystemSettings => 'Gehe zu den Systemeinstellungen';
+
+  @override
+  String get accessLimitedAssets => 'Fahre fort mit limitierten Zugriff';
+
+  @override
+  String get accessiblePathName => 'Verfügbare Assets';
+
 }
 
 /// [AssetsPickerTextDelegate] implements with Russian.
