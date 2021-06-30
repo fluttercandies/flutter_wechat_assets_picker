@@ -267,13 +267,9 @@ class AssetPickerState<A, P> extends State<AssetPicker<A, P>>
     if (!widget.builder.isPermissionLimited) {
       return;
     }
-    final P? pathEntity = widget.builder.provider.currentPathEntity;
-    if (pathEntity != null) {
-      if (pathEntity is AssetPathEntity) {
-        await pathEntity.refreshPathProperties();
-      }
-      await widget.builder.provider.getAssetPathList();
-      await widget.builder.provider.switchPath(pathEntity);
+    await widget.builder.provider.getAssetPathList();
+    if (widget.builder.provider.currentPathEntity != null) {
+      await widget.builder.provider.switchPath();
     }
   }
 

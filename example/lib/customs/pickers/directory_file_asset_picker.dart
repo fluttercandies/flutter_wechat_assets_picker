@@ -369,7 +369,10 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<void> switchPath(Directory pathEntity) async {
+  Future<void> switchPath([Directory? pathEntity]) async {
+    if (pathEntity == null) {
+      return;
+    }
     isSwitchingPath = false;
     currentPathEntity = pathEntity;
     totalAssetsCount = 0;

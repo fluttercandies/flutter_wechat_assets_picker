@@ -57,7 +57,19 @@ you can stop reading._
 
 #### `AssetPickerProvider`
 
-- The `switchPath` method is now `Future<void>`.
+- The `switchPath` method has a different signature:
+
+Before:
+
+```dart
+void switchPath(P pathEntity);
+```
+
+After:
+
+```dart
+Future<void> switchPath([P? pathEntity]);
+```
 
 ## 5.0.0
 
