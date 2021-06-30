@@ -859,9 +859,19 @@ class DefaultAssetPickerBuilderDelegate
     return LayoutBuilder(
       builder: (BuildContext c, BoxConstraints constraints) {
         final double itemSize = constraints.maxWidth / gridCount;
-        // Reduce [permissionLimitedBarHeight] for the final height.
-        final double height =
-            constraints.maxHeight - permissionLimitedBarHeight;
+        // Check whether all rows can be placed at the same time.
+        final bool onlyOneScreen = row * itemSize <=
+            constraints.maxHeight -
+                context.bottomPadding -
+                topPadding -
+                permissionLimitedBarHeight;
+        final double height;
+        if (onlyOneScreen) {
+          height = constraints.maxHeight;
+        } else {
+          // Reduce [permissionLimitedBarHeight] for the final height.
+          height = constraints.maxHeight - permissionLimitedBarHeight;
+        }
         // Use [ScrollView.anchor] to determine where is the first place of
         // the [SliverGrid]. Each row needs [dividedSpacing] to calculate,
         // then minus one times of [itemSpacing] because spacing's count in the
