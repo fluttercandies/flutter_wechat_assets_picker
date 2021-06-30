@@ -234,7 +234,8 @@ class GermanTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get accessAllTip => 'Die App kann nur auf einige der Dateien auf dem Gerät zugreifen. '
-      'Öffnen Sie die Systemeinstellungen und erlauben Sie der App, auf alle Dateien auf dem Gerät zuzugreifen';
+      'Öffnen Sie die Systemeinstellungen und erlauben Sie der App, '
+      'auf alle Dateien auf dem Gerät zuzugreifen';
 
   @override
   String get goToSystemSettings => 'Gehe zu den Systemeinstellungen';
