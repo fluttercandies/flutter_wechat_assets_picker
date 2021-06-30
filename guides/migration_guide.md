@@ -55,6 +55,10 @@ you can stop reading._
   which makes `DefaultAssetsPickerTextDelegate` removed. So if you used to use `DefaultAssetsPickerTextDelegate()`,
   use `AssetsPickerTextDelegate()` instead.
 
+#### `AssetPickerProvider`
+
+- The `switchPath` method is now `Future<void>`.
+
 ## 5.0.0
 
 ### Summary
