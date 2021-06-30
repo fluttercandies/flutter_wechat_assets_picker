@@ -369,12 +369,12 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  void switchPath(Directory pathEntity) {
+  Future<void> switchPath(Directory pathEntity) async {
     isSwitchingPath = false;
     currentPathEntity = pathEntity;
     totalAssetsCount = 0;
     notifyListeners();
-    getAssetsFromEntity(0, currentPathEntity!);
+    await getAssetsFromEntity(0, currentPathEntity!);
   }
 }
 

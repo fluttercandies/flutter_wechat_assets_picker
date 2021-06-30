@@ -232,7 +232,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   /// Switch path entity.
   /// 切换路径
-  void switchPath(P pathEntity);
+  Future<void> switchPath(P pathEntity);
 }
 
 class DefaultAssetPickerProvider
