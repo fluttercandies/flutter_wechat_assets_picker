@@ -3,8 +3,8 @@
 /// [Date] 2020/3/31 15:39
 ///
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
@@ -241,6 +241,8 @@ class AssetPickerState<A, P> extends State<AssetPicker<A, P>>
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
+    PhotoManager.setLog(!kReleaseMode);
+    AssetPicker.registerObserve(_onLimitedAssetsUpdated);
   }
 
   @override
@@ -256,8 +258,23 @@ class AssetPickerState<A, P> extends State<AssetPicker<A, P>>
   @override
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
+    AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
     widget.builder.dispose();
     super.dispose();
+  }
+
+  Future<void> _onLimitedAssetsUpdated(MethodCall call) async {
+    if (!widget.builder.isPermissionLimited) {
+      return;
+    }
+    final P? pathEntity = widget.builder.provider.currentPathEntity;
+    if (pathEntity != null) {
+      if (pathEntity is AssetPathEntity) {
+        await pathEntity.refreshPathProperties();
+      }
+      await widget.builder.provider.getAssetPathList();
+      await widget.builder.provider.switchPath(pathEntity);
+    }
   }
 
   @override
