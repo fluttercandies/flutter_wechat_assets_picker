@@ -122,7 +122,7 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
       'Update limited access assets list';
 
   @override
-  String get accessAllTip => 'App can only access some assets on the device.'
+  String get accessAllTip => 'App can only access some assets on the device. '
       'Go to system settings and allow app to access all assets on the device.';
 
   @override
@@ -179,8 +179,8 @@ class HebrewTextDelegate extends AssetsPickerTextDelegate {
   String get changeAccessibleLimitedAssets => 'אפשר גישה לקבצים נוספים';
 
   @override
-  String get accessAllTip => 'האפליקציה יכולה לגשת רק לחלק מהקבצים במכשיר.'
-      'פתח הגדרות מערכת ואפשר לאפליקציה גישה לכל הקבצים במכשיר';
+  String get accessAllTip => 'האפליקציה יכולה לגשת רק לחלק מהקבצים במכשיר. '
+      'פתח הגדרות מערכת ואפשר לאפליקציה גישה לכל הקבצים במכשיר.';
 
   @override
   String get goToSystemSettings => 'פתח הגדרות מערכת';
@@ -233,7 +233,8 @@ class GermanTextDelegate extends AssetsPickerTextDelegate {
       'Zeigen Sie nur Dateien und Alben an, auf die die App zugreifen kann';
 
   @override
-  String get accessAllTip => 'Die App kann nur auf einige der Dateien auf dem Gerät zugreifen. '
+  String get accessAllTip =>
+      'Die App kann nur auf einige der Dateien auf dem Gerät zugreifen. '
       'Öffnen Sie die Systemeinstellungen und erlauben Sie der App, '
       'auf alle Dateien auf dem Gerät zuzugreifen';
 
@@ -245,7 +246,6 @@ class GermanTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get accessiblePathName => 'Verfügbare Assets';
-
 }
 
 /// [AssetsPickerTextDelegate] implements with Russian.
@@ -387,8 +387,8 @@ class ArabicTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get accessAllTip =>
-      'يمكن للتطبيق الوصول فقط إلى بعض الملفات الموجودة على الجهاز.'
-      'افتح إعدادات النظام واسمح للتطبيق بالوصول إلى جميع الملفات الموجودة على الجهاز';
+      'يمكن للتطبيق الوصول فقط إلى بعض الملفات الموجودة على الجهاز. '
+      'افتح إعدادات النظام واسمح للتطبيق بالوصول إلى جميع الملفات الموجودة على الجهاز.';
 
   @override
   String get goToSystemSettings => 'افتح إعدادات النظام';
