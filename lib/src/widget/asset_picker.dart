@@ -3,19 +3,27 @@
 /// [Date] 2020/3/31 15:39
 ///
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
 
-class AssetPicker<A, P> extends StatelessWidget {
+class AssetPicker<A, P> extends StatefulWidget {
   const AssetPicker({
     Key? key,
     required this.builder,
   }) : super(key: key);
 
   final AssetPickerBuilderDelegate<A, P> builder;
+
+  static Future<PermissionState> permissionCheck() async {
+    final PermissionState _ps = await PhotoManager.requestPermissionExtend();
+    if (_ps != PermissionState.authorized && _ps != PermissionState.limited) {
+      throw StateError('Permission state error with $_ps.');
+    }
+    return _ps;
+  }
 
   /// Static method to push with the navigator.
   /// 跳转至选择器的静态方法
@@ -73,57 +81,81 @@ class AssetPicker<A, P> extends StatelessWidget {
       throw ArgumentError('Custom item did not set properly.');
     }
 
-    try {
-      final PermissionState _ps = await PhotoManager.requestPermissionExtend();
-      if (_ps == PermissionState.authorized || _ps == PermissionState.limited) {
-        final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
-          maxAssets: maxAssets,
-          pageSize: pageSize,
-          pathThumbSize: pathThumbSize,
-          selectedAssets: selectedAssets,
-          requestType: requestType,
-          sortPathDelegate: sortPathDelegate,
-          filterOptions: filterOptions,
-          routeDuration: routeDuration,
-        );
-        final Widget picker =
-            ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-          value: provider,
-          child: AssetPicker<AssetEntity, AssetPathEntity>(
-            key: Constants.pickerKey,
-            builder: DefaultAssetPickerBuilderDelegate(
-              provider: provider,
-              gridCount: gridCount,
-              textDelegate: textDelegate,
-              themeColor: themeColor,
-              pickerTheme: pickerTheme,
-              gridThumbSize: gridThumbSize,
-              previewThumbSize: previewThumbSize,
-              specialPickerType: specialPickerType,
-              specialItemPosition: specialItemPosition,
-              specialItemBuilder: specialItemBuilder,
-              loadingIndicatorBuilder: loadingIndicatorBuilder,
-              allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
-            ),
-          ),
-        );
-        final List<AssetEntity>? result = await Navigator.of(
-          context,
-          rootNavigator: useRootNavigator,
-        ).push<List<AssetEntity>>(
-          AssetPickerPageRoute<List<AssetEntity>>(
-            builder: picker,
-            transitionCurve: routeCurve,
-            transitionDuration: routeDuration,
-          ),
-        );
-        return result;
-      }
-      return null;
-    } catch (e) {
-      realDebugPrint('Error when calling assets picker: $e');
-      return null;
-    }
+    final PermissionState _ps = await permissionCheck();
+
+    final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
+      maxAssets: maxAssets,
+      pageSize: pageSize,
+      pathThumbSize: pathThumbSize,
+      selectedAssets: selectedAssets,
+      requestType: requestType,
+      sortPathDelegate: sortPathDelegate,
+      filterOptions: filterOptions,
+      routeDuration: routeDuration,
+    );
+    final Widget picker =
+        ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+      value: provider,
+      child: AssetPicker<AssetEntity, AssetPathEntity>(
+        key: Constants.pickerKey,
+        builder: DefaultAssetPickerBuilderDelegate(
+          provider: provider,
+          initialPermission: _ps,
+          gridCount: gridCount,
+          textDelegate: textDelegate,
+          themeColor: themeColor,
+          pickerTheme: pickerTheme,
+          gridThumbSize: gridThumbSize,
+          previewThumbSize: previewThumbSize,
+          specialPickerType: specialPickerType,
+          specialItemPosition: specialItemPosition,
+          specialItemBuilder: specialItemBuilder,
+          loadingIndicatorBuilder: loadingIndicatorBuilder,
+          allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
+        ),
+      ),
+    );
+    final List<AssetEntity>? result = await Navigator.of(
+      context,
+      rootNavigator: useRootNavigator,
+    ).push<List<AssetEntity>>(
+      AssetPickerPageRoute<List<AssetEntity>>(
+        builder: picker,
+        transitionCurve: routeCurve,
+        transitionDuration: routeDuration,
+      ),
+    );
+    return result;
+  }
+
+  /// Call the picker with provided [delegate] and [provider].
+  /// 通过指定的 [delegate] 和 [provider] 调用选择器
+  static Future<List<A>?> pickAssetsWithDelegate<A, P>(
+    BuildContext context, {
+    required AssetPickerBuilderDelegate<A, P> delegate,
+    required AssetPickerProvider<A, P> provider,
+    bool useRootNavigator = true,
+    Curve routeCurve = Curves.easeIn,
+    Duration routeDuration = const Duration(milliseconds: 300),
+  }) async {
+    await permissionCheck();
+
+    final Widget picker =
+        ChangeNotifierProvider<AssetPickerProvider<A, P>>.value(
+      value: provider,
+      child: AssetPicker<A, P>(key: Constants.pickerKey, builder: delegate),
+    );
+    final List<A>? result = await Navigator.of(
+      context,
+      rootNavigator: useRootNavigator,
+    ).push<List<A>>(
+      AssetPickerPageRoute<List<A>>(
+        builder: picker,
+        transitionCurve: routeCurve,
+        transitionDuration: routeDuration,
+      ),
+    );
+    return result;
   }
 
   /// Register observe callback with assets changes.
@@ -159,7 +191,6 @@ class AssetPicker<A, P> extends StatelessWidget {
   static ThemeData themeData(Color themeColor) {
     return ThemeData.dark().copyWith(
       buttonColor: themeColor,
-      brightness: Brightness.dark,
       primaryColor: Colors.grey[900],
       primaryColorBrightness: Brightness.dark,
       primaryColorLight: Colors.grey[900],
@@ -201,7 +232,49 @@ class AssetPicker<A, P> extends StatelessWidget {
   }
 
   @override
+  AssetPickerState<A, P> createState() => AssetPickerState<A, P>();
+}
+
+class AssetPickerState<A, P> extends State<AssetPicker<A, P>>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+    PhotoManager.setLog(!kReleaseMode);
+    AssetPicker.registerObserve(_onLimitedAssetsUpdated);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      PhotoManager.requestPermissionExtend().then(
+        (PermissionState ps) => widget.builder.permission.value = ps,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
+    widget.builder.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onLimitedAssetsUpdated(MethodCall call) async {
+    if (!widget.builder.isPermissionLimited) {
+      return;
+    }
+    await widget.builder.provider.getAssetPathList();
+    if (widget.builder.provider.currentPathEntity != null) {
+      await widget.builder.provider.switchPath();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return builder.build(context);
+    return widget.builder.build(context);
   }
 }

@@ -369,12 +369,15 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  void switchPath(Directory pathEntity) {
+  Future<void> switchPath([Directory? pathEntity]) async {
+    if (pathEntity == null) {
+      return;
+    }
     isSwitchingPath = false;
     currentPathEntity = pathEntity;
     totalAssetsCount = 0;
     notifyListeners();
-    getAssetsFromEntity(0, currentPathEntity!);
+    await getAssetsFromEntity(0, currentPathEntity!);
   }
 }
 
@@ -382,10 +385,9 @@ class FileAssetPickerBuilder
     extends AssetPickerBuilderDelegate<File, Directory> {
   FileAssetPickerBuilder({
     required FileAssetPickerProvider provider,
-  }) : super(provider: provider);
+  }) : super(provider: provider, initialPermission: PermissionState.authorized);
 
-  AssetsPickerTextDelegate get textDelegate =>
-      DefaultAssetsPickerTextDelegate();
+  AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
 
   Duration get switchingPathDuration => kThemeAnimationDuration * 1.5;
 
@@ -534,6 +536,120 @@ class FileAssetPickerBuilder
   }
 
   @override
+  Widget assetsGridBuilder(BuildContext context) {
+    int totalCount = provider.currentAssets.length;
+    if (specialItemPosition != SpecialItemPosition.none) {
+      totalCount += 1;
+    }
+    final int placeholderCount;
+    if (isAppleOS && totalCount % gridCount != 0) {
+      placeholderCount = gridCount - totalCount % gridCount;
+    } else {
+      placeholderCount = 0;
+    }
+    final int row = (totalCount + placeholderCount) ~/ gridCount;
+    final double dividedSpacing = itemSpacing / gridCount;
+    final double topPadding =
+        MediaQuery.of(context).padding.top + kToolbarHeight;
+
+    Widget _sliverGrid(BuildContext ctx, List<File> assets) {
+      return SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          (_, int index) => Builder(
+            builder: (BuildContext c) {
+              if (isAppleOS) {
+                if (index < placeholderCount) {
+                  return const SizedBox.shrink();
+                }
+                index -= placeholderCount;
+              }
+              return Directionality(
+                textDirection: Directionality.of(context),
+                child: assetGridItemBuilder(c, index, assets),
+              );
+            },
+          ),
+          childCount: assetsGridItemCount(
+            context: ctx,
+            assets: assets,
+            placeholderCount: placeholderCount,
+          ),
+          findChildIndexCallback: (Key? key) {
+            if (key is ValueKey<String>) {
+              return findChildIndexBuilder(
+                id: key.value,
+                assets: assets,
+                placeholderCount: placeholderCount,
+              );
+            }
+            return null;
+          },
+        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: gridCount,
+          mainAxisSpacing: itemSpacing,
+          crossAxisSpacing: itemSpacing,
+        ),
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (BuildContext c, BoxConstraints constraints) {
+        final double _itemSize = constraints.maxWidth / gridCount;
+        // Use [ScrollView.anchor] to determine where is the first place of
+        // the [SliverGrid]. Each row needs [dividedSpacing] to calculate,
+        // then minus one times of [itemSpacing] because spacing's count in the
+        // cross axis is always less than the rows.
+        final double anchor = math.min(
+          (row * (_itemSize + dividedSpacing) + topPadding - itemSpacing) /
+              constraints.maxHeight,
+          1,
+        );
+
+        return Directionality(
+          textDirection: effectiveGridDirection(context),
+          child: ColoredBox(
+            color: theme.canvasColor,
+            child: Selector<FileAssetPickerProvider, List<File>>(
+              selector: (_, FileAssetPickerProvider provider) =>
+                  provider.currentAssets,
+              builder: (_, List<File> assets, __) => CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: gridScrollController,
+                anchor: isAppleOS ? anchor : 0,
+                center: isAppleOS ? gridRevertKey : null,
+                slivers: <Widget>[
+                  if (isAppleOS)
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height:
+                            MediaQuery.of(context).padding.top + kToolbarHeight,
+                      ),
+                    ),
+                  _sliverGrid(_, assets),
+                  // Ignore the gap when the [anchor] is not equal to 1.
+                  if (isAppleOS && anchor == 1)
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: MediaQuery.of(context).padding.bottom +
+                            bottomSectionHeight,
+                      ),
+                    ),
+                  if (isAppleOS)
+                    SliverToBoxAdapter(
+                      key: gridRevertKey,
+                      child: const SizedBox.shrink(),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
   Widget assetGridItemBuilder(
     BuildContext context,
     int index,
@@ -567,18 +683,22 @@ class FileAssetPickerBuilder
   }
 
   @override
-  int assetsGridItemCount(BuildContext context, List<File> currentAssets) {
+  int assetsGridItemCount({
+    required BuildContext context,
+    required List<File> assets,
+    int placeholderCount = 0,
+  }) {
     int length;
     switch (specialItemPosition) {
       case SpecialItemPosition.none:
-        length = currentAssets.length;
+        length = assets.length;
         break;
       case SpecialItemPosition.prepend:
       case SpecialItemPosition.append:
-        length = currentAssets.length + 1;
+        length = assets.length + 1;
         break;
     }
-    return length;
+    return length + placeholderCount;
   }
 
   @override
@@ -1047,8 +1167,12 @@ class FileAssetPickerBuilder
   }
 
   @override
-  int findChildIndexBuilder(String id, List<File> currentAssets) {
-    return currentAssets.indexWhere((File file) => file.path == id);
+  int findChildIndexBuilder({
+    required String id,
+    required List<File> assets,
+    int placeholderCount = 0,
+  }) {
+    return assets.indexWhere((File file) => file.path == id);
   }
 }
 
@@ -1091,8 +1215,7 @@ class FileAssetPickerViewerBuilderDelegate
 
   late final PageController pageController;
 
-  AssetsPickerTextDelegate get textDelegate =>
-      DefaultAssetsPickerTextDelegate();
+  AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
 
   void switchDisplayingDetail({bool? value}) {
     isDisplayingDetail = value ?? !isDisplayingDetail;

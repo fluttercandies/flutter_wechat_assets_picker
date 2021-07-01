@@ -34,47 +34,52 @@ class AssetPickerViewer<A, P> extends StatefulWidget {
     SpecialPickerType? specialPickerType,
     int? maxAssets,
   }) async {
-    try {
-      final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
-        builder: DefaultAssetPickerViewerBuilderDelegate(
-          currentIndex: currentIndex,
-          previewAssets: previewAssets,
-          provider: selectedAssets != null
-              ? AssetPickerViewerProvider<AssetEntity>(selectedAssets)
-              : null,
-          themeData: themeData,
-          previewThumbSize: previewThumbSize,
-          specialPickerType: specialPickerType,
-          selectedAssets: selectedAssets,
-          selectorProvider: selectorProvider,
-          maxAssets: maxAssets,
-        ),
-      );
-      final PageRouteBuilder<List<AssetEntity>> pageRoute =
-          PageRouteBuilder<List<AssetEntity>>(
-        pageBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-        ) {
-          return viewer;
-        },
-        transitionsBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-          Widget child,
-        ) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      );
-      final List<AssetEntity>? result =
-          await Navigator.of(context).push<List<AssetEntity>>(pageRoute);
-      return result;
-    } catch (e) {
-      realDebugPrint('Error when calling assets picker viewer: $e');
-      return null;
-    }
+    await AssetPicker.permissionCheck();
+    final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
+      builder: DefaultAssetPickerViewerBuilderDelegate(
+        currentIndex: currentIndex,
+        previewAssets: previewAssets,
+        provider: selectedAssets != null
+            ? AssetPickerViewerProvider<AssetEntity>(selectedAssets)
+            : null,
+        themeData: themeData,
+        previewThumbSize: previewThumbSize,
+        specialPickerType: specialPickerType,
+        selectedAssets: selectedAssets,
+        selectorProvider: selectorProvider,
+        maxAssets: maxAssets,
+      ),
+    );
+    final PageRouteBuilder<List<AssetEntity>> pageRoute =
+        PageRouteBuilder<List<AssetEntity>>(
+      pageBuilder: (_, __, ___) => viewer,
+      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    );
+    final List<AssetEntity>? result =
+        await Navigator.of(context).push<List<AssetEntity>>(pageRoute);
+    return result;
+  }
+
+  /// Call the viewer with provided delegate and provider.
+  /// 通过指定的 [delegate] 调用查看器
+  static Future<List<A>?> pushToViewerWithDelegate<A, P>(
+    BuildContext context, {
+    required AssetPickerViewerBuilderDelegate<A, P> delegate,
+  }) async {
+    await AssetPicker.permissionCheck();
+    final Widget viewer = AssetPickerViewer<A, P>(builder: delegate);
+    final PageRouteBuilder<List<A>> pageRoute = PageRouteBuilder<List<A>>(
+      pageBuilder: (_, __, ___) => viewer,
+      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    );
+    final List<A>? result = await Navigator.of(context).push<List<A>>(
+      pageRoute,
+    );
+    return result;
   }
 }
 

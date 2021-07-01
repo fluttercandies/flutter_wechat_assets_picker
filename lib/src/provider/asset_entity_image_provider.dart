@@ -2,6 +2,7 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/3/20 14:07
 ///
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -78,9 +79,11 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
         );
       }
       if (key.entity.type == AssetType.video) {
-        data = await key.entity.thumbDataWithSize(
-          Constants.defaultGridThumbSize,
-          Constants.defaultGridThumbSize,
+        data = await key.entity.thumbDataWithOption(
+          _thumbOption(
+            Constants.defaultGridThumbSize,
+            Constants.defaultGridThumbSize,
+          ),
         );
       } else if (imageFileType == ImageFileType.heic) {
         data = await (await key.entity.file)?.readAsBytes();
@@ -89,12 +92,25 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       }
     } else {
       final List<int> _thumbSize = thumbSize!;
-      data = await key.entity.thumbDataWithSize(_thumbSize[0], _thumbSize[1]);
+      data = await key.entity.thumbDataWithOption(
+        _thumbOption(_thumbSize[0], _thumbSize[1]),
+      );
     }
     if (data == null) {
       throw AssertionError('Null in entity\'s data.');
     }
     return decode(data);
+  }
+
+  ThumbOption _thumbOption(int width, int height) {
+    if (Platform.isIOS || Platform.isMacOS) {
+      return ThumbOption.ios(
+        width: width,
+        height: height,
+        deliveryMode: DeliveryMode.fastFormat,
+      );
+    }
+    return ThumbOption(width: width, height: height);
   }
 
   /// Get image type by reading the file extension.

@@ -12,6 +12,7 @@ class VideoPageBuilder extends StatefulWidget {
     Key? key,
     required this.asset,
     required this.state,
+    this.hasOnlyOneVideoAndMoment = false,
   }) : super(key: key);
 
   /// Asset currently displayed.
@@ -19,8 +20,12 @@ class VideoPageBuilder extends StatefulWidget {
   final AssetEntity asset;
 
   /// [State] for asset picker viewer.
-  /// 资源查看器的状态[State]
+  /// 资源查看器的状态 [State]
   final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
+
+  /// Only previewing one video and with the [SpecialPickerType.wechatMoment].
+  /// 是否处于 [SpecialPickerType.wechatMoment] 且只有一个视频
+  final bool hasOnlyOneVideoAndMoment;
 
   @override
   _VideoPageBuilderState createState() => _VideoPageBuilderState();
@@ -81,7 +86,12 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
     try {
       await _controller.initialize();
       hasLoaded = true;
-      _controller.addListener(videoPlayerListener);
+      _controller
+        ..addListener(videoPlayerListener)
+        ..setLooping(widget.hasOnlyOneVideoAndMoment);
+      if (widget.hasOnlyOneVideoAndMoment) {
+        _controller.play();
+      }
     } catch (e) {
       realDebugPrint('Error when initialize video controller: $e');
       hasErrorWhenInitializing = true;
@@ -142,35 +152,39 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
             ),
           ),
         ),
-        ValueListenableBuilder<bool>(
-          valueListenable: isPlaying,
-          builder: (_, bool value, __) => GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: value ? playButtonCallback : builder.switchDisplayingDetail,
-            child: Center(
-              child: AnimatedOpacity(
-                duration: kThemeAnimationDuration,
-                opacity: value ? 0.0 : 1.0,
-                child: GestureDetector(
-                  onTap: playButtonCallback,
-                  child: DecoratedBox(
-                    decoration: const BoxDecoration(
-                      boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      value
-                          ? Icons.pause_circle_outline
-                          : Icons.play_circle_filled,
-                      size: 70.0,
-                      color: Colors.white,
+        if (!widget.hasOnlyOneVideoAndMoment)
+          ValueListenableBuilder<bool>(
+            valueListenable: isPlaying,
+            builder: (_, bool value, __) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap:
+                  value ? playButtonCallback : builder.switchDisplayingDetail,
+              child: Center(
+                child: AnimatedOpacity(
+                  duration: kThemeAnimationDuration,
+                  opacity: value ? 0.0 : 1.0,
+                  child: GestureDetector(
+                    onTap: playButtonCallback,
+                    child: DecoratedBox(
+                      decoration: const BoxDecoration(
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(color: Colors.black12)
+                        ],
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        value
+                            ? Icons.pause_circle_outline
+                            : Icons.play_circle_filled,
+                        size: 70.0,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

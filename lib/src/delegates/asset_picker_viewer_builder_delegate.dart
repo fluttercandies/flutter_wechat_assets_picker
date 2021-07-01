@@ -4,6 +4,7 @@
 ///
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,12 +48,16 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   /// [StreamController] for viewing page index update.
   /// 用于更新当前正在浏览的资源页码的流控制器
   ///
-  /// The main purpose is narrow down build parts when page index is changing,
+  /// The main purpose is to narrow down build parts when index is changing,
   /// prevent widely [setState] and causing other widgets rebuild.
   /// 使用 [StreamController] 的主要目的是缩小页码变化时构建组件的范围，
   /// 防止滥用 [setState] 导致其他部件重新构建。
   final StreamController<int> pageStreamController =
       StreamController<int>.broadcast();
+
+  /// The [ScrollController] for the previewing assets list.
+  /// 正在预览的资源的 [ScrollController]
+  final ScrollController previewingListController = ScrollController();
 
   /// The [State] for a viewer.
   /// 预览器的状态实例
@@ -102,12 +107,19 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
   void dispose() {
+    provider?.dispose();
     pageStreamController.close();
+    previewingListController.dispose();
+    selectedNotifier.dispose();
   }
 
   /// The length getter for selected assets currently.
   /// 当前选中的资源的长度获取
   int get selectedCount => selectedAssets?.length ?? 0;
+
+  /// 是否已经选择了最大数量的资源
+  bool get selectedMaximumAssets =>
+      selectedAssets != null && selectedAssets!.length == maxAssets;
 
   /// Construct a notifier to notify
   /// whether if a new asset is selected or unselected.
@@ -289,6 +301,7 @@ class DefaultAssetPickerViewerBuilderDelegate
   @override
   void dispose() {
     _doubleTapAnimationController.dispose();
+    pageController.dispose();
     super.dispose();
   }
 
@@ -348,7 +361,11 @@ class DefaultAssetPickerViewerBuilderDelegate
         );
         break;
       case AssetType.video:
-        builder = VideoPageBuilder(asset: asset, state: viewerState);
+        builder = VideoPageBuilder(
+          asset: asset,
+          state: viewerState,
+          hasOnlyOneVideoAndMoment: isWeChatMoment && hasVideo,
+        );
         break;
       case AssetType.other:
         builder = Center(
@@ -399,23 +416,47 @@ class DefaultAssetPickerViewerBuilderDelegate
     );
   }
 
+  /// The back button when previewing video in [SpecialPickerType.wechatMoment].
+  /// 使用 [SpecialPickerType.wechatMoment] 预览视频时的返回按钮
+  Widget momentVideoBackButton(BuildContext context) {
+    return PositionedDirectional(
+      start: 16,
+      top: context.topPadding + 16,
+      child: GestureDetector(
+        onTap: Navigator.of(context).maybePop,
+        child: Container(
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: themeData.iconTheme.color,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.keyboard_return_rounded,
+            color: themeData.canvasColor,
+            size: 18,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget bottomDetailBuilder(BuildContext context) {
-    final Color _backgroundColor = themeData.canvasColor.withOpacity(0.85);
+    final Color _backgroundColor = themeData.primaryColor.withOpacity(.9);
     return ValueListenableBuilder2<bool, int>(
       firstNotifier: isDisplayingDetail,
       secondNotifier: selectedNotifier,
       builder: (_, bool v, __, Widget? child) => AnimatedPositionedDirectional(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        bottom: v ? 0 : -(Screens.bottomSafeHeight + bottomDetailHeight),
+        bottom: v ? 0 : -(context.bottomPadding + bottomDetailHeight),
         start: 0,
         end: 0,
-        height: Screens.bottomSafeHeight + bottomDetailHeight,
+        height: context.bottomPadding + bottomDetailHeight,
         child: child!,
       ),
       child: Padding(
-        padding: EdgeInsetsDirectional.only(bottom: Screens.bottomSafeHeight),
+        padding: EdgeInsetsDirectional.only(bottom: context.bottomPadding),
         child: ChangeNotifierProvider<
             AssetPickerViewerProvider<AssetEntity>?>.value(
           value: provider,
@@ -428,24 +469,26 @@ class DefaultAssetPickerViewerBuilderDelegate
                   valueListenable: selectedNotifier,
                   builder: (_, int count, __) => Container(
                     width: count > 0 ? double.maxFinite : 0,
-                    height: 90,
+                    height: bottomPreviewHeight,
                     color: _backgroundColor,
                     child: ListView.builder(
+                      controller: previewingListController,
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      physics: const ClampingScrollPhysics(),
                       itemCount: count,
                       itemBuilder: bottomDetailItemBuilder,
                     ),
                   ),
                 ),
               Container(
-                height: 50,
+                height: bottomBarHeight,
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 decoration: BoxDecoration(
                   border: Border(
                     top: BorderSide(
                       width: 1.0,
-                      color: themeData.dividerColor,
+                      color: themeData.canvasColor,
                     ),
                   ),
                   color: _backgroundColor,
@@ -470,8 +513,12 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   @override
   Widget bottomDetailItemBuilder(BuildContext context, int index) {
+    const double padding = 8.0;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: padding,
+        vertical: padding * 2,
+      ),
       child: AspectRatio(
         aspectRatio: 1.0,
         child: StreamBuilder<int>(
@@ -494,9 +541,24 @@ class DefaultAssetPickerViewerBuilderDelegate
             }();
             return GestureDetector(
               onTap: () {
-                if (previewAssets == selectedAssets) {
-                  pageController.jumpToPage(index);
+                if (pageController.page == index.toDouble()) {
+                  return;
                 }
+                final int page;
+                if (previewAssets != selectedAssets) {
+                  page = previewAssets.indexOf(asset);
+                } else {
+                  page = index;
+                }
+                pageController.jumpToPage(page);
+                final double offset =
+                    (index - 0.5) * (bottomPreviewHeight - padding * 3) -
+                        context.mediaQuery.size.width / 4;
+                previewingListController.animateTo(
+                  math.max(0, offset),
+                  curve: Curves.ease,
+                  duration: kThemeChangeDuration,
+                );
               },
               child: Selector<AssetPickerViewerProvider<AssetEntity>?,
                   List<AssetEntity>?>(
@@ -520,7 +582,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                           border: isViewing
                               ? Border.all(
                                   color: themeData.colorScheme.secondary,
-                                  width: 2.0,
+                                  width: 3,
                                 )
                               : null,
                           color: isSelected
@@ -547,39 +609,44 @@ class DefaultAssetPickerViewerBuilderDelegate
       builder: (_, bool value, Widget? child) => AnimatedPositionedDirectional(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        top: value ? 0.0 : -(Screens.topSafeHeight + kToolbarHeight),
+        top: value ? 0.0 : -(context.topPadding + kToolbarHeight),
         start: 0.0,
         end: 0.0,
-        height: Screens.topSafeHeight + kToolbarHeight,
+        height: context.topPadding + kToolbarHeight,
         child: child!,
       ),
       child: Container(
-        padding: EdgeInsetsDirectional.only(
-          top: Screens.topSafeHeight,
-          end: 12.0,
-        ),
-        color: themeData.canvasColor.withOpacity(0.85),
-        child: Row(
+        padding: EdgeInsetsDirectional.only(top: context.topPadding),
+        color: themeData.canvasColor,
+        child: Stack(
+          fit: StackFit.expand,
           children: <Widget>[
-            const BackButton(),
+            Row(
+              children: <Widget>[
+                const BackButton(),
+                const Spacer(),
+                if (isAppleOS && provider != null) selectButton(context),
+                if (!isAppleOS && (provider != null || isWeChatMoment))
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 14),
+                    child: confirmButton(context),
+                  ),
+              ],
+            ),
             if (!isAppleOS && specialPickerType == null)
               StreamBuilder<int>(
                 initialData: currentIndex,
                 stream: pageStreamController.stream,
-                builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
-                  return Text(
+                builder: (_, AsyncSnapshot<int> snapshot) => Center(
+                  child: Text(
                     '${snapshot.data! + 1}/${previewAssets.length}',
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
-            const Spacer(),
-            if (isAppleOS && provider != null) selectButton(context),
-            if (!isAppleOS && (provider != null || isWeChatMoment))
-              confirmButton(context),
           ],
         ),
       ),
@@ -658,6 +725,9 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// Select button for apple OS.
   /// 苹果系列系统的选择按钮
   Widget _appleOSSelectButton(bool isSelected, AssetEntity asset) {
+    if (!isSelected && selectedMaximumAssets) {
+      return const SizedBox.shrink();
+    }
     return Padding(
       padding: const EdgeInsetsDirectional.only(end: 10.0),
       child: GestureDetector(
@@ -679,17 +749,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             color: isSelected ? themeData.buttonColor : null,
             shape: BoxShape.circle,
           ),
-          child: Center(
-            child: isSelected
-                ? Text(
-                    '${selectedAssets!.indexOf(asset) + 1}',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                : const Icon(Icons.check, size: 20.0),
-          ),
+          child: const Center(child: Icon(Icons.check, size: 20.0)),
         ),
       ),
     );
@@ -785,9 +845,19 @@ class DefaultAssetPickerViewerBuilderDelegate
                     scrollDirection: Axis.horizontal,
                   ),
                 ),
-                appBar(context),
-                if (selectedAssets != null || (isWeChatMoment && hasVideo))
-                  bottomDetailBuilder(context),
+                if (isWeChatMoment && hasVideo) ...<Widget>[
+                  momentVideoBackButton(context),
+                  PositionedDirectional(
+                    end: 16,
+                    bottom: context.bottomPadding + 16,
+                    child: confirmButton(context),
+                  ),
+                ] else ...<Widget>[
+                  appBar(context),
+                  if (selectedAssets != null ||
+                      (isWeChatMoment && hasVideo && isAppleOS))
+                    bottomDetailBuilder(context),
+                ],
               ],
             ),
           ),

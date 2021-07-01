@@ -5,53 +5,68 @@
 
 /// Text delegate that controls text in widgets.
 /// 控制部件中的文字实现
-abstract class AssetsPickerTextDelegate {
+class AssetsPickerTextDelegate {
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
-  late final String confirm;
+  String get confirm => '确认';
 
   /// Cancel string for back button.
   /// 返回按钮的字段
-  late final String cancel;
+  String get cancel => '取消';
 
   /// Edit string for edit button.
   /// 编辑按钮的字段
-  late final String edit;
+  String get edit => '编辑';
 
   /// GIF indicator string.
   /// GIF指示的字段
-  late final String gifIndicator;
+  String get gifIndicator => 'GIF';
 
   /// HEIC failed string.
   /// HEIC 类型资源加载失败的字段
-  late final String heicNotSupported;
+  String get heicNotSupported => '尚未支持HEIC类型资源';
 
   /// Load failed string for item.
   /// 资源加载失败时的字段
-  late final String loadFailed;
+  String get loadFailed => '加载失败';
 
   /// Original string for original selection.
   /// 选择是否原图的字段
-  late final String original;
+  String get original => '原图';
 
   /// Preview string for preview button.
   /// 预览按钮的字段
-  late final String preview;
+  String get preview => '预览';
 
   /// Select string for select button.
   /// 选择按钮的字段
-  late final String select;
+  String get select => '选择';
 
   /// Un-supported asset type string for assets that belongs to [AssetType.other].
   /// 未支持的资源类型的字段
-  late final String unSupportedAssetType;
+  String get unSupportedAssetType => '尚未支持的资源类型';
+
+  /// "Unable to access all assets in album".
+  String get unableToAccessAll => '无法访问所有资源';
+
+  String get viewingLimitedAssetsTip => '应用只能访问部分资源和相册';
+
+  String get changeAccessibleLimitedAssets => '设置可访问的资源';
+
+  String get accessAllTip => '你已设置应用只能访问设备部分资源，'
+      '建议允许访问「所有资源」';
+
+  String get goToSystemSettings => '前往系统设置';
+
+  /// "Continue accessing some assets".
+  String get accessLimitedAssets => '继续访问部分资源';
+
+  String get accessiblePathName => '可访问的资源';
 
   /// This is used in video asset item in the picker, in order
   /// to display the duration of the video or audio type of asset.
   /// 该字段用在选择器视频或音频部件上，用于显示视频或音频资源的时长。
-  String durationIndicatorBuilder(Duration duration);
-
-  static String defaultDurationIndicatorBuilder(Duration duration) {
+  String durationIndicatorBuilder(Duration duration) {
     const String separator = ':';
     final String minute = duration.inMinutes.toString().padLeft(2, '0');
     final String second =
@@ -62,267 +77,325 @@ abstract class AssetsPickerTextDelegate {
   }
 }
 
-/// Default text delegate implements with Chinese.
-/// 中文文字实现
-class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
-  factory DefaultAssetsPickerTextDelegate() => _instance;
-
-  DefaultAssetsPickerTextDelegate._internal();
-
-  static final DefaultAssetsPickerTextDelegate _instance =
-      DefaultAssetsPickerTextDelegate._internal();
-
-  @override
-  String confirm = '确认';
-
-  @override
-  String cancel = '取消';
-
-  @override
-  String edit = '编辑';
-
-  @override
-  String gifIndicator = 'GIF';
-
-  @override
-  String heicNotSupported = '尚未支持HEIC类型资源';
-
-  @override
-  String loadFailed = '加载失败';
-
-  @override
-  String original = '原图';
-
-  @override
-  String preview = '预览';
-
-  @override
-  String select = '选择';
-
-  @override
-  String unSupportedAssetType = '尚未支持的资源类型';
-
-  @override
-  String durationIndicatorBuilder(Duration duration) =>
-      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
-}
-
 /// [AssetsPickerTextDelegate] implements with English.
-class EnglishTextDelegate implements AssetsPickerTextDelegate {
-  factory EnglishTextDelegate() => _instance;
-
-  EnglishTextDelegate._internal();
-
-  static final EnglishTextDelegate _instance = EnglishTextDelegate._internal();
+/// English Localization
+class EnglishTextDelegate extends AssetsPickerTextDelegate {
+  @override
+  String get confirm => 'Confirm';
 
   @override
-  String confirm = 'Confirm';
+  String get cancel => 'Cancel';
 
   @override
-  String cancel = 'Cancel';
+  String get edit => 'Edit';
 
   @override
-  String edit = 'Edit';
+  String get gifIndicator => 'GIF';
 
   @override
-  String gifIndicator = 'GIF';
+  String get heicNotSupported => 'Unsupported HEIC asset type.';
 
   @override
-  String heicNotSupported = 'Unsupported HEIC asset type.';
+  String get loadFailed => 'Load failed';
 
   @override
-  String loadFailed = 'Load failed';
+  String get original => 'Origin';
 
   @override
-  String original = 'Origin';
+  String get preview => 'Preview';
 
   @override
-  String preview = 'Preview';
+  String get select => 'Select';
 
   @override
-  String select = 'Select';
+  String get unSupportedAssetType => 'Unsupported HEIC asset type.';
 
   @override
-  String unSupportedAssetType = 'Unsupported HEIC asset type.';
+  String get unableToAccessAll => 'Unable to access all assets on the device';
 
   @override
-  String durationIndicatorBuilder(Duration duration) =>
-      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+  String get viewingLimitedAssetsTip =>
+      'Only view assets and albums accessible to app.';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'Update limited access assets list';
+
+  @override
+  String get accessAllTip => 'App can only access some assets on the device.'
+      'Go to system settings and allow app to access all assets on the device.';
+
+  @override
+  String get goToSystemSettings => 'Go to system settings';
+
+  @override
+  String get accessLimitedAssets => 'Continue with limited access';
+
+  @override
+  String get accessiblePathName => 'Accessible assets';
 }
 
 /// [AssetsPickerTextDelegate] implements with Hebrew.
-/// 希伯来文字实现
-class HebrewTextDelegate implements AssetsPickerTextDelegate {
-  factory HebrewTextDelegate() => _instance;
-
-  HebrewTextDelegate._internal();
-
-  static final HebrewTextDelegate _instance = HebrewTextDelegate._internal();
+/// תרגום בשפה העברית
+class HebrewTextDelegate extends AssetsPickerTextDelegate {
+  @override
+  String get confirm => 'אישור';
 
   @override
-  String confirm = 'אישור';
+  String get cancel => 'ביטול';
 
   @override
-  String cancel = 'ביטול';
+  String get edit => 'עריכה';
 
   @override
-  String edit = 'עריכה';
+  String get gifIndicator => 'GIF';
 
   @override
-  String gifIndicator = 'GIF';
+  String get heicNotSupported => 'קובץ HEIC לא נתמך.';
 
   @override
-  String heicNotSupported = 'קובץ HEIC לא נתמך.';
+  String get loadFailed => 'הטעינה נכשלה';
 
   @override
-  String loadFailed = 'הטעינה נכשלה';
+  String get original => 'מקור';
 
   @override
-  String original = 'מקור';
+  String get preview => 'תצוגה מקדימה';
 
   @override
-  String preview = 'תצוגה מקדימה';
+  String get select => 'בחר';
 
   @override
-  String select = 'בחר';
+  String get unSupportedAssetType => 'סוג קובץ HEIC אינו נתמך';
 
   @override
-  String unSupportedAssetType = 'סוג קובץ HEIC אינו נתמך';
+  String get unableToAccessAll => 'לא ניתן לגשת לכל הקבצים במכשיר';
 
   @override
-  String durationIndicatorBuilder(Duration duration) =>
-      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+  String get viewingLimitedAssetsTip =>
+      'הצג רק קבצים ואלבומים נגישים לאפליקציה.';
+
+  @override
+  String get changeAccessibleLimitedAssets => 'אפשר גישה לקבצים נוספים';
+
+  @override
+  String get accessAllTip => 'האפליקציה יכולה לגשת רק לחלק מהקבצים במכשיר.'
+      'פתח הגדרות מערכת ואפשר לאפליקציה גישה לכל הקבצים במכשיר';
+
+  @override
+  String get goToSystemSettings => 'פתח הגדרות מערכת';
+
+  @override
+  String get accessLimitedAssets => 'המשך גישה מוגבלת';
+
+  @override
+  String get accessiblePathName => 'קבצים נגישים';
 }
 
 /// [AssetsPickerTextDelegate] implementiert mit der deutschen Übersetzung.
 /// Deutsche Textimplementierung.
-class GermanTextDelegate implements AssetsPickerTextDelegate {
-  factory GermanTextDelegate() => _instance;
-
-  GermanTextDelegate._internal();
-
-  static final GermanTextDelegate _instance = GermanTextDelegate._internal();
+class GermanTextDelegate extends AssetsPickerTextDelegate {
+  @override
+  String get confirm => 'Bestätigen';
 
   @override
-  String confirm = 'Bestätigen';
+  String get cancel => 'Abbrechen';
 
   @override
-  String cancel = 'Abbrechen';
+  String get edit => 'Bearbeiten';
 
   @override
-  String edit = 'Bearbeiten';
+  String get gifIndicator => 'GIF';
 
   @override
-  String gifIndicator = 'GIF';
+  String get heicNotSupported => 'HEIC Format ist nicht unterstützt.';
 
   @override
-  String heicNotSupported = 'HEIC Format ist nicht unterstützt.';
+  String get loadFailed => 'Ladevorgang ist fehlgeschlagen';
 
   @override
-  String loadFailed = 'Ladevorgang ist fehlgeschlagen';
+  String get original => 'Ursprung';
 
   @override
-  String original = 'Ursprung';
+  String get preview => 'Vorschau';
 
   @override
-  String preview = 'Vorschau';
+  String get select => 'Auswählen';
 
   @override
-  String select = 'Auswählen';
+  String get unSupportedAssetType => 'HEIC Format ist nicht unterstützt.';
 
   @override
-  String unSupportedAssetType = 'HEIC Format ist nicht unterstützt.';
+  String get unableToAccessAll => 'Zugriff nicht möglich';
 
   @override
-  String durationIndicatorBuilder(Duration duration) =>
-      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+  String get viewingLimitedAssetsTip =>
+      'Zeigen Sie nur Dateien und Alben an, auf die die App zugreifen kann';
+
+  @override
+  String get accessAllTip => 'Die App kann nur auf einige der Dateien auf dem Gerät zugreifen. '
+      'Öffnen Sie die Systemeinstellungen und erlauben Sie der App, '
+      'auf alle Dateien auf dem Gerät zuzugreifen';
+
+  @override
+  String get goToSystemSettings => 'Gehe zu den Systemeinstellungen';
+
+  @override
+  String get accessLimitedAssets => 'Fahre fort mit limitierten Zugriff';
+
+  @override
+  String get accessiblePathName => 'Verfügbare Assets';
+
 }
 
 /// [AssetsPickerTextDelegate] implements with Russian.
 /// Локализация на русский язык.
-class RussianTextDelegate implements AssetsPickerTextDelegate {
-  factory RussianTextDelegate() => _instance;
-
-  RussianTextDelegate._internal();
-
-  static final RussianTextDelegate _instance = RussianTextDelegate._internal();
+class RussianTextDelegate extends AssetsPickerTextDelegate {
+  @override
+  String get confirm => 'Готово';
 
   @override
-  String confirm = 'Готово';
+  String get cancel => 'Отмена';
 
   @override
-  String cancel = 'Отмена';
+  String get edit => 'Изменить';
 
   @override
-  String edit = 'Изменить';
+  String get gifIndicator => 'GIF';
 
   @override
-  String gifIndicator = 'GIF';
+  String get heicNotSupported => 'Формат HEIC не поддерживается.';
 
   @override
-  String heicNotSupported = 'Формат HEIC не поддерживается.';
+  String get loadFailed => 'Ошибка при загрузке';
 
   @override
-  String loadFailed = 'Ошибка при загрузке';
+  String get original => 'Оригинал';
 
   @override
-  String original = 'Исходное';
+  String get preview => 'Предпросмотр';
 
   @override
-  String preview = 'Предпросмотр';
+  String get select => 'Выбрать';
 
   @override
-  String select = 'Выбрать';
+  String get unSupportedAssetType => 'Неподдерживаемый формат ресурса.';
 
   @override
-  String unSupportedAssetType = 'Неподдерживаемый формат ресурса.';
+  String get unableToAccessAll => 'Не все файлы доступны на устройстве';
 
   @override
-  String durationIndicatorBuilder(Duration duration) =>
-      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+  String get viewingLimitedAssetsTip =>
+      'Показать только файлы, которые доступны приложению.';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'Разрешить доступ к дополнительным файлам';
+
+  @override
+  String get accessAllTip =>
+      'У приложения доступ только к некоторым файлам на устройстве. '
+      'Откройте настройки системы и разрешите приложению доступ ко всем файлам на устройстве.';
+
+  @override
+  String get goToSystemSettings => 'Открыть настройки системы';
+
+  @override
+  String get accessLimitedAssets => 'Продолжить с ограниченным доступом';
+
+  @override
+  String get accessiblePathName => 'Доступные файлы';
 }
 
 /// [AssetsPickerTextDelegate] implements with Japanese.
 /// 日本語の TextDelegate
-class JapaneseTextDelegate implements AssetsPickerTextDelegate {
-  factory JapaneseTextDelegate() => _instance;
-
-  JapaneseTextDelegate._internal();
-
-  static final JapaneseTextDelegate _instance =
-      JapaneseTextDelegate._internal();
+class JapaneseTextDelegate extends AssetsPickerTextDelegate {
+  @override
+  String get confirm => '決定';
 
   @override
-  String confirm = '決定';
+  String get cancel => 'キャンセル';
 
   @override
-  String cancel = 'キャンセル';
+  String get edit => '編集';
 
   @override
-  String edit = '編集';
+  String get gifIndicator => 'GIF';
 
   @override
-  String gifIndicator = 'GIF';
+  String get heicNotSupported => 'HEIC フォーマットはサポートしていません。';
 
   @override
-  String heicNotSupported = 'HEIC フォーマットはサポートしていません。';
+  String get loadFailed => '読み込みに失敗しました。';
 
   @override
-  String loadFailed = '読み込みに失敗しました。';
+  String get original => '元の画像';
 
   @override
-  String original = '元の画像';
+  String get preview => 'プレビュー';
 
   @override
-  String preview = 'プレビュー';
+  String get select => '選択';
 
   @override
-  String select = '選択';
+  String get unSupportedAssetType => 'HEIC フォーマットはサポートしていません。';
+}
+
+/// [AssetsPickerTextDelegate] implements with Arabic.
+/// الترجمة العربية
+class ArabicTextDelegate extends AssetsPickerTextDelegate {
+  @override
+  String get confirm => 'تؤكد';
 
   @override
-  String unSupportedAssetType = 'HEIC フォーマットはサポートしていません。';
+  String get cancel => 'إلغاء';
 
   @override
-  String durationIndicatorBuilder(Duration duration) =>
-      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+  String get edit => 'تعديل';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get heicNotSupported => 'نوع HEIC غير مدعوم.';
+
+  @override
+  String get loadFailed => 'فشل التحميل';
+
+  @override
+  String get original => 'أصلي';
+
+  @override
+  String get preview => 'معاينة';
+
+  @override
+  String get select => 'تحديد';
+
+  @override
+  String get unSupportedAssetType => 'نوع HEIC غير مدعوم';
+
+  @override
+  String get unableToAccessAll =>
+      'لا يمكن الوصول إلى جميع الملفات الموجودة على الجهاز';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'إظهار الملفات والألبومات التي يمكن للتطبيق الوصول إليها فقط.';
+
+  @override
+  String get changeAccessibleLimitedAssets => 'السماح بالوصول إلى ملفات إضافية';
+
+  @override
+  String get accessAllTip =>
+      'يمكن للتطبيق الوصول فقط إلى بعض الملفات الموجودة على الجهاز.'
+      'افتح إعدادات النظام واسمح للتطبيق بالوصول إلى جميع الملفات الموجودة على الجهاز';
+
+  @override
+  String get goToSystemSettings => 'افتح إعدادات النظام';
+
+  @override
+  String get accessLimitedAssets => 'تواصل مع وصول محدود';
+
+  @override
+  String get accessiblePathName => 'ملفات يمكن الوصول إليها';
 }

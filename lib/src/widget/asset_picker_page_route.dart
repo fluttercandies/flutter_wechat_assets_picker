@@ -61,7 +61,7 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
       ).animate(
         CurvedAnimation(curve: transitionCurve, parent: animation),
       ),
-      child: child,
+      child: ClipRect(child: child), // Clip the overflowed part.
     );
   }
 }

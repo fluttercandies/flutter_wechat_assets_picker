@@ -192,6 +192,9 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   /// 选中资源是否为空
   bool get isSelectedNotEmpty => selectedAssets.isNotEmpty;
 
+  /// 是否已经选择了最大数量的资源
+  bool get selectedMaximumAssets => selectedAssets.length == maxAssets;
+
   /// Get assets path entities.
   /// 获取所有的资源路径
   Future<void> getAssetPathList();
@@ -229,7 +232,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   /// Switch path entity.
   /// 切换路径
-  void switchPath(P pathEntity);
+  Future<void> switchPath([P? pathEntity]);
 }
 
 class DefaultAssetPickerProvider
@@ -363,7 +366,27 @@ class DefaultAssetPickerProvider
   }
 
   @override
-  Future<void> switchPath(AssetPathEntity pathEntity) async {
+  Future<void> switchPath([AssetPathEntity? pathEntity]) async {
+    assert(() {
+      if (_currentPathEntity == null && pathEntity == null) {
+        throw FlutterError.fromParts(<DiagnosticsNode>[
+          ErrorSummary('Empty $AssetPathEntity was switched.'),
+          ErrorDescription(
+            'Neither currentPathEntity nor pathEntity is non-null, which makes '
+            'this method useless.',
+          ),
+          ErrorHint(
+            'You need to pass a non-null $AssetPathEntity or call this method '
+            'when currentPathEntity is not null.',
+          ),
+        ]);
+      }
+      return true;
+    }());
+    if (_currentPathEntity == null && pathEntity == null) {
+      return;
+    }
+    pathEntity ??= _currentPathEntity!;
     _isSwitchingPath = false;
     _currentPathEntity = pathEntity;
     _totalAssetsCount = pathEntity.assetCount;

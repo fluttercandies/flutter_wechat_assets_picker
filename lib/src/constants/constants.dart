@@ -28,21 +28,20 @@ export '../widget/builder/fade_image_builder.dart';
 export '../widget/builder/image_page_builder.dart';
 export '../widget/builder/video_page_builder.dart';
 export '../widget/fixed_appbar.dart';
+export '../widget/gaps.dart';
 export '../widget/platform_progress_indicator.dart';
 
 export 'colors.dart';
 export 'custom_scroll_physics.dart';
 export 'enums.dart';
 export 'extensions.dart';
-export 'screens.dart';
 
 class Constants {
   const Constants._();
 
   static GlobalKey pickerKey = GlobalKey();
 
-  static AssetsPickerTextDelegate textDelegate =
-      DefaultAssetsPickerTextDelegate();
+  static AssetsPickerTextDelegate textDelegate = AssetsPickerTextDelegate();
   static SortPathDelegate sortPathDelegate = SortPathDelegate.common;
 
   static const int defaultGridThumbSize = 200;
