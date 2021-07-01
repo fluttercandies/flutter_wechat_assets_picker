@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 6.0.0-dev.1
 
-Sync everything with WeChat 8.x .
+Sync everything from WeChat 8.x .
 
 ### New features
 
