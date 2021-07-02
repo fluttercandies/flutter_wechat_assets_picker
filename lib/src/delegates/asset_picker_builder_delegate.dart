@@ -1624,7 +1624,7 @@ class DefaultAssetPickerBuilderDelegate
           },
           child: Container(
             margin: EdgeInsets.all(
-              context.mediaQuery.size.width / gridCount / (isAppleOS ? 12 : 15),
+              context.mediaQuery.size.width / gridCount / 12,
             ),
             width: isPreviewEnabled ? indicatorSize : null,
             height: isPreviewEnabled ? indicatorSize : null,
@@ -1723,6 +1723,7 @@ class DefaultAssetPickerBuilderDelegate
                           color: theme.textTheme.bodyText1?.color
                               ?.withOpacity(.75),
                           fontWeight: FontWeight.w600,
+                          height: 1,
                         ),
                       ),
                     )
