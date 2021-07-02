@@ -786,7 +786,8 @@ class DefaultAssetPickerViewerBuilderDelegate
                   ),
                 ),
                 appBar(context),
-                if (selectedAssets != null || (isWeChatMoment && hasVideo))
+                if (selectedAssets != null ||
+                    (isAppleOS && isWeChatMoment && hasVideo))
                   bottomDetailBuilder(context),
               ],
             ),
