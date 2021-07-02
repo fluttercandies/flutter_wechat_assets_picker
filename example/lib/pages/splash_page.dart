@@ -3,10 +3,10 @@
 /// [Date] 2020-05-31 21:36
 ///
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../constants/extensions.dart';
-import '../constants/resource.dart';
+import '../main.dart';
 import 'home_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -20,32 +20,25 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance?.addPostFrameCallback(
-      (Duration _) {
-        Future<void>.delayed(
-          const Duration(seconds: 2),
-          () {
-            Navigator.of(context).pushReplacement(
-              PageRouteBuilder<void>(
-                pageBuilder: (_, __, ___) => const HomePage(),
-                transitionsBuilder: (
-                  _,
-                  Animation<double> animation,
-                  Animation<double> secondaryAnimation,
-                  Widget child,
-                ) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  );
-                },
-                transitionDuration: const Duration(seconds: 1),
-              ),
-            );
+    init();
+  }
+
+  Future<void> init() async {
+    await PackageInfo.fromPlatform()
+        .then((PackageInfo p) => packageInfo = p)
+        .catchError((Object _) {});
+    await Future<void>.delayed(const Duration(seconds: 2));
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder<void>(
+          pageBuilder: (_, __, ___) => const HomePage(),
+          transitionsBuilder: (_, Animation<double> a, __, Widget child) {
+            return FadeTransition(opacity: a, child: child);
           },
-        );
-      },
-    );
+          transitionDuration: const Duration(seconds: 1),
+        ),
+      );
+    }
   }
 
   @override
@@ -55,10 +48,7 @@ class _SplashPageState extends State<SplashPage> {
       child: Center(
         child: Hero(
           tag: 'LOGO',
-          child: Image.asset(
-            R.ASSETS_FLUTTER_CANDIES_LOGO_PNG,
-            width: 150.0,
-          ),
+          child: Image.asset('assets/flutter_candies_logo.png', width: 150.0),
         ),
       ),
     );
