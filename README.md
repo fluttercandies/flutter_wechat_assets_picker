@@ -174,6 +174,7 @@ platform :osx, '10.15'
 | filterOptions             | `FilterOptionGroup?`        | Allow users to customize assets filter options.              | `null`                              |
 | specialItemBuilder        | `WidgetBuilder?`            | The widget builder for the special item.                     | `null`                              |
 | specialItemPosition       | `SpecialItemPosition`       | Allow users set a special item in the picker with several positions. | `SpecialItemPosition.none`          |
+| loadingIndicatorBuilder   | `IndicatorBuilder?`         | Indicates the loading status for the builder.                | `null`                              |
 | allowSpecialItemWhenEmpty | `bool`                      | Whether the special item will display or not when assets is empty. | `false`                             |
 | routeCurve                | `Curve`                     | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
 | routeDuration             | `Duration`                  | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
@@ -184,12 +185,16 @@ platform :osx, '10.15'
 final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
 ```
 
-or
+### Using custom delegate
 
 ```dart
-AssetPicker.pickAsset(context).then((List<AssetEntity> assets) {
-  /.../
-});
+final YourAssetPickerProvider provider = your_provider;
+final CustomAssetPickerBuilderDelegate builder = your_builder(provider);
+final List<YourAssetEntity>? result = await AssetPicker.pickAssetsWithDelegate(
+  context,
+  provider: provider,
+  delegate: builder,
+);
 ```
 
 ### Complete param usage
