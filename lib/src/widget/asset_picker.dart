@@ -130,18 +130,18 @@ class AssetPicker<A, P> extends StatefulWidget {
 
   /// Call the picker with provided [delegate] and [provider].
   /// 通过指定的 [delegate] 和 [provider] 调用选择器
-  static Future<List<A>?> pickAssetsWithDelegate<A, P>(
+  static Future<List<A>?>
+      pickAssetsWithDelegate<A, P, D extends AssetPickerProvider<A, P>>(
     BuildContext context, {
     required AssetPickerBuilderDelegate<A, P> delegate,
-    required AssetPickerProvider<A, P> provider,
+    required D provider,
     bool useRootNavigator = true,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
     await permissionCheck();
 
-    final Widget picker =
-        ChangeNotifierProvider<AssetPickerProvider<A, P>>.value(
+    final Widget picker = ChangeNotifierProvider<D>.value(
       value: provider,
       child: AssetPicker<A, P>(key: Constants.pickerKey, builder: delegate),
     );

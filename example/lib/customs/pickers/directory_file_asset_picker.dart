@@ -49,21 +49,13 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
     final FileAssetPickerProvider provider = FileAssetPickerProvider(
       selectedAssets: fileList,
     );
-    final Widget picker = ChangeNotifierProvider<FileAssetPickerProvider>.value(
-      value: provider,
-      child: AssetPicker<File, Directory>(
-        builder: FileAssetPickerBuilder(provider: provider),
-      ),
+    final FileAssetPickerBuilder builder = FileAssetPickerBuilder(
+      provider: provider,
     );
-    final List<File>? result = await Navigator.of(
+    final List<File>? result = await AssetPicker.pickAssetsWithDelegate(
       context,
-      rootNavigator: true,
-    ).push<List<File>>(
-      AssetPickerPageRoute<List<File>>(
-        builder: picker,
-        transitionCurve: Curves.easeIn,
-        transitionDuration: const Duration(milliseconds: 300),
-      ),
+      delegate: builder,
+      provider: provider,
     );
     if (result != null) {
       fileList
