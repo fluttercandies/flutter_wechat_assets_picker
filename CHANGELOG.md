@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 6.0.0-dev.2
+
+- Add generic type to indicate provider when using `pickAssetsWithDelegate` method.
+
 ## 6.0.0-dev.1
 
 Sync everything from WeChat 8.x .
@@ -12,7 +16,7 @@ Sync everything from WeChat 8.x .
 
 - Change the permission from the app settings when it's limited.
 - Request more assets on iOS when the permission is limited.
-- Fit the assets' grid's layout as the iOS `Photos` app (reverted and start from the bottom).
+- Fit the assets' grid's layout as the iOS `Photos` app (reverted and started from the bottom).
 - Add Arabic language text delegate.
 - Allow using `AssetPicker` and `AssetPickerViewer` directly with delegates.
 
