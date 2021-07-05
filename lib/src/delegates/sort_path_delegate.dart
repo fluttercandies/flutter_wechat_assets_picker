@@ -10,12 +10,13 @@ import 'package:photo_manager/photo_manager.dart';
 /// Define [sort] to sort the asset path list.
 /// Usually integrate with [List.sort].
 /// 通过定义 [sort] 方法对资源路径列表进行排序。通常使用 [List.sort]。
-abstract class SortPathDelegate {
+abstract class SortPathDelegate<Path> {
   const SortPathDelegate();
 
-  void sort(List<AssetPathEntity> list);
+  void sort(List<Path> list);
 
-  static const SortPathDelegate common = CommonSortPathDelegate();
+  static const SortPathDelegate<AssetPathEntity> common =
+      CommonSortPathDelegate();
 }
 
 /// Common sort path delegate.
@@ -24,7 +25,7 @@ abstract class SortPathDelegate {
 /// This delegate will bring "Recent" (All photos), "Camera", "Screenshot(?s)"
 /// to the front of the paths list.
 /// 该实现会把“最近”、“相机”、“截图”排到列表头部。
-class CommonSortPathDelegate extends SortPathDelegate {
+class CommonSortPathDelegate extends SortPathDelegate<AssetPathEntity> {
   const CommonSortPathDelegate();
 
   @override

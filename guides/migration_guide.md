@@ -71,6 +71,10 @@ After:
 Future<void> switchPath([P? pathEntity]);
 ```
 
+### `SortPathDelegate`
+
+`SortPathDelegate` accepts a generic type `Path` now, and the type will be delivered to the `sort` method.
+
 ## 5.0.0
 
 ### Summary
