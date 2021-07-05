@@ -17,7 +17,7 @@ Language: [English](README.md) | 中文简体
 `extended_image` 用于查看图片，`provider` 用于协助管理选择器的状态。
 
 需要拍照及录制视频，请查看示例的详细用法，
-并前往 [wechat_camera_picker](https://fluttercandies.github.io/flutter_wechat_camera_picker/README-ZH.html) 。
+并前往 [wechat_camera_picker](https://pub.flutter-io.cn/packages/wechat_camera_picker) 。
 
 所有的界面细节基于 **微信 8.x 版本**，将在微信版本更新后随时进行跟进。
 
@@ -75,10 +75,11 @@ Language: [English](README.md) | 中文简体
 
 ## 截图 📸
 
-| ![1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5plm5wlj30u01t0zp7.jpg) | ![2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q69848j30u01t04o5.jpg) | ![3](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q60v9qj30u01t07vh.jpg) |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![4](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5qe7jj30u01t04qp.jpg) | ![5](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5jobgj30u01t0ngi.jpg) | ![6](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5cebej30u01t04a0.jpg) |
-| ![7](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q56xuhj30u01t077a.jpg) | ![8](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q50otnj30u01t0kjf.jpg) | ![9](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q4o7x5j30u01t0e81.jpg) |
+| ![1](https://pic.alexv525.com/2021-07-05-picker_1.jpg)   | ![2](https://pic.alexv525.com/2021-07-05-picker_2.jpg)   | ![3](https://pic.alexv525.com/2021-07-05-picker_3.jpg)   |
+| -------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
+| ![4](https://pic.alexv525.com/2021-07-05-picker_4.jpg)   | ![5](https://pic.alexv525.com/2021-07-05-picker_5.jpg)   | ![6](https://pic.alexv525.com/2021-07-05-picker_6.jpg)   |
+| ![7](https://pic.alexv525.com/2021-07-05-picker_7.jpg)   | ![8](https://pic.alexv525.com/2021-07-05-picker_8.jpg)   | ![9](https://pic.alexv525.com/2021-07-05-picker_9.jpg)   |
+| ![10](https://pic.alexv525.com/2021-07-05-picker_10.png) | ![10](https://pic.alexv525.com/2021-07-05-picker_11.png) | ![12](https://pic.alexv525.com/2021-07-05-picker_12.png) |
 
 ## 开始前的注意事项 ‼️
 

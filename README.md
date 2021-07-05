@@ -19,7 +19,7 @@ using `photo_manager` for asset implementation,
 and `provider` to help control the state of the picker.
 
 To take a photo or a video for assets, please check the detailed usage in the example, and head over to
-[wechat_camera_picker](https://fluttercandies.github.io/flutter_wechat_camera_picker/) .
+[wechat_camera_picker](https://pub.dev/packages/wechat_camera_picker).
 
 All UI designs are based on WeChat 8.x, and it will be updated following the WeChat update in anytime.
 
@@ -76,10 +76,11 @@ See [Migration Guide](guides/migration_guide.md).
 
 ## Screenshots 📸
 
-| ![1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5plm5wlj30u01t0zp7.jpg) | ![2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q69848j30u01t04o5.jpg) | ![3](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q60v9qj30u01t07vh.jpg) |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![4](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5qe7jj30u01t04qp.jpg) | ![5](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5jobgj30u01t0ngi.jpg) | ![6](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q5cebej30u01t04a0.jpg) |
-| ![7](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q56xuhj30u01t077a.jpg) | ![8](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q50otnj30u01t0kjf.jpg) | ![9](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo5q4o7x5j30u01t0e81.jpg) |
+| ![1](https://pic.alexv525.com/2021-07-05-picker_1.jpg)   | ![2](https://pic.alexv525.com/2021-07-05-picker_2.jpg)   | ![3](https://pic.alexv525.com/2021-07-05-picker_3.jpg)   |
+| -------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
+| ![4](https://pic.alexv525.com/2021-07-05-picker_4.jpg)   | ![5](https://pic.alexv525.com/2021-07-05-picker_5.jpg)   | ![6](https://pic.alexv525.com/2021-07-05-picker_6.jpg)   |
+| ![7](https://pic.alexv525.com/2021-07-05-picker_7.jpg)   | ![8](https://pic.alexv525.com/2021-07-05-picker_8.jpg)   | ![9](https://pic.alexv525.com/2021-07-05-picker_9.jpg)   |
+| ![10](https://pic.alexv525.com/2021-07-05-picker_10.png) | ![10](https://pic.alexv525.com/2021-07-05-picker_11.png) | ![12](https://pic.alexv525.com/2021-07-05-picker_12.png) |
 
 ## READ THIS FIRST ‼️
 
