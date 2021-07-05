@@ -452,30 +452,10 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   Widget backButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: () {
-        if (isAppleOS) {
-          return GestureDetector(
-            onTap: Navigator.of(context).maybePop,
-            child: Container(
-              margin: isAppleOS
-                  ? const EdgeInsets.symmetric(horizontal: 20.0)
-                  : null,
-              child: IntrinsicWidth(
-                child: Center(
-                  child: Text(
-                    Constants.textDelegate.cancel,
-                    style: const TextStyle(fontSize: 18.0),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-        return IconButton(
-          onPressed: Navigator.of(context).maybePop,
-          icon: const Icon(Icons.close),
-        );
-      }(),
+      child: IconButton(
+        onPressed: Navigator.of(context).maybePop,
+        icon: const Icon(Icons.close),
+      ),
     );
   }
 
