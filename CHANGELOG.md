@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 6.0.0-dev.3
+
+- Unify the back button in the picker on all platforms.
+- Change the generic type `A` to `Asset` and `P` to `Path`.
+- Refactored `SortPathDelegate` to make it accept the `Path` generic type.
+- Screenshots update.
+- Bump `photo_manager` to 1.2.5 .
+
 ## 6.0.0-dev.2
 
 - Add generic type to indicate provider when using `pickAssetsWithDelegate` method.
