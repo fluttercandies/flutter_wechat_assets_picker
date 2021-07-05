@@ -24,9 +24,9 @@ typedef IndicatorBuilder = Widget Function(
 ///
 /// By extending the delegate, you can customize every components on you own.
 /// Delegate requires two generic types:
-///  * [A] "Asset": The type of your assets. Defaults to [AssetEntity].
-///  * [P] "Path": The type of your paths. Defaults to [AssetPathEntity].
-abstract class AssetPickerBuilderDelegate<A, P> {
+///  * [Asset] The type of your assets. Defaults to [AssetEntity].
+///  * [Path] The type of your paths. Defaults to [AssetPathEntity].
+abstract class AssetPickerBuilderDelegate<Asset, Path> {
   AssetPickerBuilderDelegate({
     required this.provider,
     required this.initialPermission,
@@ -49,7 +49,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
 
   /// [ChangeNotifier] for asset picker.
   /// 资源选择器状态保持
-  final AssetPickerProvider<A, P> provider;
+  final AssetPickerProvider<Asset, Path> provider;
 
   /// The [PermissionState] when the picker is called.
   /// 当选择器被拉起时的权限状态
@@ -179,7 +179,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 路径单独条目选择组件
   Widget pathEntityWidget({
     required BuildContext context,
-    required Map<P, Uint8List?> list,
+    required Map<Path, Uint8List?> list,
     required int index,
     bool isAudio = false,
   });
@@ -203,7 +203,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
 
   /// GIF image type indicator.
   /// GIF类型图片指示
-  Widget gifIndicator(BuildContext context, A asset) {
+  Widget gifIndicator(BuildContext context, Asset asset) {
     return PositionedDirectional(
       start: 0,
       bottom: 0,
@@ -245,29 +245,29 @@ abstract class AssetPickerBuilderDelegate<A, P> {
 
   /// Audio asset type indicator.
   /// 音频类型资源指示
-  Widget audioIndicator(BuildContext context, A asset);
+  Widget audioIndicator(BuildContext context, Asset asset);
 
   /// Video asset type indicator.
   /// 视频类型资源指示
-  Widget videoIndicator(BuildContext context, A asset);
+  Widget videoIndicator(BuildContext context, Asset asset);
 
   /// Animated backdrop widget for items.
   /// 部件选中时的动画遮罩部件
   Widget selectedBackdrop(
     BuildContext context,
     int index,
-    A asset,
+    Asset asset,
   );
 
   /// Indicator for assets selected status.
   /// 资源是否已选的指示器
-  Widget selectIndicator(BuildContext context, A asset);
+  Widget selectIndicator(BuildContext context, Asset asset);
 
   /// Indicator when the asset cannot be selected.
   /// 当资源无法被选中时的遮罩
-  Widget itemBannedIndicator(BuildContext context, A asset) {
-    return Consumer<AssetPickerProvider<A, P>>(
-      builder: (_, AssetPickerProvider<A, P> p, __) {
+  Widget itemBannedIndicator(BuildContext context, Asset asset) {
+    return Consumer<AssetPickerProvider<Asset, Path>>(
+      builder: (_, AssetPickerProvider<Asset, Path> p, __) {
         if (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) {
           return Container(
             color: theme.colorScheme.background.withOpacity(.85),
@@ -282,8 +282,8 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 加载指示器
   Widget loadingIndicator(BuildContext context) {
     return Center(
-      child: Selector<AssetPickerProvider<A, P>, bool>(
-        selector: (_, AssetPickerProvider<A, P> provider) =>
+      child: Selector<AssetPickerProvider<Asset, Path>, bool>(
+        selector: (_, AssetPickerProvider<Asset, Path> provider) =>
             provider.isAssetsEmpty,
         builder: (BuildContext c, bool isAssetsEmpty, Widget? w) {
           if (loadingIndicatorBuilder != null) {
@@ -338,7 +338,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 为 Grid 布局指示如何找到可复用的 [RenderObject]。
   int? findChildIndexBuilder({
     required String id,
-    required List<A> assets,
+    required List<Asset> assets,
     int placeholderCount = 0,
   }) =>
       null;
@@ -347,7 +347,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   /// 为资源列表提供内容数量计算的方法
   int assetsGridItemCount({
     required BuildContext context,
-    required List<A> assets,
+    required List<Asset> assets,
     int placeholderCount = 0,
   });
 
@@ -356,7 +356,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   Widget assetGridItemBuilder(
     BuildContext context,
     int index,
-    List<A> currentAssets,
+    List<Asset> currentAssets,
   );
 
   /// The item builder for audio type of asset.
@@ -364,7 +364,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   Widget audioItemBuilder(
     BuildContext context,
     int index,
-    A asset,
+    Asset asset,
   );
 
   /// The item builder for images and video type of asset.
@@ -372,7 +372,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
   Widget imageAndVideoItemBuilder(
     BuildContext context,
     int index,
-    A asset,
+    Asset asset,
   );
 
   /// Preview button to preview selected assets.
@@ -563,7 +563,7 @@ abstract class AssetPickerBuilderDelegate<A, P> {
       value: overlayStyle,
       child: Theme(
         data: theme,
-        child: ChangeNotifierProvider<AssetPickerProvider<A, P>>.value(
+        child: ChangeNotifierProvider<AssetPickerProvider<Asset, Path>>.value(
           value: provider,
           builder: (BuildContext c, __) => Material(
             color: theme.canvasColor,

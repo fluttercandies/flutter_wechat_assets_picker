@@ -14,15 +14,15 @@ import '../constants/constants.dart';
 /// The provider maintain all methods that control assets and paths.
 /// By extending it you can customize how you can get all assets or paths,
 /// how to fetch the next page of assets, how to get the thumb data of a path.
-abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
+abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   AssetPickerProvider({
     this.maxAssets = 9,
     this.pageSize = 320,
     this.pathThumbSize = 80,
-    List<A>? selectedAssets,
+    List<Asset>? selectedAssets,
   }) {
     if (selectedAssets?.isNotEmpty == true) {
-      _selectedAssets = List<A>.from(selectedAssets!);
+      _selectedAssets = List<Asset>.from(selectedAssets!);
     }
   }
 
@@ -123,9 +123,9 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   ///
   /// Using [Map] in order to save the thumb data for the first asset under the path.
   /// 使用[Map]来保存路径下第一个资源的缩略数据。
-  final Map<P, Uint8List?> _pathEntityList = <P, Uint8List?>{};
+  final Map<Path, Uint8List?> _pathEntityList = <Path, Uint8List?>{};
 
-  Map<P, Uint8List?> get pathEntityList => _pathEntityList;
+  Map<Path, Uint8List?> get pathEntityList => _pathEntityList;
 
   /// How many path has a valid thumb data.
   /// 当前有多少目录已经正常载入了缩略图
@@ -138,11 +138,11 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   /// The path which is currently using.
   /// 正在查看的资源路径
-  P? _currentPathEntity;
+  Path? _currentPathEntity;
 
-  P? get currentPathEntity => _currentPathEntity;
+  Path? get currentPathEntity => _currentPathEntity;
 
-  set currentPathEntity(P? value) {
+  set currentPathEntity(Path? value) {
     if (value == null || value == _currentPathEntity) {
       return;
     }
@@ -152,29 +152,29 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   /// Assets under current path entity.
   /// 正在查看的资源路径下的所有资源
-  List<A> _currentAssets = <A>[];
+  List<Asset> _currentAssets = <Asset>[];
 
-  List<A> get currentAssets => _currentAssets;
+  List<Asset> get currentAssets => _currentAssets;
 
-  set currentAssets(List<A> value) {
+  set currentAssets(List<Asset> value) {
     if (value == _currentAssets) {
       return;
     }
-    _currentAssets = List<A>.from(value);
+    _currentAssets = List<Asset>.from(value);
     notifyListeners();
   }
 
   /// Selected assets.
   /// 已选中的资源
-  List<A> _selectedAssets = <A>[];
+  List<Asset> _selectedAssets = <Asset>[];
 
-  List<A> get selectedAssets => _selectedAssets;
+  List<Asset> get selectedAssets => _selectedAssets;
 
-  set selectedAssets(List<A> value) {
+  set selectedAssets(List<Asset> value) {
     if (value == _selectedAssets) {
       return;
     }
-    _selectedAssets = List<A>.from(value);
+    _selectedAssets = List<Asset>.from(value);
     notifyListeners();
   }
 
@@ -186,7 +186,7 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
   /// 它为预览部件的选中部分的 [Selector] 提供了是否重建的条件。
   String get selectedDescriptions => _selectedAssets.fold(
         <String>[],
-        (List<String> list, A a) => list..add(a.toString()),
+        (List<String> list, Asset a) => list..add(a.toString()),
       ).join();
 
   /// 选中资源是否为空
@@ -201,11 +201,11 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   /// Get thumb data from the first asset under the specific path entity.
   /// 获取指定路径下的第一个资源的缩略数据
-  Future<Uint8List?> getFirstThumbFromPathEntity(P pathEntity);
+  Future<Uint8List?> getFirstThumbFromPathEntity(Path pathEntity);
 
   /// Get assets under the specific path entity.
   /// 获取指定路径下的资源
-  Future<void> getAssetsFromEntity(int page, P pathEntity);
+  Future<void> getAssetsFromEntity(int page, Path pathEntity);
 
   /// Load more assets.
   /// 加载更多资源
@@ -213,26 +213,26 @@ abstract class AssetPickerProvider<A, P> extends ChangeNotifier {
 
   /// Select asset.
   /// 选中资源
-  void selectAsset(A item) {
+  void selectAsset(Asset item) {
     if (selectedAssets.length == maxAssets || selectedAssets.contains(item)) {
       return;
     }
-    final List<A> _set = List<A>.from(selectedAssets);
+    final List<Asset> _set = List<Asset>.from(selectedAssets);
     _set.add(item);
     selectedAssets = _set;
   }
 
   /// Un-select asset.
   /// 取消选中资源
-  void unSelectAsset(A item) {
-    final List<A> _set = List<A>.from(selectedAssets);
+  void unSelectAsset(Asset item) {
+    final List<Asset> _set = List<Asset>.from(selectedAssets);
     _set.remove(item);
     selectedAssets = _set;
   }
 
   /// Switch path entity.
   /// 切换路径
-  Future<void> switchPath([P? pathEntity]);
+  Future<void> switchPath([Path? pathEntity]);
 }
 
 class DefaultAssetPickerProvider

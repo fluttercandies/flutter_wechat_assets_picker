@@ -62,7 +62,7 @@ you can stop reading._
 Before:
 
 ```dart
-void switchPath(P pathEntity);
+void switchPath(Path pathEntity);
 ```
 
 After:
@@ -93,4 +93,4 @@ For how to implement a custom picker, see the example's custom page for more imp
   `previewAssets`.
 
 - If you have extended an `AssetPickerProvider` or `AssetPickerViewerProvider`, it now requires you
-  to pass generic type `A` and `P`, and handle the entities on your own.
+  to pass generic type `Asset` and `Path`, and handle the entities on your own.

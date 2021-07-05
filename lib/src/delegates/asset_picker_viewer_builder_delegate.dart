@@ -14,7 +14,7 @@ import '../constants/constants.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/custom_checkbox.dart';
 
-abstract class AssetPickerViewerBuilderDelegate<A, P> {
+abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   AssetPickerViewerBuilderDelegate({
     required this.previewAssets,
     required this.themeData,
@@ -27,11 +27,11 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
 
   /// [ChangeNotifier] for photo selector viewer.
   /// 资源预览器的状态保持
-  final AssetPickerViewerProvider<A>? provider;
+  final AssetPickerViewerProvider<Asset>? provider;
 
   /// Assets provided to preview.
   /// 提供预览的资源
-  final List<A> previewAssets;
+  final List<Asset> previewAssets;
 
   /// Theme for the viewer.
   /// 主题
@@ -39,11 +39,11 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
 
   /// Selected assets.
   /// 已选的资源
-  final List<A>? selectedAssets;
+  final List<Asset>? selectedAssets;
 
   /// Provider for [AssetPicker].
   /// 资源选择器的状态保持
-  final AssetPickerProvider<A, P>? selectorProvider;
+  final AssetPickerProvider<Asset, Path>? selectorProvider;
 
   /// [StreamController] for viewing page index update.
   /// 用于更新当前正在浏览的资源页码的流控制器
@@ -61,7 +61,7 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
 
   /// The [State] for a viewer.
   /// 预览器的状态实例
-  late final AssetPickerViewerState<A, P> viewerState;
+  late final AssetPickerViewerState<Asset, Path> viewerState;
 
   /// The [TickerProvider] for animations.
   /// 用于动画的 [TickerProvider]
@@ -81,7 +81,7 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
 
   /// Getter for the current asset.
   /// 当前资源的Getter
-  A get currentAsset => previewAssets.elementAt(currentIndex);
+  Asset get currentAsset => previewAssets.elementAt(currentIndex);
 
   /// Height for bottom preview widget.
   /// 底栏预览部件的高度
@@ -99,7 +99,10 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
 
   /// Call when viewer is calling [initState].
   /// 当预览器调用 [initState] 时注册 [State] 和 [TickerProvider]。
-  void initStateAndTicker(AssetPickerViewerState<A, P> s, TickerProvider v) {
+  void initStateAndTicker(
+    AssetPickerViewerState<Asset, Path> s,
+    TickerProvider v,
+  ) {
     viewerState = s;
     vsync = v;
   }
@@ -127,7 +130,7 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
   late final ValueNotifier<int> selectedNotifier =
       ValueNotifier<int>(selectedCount);
 
-  void unSelectAsset(A entity) {
+  void unSelectAsset(Asset entity) {
     provider?.unSelectAssetEntity(entity);
     if (!isSelectedPreviewing) {
       selectedAssets?.remove(entity);
@@ -137,7 +140,7 @@ abstract class AssetPickerViewerBuilderDelegate<A, P> {
     }
   }
 
-  void selectAsset(A entity) {
+  void selectAsset(Asset entity) {
     if (maxAssets != null && selectedCount >= maxAssets!) {
       return;
     }
