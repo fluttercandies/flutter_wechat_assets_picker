@@ -40,7 +40,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     SpecialPickerType? specialPickerType,
     Color? themeColor,
     ThemeData? pickerTheme,
-    SortPathDelegate? sortPathDelegate,
+    SortPathDelegate<AssetPathEntity>? sortPathDelegate,
     AssetsPickerTextDelegate? textDelegate,
     FilterOptionGroup? filterOptions,
     WidgetBuilder? specialItemBuilder,

@@ -269,7 +269,7 @@ class DefaultAssetPickerProvider
 
   /// Delegate to sort asset path entities.
   /// 资源路径排序的实现
-  final SortPathDelegate? sortPathDelegate;
+  final SortPathDelegate<AssetPathEntity>? sortPathDelegate;
 
   /// Filter options for the picker.
   /// 选择器的筛选条件

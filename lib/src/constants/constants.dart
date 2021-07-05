@@ -42,7 +42,8 @@ class Constants {
   static GlobalKey pickerKey = GlobalKey();
 
   static AssetsPickerTextDelegate textDelegate = AssetsPickerTextDelegate();
-  static SortPathDelegate sortPathDelegate = SortPathDelegate.common;
+  static SortPathDelegate<dynamic> sortPathDelegate =
+      SortPathDelegate.common;
 
   static const int defaultGridThumbSize = 200;
 }
