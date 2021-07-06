@@ -247,6 +247,45 @@ class PickMethod {
       },
     );
   }
+  static AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity>? _delegate;
+  static DefaultAssetPickerProvider? _provider;
+
+  static PickMethod savePage(int maxAssetsCount) {
+    return PickMethod(
+      icon: '👁️‍🗨️',
+      name: 'With delegate',
+      description: 'Pick assets with delegate.',
+      method: (
+        BuildContext context,
+        List<AssetEntity> assets,
+      ) async {
+        _provider ??= DefaultAssetPickerProvider(
+          selectedAssets: assets,
+          requestType: RequestType.common,
+          maxAssets: maxAssetsCount,
+        );
+
+        if (_delegate == null) {
+          final PermissionState _ps =
+              await PhotoManager.requestPermissionExtend();
+          if (_ps != PermissionState.authorized &&
+              _ps != PermissionState.limited) {
+            throw StateError('Permission state error with $_ps.');
+          }
+          _delegate = DefaultAssetPickerBuilderDelegate(
+            provider: _provider!,
+            initialPermission: _ps,
+          );
+        }
+
+        return await AssetPicker.pickAssetsWithDelegate(
+          context,
+          delegate: _delegate!,
+          provider: _provider!,
+        );
+      },
+    );
+  }
 
   final String icon;
   final String name;
