@@ -250,11 +250,11 @@ class PickMethod {
   static AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity>? _delegate;
   static DefaultAssetPickerProvider? _provider;
 
-  static PickMethod savePage(int maxAssetsCount) {
+  static PickMethod savePosition(int maxAssetsCount) {
     return PickMethod(
       icon: '👁️‍🗨️',
-      name: 'With delegate',
-      description: 'Pick assets with delegate.',
+      name: 'Save position',
+      description: 'Pick assets from same scroll position.',
       method: (
         BuildContext context,
         List<AssetEntity> assets,

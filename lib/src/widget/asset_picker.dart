@@ -140,6 +140,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
     await permissionCheck();
+    delegate.skipDispose = true;
 
     final Widget picker = ChangeNotifierProvider<PickerProvider>.value(
       value: provider,
@@ -261,7 +262,9 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
     AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
-    widget.builder.dispose();
+    if (!widget.builder.skipDispose) {
+      widget.builder.dispose();
+    }
     super.dispose();
   }
 

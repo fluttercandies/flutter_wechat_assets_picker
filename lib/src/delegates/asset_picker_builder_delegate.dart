@@ -92,6 +92,14 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// The [ScrollController] for the preview grid.
   final ScrollController gridScrollController = ScrollController();
 
+  /// [ScrollPosition] for resuming ScrollController position.
+  /// <zhongwen here>
+  ScrollPosition? _savedScrollPosition;
+
+  /// Whether dispose should be skipped for this delegate.
+  /// <zhongwen here>
+  bool skipDispose = false;
+
   /// The [GlobalKey] for [assetsGridBuilder] to locate the [ScrollView.center].
   /// [assetsGridBuilder] 用于定位 [ScrollView.center] 的 [GlobalKey]
   final GlobalKey gridRevertKey = GlobalKey();
@@ -559,6 +567,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Yes, the build method.
   /// 没错，是它是它就是它，我们亲爱的 build 方法~
   Widget build(BuildContext context) {
+    if (_savedScrollPosition != null) {
+      // A frame after build is invoked, jump to the saved scroll position
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        gridScrollController.jumpTo(_savedScrollPosition!.pixels);
+      });
+    }
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlayStyle,
       child: Theme(
@@ -1121,6 +1135,7 @@ class DefaultAssetPickerBuilderDelegate
           ),
           onPressed: () {
             if (provider.isSelectedNotEmpty) {
+              _savedScrollPosition = gridScrollController.position;
               Navigator.of(context).pop(provider.selectedAssets);
             }
           },
