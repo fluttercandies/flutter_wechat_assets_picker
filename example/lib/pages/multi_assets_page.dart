@@ -55,7 +55,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
         },
       ),
       PickMethod.noPreview(maxAssetsCount),
-      PickMethod.savePage(maxAssetsCount),
+      PickMethod.savePosition(maxAssetsCount),
       PickMethod(
         icon: '🎚',
         name: 'Custom image preview thumb size',

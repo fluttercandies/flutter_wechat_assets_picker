@@ -252,7 +252,7 @@ class PickMethod {
 
   static PickMethod savePosition(int maxAssetsCount) {
     return PickMethod(
-      icon: '👁️‍🗨️',
+      icon: '📜',
       name: 'Save position',
       description: 'Pick assets from same scroll position.',
       method: (
