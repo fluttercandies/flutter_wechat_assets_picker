@@ -47,6 +47,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     IndicatorBuilder? loadingIndicatorBuilder,
     SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
     bool allowSpecialItemWhenEmpty = false,
+    bool keepScrollOffset = false,
     bool useRootNavigator = true,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
@@ -112,6 +113,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
           specialItemBuilder: specialItemBuilder,
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
+          keepScrollOffset: keepScrollOffset,
         ),
       ),
     );

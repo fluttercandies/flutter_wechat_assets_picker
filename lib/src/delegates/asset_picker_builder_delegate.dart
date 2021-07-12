@@ -38,6 +38,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.specialItemBuilder,
     this.loadingIndicatorBuilder,
     this.allowSpecialItemWhenEmpty = false,
+    this.keepScrollOffset = false,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -89,8 +90,14 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 当没有资源时是否显示自定义item
   final bool allowSpecialItemWhenEmpty;
 
+  /// Whether the picker should save the scroll offset between pushes and pops.
+  /// 选择器是否可以从同样的位置开始选择
+  final bool keepScrollOffset;
+
   /// The [ScrollController] for the preview grid.
-  final ScrollController gridScrollController = ScrollController();
+  final ScrollController gridScrollController = ScrollController(
+    initialScrollOffset: Constants.scrollPosition?.pixels ?? 0,
+  );
 
   /// The [GlobalKey] for [assetsGridBuilder] to locate the [ScrollView.center].
   /// [assetsGridBuilder] 用于定位 [ScrollView.center] 的 [GlobalKey]
@@ -559,20 +566,27 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Yes, the build method.
   /// 没错，是它是它就是它，我们亲爱的 build 方法~
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: overlayStyle,
-      child: Theme(
-        data: theme,
-        child: ChangeNotifierProvider<AssetPickerProvider<Asset, Path>>.value(
-          value: provider,
-          builder: (BuildContext c, __) => Material(
-            color: theme.canvasColor,
-            child: Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                if (isAppleOS) appleOSLayout(c) else androidLayout(c),
-                if (Platform.isIOS) iOSPermissionOverlay(c),
-              ],
+    return WillPopScope(
+      onWillPop: () {
+        Constants.scrollPosition =
+            keepScrollOffset ? gridScrollController.position : null;
+        return Future<bool>.value(true);
+      },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: overlayStyle,
+        child: Theme(
+          data: theme,
+          child: ChangeNotifierProvider<AssetPickerProvider<Asset, Path>>.value(
+            value: provider,
+            builder: (BuildContext c, __) => Material(
+              color: theme.canvasColor,
+              child: Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  if (isAppleOS) appleOSLayout(c) else androidLayout(c),
+                  if (Platform.isIOS) iOSPermissionOverlay(c),
+                ],
+              ),
             ),
           ),
         ),
@@ -594,6 +608,7 @@ class DefaultAssetPickerBuilderDelegate
     WidgetBuilder? specialItemBuilder,
     IndicatorBuilder? loadingIndicatorBuilder,
     bool allowSpecialItemWhenEmpty = false,
+    bool keepScrollOffset = false,
     this.gridThumbSize = Constants.defaultGridThumbSize,
     this.previewThumbSize,
     this.specialPickerType,
@@ -612,6 +627,7 @@ class DefaultAssetPickerBuilderDelegate
           specialItemBuilder: specialItemBuilder,
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
+          keepScrollOffset: keepScrollOffset,
         );
 
   /// Thumbnail size in the grid.
@@ -1121,7 +1137,7 @@ class DefaultAssetPickerBuilderDelegate
           ),
           onPressed: () {
             if (provider.isSelectedNotEmpty) {
-              Navigator.of(context).pop(provider.selectedAssets);
+              Navigator.of(context).maybePop(provider.selectedAssets);
             }
           },
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1512,7 +1528,7 @@ class DefaultAssetPickerBuilderDelegate
               maxAssets: provider.maxAssets,
             );
             if (result != null) {
-              Navigator.of(context).pop(result);
+              Navigator.of(context).maybePop(result);
             }
           },
           child: Selector<DefaultAssetPickerProvider, String>(
@@ -1599,7 +1615,7 @@ class DefaultAssetPickerBuilderDelegate
             }
             provider.selectAsset(asset);
             if (isSingleAssetMode && !isPreviewEnabled) {
-              Navigator.of(context).pop(provider.selectedAssets);
+              Navigator.of(context).maybePop(provider.selectedAssets);
             }
           },
           child: Container(
@@ -1680,7 +1696,7 @@ class DefaultAssetPickerBuilderDelegate
             maxAssets: provider.maxAssets,
           );
           if (result != null) {
-            Navigator.of(context).pop(result);
+            Navigator.of(context).maybePop(result);
           }
         },
         child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(

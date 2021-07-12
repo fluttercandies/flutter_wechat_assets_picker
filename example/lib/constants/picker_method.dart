@@ -248,6 +248,22 @@ class PickMethod {
     );
   }
 
+  factory PickMethod.keepScrollOffset(int maxAssetsCount) {
+    return PickMethod(
+      icon: '💾',
+      name: 'Keep scroll offset',
+      description: 'Pick assets from same scroll position.',
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          maxAssets: maxAssetsCount,
+          selectedAssets: assets,
+          keepScrollOffset: true,
+        );
+      },
+    );
+  }
+
   final String icon;
   final String name;
   final String description;

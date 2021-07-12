@@ -45,6 +45,9 @@ class Constants {
   static SortPathDelegate<dynamic> sortPathDelegate =
       SortPathDelegate.common;
 
+  /// The last scroll position where the picker scrolled.
+  static ScrollPosition? scrollPosition;
+
   static const int defaultGridThumbSize = 200;
 }
 
