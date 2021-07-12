@@ -47,7 +47,6 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     IndicatorBuilder? loadingIndicatorBuilder,
     SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
     bool allowSpecialItemWhenEmpty = false,
-    bool keepScrollOffset = false,
     bool useRootNavigator = true,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
@@ -113,7 +112,6 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
           specialItemBuilder: specialItemBuilder,
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
-          keepScrollOffset: keepScrollOffset,
         ),
       ),
     );
@@ -145,8 +143,10 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
 
     final Widget picker = ChangeNotifierProvider<PickerProvider>.value(
       value: provider,
-      child:
-          AssetPicker<Asset, Path>(key: Constants.pickerKey, builder: delegate),
+      child: AssetPicker<Asset, Path>(
+        key: Constants.pickerKey,
+        builder: delegate,
+      ),
     );
     final List<Asset>? result = await Navigator.of(
       context,
