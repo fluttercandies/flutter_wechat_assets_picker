@@ -191,14 +191,17 @@ final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
 ### Using custom delegate
 
 ```dart
-final YourAssetPickerProvider provider = your_provider;
-final CustomAssetPickerBuilderDelegate builder = your_builder(provider);
+final YourAssetPickerProvider provider = yourProvider;
+final CustomAssetPickerBuilderDelegate builder = yourBuilder(provider);
 final List<YourAssetEntity>? result = await AssetPicker.pickAssetsWithDelegate(
   context,
   provider: provider,
   delegate: builder,
 );
 ```
+
+You can use the `keepScrollOffset` feature only with the `pickAssetsWithDelegate` method.
+See the `Keep scroll offset` pick method in the example for how to implement it.
 
 ### Complete param usage
 

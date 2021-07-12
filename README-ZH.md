@@ -195,14 +195,17 @@ final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
 ### 使用自定义代理
 
 ```dart
-final YourAssetPickerProvider provider = your_provider;
-final CustomAssetPickerBuilderDelegate builder = your_builder(provider);
+final YourAssetPickerProvider provider = yourProvider;
+final CustomAssetPickerBuilderDelegate builder = yourBuilder(provider);
 final List<YourAssetEntity>? result = await AssetPicker.pickAssetsWithDelegate(
   context,
   provider: provider,
   delegate: builder,
 );
 ```
+
+你只能在使用 `pickAssetsWithDelegate` 方法时使用 `keepScrollOffset` 的功能。
+更多细节请查看示例内的 `Keep scroll offset` 方法。
 
 ### 完整参数的使用方法
 
