@@ -189,7 +189,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 注意当 [keepScrollOffset] 为 true 时方法不会进行释放。
   void dispose() {
     if (keepScrollOffset) {
-      gridScrollController.removeListener(keepScrollOffsetListener);
       return;
     }
     gridScrollController.dispose();
