@@ -143,8 +143,10 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
 
     final Widget picker = ChangeNotifierProvider<PickerProvider>.value(
       value: provider,
-      child:
-          AssetPicker<Asset, Path>(key: Constants.pickerKey, builder: delegate),
+      child: AssetPicker<Asset, Path>(
+        key: Constants.pickerKey,
+        builder: delegate,
+      ),
     );
     final List<Asset>? result = await Navigator.of(
       context,

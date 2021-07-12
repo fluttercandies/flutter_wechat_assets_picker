@@ -9,6 +9,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import '../constants/constants.dart';
@@ -38,6 +39,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.specialItemBuilder,
     this.loadingIndicatorBuilder,
     this.allowSpecialItemWhenEmpty = false,
+    this.keepScrollOffset = false,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -45,6 +47,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         themeColor =
             pickerTheme?.colorScheme.secondary ?? themeColor ?? C.themeColor {
     Constants.textDelegate = textDelegate ?? AssetsPickerTextDelegate();
+    // Add the listener if [keepScrollOffset] is true.
+    if (keepScrollOffset) {
+      gridScrollController.addListener(keepScrollOffsetListener);
+    }
   }
 
   /// [ChangeNotifier] for asset picker.
@@ -88,6 +94,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Whether the special item will display or not when assets is empty.
   /// 当没有资源时是否显示自定义item
   final bool allowSpecialItemWhenEmpty;
+
+  /// Whether the picker should save the scroll offset between pushes and pops.
+  /// 选择器是否可以从同样的位置开始选择
+  final bool keepScrollOffset;
 
   /// The [ScrollController] for the preview grid.
   final ScrollController gridScrollController = ScrollController();
@@ -163,9 +173,24 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 当前的权限是否为受限
   bool get isPermissionLimited => permission.value == PermissionState.limited;
 
+  /// The listener to track the scroll position of the [gridScrollController]
+  /// if [keepScrollOffset] is true.
+  /// 当 [keepScrollOffset] 为 true 时，跟踪 [gridScrollController] 位置的监听。
+  void keepScrollOffsetListener() {
+    if (gridScrollController.hasClients) {
+      Constants.scrollPosition = gridScrollController.position;
+    }
+  }
+
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
+  ///
+  /// Be aware that the method will do nothing when [keepScrollOffset] is true.
+  /// 注意当 [keepScrollOffset] 为 true 时方法不会进行释放。
   void dispose() {
+    if (keepScrollOffset) {
+      return;
+    }
     gridScrollController.dispose();
     permission.dispose();
     permissionOverlayHidden.dispose();
@@ -559,6 +584,15 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Yes, the build method.
   /// 没错，是它是它就是它，我们亲爱的 build 方法~
   Widget build(BuildContext context) {
+    // Schedule the scroll position's restoration callback if this feature
+    // is enabled and offsets are different.
+    if (keepScrollOffset &&
+        Constants.scrollPosition != null &&
+        !gridScrollController.hasClients) {
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        gridScrollController.jumpTo(Constants.scrollPosition!.pixels);
+      });
+    }
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlayStyle,
       child: Theme(
@@ -594,6 +628,7 @@ class DefaultAssetPickerBuilderDelegate
     WidgetBuilder? specialItemBuilder,
     IndicatorBuilder? loadingIndicatorBuilder,
     bool allowSpecialItemWhenEmpty = false,
+    bool keepScrollOffset = false,
     this.gridThumbSize = Constants.defaultGridThumbSize,
     this.previewThumbSize,
     this.specialPickerType,
@@ -612,6 +647,7 @@ class DefaultAssetPickerBuilderDelegate
           specialItemBuilder: specialItemBuilder,
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
+          keepScrollOffset: keepScrollOffset,
         );
 
   /// Thumbnail size in the grid.
@@ -1121,7 +1157,7 @@ class DefaultAssetPickerBuilderDelegate
           ),
           onPressed: () {
             if (provider.isSelectedNotEmpty) {
-              Navigator.of(context).pop(provider.selectedAssets);
+              Navigator.of(context).maybePop(provider.selectedAssets);
             }
           },
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1512,7 +1548,7 @@ class DefaultAssetPickerBuilderDelegate
               maxAssets: provider.maxAssets,
             );
             if (result != null) {
-              Navigator.of(context).pop(result);
+              Navigator.of(context).maybePop(result);
             }
           },
           child: Selector<DefaultAssetPickerProvider, String>(
@@ -1599,7 +1635,7 @@ class DefaultAssetPickerBuilderDelegate
             }
             provider.selectAsset(asset);
             if (isSingleAssetMode && !isPreviewEnabled) {
-              Navigator.of(context).pop(provider.selectedAssets);
+              Navigator.of(context).maybePop(provider.selectedAssets);
             }
           },
           child: Container(
@@ -1680,7 +1716,7 @@ class DefaultAssetPickerBuilderDelegate
             maxAssets: provider.maxAssets,
           );
           if (result != null) {
-            Navigator.of(context).pop(result);
+            Navigator.of(context).maybePop(result);
           }
         },
         child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(

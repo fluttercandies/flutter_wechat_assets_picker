@@ -248,6 +248,32 @@ class PickMethod {
     );
   }
 
+  factory PickMethod.keepScrollOffset(
+    DefaultAssetPickerProvider provider,
+    DefaultAssetPickerBuilderDelegate Function() delegate,
+    Function(PermissionState state) onPermission,
+  ) {
+    return PickMethod(
+      icon: '💾',
+      name: 'Keep scroll offset',
+      description: 'Pick assets from same scroll position.',
+      method: (BuildContext context, List<AssetEntity> assets) async {
+        final PermissionState _ps =
+            await PhotoManager.requestPermissionExtend();
+        if (_ps != PermissionState.authorized &&
+            _ps != PermissionState.limited) {
+          throw StateError('Permission state error with $_ps.');
+        }
+        onPermission(_ps);
+        return AssetPicker.pickAssetsWithDelegate(
+          context,
+          provider: provider,
+          delegate: delegate(),
+        );
+      },
+    );
+  }
+
   final String icon;
   final String name;
   final String description;

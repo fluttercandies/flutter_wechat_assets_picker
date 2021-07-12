@@ -27,6 +27,13 @@ class _SingleAssetPageState extends State<SingleAssetPage>
 
   ThemeData get currentTheme => context.themeData;
 
+  /// These fields are for the keep scroll position feature.
+  late final DefaultAssetPickerProvider _keepScrollProvider =
+      DefaultAssetPickerProvider(
+    selectedAssets: assets,
+  );
+  DefaultAssetPickerBuilderDelegate? _keepScrollDelegate;
+
   List<PickMethod> get pickMethods {
     return <PickMethod>[
       PickMethod.image(maxAssetsCount),
@@ -43,6 +50,17 @@ class _SingleAssetPageState extends State<SingleAssetPage>
       PickMethod.customFilterOptions(maxAssetsCount),
       PickMethod.prependItem(maxAssetsCount),
       PickMethod.noPreview(maxAssetsCount),
+      PickMethod.keepScrollOffset(
+        _keepScrollProvider,
+        () => _keepScrollDelegate!,
+        (PermissionState state) {
+          _keepScrollDelegate ??= DefaultAssetPickerBuilderDelegate(
+            provider: _keepScrollProvider,
+            initialPermission: state,
+            keepScrollOffset: true,
+          );
+        },
+      ),
     ];
   }
 
