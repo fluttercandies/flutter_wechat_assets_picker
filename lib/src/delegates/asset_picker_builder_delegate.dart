@@ -584,6 +584,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Yes, the build method.
   /// 没错，是它是它就是它，我们亲爱的 build 方法~
   Widget build(BuildContext context) {
+    // Schedule the scroll position's restoration callback if this feature
+    // is enabled and offsets are different.
     if (keepScrollOffset &&
         Constants.scrollPosition != null &&
         !gridScrollController.hasClients) {

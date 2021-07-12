@@ -7,7 +7,8 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import 'constants.dart';
+import '../delegates/assets_picker_text_delegate.dart';
+import '../delegates/sort_path_delegate.dart';
 
 export 'package:photo_manager/photo_manager.dart';
 export 'package:provider/provider.dart';
@@ -46,6 +47,9 @@ class Constants {
       SortPathDelegate.common;
 
   /// The last scroll position where the picker scrolled.
+  ///
+  /// See also:
+  ///  * [AssetPickerBuilderDelegate.keepScrollOffset]
   static ScrollPosition? scrollPosition;
 
   static const int defaultGridThumbSize = 200;
