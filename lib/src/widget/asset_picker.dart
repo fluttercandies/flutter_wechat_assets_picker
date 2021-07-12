@@ -243,7 +243,6 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
-    PhotoManager.setLog(!kReleaseMode);
     AssetPicker.registerObserve(_onLimitedAssetsUpdated);
   }
 
