@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 6.0.0-dev.5
+
+- Fix keep offset jumping recovery issues. (#174)
+- More abstractions and structure updates for the example.
+
 ## 6.0.0-dev.4
 
 - Add `keepScrollOffset` feature for the `AssetPickerBuilderDelegate`,
@@ -270,7 +275,7 @@ see [Migration Guide](guides/migration_guide.md) for more details.
 
 ## 2.2.0
 
-- Brand new example.
+- A brand new example.
 - Add `SortPathDelegate`.
 - Using zoom page transition for viewer.
 - Slightly add padding to viewer's assets list view.
