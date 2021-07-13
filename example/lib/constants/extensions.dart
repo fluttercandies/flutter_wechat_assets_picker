@@ -2,7 +2,8 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020/8/19 14:12
 ///
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'
+    show Color, Colors, HSLColor, MaterialColor;
 
 extension ColorExtension on Color {
   MaterialColor get swatch => Colors.primaries.firstWhere(

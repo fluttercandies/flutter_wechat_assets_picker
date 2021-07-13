@@ -4,10 +4,14 @@
 ///
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart'
+    show
+        AssetEntity,
+        DefaultAssetPickerProvider,
+        DefaultAssetPickerBuilderDelegate;
 
-import '../widgets/method_list.dart';
-import '../widgets/selected_assets_list.dart';
+import '../widgets/method_list_view.dart';
+import '../widgets/selected_assets_list_view.dart';
 import 'picker_method.dart';
 
 @optionalTypeArgs
@@ -67,13 +71,13 @@ mixin ExamplePageMixin<T extends StatefulWidget> on State<T> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: MethodList(
+          child: MethodListView(
             pickMethods: pickMethods,
             onSelectMethod: selectAssets,
           ),
         ),
         if (assets.isNotEmpty)
-          SelectedAssetsList(
+          SelectedAssetsListView(
             assets: assets,
             isDisplayingDetail: isDisplayingDetail,
             onResult: onResult,

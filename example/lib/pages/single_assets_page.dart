@@ -3,8 +3,8 @@
 /// [Date] 2020-05-31 21:17
 ///
 import 'package:flutter/material.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-import 'package:wechat_camera_picker/wechat_camera_picker.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart'
+    show AssetEntity;
 
 import '../constants/page_mixin.dart';
 import '../constants/picker_method.dart';

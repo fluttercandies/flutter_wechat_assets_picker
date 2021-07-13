@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 
 import '../constants/picker_method.dart';
 
-class MethodList extends StatelessWidget {
-  const MethodList({
+class MethodListView extends StatelessWidget {
+  const MethodListView({
     Key? key,
     required this.pickMethods,
     required this.onSelectMethod,

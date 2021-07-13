@@ -9,8 +9,8 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart'
 import '../main.dart' show themeColor;
 import 'asset_widget_builder.dart';
 
-class SelectedAssetsList extends StatelessWidget {
-  const SelectedAssetsList({
+class SelectedAssetsListView extends StatelessWidget {
+  const SelectedAssetsListView({
     Key? key,
     required this.assets,
     required this.isDisplayingDetail,
