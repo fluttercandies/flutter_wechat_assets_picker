@@ -12,6 +12,7 @@ class PickMethod {
     required this.name,
     required this.description,
     required this.method,
+    this.onLongPress,
   });
 
   factory PickMethod.image(int maxAssetsCount) {
@@ -248,11 +249,12 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.keepScrollOffset(
-    DefaultAssetPickerProvider provider,
-    DefaultAssetPickerBuilderDelegate Function() delegate,
-    Function(PermissionState state) onPermission,
-  ) {
+  factory PickMethod.keepScrollOffset({
+    required DefaultAssetPickerProvider Function() provider,
+    required DefaultAssetPickerBuilderDelegate Function() delegate,
+    required Function(PermissionState state) onPermission,
+    GestureLongPressCallback? onLongPress,
+  }) {
     return PickMethod(
       icon: '💾',
       name: 'Keep scroll offset',
@@ -267,10 +269,11 @@ class PickMethod {
         onPermission(_ps);
         return AssetPicker.pickAssetsWithDelegate(
           context,
-          provider: provider,
+          provider: provider(),
           delegate: delegate(),
         );
       },
+      onLongPress: onLongPress,
     );
   }
 
@@ -281,4 +284,5 @@ class PickMethod {
     BuildContext context,
     List<AssetEntity> selectedAssets,
   ) method;
+  final GestureLongPressCallback? onLongPress;
 }

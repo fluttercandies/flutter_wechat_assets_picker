@@ -14,8 +14,6 @@ import 'pages/splash_page.dart';
 
 const Color themeColor = Color(0xff00bc56);
 
-bool get currentIsDark => Screens.mediaQuery.platformBrightness.isDark;
-
 PackageInfo? packageInfo;
 
 void main() {

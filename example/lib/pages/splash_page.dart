@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../constants/extensions.dart';
 import '../main.dart';
 import 'home_page.dart';
 
@@ -44,7 +43,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.themeData.canvasColor,
+      color: Theme.of(context).canvasColor,
       child: Center(
         child: Hero(
           tag: 'LOGO',
