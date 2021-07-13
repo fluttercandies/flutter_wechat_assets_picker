@@ -262,7 +262,10 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
     AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
-    widget.builder.dispose();
+    // Skip delegate's dispose when it's keeping scroll offset.
+    if (!widget.builder.keepScrollOffset) {
+      widget.builder.dispose();
+    }
     super.dispose();
   }
 
