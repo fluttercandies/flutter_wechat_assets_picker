@@ -107,7 +107,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       return ThumbOption.ios(
         width: width,
         height: height,
-        deliveryMode: DeliveryMode.fastFormat,
+        deliveryMode: DeliveryMode.opportunistic,
       );
     }
     return ThumbOption(width: width, height: height);
