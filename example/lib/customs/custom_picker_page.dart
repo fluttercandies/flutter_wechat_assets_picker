@@ -49,7 +49,10 @@ class _CustomPickerPageState extends State<CustomPickersPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Column(
-      children: <Widget>[tips, _MethodListView(pickMethods: pickMethods)],
+      children: <Widget>[
+        tips,
+        Expanded(child: _MethodListView(pickMethods: pickMethods)),
+      ],
     );
   }
 }
