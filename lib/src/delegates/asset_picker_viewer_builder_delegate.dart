@@ -9,6 +9,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:wechat_assets_picker/src/widget/scale_text.dart';
 
 import '../constants/constants.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
@@ -186,10 +187,11 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// 资源缩略数据加载失败时使用的部件
   Widget failedItemBuilder(BuildContext context) {
     return Center(
-      child: Text(
+      child: ScaleText(
         Constants.textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),
+        maxScaleFactor: 1.3,
       ),
     );
   }
@@ -372,7 +374,10 @@ class DefaultAssetPickerViewerBuilderDelegate
         break;
       case AssetType.other:
         builder = Center(
-          child: Text(Constants.textDelegate.unSupportedAssetType),
+          child: ScaleText(
+            Constants.textDelegate.unSupportedAssetType,
+            maxScaleFactor: 1.3,
+          ),
         );
         break;
     }
@@ -641,12 +646,13 @@ class DefaultAssetPickerViewerBuilderDelegate
                 initialData: currentIndex,
                 stream: pageStreamController.stream,
                 builder: (_, AsyncSnapshot<int> snapshot) => Center(
-                  child: Text(
+                  child: ScaleText(
                     '${snapshot.data! + 1}/${previewAssets.length}',
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
+                    maxScaleFactor: 1.3,
                   ),
                 ),
               ),
@@ -685,7 +691,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0),
             ),
-            child: Text(
+            child: ScaleText(
               () {
                 if (isWeChatMoment && hasVideo) {
                   return Constants.textDelegate.confirm;
@@ -703,6 +709,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 fontSize: 17.0,
                 fontWeight: FontWeight.normal,
               ),
+              maxScaleFactor: 1.3,
             ),
             onPressed: () {
               if (isWeChatMoment && hasVideo) {
@@ -810,9 +817,10 @@ class DefaultAssetPickerViewerBuilderDelegate
           },
         ),
         if (!isAppleOS)
-          Text(
+          ScaleText(
             Constants.textDelegate.select,
             style: const TextStyle(fontSize: 18.0),
+            maxScaleFactor: 1.3,
           ),
       ],
     );
