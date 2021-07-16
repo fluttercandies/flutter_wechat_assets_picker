@@ -24,7 +24,7 @@ class ScaleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Text textWidget = Text(
-      text ?? '',
+      text,
       style: style,
       strutStyle: strutStyle,
       maxLines: maxLines,
