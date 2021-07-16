@@ -9,6 +9,7 @@ class ScaleText extends StatelessWidget {
     this.overflow,
     this.textAlign,
     this.textDirection,
+    this.minScaleFactor = 0.9,
     this.maxScaleFactor = 1.3,
   });
 
@@ -19,28 +20,25 @@ class ScaleText extends StatelessWidget {
   final TextOverflow? overflow;
   final TextAlign? textAlign;
   final TextDirection? textDirection;
+  final double? minScaleFactor;
   final double? maxScaleFactor;
 
   @override
   Widget build(BuildContext context) {
-    final Text textWidget = Text(
-      text,
-      style: style,
-      strutStyle: strutStyle,
-      maxLines: maxLines,
-      textAlign: textAlign,
-      overflow: overflow,
-      textDirection: textDirection,
+    final MediaQueryData mqd = MediaQuery.of(context);
+    final double effectiveFactor =
+        mqd.textScaleFactor.clamp(minScaleFactor!, maxScaleFactor!).toDouble();
+    return MediaQuery(
+      data: mqd.copyWith(textScaleFactor: effectiveFactor),
+      child: Text(
+        text,
+        style: style,
+        strutStyle: strutStyle,
+        maxLines: maxLines,
+        textAlign: textAlign,
+        overflow: overflow,
+        textDirection: textDirection,
+      ),
     );
-    if (maxScaleFactor != null) {
-      final MediaQueryData mqd = MediaQuery.of(context);
-      final double effectiveFactor =
-          mqd.textScaleFactor.clamp(0.9, maxScaleFactor!).toDouble();
-      return MediaQuery(
-        data: mqd.copyWith(textScaleFactor: effectiveFactor),
-        child: textWidget,
-      );
-    }
-    return textWidget;
   }
 }
