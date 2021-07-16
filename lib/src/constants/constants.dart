@@ -43,8 +43,7 @@ class Constants {
   static GlobalKey pickerKey = GlobalKey();
 
   static AssetsPickerTextDelegate textDelegate = AssetsPickerTextDelegate();
-  static SortPathDelegate<dynamic> sortPathDelegate =
-      SortPathDelegate.common;
+  static SortPathDelegate<dynamic> sortPathDelegate = SortPathDelegate.common;
 
   /// The last scroll position where the picker scrolled.
   ///

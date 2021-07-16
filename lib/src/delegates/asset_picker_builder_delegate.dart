@@ -7,8 +7,8 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
@@ -257,10 +257,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
               fontSize: isAppleOS ? 14.0 : 12.0,
               fontWeight: isAppleOS ? FontWeight.w500 : FontWeight.normal,
             ),
-            strutStyle: const StrutStyle(
-              forceStrutHeight: true,
-              height: 1.0,
-            ),
+            strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
           ),
         ),
       ),
@@ -314,10 +311,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             return loadingIndicatorBuilder!(c, isAssetsEmpty);
           }
           if (isAssetsEmpty) {
-            return const ScaleText(
-              'Nothing here.',
-              maxScaleFactor: 1.5,
-            );
+            return const ScaleText('Nothing here.', maxScaleFactor: 1.5);
           }
           return w!;
         },
@@ -1212,10 +1206,7 @@ class DefaultAssetPickerBuilderDelegate
         selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
         builder: (_, bool isAssetsEmpty, __) {
           if (isAssetsEmpty) {
-            return const ScaleText(
-              'Nothing here.',
-              maxScaleFactor: 1.5,
-            );
+            return const ScaleText('Nothing here.', maxScaleFactor: 1.5);
           }
           return PlatformProgressIndicator(
             color: theme.iconTheme.color,
