@@ -6,7 +6,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:wechat_assets_picker/src/constants/constants.dart';
+import '../../../src/constants/constants.dart';
+import '../scale_text.dart';
 
 class AudioPageBuilder extends StatefulWidget {
   const AudioPageBuilder({
@@ -106,7 +107,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   /// Title widget.
   /// 标题组件
   Widget get titleWidget {
-    return Text(
+    return ScaleText(
       widget.asset.title ?? '',
       style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
     );
@@ -144,7 +145,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       initialData: Duration.zero,
       stream: durationStreamController.stream,
       builder: (BuildContext _, AsyncSnapshot<Duration> data) {
-        return Text(
+        return ScaleText(
           '${Constants.textDelegate.durationIndicatorBuilder(data.data!)}'
           ' / '
           '${Constants.textDelegate.durationIndicatorBuilder(assetDuration)}',

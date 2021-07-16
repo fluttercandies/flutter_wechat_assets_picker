@@ -7,6 +7,7 @@ import 'package:extended_image/extended_image.dart';
 
 import '../../constants/constants.dart';
 import '../../provider/asset_entity_image_provider.dart';
+import '../../widget/scale_text.dart';
 
 class AssetEntityGridItemBuilder extends StatefulWidget {
   const AssetEntityGridItemBuilder({
@@ -54,7 +55,7 @@ class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
   /// 资源缩略数据加载失败时使用的部件
   Widget failedItemBuilder(BuildContext context) {
     return Center(
-      child: Text(
+      child: ScaleText(
         Constants.textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),

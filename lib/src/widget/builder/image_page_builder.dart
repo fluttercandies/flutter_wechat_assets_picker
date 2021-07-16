@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 
-import 'package:wechat_assets_picker/src/constants/constants.dart';
+import '../../constants/constants.dart';
 
 class ImagePageBuilder extends StatefulWidget {
   const ImagePageBuilder({

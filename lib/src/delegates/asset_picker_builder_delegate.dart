@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import '../constants/constants.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
+import '../widget/scale_text.dart';
 
 typedef IndicatorBuilder = Widget Function(
   BuildContext context,
@@ -247,7 +248,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
                   color: theme.iconTheme.color!.withOpacity(0.75),
                 )
               : null,
-          child: Text(
+          child: ScaleText(
             Constants.textDelegate.gifIndicator,
             style: TextStyle(
               color: isAppleOS
@@ -256,10 +257,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
               fontSize: isAppleOS ? 14.0 : 12.0,
               fontWeight: isAppleOS ? FontWeight.w500 : FontWeight.normal,
             ),
-            strutStyle: const StrutStyle(
-              forceStrutHeight: true,
-              height: 1.0,
-            ),
+            strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
           ),
         ),
       ),
@@ -313,7 +311,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             return loadingIndicatorBuilder!(c, isAssetsEmpty);
           }
           if (isAssetsEmpty) {
-            return const Text('Nothing here.');
+            return const ScaleText('Nothing here.', maxScaleFactor: 1.5);
           }
           return w!;
         },
@@ -329,7 +327,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 资源缩略数据加载失败时使用的部件
   Widget failedItemBuilder(BuildContext context) {
     return Center(
-      child: Text(
+      child: ScaleText(
         Constants.textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),
@@ -420,7 +418,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             ),
             const SizedBox(width: 15),
             Expanded(
-              child: Text(
+              child: ScaleText(
                 Constants.textDelegate.accessAllTip,
                 style: context.themeData.textTheme.caption?.copyWith(
                   fontSize: 14,
@@ -513,13 +511,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
+          ScaleText(
             Constants.textDelegate.unableToAccessAll,
             style: const TextStyle(fontSize: 22),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: size.height / 30),
-          Text(
+          ScaleText(
             Constants.textDelegate.accessAllTip,
             style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
@@ -537,7 +535,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
-      child: Text(
+      child: ScaleText(
         Constants.textDelegate.goToSystemSettings,
         style: const TextStyle(fontSize: 17.0),
       ),
@@ -547,7 +545,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
     final Widget _accessLimitedButton = GestureDetector(
       onTap: () => permissionOverlayHidden.value = true,
-      child: Text(
+      child: ScaleText(
         Constants.textDelegate.accessLimitedAssets,
         style: TextStyle(color: interactiveTextColor(context)),
       ),
@@ -1084,7 +1082,7 @@ class DefaultAssetPickerBuilderDelegate
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.only(start: 4.0),
-        child: Text(
+        child: ScaleText(
           Constants.textDelegate.durationIndicatorBuilder(
             Duration(seconds: asset.duration),
           ),
@@ -1111,7 +1109,7 @@ class DefaultAssetPickerBuilderDelegate
           ),
           child: Padding(
             padding: const EdgeInsetsDirectional.only(start: 4.0, end: 30.0),
-            child: Text(
+            child: ScaleText(
               asset.title ?? '',
               style: const TextStyle(fontSize: 16.0),
               maxLines: 1,
@@ -1141,7 +1139,7 @@ class DefaultAssetPickerBuilderDelegate
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(3.0),
           ),
-          child: Text(
+          child: ScaleText(
             provider.isSelectedNotEmpty && !isSingleAssetMode
                 ? '${Constants.textDelegate.confirm}'
                     ' (${provider.selectedAssets.length}/${provider.maxAssets})'
@@ -1208,7 +1206,7 @@ class DefaultAssetPickerBuilderDelegate
         selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
         builder: (_, bool isAssetsEmpty, __) {
           if (isAssetsEmpty) {
-            return const Text('Nothing here.');
+            return const ScaleText('Nothing here.', maxScaleFactor: 1.5);
           }
           return PlatformProgressIndicator(
             color: theme.iconTheme.color,
@@ -1373,7 +1371,7 @@ class DefaultAssetPickerBuilderDelegate
               children: <Widget>[
                 if (p != null)
                   Flexible(
-                    child: Text(
+                    child: ScaleText(
                       isPermissionLimited && p.isAll
                           ? Constants.textDelegate.accessiblePathName
                           : p.name,
@@ -1383,6 +1381,7 @@ class DefaultAssetPickerBuilderDelegate
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      maxScaleFactor: 1.2,
                     ),
                   ),
                 w!,
@@ -1474,7 +1473,7 @@ class DefaultAssetPickerBuilderDelegate
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsetsDirectional.only(end: 10.0),
-                          child: Text(
+                          child: ScaleText(
                             isPermissionLimited && pathEntity.isAll
                                 ? Constants.textDelegate.accessiblePathName
                                 : pathEntity.name,
@@ -1484,7 +1483,7 @@ class DefaultAssetPickerBuilderDelegate
                           ),
                         ),
                       ),
-                      Text(
+                      ScaleText(
                         '(${pathEntity.assetCount})',
                         style: TextStyle(
                           color: theme.textTheme.caption?.color,
@@ -1555,7 +1554,7 @@ class DefaultAssetPickerBuilderDelegate
                 p.selectedDescriptions,
             builder: (_, __, ___) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: Text(
+              child: ScaleText(
                 isSelectedNotEmpty
                     ? '${Constants.textDelegate.preview}'
                         ' (${provider.selectedAssets.length})'
@@ -1566,6 +1565,7 @@ class DefaultAssetPickerBuilderDelegate
                       : theme.textTheme.caption?.color,
                   fontSize: 18.0,
                 ),
+                maxScaleFactor: 1.2,
               ),
             ),
           ),
@@ -1732,7 +1732,7 @@ class DefaultAssetPickerBuilderDelegate
                   ? Container(
                       alignment: AlignmentDirectional.topStart,
                       padding: const EdgeInsets.all(14),
-                      child: Text(
+                      child: ScaleText(
                         '${index + 1}',
                         style: TextStyle(
                           color: theme.textTheme.bodyText1?.color
@@ -1740,6 +1740,7 @@ class DefaultAssetPickerBuilderDelegate
                           fontWeight: FontWeight.w600,
                           height: 1,
                         ),
+                        maxScaleFactor: 1.4,
                       ),
                     )
                   : const SizedBox.shrink(),
@@ -1780,7 +1781,7 @@ class DefaultAssetPickerBuilderDelegate
             Expanded(
               child: Padding(
                 padding: const EdgeInsetsDirectional.only(start: 4.0),
-                child: Text(
+                child: ScaleText(
                   Constants.textDelegate.durationIndicatorBuilder(
                     Duration(seconds: asset.duration),
                   ),
@@ -1790,6 +1791,7 @@ class DefaultAssetPickerBuilderDelegate
                     height: 1.4,
                   ),
                   maxLines: 1,
+                  maxScaleFactor: 1.2,
                 ),
               ),
             ),

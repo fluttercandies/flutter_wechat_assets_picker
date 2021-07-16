@@ -5,7 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:wechat_assets_picker/src/constants/constants.dart';
+import '../../constants/constants.dart';
+import '../scale_text.dart';
 
 class VideoPageBuilder extends StatefulWidget {
   const VideoPageBuilder({
@@ -136,7 +137,11 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   @override
   Widget build(BuildContext context) {
     if (hasErrorWhenInitializing) {
-      return Center(child: Text(Constants.textDelegate.loadFailed));
+      return Center(
+        child: ScaleText(
+          Constants.textDelegate.loadFailed,
+        ),
+      );
     }
     if (!hasLoaded) {
       return const SizedBox.shrink();

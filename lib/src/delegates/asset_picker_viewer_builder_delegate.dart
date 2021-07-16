@@ -13,6 +13,7 @@ import 'package:extended_image/extended_image.dart';
 import '../constants/constants.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/custom_checkbox.dart';
+import '../widget/scale_text.dart';
 
 abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   AssetPickerViewerBuilderDelegate({
@@ -186,7 +187,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// 资源缩略数据加载失败时使用的部件
   Widget failedItemBuilder(BuildContext context) {
     return Center(
-      child: Text(
+      child: ScaleText(
         Constants.textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),
@@ -372,7 +373,9 @@ class DefaultAssetPickerViewerBuilderDelegate
         break;
       case AssetType.other:
         builder = Center(
-          child: Text(Constants.textDelegate.unSupportedAssetType),
+          child: ScaleText(
+            Constants.textDelegate.unSupportedAssetType,
+          ),
         );
         break;
     }
@@ -641,7 +644,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 initialData: currentIndex,
                 stream: pageStreamController.stream,
                 builder: (_, AsyncSnapshot<int> snapshot) => Center(
-                  child: Text(
+                  child: ScaleText(
                     '${snapshot.data! + 1}/${previewAssets.length}',
                     style: const TextStyle(
                       fontSize: 18.0,
@@ -685,7 +688,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0),
             ),
-            child: Text(
+            child: ScaleText(
               () {
                 if (isWeChatMoment && hasVideo) {
                   return Constants.textDelegate.confirm;
@@ -810,7 +813,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           },
         ),
         if (!isAppleOS)
-          Text(
+          ScaleText(
             Constants.textDelegate.select,
             style: const TextStyle(fontSize: 18.0),
           ),
