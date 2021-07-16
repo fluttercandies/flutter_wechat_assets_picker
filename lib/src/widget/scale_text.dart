@@ -12,7 +12,7 @@ class ScaleText extends StatelessWidget {
     this.maxScaleFactor = 1.3,
   });
 
-  final String? text;
+  final String text;
   final TextStyle? style;
   final StrutStyle? strutStyle;
   final int? maxLines;
