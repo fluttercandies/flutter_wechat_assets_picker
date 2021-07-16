@@ -110,7 +110,6 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
     return ScaleText(
       widget.asset.title ?? '',
       style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
-      maxScaleFactor: 1.3,
     );
   }
 
@@ -154,7 +153,6 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
             fontSize: 20.0,
             fontWeight: FontWeight.normal,
           ),
-          maxScaleFactor: 1.3,
         );
       },
     );

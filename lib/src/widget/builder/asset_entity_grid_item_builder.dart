@@ -59,7 +59,6 @@ class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
         Constants.textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),
-        maxScaleFactor: 1.3,
       ),
     );
   }

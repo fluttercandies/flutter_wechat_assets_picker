@@ -261,7 +261,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
               forceStrutHeight: true,
               height: 1.0,
             ),
-            maxScaleFactor: 1.3,
           ),
         ),
       ),
@@ -338,7 +337,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         Constants.textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),
-        maxScaleFactor: 1.3,
       ),
     );
   }
@@ -431,7 +429,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
                 style: context.themeData.textTheme.caption?.copyWith(
                   fontSize: 14,
                 ),
-                maxScaleFactor: 1.3,
               ),
             ),
             Icon(
@@ -524,14 +521,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             Constants.textDelegate.unableToAccessAll,
             style: const TextStyle(fontSize: 22),
             textAlign: TextAlign.center,
-            maxScaleFactor: 1.3,
           ),
           SizedBox(height: size.height / 30),
           ScaleText(
             Constants.textDelegate.accessAllTip,
             style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
-            maxScaleFactor: 1.3,
           ),
         ],
       ),
@@ -549,7 +544,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       child: ScaleText(
         Constants.textDelegate.goToSystemSettings,
         style: const TextStyle(fontSize: 17.0),
-        maxScaleFactor: 1.3,
       ),
       onPressed: PhotoManager.openSetting,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -560,7 +554,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       child: ScaleText(
         Constants.textDelegate.accessLimitedAssets,
         style: TextStyle(color: interactiveTextColor(context)),
-        maxScaleFactor: 1.3,
       ),
     );
 
@@ -1100,7 +1093,6 @@ class DefaultAssetPickerBuilderDelegate
             Duration(seconds: asset.duration),
           ),
           style: const TextStyle(fontSize: 16.0),
-          maxScaleFactor: 1.3,
         ),
       ),
     );
@@ -1128,7 +1120,6 @@ class DefaultAssetPickerBuilderDelegate
               style: const TextStyle(fontSize: 16.0),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              maxScaleFactor: 1.3,
             ),
           ),
         ),
@@ -1166,7 +1157,6 @@ class DefaultAssetPickerBuilderDelegate
               fontSize: 17.0,
               fontWeight: FontWeight.normal,
             ),
-            maxScaleFactor: 1.3,
           ),
           onPressed: () {
             if (provider.isSelectedNotEmpty) {
@@ -1499,7 +1489,6 @@ class DefaultAssetPickerBuilderDelegate
                             style: const TextStyle(fontSize: 18.0),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            maxScaleFactor: 1.3,
                           ),
                         ),
                       ),
@@ -1511,7 +1500,6 @@ class DefaultAssetPickerBuilderDelegate
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        maxScaleFactor: 1.3,
                       ),
                     ],
                   ),

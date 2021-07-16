@@ -191,7 +191,6 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
         Constants.textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),
-        maxScaleFactor: 1.3,
       ),
     );
   }
@@ -376,7 +375,6 @@ class DefaultAssetPickerViewerBuilderDelegate
         builder = Center(
           child: ScaleText(
             Constants.textDelegate.unSupportedAssetType,
-            maxScaleFactor: 1.3,
           ),
         );
         break;
@@ -652,7 +650,6 @@ class DefaultAssetPickerViewerBuilderDelegate
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
-                    maxScaleFactor: 1.3,
                   ),
                 ),
               ),
@@ -709,7 +706,6 @@ class DefaultAssetPickerViewerBuilderDelegate
                 fontSize: 17.0,
                 fontWeight: FontWeight.normal,
               ),
-              maxScaleFactor: 1.3,
             ),
             onPressed: () {
               if (isWeChatMoment && hasVideo) {
@@ -820,7 +816,6 @@ class DefaultAssetPickerViewerBuilderDelegate
           ScaleText(
             Constants.textDelegate.select,
             style: const TextStyle(fontSize: 18.0),
-            maxScaleFactor: 1.3,
           ),
       ],
     );

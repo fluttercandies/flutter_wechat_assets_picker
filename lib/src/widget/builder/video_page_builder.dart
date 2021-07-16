@@ -140,7 +140,6 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       return Center(
         child: ScaleText(
           Constants.textDelegate.loadFailed,
-          maxScaleFactor: 1.3,
         ),
       );
     }
