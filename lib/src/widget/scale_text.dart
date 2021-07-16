@@ -9,7 +9,7 @@ class ScaleText extends StatelessWidget {
     this.overflow,
     this.textAlign,
     this.textDirection,
-    this.minScaleFactor = 0.9,
+    this.minScaleFactor = 0.7,
     this.maxScaleFactor = 1.3,
   });
 
