@@ -33,12 +33,11 @@ class ScaleText extends StatelessWidget {
       textDirection: textDirection,
     );
     if (maxScaleFactor != null) {
-      final MediaQueryData mediaQueryData = MediaQuery.of(context);
-      final num constrainedTextScaleFactor =
-          mediaQueryData.textScaleFactor.clamp(0.9, maxScaleFactor!);
+      final MediaQueryData mqd = MediaQuery.of(context);
+      final double effectiveFactor =
+          mqd.textScaleFactor.clamp(0.9, maxScaleFactor!).toDouble();
       return MediaQuery(
-        data: mediaQueryData.copyWith(
-            textScaleFactor: constrainedTextScaleFactor as double?),
+        data: mqd.copyWith(textScaleFactor: effectiveFactor),
         child: textWidget,
       );
     }
