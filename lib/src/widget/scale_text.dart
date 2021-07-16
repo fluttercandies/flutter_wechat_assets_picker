@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class ScaleText extends StatelessWidget {
-  const ScaleText(this.text,
-      {this.style,
-      this.strutStyle,
-      this.maxLines,
-      this.overflow,
-      this.textAlign,
-      this.textDirection,
-      this.maxScaleFactor});
+  const ScaleText(
+    this.text, {
+    this.style,
+    this.strutStyle,
+    this.maxLines,
+    this.overflow,
+    this.textAlign,
+    this.textDirection,
+    this.maxScaleFactor = 1.3,
+  });
 
   final String? text;
   final TextStyle? style;
