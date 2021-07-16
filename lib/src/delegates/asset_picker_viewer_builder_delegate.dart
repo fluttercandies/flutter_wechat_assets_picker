@@ -6,14 +6,14 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:extended_image/extended_image.dart';
-import 'package:wechat_assets_picker/src/widget/scale_text.dart';
 
 import '../constants/constants.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/custom_checkbox.dart';
+import '../widget/scale_text.dart';
 
 abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   AssetPickerViewerBuilderDelegate({

@@ -6,8 +6,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:wechat_assets_picker/src/constants/constants.dart';
-import 'package:wechat_assets_picker/src/widget/scale_text.dart';
+import '../../../src/constants/constants.dart';
+import '../scale_text.dart';
 
 class AudioPageBuilder extends StatefulWidget {
   const AudioPageBuilder({

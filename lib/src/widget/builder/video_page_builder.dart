@@ -5,8 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:wechat_assets_picker/src/constants/constants.dart';
-import 'package:wechat_assets_picker/src/widget/scale_text.dart';
+import '../../constants/constants.dart';
+import '../scale_text.dart';
 
 class VideoPageBuilder extends StatefulWidget {
   const VideoPageBuilder({

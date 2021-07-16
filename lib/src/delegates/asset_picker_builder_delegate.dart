@@ -7,15 +7,15 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:wechat_assets_picker/src/widget/scale_text.dart';
 
 import '../constants/constants.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
+import '../widget/scale_text.dart';
 
 typedef IndicatorBuilder = Widget Function(
   BuildContext context,
