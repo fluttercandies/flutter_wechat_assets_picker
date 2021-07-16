@@ -2,21 +2,10 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020/8/19 14:12
 ///
-import 'package:flutter/material.dart';
-
-extension BrightnessExtension on Brightness {
-  bool get isDark => this == Brightness.dark;
-  bool get isLight => this == Brightness.light;
-}
-
-extension BuildContextExtension on BuildContext {
-  MediaQueryData get mediaQuery => MediaQuery.of(this);
-  ThemeData get themeData => Theme.of(this);
-}
+import 'package:flutter/material.dart'
+    show Color, Colors, HSLColor, MaterialColor;
 
 extension ColorExtension on Color {
-  bool get isTransparent => this == Colors.transparent;
-
   MaterialColor get swatch => Colors.primaries.firstWhere(
         (Color c) => c.value == value,
         orElse: () => _swatch,

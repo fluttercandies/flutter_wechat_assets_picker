@@ -4,8 +4,8 @@
 ///
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 /// Screens utils with multiple properties access.
 /// 获取屏幕各项属性的工具类

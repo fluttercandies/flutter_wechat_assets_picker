@@ -3,10 +3,9 @@
 /// [Date] 2020-11-01 02:05
 ///
 import 'package:flutter/material.dart';
-import 'package:wechat_assets_picker_demo/customs/pickers/directory_file_asset_picker.dart';
 
 import '../constants/custom_pick_method.dart';
-import '../constants/extensions.dart';
+import 'pickers/directory_file_asset_picker.dart';
 
 class CustomPickersPage extends StatefulWidget {
   @override
@@ -15,7 +14,16 @@ class CustomPickersPage extends StatefulWidget {
 
 class _CustomPickerPageState extends State<CustomPickersPage>
     with AutomaticKeepAliveClientMixin {
-  ThemeData get currentTheme => context.themeData;
+  Widget get tips {
+    return const Padding(
+      padding: EdgeInsets.all(20.0),
+      child: Text(
+        'This page contains customized pickers with different asset types, '
+        'different UI layouts, or some use case for specific apps. '
+        'Contribute to add your custom picker are welcomed.',
+      ),
+    );
+  }
 
   List<CustomPickMethod> get pickMethods {
     return <CustomPickMethod>[
@@ -34,7 +42,30 @@ class _CustomPickerPageState extends State<CustomPickersPage>
     ];
   }
 
-  Widget methodItemBuilder(BuildContext _, int index) {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Column(
+      children: <Widget>[
+        tips,
+        Expanded(child: _MethodListView(pickMethods: pickMethods)),
+      ],
+    );
+  }
+}
+
+class _MethodListView extends StatelessWidget {
+  const _MethodListView({
+    Key? key,
+    required this.pickMethods,
+  }) : super(key: key);
+
+  final List<CustomPickMethod> pickMethods;
+
+  Widget methodItemBuilder(BuildContext context, int index) {
     final CustomPickMethod model = pickMethods[index];
     return InkWell(
       onTap: () => model.method(context),
@@ -72,7 +103,7 @@ class _CustomPickerPageState extends State<CustomPickersPage>
                   const SizedBox(height: 5),
                   Text(
                     model.description,
-                    style: context.themeData.textTheme.caption,
+                    style: Theme.of(context).textTheme.caption,
                     overflow: TextOverflow.fade,
                   ),
                 ],
@@ -85,33 +116,12 @@ class _CustomPickerPageState extends State<CustomPickersPage>
     );
   }
 
-  Widget get methodListView {
-    return Expanded(
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
-        itemCount: pickMethods.length,
-        itemBuilder: methodItemBuilder,
-      ),
-    );
-  }
-
-  Widget get tips {
-    return const Padding(
-      padding: EdgeInsets.all(20.0),
-      child: Text(
-        'This page contains customized pickers with different asset types, '
-        'different UI layouts, or some use case for specific apps. '
-        'Contribute to add your custom picker are welcomed.',
-      ),
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => true;
-
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return Column(children: <Widget>[tips, methodListView]);
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      itemCount: pickMethods.length,
+      itemBuilder: methodItemBuilder,
+    );
   }
 }

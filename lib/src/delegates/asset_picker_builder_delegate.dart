@@ -189,9 +189,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Be aware that the method will do nothing when [keepScrollOffset] is true.
   /// 注意当 [keepScrollOffset] 为 true 时方法不会进行释放。
   void dispose() {
-    if (keepScrollOffset) {
-      return;
-    }
+    Constants.scrollPosition = null;
     gridScrollController.dispose();
     permission.dispose();
     permissionOverlayHidden.dispose();
@@ -597,11 +595,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   Widget build(BuildContext context) {
     // Schedule the scroll position's restoration callback if this feature
     // is enabled and offsets are different.
-    if (keepScrollOffset &&
-        Constants.scrollPosition != null &&
-        !gridScrollController.hasClients) {
+    if (keepScrollOffset && Constants.scrollPosition != null) {
       SchedulerBinding.instance!.addPostFrameCallback((_) {
-        gridScrollController.jumpTo(Constants.scrollPosition!.pixels);
+        // Update only if the controller has clients.
+        if (gridScrollController.hasClients) {
+          gridScrollController.jumpTo(Constants.scrollPosition!.pixels);
+        }
       });
     }
     return AnnotatedRegion<SystemUiOverlayStyle>(
