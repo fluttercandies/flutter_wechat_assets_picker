@@ -767,11 +767,12 @@ class DefaultAssetPickerBuilderDelegate
     return Stack(
       children: <Widget>[
         Positioned.fill(
-          child: Selector<DefaultAssetPickerProvider, bool>(
-            selector: (_, DefaultAssetPickerProvider p) => p.hasAssetsToDisplay,
-            builder: (_, bool hasAssetsToDisplay, __) => AnimatedSwitcher(
+          child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
+            selector: (_, DefaultAssetPickerProvider p) => p.currentAssets,
+            builder: (_, List<AssetEntity> currentAssets, __) =>
+                AnimatedSwitcher(
               duration: switchingPathDuration,
-              child: hasAssetsToDisplay
+              child: currentAssets.isNotEmpty
                   ? Stack(
                       children: <Widget>[
                         RepaintBoundary(
