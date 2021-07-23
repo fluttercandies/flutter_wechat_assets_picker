@@ -7,6 +7,7 @@ import 'package:video_player/video_player.dart';
 
 import '../../constants/constants.dart';
 import '../scale_text.dart';
+import 'locally_available_builder.dart';
 
 class VideoPageBuilder extends StatefulWidget {
   const VideoPageBuilder({
@@ -136,61 +137,63 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    if (hasErrorWhenInitializing) {
-      return Center(
-        child: ScaleText(
-          Constants.textDelegate.loadFailed,
-        ),
-      );
-    }
-    if (!hasLoaded) {
-      return const SizedBox.shrink();
-    }
-    return Stack(
-      fit: StackFit.expand,
-      children: <Widget>[
-        Positioned.fill(
-          child: Center(
-            child: AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: VideoPlayer(_controller),
-            ),
-          ),
-        ),
-        if (!widget.hasOnlyOneVideoAndMoment)
-          ValueListenableBuilder<bool>(
-            valueListenable: isPlaying,
-            builder: (_, bool value, __) => GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap:
-                  value ? playButtonCallback : builder.switchDisplayingDetail,
+    return LocallyAvailableBuilder(
+      asset: widget.asset,
+      builder: (BuildContext context) {
+        if (hasErrorWhenInitializing) {
+          return Center(child: ScaleText(Constants.textDelegate.loadFailed));
+        }
+        if (!hasLoaded) {
+          return const SizedBox.shrink();
+        }
+        return Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Positioned.fill(
               child: Center(
-                child: AnimatedOpacity(
-                  duration: kThemeAnimationDuration,
-                  opacity: value ? 0.0 : 1.0,
-                  child: GestureDetector(
-                    onTap: playButtonCallback,
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(color: Colors.black12)
-                        ],
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        value
-                            ? Icons.pause_circle_outline
-                            : Icons.play_circle_filled,
-                        size: 70.0,
-                        color: Colors.white,
+                child: AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                ),
+              ),
+            ),
+            if (!widget.hasOnlyOneVideoAndMoment)
+              ValueListenableBuilder<bool>(
+                valueListenable: isPlaying,
+                builder: (_, bool value, __) => GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: value
+                      ? playButtonCallback
+                      : builder.switchDisplayingDetail,
+                  child: Center(
+                    child: AnimatedOpacity(
+                      duration: kThemeAnimationDuration,
+                      opacity: value ? 0.0 : 1.0,
+                      child: GestureDetector(
+                        onTap: playButtonCallback,
+                        child: DecoratedBox(
+                          decoration: const BoxDecoration(
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(color: Colors.black12)
+                            ],
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            value
+                                ? Icons.pause_circle_outline
+                                : Icons.play_circle_filled,
+                            size: 70.0,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
