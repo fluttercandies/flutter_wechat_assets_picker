@@ -51,6 +51,10 @@ Other changes:
 - The `findChildIndexBuilder` and `assetsGridItemCount` methods have new signature.
   They require calculating placeholders count on iOS/macOS by default.
 
+#### `AssetPickerViewerBuilderDelegate`
+- Added the `isDisplayingDetail` notifier.
+- Added double tap animation series of fields.
+
 #### `AssetsPickerTextDelegate`
 
 - This delegate is now a normal class with Chinese language implemented by default,
