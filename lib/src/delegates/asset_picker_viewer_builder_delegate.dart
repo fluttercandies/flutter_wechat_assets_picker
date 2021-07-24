@@ -72,6 +72,28 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// 用于动画的 [TickerProvider]
   late final TickerProvider vsync;
 
+  /// [AnimationController] for double tap animation.
+  /// 双击缩放的动画控制器
+  late final AnimationController doubleTapAnimationController;
+
+  /// [CurvedAnimation] for double tap.
+  /// 双击缩放的动画曲线
+  late final Animation<double> doubleTapCurveAnimation;
+
+  /// [Animation] for double tap.
+  /// 双击缩放的动画
+  Animation<double>? doubleTapAnimation;
+
+  /// Callback for double tap.
+  /// 双击缩放的回调
+  late VoidCallback doubleTapListener;
+
+  /// [PageController] for assets preview [PageView].
+  /// 查看图片资源的页面控制器
+  late final PageController pageController = PageController(
+    initialPage: currentIndex,
+  );
+
   /// Current previewing index in assets.
   /// 当前查看的索引
   int currentIndex;
@@ -110,21 +132,55 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   ) {
     viewerState = s;
     vsync = v;
+    doubleTapAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: v,
+    );
+    doubleTapCurveAnimation = CurvedAnimation(
+      parent: doubleTapAnimationController,
+      curve: Curves.easeInOut,
+    );
   }
 
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
   void dispose() {
     provider?.dispose();
+    pageController.dispose();
     pageStreamController.close();
     previewingListController.dispose();
     selectedNotifier.dispose();
     isDisplayingDetail.dispose();
+    doubleTapAnimationController
+      ..stop()
+      ..reset()
+      ..dispose();
   }
 
   /// Execute scale animation when double tap.
   /// 双击时执行缩放动画
-  void updateAnimation(ExtendedImageGestureState state);
+  void updateAnimation(ExtendedImageGestureState state) {
+    final double begin = state.gestureDetails!.totalScale!;
+    final double end = state.gestureDetails!.totalScale! == 1.0 ? 3.0 : 1.0;
+    final Offset pointerDownPosition = state.pointerDownPosition!;
+
+    doubleTapAnimation?.removeListener(doubleTapListener);
+    doubleTapAnimationController
+      ..stop()
+      ..reset();
+    doubleTapListener = () {
+      state.handleDoubleTap(
+        scale: doubleTapAnimation!.value,
+        doubleTapPosition: pointerDownPosition,
+      );
+    };
+    doubleTapAnimation = Tween<double>(
+      begin: begin,
+      end: end,
+    ).animate(doubleTapCurveAnimation)
+      ..addListener(doubleTapListener);
+    doubleTapAnimationController.forward();
+  }
 
   /// The length getter for selected assets currently.
   /// 当前选中的资源的长度获取
@@ -273,27 +329,6 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// 如果类型不为空，则标题将不会显示。
   final SpecialPickerType? specialPickerType;
 
-  /// [AnimationController] for double tap animation.
-  /// 双击缩放的动画控制器
-  late final AnimationController _doubleTapAnimationController;
-
-  /// [CurvedAnimation] for double tap.
-  /// 双击缩放的动画曲线
-  late final Animation<double> _doubleTapCurveAnimation;
-
-  /// [Animation] for double tap.
-  /// 双击缩放的动画
-  Animation<double>? _doubleTapAnimation;
-
-  /// Callback for double tap.
-  /// 双击缩放的回调
-  late VoidCallback _doubleTapListener;
-
-  /// [PageController] for assets preview [PageView].
-  /// 查看图片资源的页面控制器
-  late final PageController pageController =
-      PageController(initialPage: currentIndex);
-
   /// Whether the [SpecialPickerType.wechatMoment] is enabled.
   /// 当前是否为微信朋友圈选择模式
   bool get isWeChatMoment =>
@@ -305,53 +340,6 @@ class DefaultAssetPickerViewerBuilderDelegate
       previewAssets.any((AssetEntity e) => e.type == AssetType.video) ||
       (selectedAssets?.any((AssetEntity e) => e.type == AssetType.video) ??
           false);
-
-  @override
-  void initStateAndTicker(
-    AssetPickerViewerState<AssetEntity, AssetPathEntity> s,
-    TickerProvider v,
-  ) {
-    super.initStateAndTicker(s, v);
-    _doubleTapAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: v,
-    );
-    _doubleTapCurveAnimation = CurvedAnimation(
-      parent: _doubleTapAnimationController,
-      curve: Curves.easeInOut,
-    );
-  }
-
-  @override
-  void dispose() {
-    _doubleTapAnimationController.dispose();
-    pageController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void updateAnimation(ExtendedImageGestureState state) {
-    final double begin = state.gestureDetails!.totalScale!;
-    final double end = state.gestureDetails!.totalScale! == 1.0 ? 3.0 : 1.0;
-    final Offset pointerDownPosition = state.pointerDownPosition!;
-
-    _doubleTapAnimation?.removeListener(_doubleTapListener);
-    _doubleTapAnimationController
-      ..stop()
-      ..reset();
-    _doubleTapListener = () {
-      state.handleDoubleTap(
-        scale: _doubleTapAnimation!.value,
-        doubleTapPosition: pointerDownPosition,
-      );
-    };
-    _doubleTapAnimation = Tween<double>(
-      begin: begin,
-      end: end,
-    ).animate(_doubleTapCurveAnimation)
-      ..addListener(_doubleTapListener);
-    _doubleTapAnimationController.forward();
-  }
 
   @override
   Widget assetPageBuilder(BuildContext context, int index) {

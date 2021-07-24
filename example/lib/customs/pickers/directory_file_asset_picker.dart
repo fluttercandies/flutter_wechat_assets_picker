@@ -1200,13 +1200,6 @@ class FileAssetPickerViewerBuilderDelegate
 
   bool _isDisplayingDetail = true;
 
-  late final AnimationController _doubleTapAnimationController;
-  late final Animation<double> _doubleTapCurveAnimation;
-  Animation<double>? _doubleTapAnimation;
-  late VoidCallback _doubleTapListener;
-
-  late final PageController pageController;
-
   AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
 
   @override
@@ -1216,30 +1209,6 @@ class FileAssetPickerViewerBuilderDelegate
       // ignore: invalid_use_of_protected_member
       viewerState.setState(() {});
     }
-  }
-
-  @override
-  void updateAnimation(ExtendedImageGestureState state) {
-    final double begin = state.gestureDetails!.totalScale!;
-    final double end = state.gestureDetails!.totalScale! == 1.0 ? 3.0 : 1.0;
-    final Offset pointerDownPosition = state.pointerDownPosition!;
-
-    _doubleTapAnimation?.removeListener(_doubleTapListener);
-    _doubleTapAnimationController
-      ..stop()
-      ..reset();
-    _doubleTapListener = () {
-      state.handleDoubleTap(
-        scale: _doubleTapAnimation!.value,
-        doubleTapPosition: pointerDownPosition,
-      );
-    };
-    _doubleTapAnimation = Tween<double>(
-      begin: begin,
-      end: end,
-    ).animate(_doubleTapCurveAnimation)
-      ..addListener(_doubleTapListener);
-    _doubleTapAnimationController.forward();
   }
 
   @override
@@ -1513,29 +1482,6 @@ class FileAssetPickerViewerBuilderDelegate
         },
       ),
     );
-  }
-
-  @override
-  void initStateAndTicker(
-    AssetPickerViewerState<File, Directory> s,
-    TickerProvider v,
-  ) {
-    super.initStateAndTicker(s, v);
-    _doubleTapAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: v,
-    );
-    _doubleTapCurveAnimation = CurvedAnimation(
-      parent: _doubleTapAnimationController,
-      curve: Curves.easeInOut,
-    );
-    pageController = PageController(initialPage: currentIndex);
-  }
-
-  @override
-  void dispose() {
-    _doubleTapAnimationController.dispose();
-    pageStreamController.close();
   }
 
   @override
