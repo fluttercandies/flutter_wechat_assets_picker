@@ -844,6 +844,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                     controller: pageController,
                     itemCount: previewAssets.length,
                     itemBuilder: assetPageBuilder,
+                    reverse: isAppleOS,
                     onPageChanged: (int index) {
                       currentIndex = index;
                       pageStreamController.add(index);
