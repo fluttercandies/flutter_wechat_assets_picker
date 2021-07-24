@@ -2,9 +2,12 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2021/7/23 16:07
 ///
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../../constants/constants.dart';
 import '../../constants/extensions.dart';
 import '../scale_text.dart';
 
@@ -13,10 +16,12 @@ class LocallyAvailableBuilder extends StatefulWidget {
     Key? key,
     required this.asset,
     required this.builder,
+    this.isOriginal = true,
   }) : super(key: key);
 
   final AssetEntity asset;
-  final WidgetBuilder builder;
+  final Widget Function(BuildContext context, AssetEntity asset) builder;
+  final bool isOriginal;
 
   @override
   _LocallyAvailableBuilderState createState() =>
@@ -26,6 +31,7 @@ class LocallyAvailableBuilder extends StatefulWidget {
 class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
   bool _isLocallyAvailable = false;
   PMProgressHandler? _progressHandler;
+  File? file;
 
   @override
   void initState() {
@@ -39,9 +45,19 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
       return;
     }
     setState(() {});
+    if (!_isLocallyAvailable) {
+      _progressHandler = PMProgressHandler();
+      widget.asset
+          .loadFile(
+            progressHandler: _progressHandler,
+            isOrigin: widget.isOriginal,
+          )
+          .then((File? f) => file = f);
+    }
     _progressHandler?.stream.listen((PMProgressState s) {
       if (s.state == PMRequestState.success) {
         _isLocallyAvailable = true;
+        file = null;
         if (mounted) {
           setState(() {});
         }
@@ -87,7 +103,7 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
   @override
   Widget build(BuildContext context) {
     if (_isLocallyAvailable) {
-      return widget.builder(context);
+      return widget.builder(context, widget.asset);
     }
     if (_progressHandler != null) {
       return Center(child: _indicator(context));

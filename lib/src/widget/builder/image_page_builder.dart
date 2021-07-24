@@ -38,38 +38,41 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
       asset: widget.asset,
-      builder: (BuildContext context) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: builder.switchDisplayingDetail,
-        child: ExtendedImage(
-          image: AssetEntityImageProvider(
-            widget.asset,
-            isOriginal: widget.previewThumbSize == null,
-            thumbSize: widget.previewThumbSize,
+      isOriginal: widget.previewThumbSize == null,
+      builder: (BuildContext context, AssetEntity asset) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: builder.switchDisplayingDetail,
+          child: ExtendedImage(
+            image: AssetEntityImageProvider(
+              asset,
+              isOriginal: widget.previewThumbSize == null,
+              thumbSize: widget.previewThumbSize,
+            ),
+            fit: BoxFit.contain,
+            mode: ExtendedImageMode.gesture,
+            onDoubleTap: builder.updateAnimation,
+            initGestureConfigHandler: (ExtendedImageState state) {
+              return GestureConfig(
+                initialScale: 1.0,
+                minScale: 1.0,
+                maxScale: 3.0,
+                animationMinScale: 0.6,
+                animationMaxScale: 4.0,
+                cacheGesture: false,
+                inPageView: true,
+              );
+            },
+            loadStateChanged: (ExtendedImageState state) {
+              return builder.previewWidgetLoadStateChanged(
+                context,
+                state,
+                hasLoaded: state.extendedImageLoadState == LoadState.completed,
+              );
+            },
           ),
-          fit: BoxFit.contain,
-          mode: ExtendedImageMode.gesture,
-          onDoubleTap: builder.updateAnimation,
-          initGestureConfigHandler: (ExtendedImageState state) {
-            return GestureConfig(
-              initialScale: 1.0,
-              minScale: 1.0,
-              maxScale: 3.0,
-              animationMinScale: 0.6,
-              animationMaxScale: 4.0,
-              cacheGesture: false,
-              inPageView: true,
-            );
-          },
-          loadStateChanged: (ExtendedImageState state) {
-            return builder.previewWidgetLoadStateChanged(
-              context,
-              state,
-              hasLoaded: state.extendedImageLoadState == LoadState.completed,
-            );
-          },
-        ),
-      ),
+        );
+      },
     );
   }
 }

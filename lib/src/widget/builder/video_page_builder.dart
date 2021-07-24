@@ -139,7 +139,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
       asset: widget.asset,
-      builder: (BuildContext context) {
+      builder: (BuildContext context, AssetEntity asset) {
         if (hasErrorWhenInitializing) {
           return Center(child: ScaleText(Constants.textDelegate.loadFailed));
         }
