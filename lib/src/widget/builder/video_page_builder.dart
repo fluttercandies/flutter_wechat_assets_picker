@@ -13,7 +13,7 @@ class VideoPageBuilder extends StatefulWidget {
   const VideoPageBuilder({
     Key? key,
     required this.asset,
-    required this.state,
+    required this.delegate,
     this.hasOnlyOneVideoAndMoment = false,
   }) : super(key: key);
 
@@ -21,9 +21,7 @@ class VideoPageBuilder extends StatefulWidget {
   /// 展示的资源
   final AssetEntity asset;
 
-  /// [State] for asset picker viewer.
-  /// 资源查看器的状态 [State]
-  final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
+  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> delegate;
 
   /// Only previewing one video and with the [SpecialPickerType.wechatMoment].
   /// 是否处于 [SpecialPickerType.wechatMoment] 且只有一个视频
@@ -53,9 +51,6 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   /// Whether the controller is playing.
   /// 播放控制器是否在播放
   bool get isControllerPlaying => _controller.value.isPlaying;
-
-  DefaultAssetPickerViewerBuilderDelegate get builder =>
-      widget.state.builder as DefaultAssetPickerViewerBuilderDelegate;
 
   @override
   void initState() {
@@ -122,8 +117,8 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
     if (isPlaying.value) {
       _controller.pause();
     } else {
-      if (builder.isDisplayingDetail.value) {
-        builder.switchDisplayingDetail(value: false);
+      if (widget.delegate.isDisplayingDetail.value) {
+        widget.delegate.switchDisplayingDetail(value: false);
       }
       if (_controller.value.duration == _controller.value.position) {
         _controller
@@ -164,7 +159,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                   behavior: HitTestBehavior.opaque,
                   onTap: value
                       ? playButtonCallback
-                      : builder.switchDisplayingDetail,
+                      : widget.delegate.switchDisplayingDetail,
                   child: Center(
                     child: AnimatedOpacity(
                       duration: kThemeAnimationDuration,

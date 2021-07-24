@@ -60,6 +60,10 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// 正在预览的资源的 [ScrollController]
   final ScrollController previewingListController = ScrollController();
 
+  /// Whether detail widgets displayed.
+  /// 详情部件是否显示
+  final ValueNotifier<bool> isDisplayingDetail = ValueNotifier<bool>(true);
+
   /// The [State] for a viewer.
   /// 预览器的状态实例
   late final AssetPickerViewerState<Asset, Path> viewerState;
@@ -115,7 +119,12 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     pageStreamController.close();
     previewingListController.dispose();
     selectedNotifier.dispose();
+    isDisplayingDetail.dispose();
   }
+
+  /// Execute scale animation when double tap.
+  /// 双击时执行缩放动画
+  void updateAnimation(ExtendedImageGestureState state);
 
   /// The length getter for selected assets currently.
   /// 当前选中的资源的长度获取
@@ -152,6 +161,21 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     if (selectedCount != selectedNotifier.value) {
       selectedNotifier.value = selectedCount;
     }
+  }
+
+  /// Method to switch [isDisplayingDetail].
+  /// 切换显示详情状态的方法
+  void switchDisplayingDetail({bool? value}) {
+    isDisplayingDetail.value = value ?? !isDisplayingDetail.value;
+  }
+
+  /// Sync selected assets currently with asset picker provider.
+  /// 在预览中当前已选的图片同步到选择器的状态
+  Future<bool> syncSelectedAssetsWhenPop() async {
+    if (provider?.currentlySelectedAssets != null) {
+      selectorProvider?.selectedAssets = provider!.currentlySelectedAssets;
+    }
+    return true;
   }
 
   /// Split page builder according to type of asset.
@@ -270,10 +294,6 @@ class DefaultAssetPickerViewerBuilderDelegate
   late final PageController pageController =
       PageController(initialPage: currentIndex);
 
-  /// Whether detail widgets displayed.
-  /// 详情部件是否显示
-  final ValueNotifier<bool> isDisplayingDetail = ValueNotifier<bool>(true);
-
   /// Whether the [SpecialPickerType.wechatMoment] is enabled.
   /// 当前是否为微信朋友圈选择模式
   bool get isWeChatMoment =>
@@ -309,8 +329,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     super.dispose();
   }
 
-  /// Execute scale animation when double tap.
-  /// 双击时执行缩放动画
+  @override
   void updateAnimation(ExtendedImageGestureState state) {
     final double begin = state.gestureDetails!.totalScale!;
     final double end = state.gestureDetails!.totalScale! == 1.0 ? 3.0 : 1.0;
@@ -334,52 +353,35 @@ class DefaultAssetPickerViewerBuilderDelegate
     _doubleTapAnimationController.forward();
   }
 
-  /// Method to switch [isDisplayingDetail].
-  /// 切换显示详情状态的方法
-  void switchDisplayingDetail({bool? value}) {
-    isDisplayingDetail.value = value ?? !isDisplayingDetail.value;
-  }
-
-  /// Sync selected assets currently with asset picker provider.
-  /// 在预览中当前已选的图片同步到选择器的状态
-  Future<bool> syncSelectedAssetsWhenPop() async {
-    if (provider?.currentlySelectedAssets != null) {
-      selectorProvider?.selectedAssets = provider!.currentlySelectedAssets;
-    }
-    return true;
-  }
-
   @override
   Widget assetPageBuilder(BuildContext context, int index) {
     final AssetEntity asset = previewAssets.elementAt(index);
-    Widget builder;
+    Widget _builder;
     switch (asset.type) {
       case AssetType.audio:
-        builder = AudioPageBuilder(asset: asset, state: viewerState);
+        _builder = AudioPageBuilder(asset: asset);
         break;
       case AssetType.image:
-        builder = ImagePageBuilder(
+        _builder = ImagePageBuilder(
           asset: asset,
-          state: viewerState,
+          delegate: this,
           previewThumbSize: previewThumbSize,
         );
         break;
       case AssetType.video:
-        builder = VideoPageBuilder(
+        _builder = VideoPageBuilder(
           asset: asset,
-          state: viewerState,
+          delegate: this,
           hasOnlyOneVideoAndMoment: isWeChatMoment && hasVideo,
         );
         break;
       case AssetType.other:
-        builder = Center(
-          child: ScaleText(
-            Constants.textDelegate.unSupportedAssetType,
-          ),
+        _builder = Center(
+          child: ScaleText(Constants.textDelegate.unSupportedAssetType),
         );
         break;
     }
-    return builder;
+    return _builder;
   }
 
   /// Preview item widgets for audios.

@@ -10,19 +10,11 @@ import '../../../src/constants/constants.dart';
 import '../scale_text.dart';
 
 class AudioPageBuilder extends StatefulWidget {
-  const AudioPageBuilder({
-    Key? key,
-    required this.asset,
-    required this.state,
-  }) : super(key: key);
+  const AudioPageBuilder({Key? key, required this.asset}) : super(key: key);
 
   /// Asset currently displayed.
   /// 展示的资源
   final AssetEntity asset;
-
-  /// [State] for asset picker viewer.
-  /// 资源查看器的状态 [State]
-  final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
 
   @override
   State<StatefulWidget> createState() => _AudioPageBuilderState();

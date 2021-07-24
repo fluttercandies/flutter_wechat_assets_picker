@@ -1198,7 +1198,7 @@ class FileAssetPickerViewerBuilderDelegate
           maxAssets: selectorProvider?.maxAssets,
         );
 
-  bool isDisplayingDetail = true;
+  bool _isDisplayingDetail = true;
 
   late final AnimationController _doubleTapAnimationController;
   late final Animation<double> _doubleTapCurveAnimation;
@@ -1209,14 +1209,16 @@ class FileAssetPickerViewerBuilderDelegate
 
   AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
 
+  @override
   void switchDisplayingDetail({bool? value}) {
-    isDisplayingDetail = value ?? !isDisplayingDetail;
+    _isDisplayingDetail = value ?? !_isDisplayingDetail;
     if (viewerState.mounted) {
       // ignore: invalid_use_of_protected_member
       viewerState.setState(() {});
     }
   }
 
+  @override
   void updateAnimation(ExtendedImageGestureState state) {
     final double begin = state.gestureDetails!.totalScale!;
     final double end = state.gestureDetails!.totalScale! == 1.0 ? 3.0 : 1.0;
@@ -1238,13 +1240,6 @@ class FileAssetPickerViewerBuilderDelegate
     ).animate(_doubleTapCurveAnimation)
       ..addListener(_doubleTapListener);
     _doubleTapAnimationController.forward();
-  }
-
-  Future<bool> syncSelectedAssetsWhenPop() async {
-    if (provider?.currentlySelectedAssets != null) {
-      selectorProvider?.selectedAssets = provider!.currentlySelectedAssets;
-    }
-    return true;
   }
 
   @override
@@ -1281,7 +1276,7 @@ class FileAssetPickerViewerBuilderDelegate
     return AnimatedPositioned(
       duration: kThemeAnimationDuration,
       curve: Curves.easeInOut,
-      bottom: isDisplayingDetail
+      bottom: _isDisplayingDetail
           ? 0.0
           : -(Screens.bottomSafeHeight + bottomDetailHeight),
       left: 0.0,
@@ -1395,7 +1390,7 @@ class FileAssetPickerViewerBuilderDelegate
     return AnimatedPositioned(
       duration: kThemeAnimationDuration,
       curve: Curves.easeInOut,
-      top: isDisplayingDetail ? 0.0 : -(Screens.topSafeHeight + kToolbarHeight),
+      top: _isDisplayingDetail ? 0.0 : -(Screens.topSafeHeight + kToolbarHeight),
       left: 0.0,
       right: 0.0,
       height: Screens.topSafeHeight + kToolbarHeight,

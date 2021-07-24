@@ -12,7 +12,7 @@ class ImagePageBuilder extends StatefulWidget {
   const ImagePageBuilder({
     Key? key,
     required this.asset,
-    required this.state,
+    required this.delegate,
     this.previewThumbSize,
   }) : super(key: key);
 
@@ -20,9 +20,7 @@ class ImagePageBuilder extends StatefulWidget {
   /// 展示的资源
   final AssetEntity asset;
 
-  /// [State] for asset picker viewer.
-  /// 资源查看器的状态[State]
-  final AssetPickerViewerState<AssetEntity, AssetPathEntity> state;
+  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> delegate;
 
   final List<int>? previewThumbSize;
 
@@ -31,9 +29,6 @@ class ImagePageBuilder extends StatefulWidget {
 }
 
 class _ImagePageBuilderState extends State<ImagePageBuilder> {
-  DefaultAssetPickerViewerBuilderDelegate get builder =>
-      widget.state.builder as DefaultAssetPickerViewerBuilderDelegate;
-
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
@@ -42,7 +37,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
       builder: (BuildContext context, AssetEntity asset) {
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: builder.switchDisplayingDetail,
+          onTap: widget.delegate.switchDisplayingDetail,
           child: ExtendedImage(
             image: AssetEntityImageProvider(
               asset,
@@ -51,7 +46,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
             ),
             fit: BoxFit.contain,
             mode: ExtendedImageMode.gesture,
-            onDoubleTap: builder.updateAnimation,
+            onDoubleTap: widget.delegate.updateAnimation,
             initGestureConfigHandler: (ExtendedImageState state) {
               return GestureConfig(
                 initialScale: 1.0,
@@ -64,7 +59,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
               );
             },
             loadStateChanged: (ExtendedImageState state) {
-              return builder.previewWidgetLoadStateChanged(
+              return widget.delegate.previewWidgetLoadStateChanged(
                 context,
                 state,
                 hasLoaded: state.extendedImageLoadState == LoadState.completed,
