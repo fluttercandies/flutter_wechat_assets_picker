@@ -34,8 +34,6 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   DefaultAssetPickerViewerBuilderDelegate get builder =>
       widget.state.builder as DefaultAssetPickerViewerBuilderDelegate;
 
-  bool _loaded = false;
-
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
@@ -64,13 +62,10 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
             );
           },
           loadStateChanged: (ExtendedImageState state) {
-            if (state.extendedImageLoadState == LoadState.completed) {
-              _loaded = true;
-            }
             return builder.previewWidgetLoadStateChanged(
               context,
               state,
-              hasLoaded: _loaded,
+              hasLoaded: state.extendedImageLoadState == LoadState.completed,
             );
           },
         ),
