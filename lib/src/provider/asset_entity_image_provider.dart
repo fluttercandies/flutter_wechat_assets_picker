@@ -97,7 +97,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       );
     }
     if (data == null) {
-      throw AssertionError('Null in entity\'s data.');
+      throw AssertionError('Null data in entity: $entity');
     }
     return decode(data);
   }
