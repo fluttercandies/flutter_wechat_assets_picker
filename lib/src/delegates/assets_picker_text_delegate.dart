@@ -339,6 +339,23 @@ class JapaneseTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get unSupportedAssetType => 'HEIC フォーマットはサポートしていません。';
+
+  String get unableToAccessAll => 'すべてのリソースにアクセスできない';
+
+  String get viewingLimitedAssetsTip => 'このアプリは一部のリソース及'
+      'びアルバムのみにアクセスできる';
+
+  String get changeAccessibleLimitedAssets => 'アクセスできるリソースを設置';
+
+  String get accessAllTip => 'アプリがデバイスの一部のリソースの'
+      'みにアクセスするように設定され、'
+      '「すべてのリソースへ」にアクセスする権限を許可してください';
+
+  String get goToSystemSettings => '「システム設定」に移動';
+
+  String get accessLimitedAssets => 'リソースの一部へのアクセスを続行';
+
+  String get accessiblePathName => 'アクセスできるリソース';
 }
 
 /// [AssetsPickerTextDelegate] implements with Arabic.
