@@ -619,7 +619,10 @@ class DefaultAssetPickerViewerBuilderDelegate
           children: <Widget>[
             Row(
               children: <Widget>[
-                const BackButton(),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: Navigator.of(context).maybePop,
+                ),
                 const Spacer(),
                 if (isAppleOS && provider != null) selectButton(context),
                 if (!isAppleOS && (provider != null || isWeChatMoment))
@@ -637,8 +640,8 @@ class DefaultAssetPickerViewerBuilderDelegate
                   child: ScaleText(
                     '${snapshot.data! + 1}/${previewAssets.length}',
                     style: const TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
@@ -693,7 +696,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               }(),
               style: TextStyle(
                 color: themeData.textTheme.bodyText1?.color,
-                fontSize: 17.0,
+                fontSize: 17,
                 fontWeight: FontWeight.normal,
               ),
             ),
@@ -805,7 +808,7 @@ class DefaultAssetPickerViewerBuilderDelegate
         if (!isAppleOS)
           ScaleText(
             Constants.textDelegate.select,
-            style: const TextStyle(fontSize: 18.0),
+            style: const TextStyle(fontSize: 17, height: 1),
           ),
       ],
     );

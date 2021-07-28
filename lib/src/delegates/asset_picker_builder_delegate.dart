@@ -138,15 +138,15 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// Space between assets item widget.
   /// 资源部件之间的间隔
-  double get itemSpacing => 2.0;
+  double get itemSpacing => 2;
 
   /// Item's height in app bar.
   /// 顶栏内各个组件的统一高度
-  double get appBarItemHeight => 32.0;
+  double get appBarItemHeight => 32;
 
   /// Blur radius in Apple OS layout mode.
   /// 苹果系列系统布局方式下的模糊度
-  double get appleOSBlurRadius => 10.0;
+  double get appleOSBlurRadius => 10;
 
   /// Height for the bottom occupied section.
   /// 底部区域占用的高度
@@ -226,13 +226,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   Widget confirmButton(BuildContext context);
 
   /// GIF image type indicator.
-  /// GIF类型图片指示
+  /// GIF 类型图片指示
   Widget gifIndicator(BuildContext context, Asset asset) {
     return PositionedDirectional(
       start: 0,
       bottom: 0,
       child: Container(
-        padding: const EdgeInsets.all(6.0),
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: AlignmentDirectional.bottomCenter,
@@ -244,7 +244,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
           decoration: !isAppleOS
               ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(2.0),
+                  borderRadius: BorderRadius.circular(2),
                   color: theme.iconTheme.color!.withOpacity(0.75),
                 )
               : null,
@@ -254,10 +254,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
               color: isAppleOS
                   ? theme.textTheme.bodyText2?.color
                   : theme.primaryColor,
-              fontSize: isAppleOS ? 14.0 : 12.0,
-              fontWeight: isAppleOS ? FontWeight.w500 : FontWeight.normal,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
             ),
-            strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
+            strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
           ),
         ),
       ),
@@ -330,7 +330,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       child: ScaleText(
         Constants.textDelegate.loadFailed,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 18.0),
+        style: const TextStyle(fontSize: 18),
       ),
     );
   }
@@ -408,7 +408,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         height: permissionLimitedBarHeight,
-        color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
+        color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1),
         child: Row(
           children: <Widget>[
             const SizedBox(width: 5),
@@ -443,7 +443,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
         bottom: context.bottomPadding,
       ),
-      color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
+      color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1),
       child: Row(children: <Widget>[
         if (!isSingleAssetMode || !isAppleOS) previewButton(context),
         if (isAppleOS) const Spacer(),
@@ -472,7 +472,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 返回按钮
   Widget backButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: IconButton(
         onPressed: Navigator.of(context).maybePop,
         icon: const Icon(Icons.close),
@@ -500,7 +500,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       alignment: AlignmentDirectional.centerStart,
       child: IconButton(
         onPressed: Navigator.of(context).maybePop,
-        icon: const Icon(Icons.clear, size: 32),
+        icon: const Icon(Icons.close),
         padding: EdgeInsets.zero,
         constraints: BoxConstraints.tight(const Size.square(32)),
       ),
@@ -530,14 +530,14 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       elevation: 0,
       minWidth: size.width / 2,
       height: appBarItemHeight * 1.25,
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       color: themeColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
       child: ScaleText(
         Constants.textDelegate.goToSystemSettings,
-        style: const TextStyle(fontSize: 17.0),
+        style: const TextStyle(fontSize: 17),
       ),
       onPressed: PhotoManager.openSetting,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -757,8 +757,8 @@ class DefaultAssetPickerBuilderDelegate
               (isPreviewEnabled || !isSingleAssetMode)
           ? <Widget>[confirmButton(context)]
           : null,
-      actionsPadding: const EdgeInsetsDirectional.only(end: 14.0),
-      blurRadius: isAppleOS ? appleOSBlurRadius : 0.0,
+      actionsPadding: const EdgeInsetsDirectional.only(end: 14),
+      blurRadius: isAppleOS ? appleOSBlurRadius : 0,
     );
   }
 
@@ -1079,7 +1079,7 @@ class DefaultAssetPickerBuilderDelegate
     return Container(
       width: double.maxFinite,
       alignment: AlignmentDirectional.bottomStart,
-      padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: AlignmentDirectional.bottomCenter,
@@ -1088,12 +1088,12 @@ class DefaultAssetPickerBuilderDelegate
         ),
       ),
       child: Padding(
-        padding: const EdgeInsetsDirectional.only(start: 4.0),
+        padding: const EdgeInsetsDirectional.only(start: 4),
         child: ScaleText(
           Constants.textDelegate.durationIndicatorBuilder(
             Duration(seconds: asset.duration),
           ),
-          style: const TextStyle(fontSize: 16.0),
+          style: const TextStyle(fontSize: 16),
         ),
       ),
     );
@@ -1106,7 +1106,7 @@ class DefaultAssetPickerBuilderDelegate
         Container(
           width: double.maxFinite,
           alignment: AlignmentDirectional.topStart,
-          padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: AlignmentDirectional.topCenter,
@@ -1115,10 +1115,10 @@ class DefaultAssetPickerBuilderDelegate
             ),
           ),
           child: Padding(
-            padding: const EdgeInsetsDirectional.only(start: 4.0, end: 30.0),
+            padding: const EdgeInsetsDirectional.only(start: 4, end: 30),
             child: ScaleText(
               asset.title ?? '',
-              style: const TextStyle(fontSize: 16.0),
+              style: const TextStyle(fontSize: 16),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -1139,12 +1139,12 @@ class DefaultAssetPickerBuilderDelegate
     return Consumer<DefaultAssetPickerProvider>(
       builder: (_, DefaultAssetPickerProvider provider, __) {
         return MaterialButton(
-          minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
+          minWidth: provider.isSelectedNotEmpty ? 48 : 20,
           height: appBarItemHeight,
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           color: provider.isSelectedNotEmpty ? themeColor : theme.dividerColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3.0),
+            borderRadius: BorderRadius.circular(3),
           ),
           child: ScaleText(
             provider.isSelectedNotEmpty && !isSingleAssetMode
@@ -1155,7 +1155,7 @@ class DefaultAssetPickerBuilderDelegate
               color: provider.isSelectedNotEmpty
                   ? theme.textTheme.bodyText1?.color
                   : theme.textTheme.caption?.color,
-              fontSize: 17.0,
+              fontSize: 17,
               fontWeight: FontWeight.normal,
             ),
           ),
@@ -1255,7 +1255,7 @@ class DefaultAssetPickerBuilderDelegate
       bottom: null,
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(
-          bottom: Radius.circular(10.0),
+          bottom: Radius.circular(10),
         ),
         child: Selector<DefaultAssetPickerProvider, bool>(
           selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
@@ -1267,7 +1267,7 @@ class DefaultAssetPickerBuilderDelegate
             child: AnimatedOpacity(
               duration: switchingPathDuration,
               curve: switchingPathCurve,
-              opacity: !isAppleOS || isSwitchingPath ? 1.0 : 0.0,
+              opacity: !isAppleOS || isSwitchingPath ? 1 : 0,
               child: Container(
                 constraints: BoxConstraints(
                   maxHeight:
@@ -1311,7 +1311,7 @@ class DefaultAssetPickerBuilderDelegate
                       ],
                     ),
                     style: context.themeData.textTheme.caption?.copyWith(
-                      fontSize: 15,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -1327,7 +1327,7 @@ class DefaultAssetPickerBuilderDelegate
                         p.pathEntityList,
                     builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
                       return ListView.separated(
-                        padding: const EdgeInsetsDirectional.only(top: 1.0),
+                        padding: const EdgeInsetsDirectional.only(top: 1),
                         shrinkWrap: true,
                         itemCount: list.length,
                         itemBuilder: (BuildContext c, int i) =>
@@ -1340,8 +1340,8 @@ class DefaultAssetPickerBuilderDelegate
                               RequestType.audio,
                         ),
                         separatorBuilder: (_, __) => Container(
-                          margin: const EdgeInsetsDirectional.only(start: 60.0),
-                          height: 1.0,
+                          margin: const EdgeInsetsDirectional.only(start: 60),
+                          height: 1,
                           color: theme.canvasColor,
                         ),
                       );
@@ -1366,7 +1366,7 @@ class DefaultAssetPickerBuilderDelegate
           constraints: BoxConstraints(
             maxWidth: context.mediaQuery.size.width * 0.5,
           ),
-          padding: const EdgeInsetsDirectional.only(start: 12.0, end: 6.0),
+          padding: const EdgeInsetsDirectional.only(start: 12, end: 6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
             color: theme.dividerColor,
@@ -1383,7 +1383,7 @@ class DefaultAssetPickerBuilderDelegate
                           ? Constants.textDelegate.accessiblePathName
                           : p.name,
                       style: const TextStyle(
-                        fontSize: 18.0,
+                        fontSize: 17,
                         fontWeight: FontWeight.normal,
                       ),
                       maxLines: 1,
@@ -1395,7 +1395,7 @@ class DefaultAssetPickerBuilderDelegate
               ],
             ),
             child: Padding(
-              padding: const EdgeInsetsDirectional.only(start: 5.0),
+              padding: const EdgeInsetsDirectional.only(start: 5),
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -1406,13 +1406,13 @@ class DefaultAssetPickerBuilderDelegate
                       p.isSwitchingPath,
                   builder: (_, bool isSwitchingPath, Widget? w) =>
                       Transform.rotate(
-                    angle: isSwitchingPath ? math.pi : 0.0,
+                    angle: isSwitchingPath ? math.pi : 0,
                     alignment: Alignment.center,
                     child: w,
                   ),
                   child: Icon(
                     Icons.keyboard_arrow_down,
-                    size: 20.0,
+                    size: 20,
                     color: theme.colorScheme.primary,
                   ),
                 ),
@@ -1463,28 +1463,28 @@ class DefaultAssetPickerBuilderDelegate
           gridScrollController.jumpTo(0);
         },
         child: SizedBox(
-          height: isAppleOS ? 64.0 : 52.0,
+          height: isAppleOS ? 64 : 52,
           child: Row(
             children: <Widget>[
               RepaintBoundary(
-                child: AspectRatio(aspectRatio: 1.0, child: builder()),
+                child: AspectRatio(aspectRatio: 1, child: builder()),
               ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(
-                    start: 15.0,
-                    end: 20.0,
+                    start: 15,
+                    end: 20,
                   ),
                   child: Row(
                     children: <Widget>[
                       Flexible(
                         child: Padding(
-                          padding: const EdgeInsetsDirectional.only(end: 10.0),
+                          padding: const EdgeInsetsDirectional.only(end: 10),
                           child: ScaleText(
                             isPermissionLimited && pathEntity.isAll
                                 ? Constants.textDelegate.accessiblePathName
                                 : pathEntity.name,
-                            style: const TextStyle(fontSize: 18.0),
+                            style: const TextStyle(fontSize: 17),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -1494,7 +1494,7 @@ class DefaultAssetPickerBuilderDelegate
                         '(${pathEntity.assetCount})',
                         style: TextStyle(
                           color: theme.textTheme.caption?.color,
-                          fontSize: 18.0,
+                          fontSize: 17,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -1509,8 +1509,8 @@ class DefaultAssetPickerBuilderDelegate
                 builder: (_, AssetPathEntity? currentPathEntity, __) {
                   if (currentPathEntity == pathEntity) {
                     return AspectRatio(
-                      aspectRatio: 1.0,
-                      child: Icon(Icons.check, color: themeColor, size: 26.0),
+                      aspectRatio: 1,
+                      child: Icon(Icons.check, color: themeColor, size: 26),
                     );
                   }
                   return const SizedBox.shrink();
@@ -1560,7 +1560,7 @@ class DefaultAssetPickerBuilderDelegate
             selector: (_, DefaultAssetPickerProvider p) =>
                 p.selectedDescriptions,
             builder: (_, __, ___) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               child: ScaleText(
                 isSelectedNotEmpty
                     ? '${Constants.textDelegate.preview}'
@@ -1570,7 +1570,7 @@ class DefaultAssetPickerBuilderDelegate
                   color: isSelectedNotEmpty
                       ? null
                       : theme.textTheme.caption?.color,
-                  fontSize: 18.0,
+                  fontSize: 17,
                 ),
                 maxScaleFactor: 1.2,
               ),
@@ -1617,7 +1617,7 @@ class DefaultAssetPickerBuilderDelegate
           height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
           decoration: BoxDecoration(
             border:
-                !selected ? Border.all(color: Colors.white, width: 2.0) : null,
+                !selected ? Border.all(color: Colors.white, width: 2) : null,
             color: selected ? themeColor : null,
             shape: BoxShape.circle,
           ),
@@ -1625,7 +1625,7 @@ class DefaultAssetPickerBuilderDelegate
             duration: duration,
             reverseDuration: duration,
             child: selected
-                ? const Icon(Icons.check, size: 18.0)
+                ? const Icon(Icons.check, size: 18)
                 : const SizedBox.shrink(),
           ),
         );
@@ -1658,8 +1658,8 @@ class DefaultAssetPickerBuilderDelegate
         );
         if (isPreviewEnabled) {
           return PositionedDirectional(
-            top: 0.0,
-            end: 0.0,
+            top: 0,
+            end: 0,
             child: selectorWidget,
           );
         }
@@ -1772,8 +1772,8 @@ class DefaultAssetPickerBuilderDelegate
       bottom: 0,
       child: Container(
         width: double.maxFinite,
-        height: 26.0,
-        padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+        height: 26,
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: AlignmentDirectional.bottomCenter,
@@ -1784,15 +1784,15 @@ class DefaultAssetPickerBuilderDelegate
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const Icon(Icons.videocam, size: 24.0, color: Colors.white),
+            const Icon(Icons.videocam, size: 22, color: Colors.white),
             Expanded(
               child: Padding(
-                padding: const EdgeInsetsDirectional.only(start: 4.0),
+                padding: const EdgeInsetsDirectional.only(start: 4),
                 child: ScaleText(
                   Constants.textDelegate.durationIndicatorBuilder(
                     Duration(seconds: asset.duration),
                   ),
-                  style: const TextStyle(color: Colors.white, fontSize: 16.0),
+                  style: const TextStyle(color: Colors.white, fontSize: 15),
                   strutStyle: const StrutStyle(
                     forceStrutHeight: true,
                     height: 1.4,

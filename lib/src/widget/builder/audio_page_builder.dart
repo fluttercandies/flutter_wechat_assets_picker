@@ -101,7 +101,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   Widget get titleWidget {
     return ScaleText(
       widget.asset.title ?? '',
-      style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal),
+      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
     );
   }
 
@@ -117,14 +117,14 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
         }
       },
       child: Container(
-        margin: const EdgeInsets.all(20.0),
+        margin: const EdgeInsets.all(20),
         decoration: const BoxDecoration(
           boxShadow: <BoxShadow>[BoxShadow(color: Colors.black12)],
           shape: BoxShape.circle,
         ),
         child: Icon(
           isPlaying ? Icons.pause_circle_outline : Icons.play_circle_filled,
-          size: 70.0,
+          size: 70,
         ),
       ),
     );
@@ -142,7 +142,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
           ' / '
           '${Constants.textDelegate.durationIndicatorBuilder(assetDuration)}',
           style: const TextStyle(
-            fontSize: 20.0,
+            fontSize: 20,
             fontWeight: FontWeight.normal,
           ),
         );
