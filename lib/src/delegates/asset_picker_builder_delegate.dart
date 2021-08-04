@@ -7,8 +7,8 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
@@ -808,9 +808,9 @@ class DefaultAssetPickerBuilderDelegate
       selector: (_, DefaultAssetPickerProvider p) => p.currentPathEntity,
       builder: (_, AssetPathEntity? path, __) {
         // First, we need the count of the assets.
-        int totalCount = provider.currentPathEntity!.assetCount;
+        int totalCount = path!.assetCount;
         // If user chose a special item's position, add 1 count.
-        if (specialItemPosition != SpecialItemPosition.none) {
+        if (specialItemPosition != SpecialItemPosition.none && path.isAll) {
           totalCount += 1;
         }
         // Then we use the [totalCount] to calculate how many placeholders we need.
