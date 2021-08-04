@@ -808,9 +808,9 @@ class DefaultAssetPickerBuilderDelegate
       selector: (_, DefaultAssetPickerProvider p) => p.currentPathEntity,
       builder: (_, AssetPathEntity? path, __) {
         // First, we need the count of the assets.
-        int totalCount = provider.currentPathEntity!.assetCount;
+        int totalCount = path!.assetCount;
         // If user chose a special item's position, add 1 count.
-        if (specialItemPosition != SpecialItemPosition.none) {
+        if (specialItemPosition != SpecialItemPosition.none && path.isAll) {
           totalCount += 1;
         }
         // Then we use the [totalCount] to calculate how many placeholders we need.
