@@ -1,69 +1,19 @@
 # Changelog
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## 6.0.0-dev.9
-
-- Reduce font size for couple texts.
-- Update `JapaneseTextDelegate`. (#185)
-
-## 6.0.0-dev.8
-
-- Integrate iCloud progress overview in previews.
-- Revert page view items for Apple devices
-  In order to keep the behaviour with the assets' grid.
-- Improve `AssetPickerViewerBuilderDelegate`'s abstraction.
-
-## 6.0.0-dev.7
-
-- Fix grid count calculate issue when switching between folders. (#179)
-- Grab fixes from `photo_manager`.
-
-## 6.0.0-dev.6
-
-- Improve delivery mode for thumbnails on iOS.
-- Improve text scale handling. (#177)
-- Some tweaks for the example.
-
-## 6.0.0-dev.5
-
-- Fix keep offset jumping recovery issues. (#174)
-- More abstractions and structure updates for the example.
-
-## 6.0.0-dev.4
-
-- Add `keepScrollOffset` feature for the `AssetPickerBuilderDelegate`,
-  which allow users to keep the scroll offset between pickings.
-- Remove manually controlled logs with `photo_manager`.
-
-## 6.0.0-dev.3
-
-- Unify the back button in the picker on all platforms.
-- Change the generic type `A` to `Asset` and `P` to `Path`.
-- Refactored `SortPathDelegate` to make it accept the `Path` generic type.
-- Screenshots update.
-- Bump `photo_manager` to 1.2.5 .
-
-## 6.0.0-dev.2
-
-- Add generic type to indicate provider when using `pickAssetsWithDelegate` method.
-
-## 6.0.0-dev.1
-
-Sync everything from WeChat 8.x .
+## 6.0.0
 
 ### New features
-
+- Sync all UI details from WeChat 8.x.
+- Integrate iCloud progress overview in previews.
 - Change the permission from the app settings when it's limited.
 - Request more assets on iOS when the permission is limited.
 - Fit the assets' grid's layout as the iOS `Photos` app (reverted and started from the bottom).
 - Add Arabic language text delegate.
 - Allow using `AssetPicker` and `AssetPickerViewer` directly with delegates.
+- Add `keepScrollOffset` feature for the `AssetPickerBuilderDelegate`,
+  which allow users to keep the scroll offset between pickings.
 
 ### Improvements
-
 - Items that being banned from select (reached max assets or type conflict)
   will have a stronger color cover to indicate.
 - Video preview in the [SpecialPickerType.wechatMoment] is completely different from other previews.
@@ -71,11 +21,16 @@ Sync everything from WeChat 8.x .
 - Better interaction when jumping between previewing assets.
 - Path entities list layout structure performance & structure improved.
 - More precise thumbnail's option for iOS.
+- Improve text scale handling. (#177)
+- Reduce font size for couple texts.
 
 ### Breaking changes
-
 Multiple refactoring happened with delegates,
 see [Migration Guide](guides/migration_guide.md) for more details.
+
+## 5.5.8
+
+- Fix the viewer's select button issue with WeChat Moment on Android.
 
 ## 5.5.7
 
