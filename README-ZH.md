@@ -270,11 +270,12 @@ FAILURE: Build failed with an exception.
 但是 `AssetPathEntity` 的名字或属性只能通过 `SortPathDelegate` 进行更改。
 这是你能访问到所有 `AssetPathEntity` 的唯一方法，或者说，是现阶段我们暴露出来的唯一方法。
 
-若需要更改某一个路径的名字，继承 `SortPathDelegate` 并实现你自己的构建，接着像如下代码一样进行编写：
+若需要更改某一个路径的名字，继承 `CommonSortPathDelegate` 并实现你自己的构建，
+接着像如下代码一样进行编写：
 
 ```dart
 /// 构建你自己的排序
-class CustomSortPathDelegate extends SortPathDelegate {
+class CustomSortPathDelegate extends CommonSortPathDelegate {
   const CustomSortPathDelegate();
 
   @override

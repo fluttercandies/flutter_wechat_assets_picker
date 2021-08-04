@@ -265,14 +265,15 @@ includes all `AssetEntity` on your device.
 "Recent" is a system named entity in most platforms.
 While we provided ability to customize the text delegate,
 the name/properties can only be updated with `SortPathDelegate`.
-This is the only way that you have access to all path entities, or the only way that we exposed currently.
+This is the only way that you have access to all path entities,
+or the only way that we exposed currently.
 
-To change the name of the path entity, extend the `SortPathDelegate` with your own delegate,
+To change the name of the path entity, extend the `CommonSortPathDelegate` with your own delegate,
 then write something like the code below:
 
 ```dart
 /// Create your own sort path delegate.
-class CustomSortPathDelegate extends SortPathDelegate {
+class CustomSortPathDelegate extends CommonSortPathDelegate {
   const CustomSortPathDelegate();
 
   @override
