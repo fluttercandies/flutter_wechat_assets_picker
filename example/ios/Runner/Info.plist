@@ -29,10 +29,12 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Take a photo for display</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Read your photos for display</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take a photo for display</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Take a video for display</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
