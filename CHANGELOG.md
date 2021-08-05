@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.0.1
+
+- Improve total count calculation with `AssetPathEntity`. (#187)
+- Obtain `AssetPathEntity.isAll` fix from `photo_manager`.
+- Documents update.
+
 ## 6.0.0
 
 ### New features
