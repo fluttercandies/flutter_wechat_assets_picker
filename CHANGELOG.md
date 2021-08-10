@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.0.2
+
+- Expose `shouldReversePreview` for `AssetPickerViewerBuilderDelegate`,
+  which provides a more precise control for the viewer.
+
 ## 6.0.1
 
 - Improve total count calculation with `AssetPathEntity`. (#187)
