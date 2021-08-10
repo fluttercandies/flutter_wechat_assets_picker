@@ -1,27 +1,9 @@
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-
-// ignore: implementation_imports
-import 'package:flutter/src/material/constants.dart';
-
-// ignore: implementation_imports
-import 'package:flutter/src/material/debug.dart';
-
-// ignore: implementation_imports
-import 'package:flutter/src/material/material_state.dart';
-
-// ignore: implementation_imports
-import 'package:flutter/src/material/theme.dart';
-
-// ignore: implementation_imports
-import 'package:flutter/src/material/theme_data.dart';
 
 // Duration of the animation that moves the toggle from one state to another.
 const Duration _kToggleDuration = Duration(milliseconds: 200);

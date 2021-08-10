@@ -2,8 +2,8 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2021/5/11 11:37
 ///
-import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/material.dart';
 
 import '../../constants/constants.dart';
 import '../../provider/asset_entity_image_provider.dart';
