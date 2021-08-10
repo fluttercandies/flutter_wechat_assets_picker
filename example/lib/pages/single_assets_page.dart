@@ -15,7 +15,7 @@ class SingleAssetPage extends StatefulWidget {
 }
 
 class _SingleAssetPageState extends State<SingleAssetPage>
-    with AutomaticKeepAliveClientMixin, ExamplePageMixin {
+    with AutomaticKeepAliveClientMixin, ExamplePageMixin<SingleAssetPage> {
   @override
   int get maxAssetsCount => 1;
 

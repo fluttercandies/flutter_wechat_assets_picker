@@ -14,7 +14,7 @@ class MultiAssetsPage extends StatefulWidget {
 }
 
 class _MultiAssetsPageState extends State<MultiAssetsPage>
-    with AutomaticKeepAliveClientMixin, ExamplePageMixin {
+    with AutomaticKeepAliveClientMixin, ExamplePageMixin<MultiAssetsPage> {
   @override
   int get maxAssetsCount => 9;
 

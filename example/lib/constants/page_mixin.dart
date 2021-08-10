@@ -14,7 +14,6 @@ import '../widgets/method_list_view.dart';
 import '../widgets/selected_assets_list_view.dart';
 import 'picker_method.dart';
 
-@optionalTypeArgs
 mixin ExamplePageMixin<T extends StatefulWidget> on State<T> {
   final ValueNotifier<bool> isDisplayingDetail = ValueNotifier<bool>(true);
 
