@@ -1720,6 +1720,7 @@ class DefaultAssetPickerBuilderDelegate
             selectorProvider: provider as DefaultAssetPickerProvider,
             specialPickerType: specialPickerType,
             maxAssets: provider.maxAssets,
+            shouldReversePreview: isAppleOS,
           );
           if (result != null) {
             Navigator.of(context).maybePop(result);

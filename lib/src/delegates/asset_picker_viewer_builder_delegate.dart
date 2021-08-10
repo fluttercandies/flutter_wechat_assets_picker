@@ -24,6 +24,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     this.provider,
     this.selectedAssets,
     this.maxAssets,
+    this.shouldReversePreview = false,
   });
 
   /// [ChangeNotifier] for photo selector viewer.
@@ -45,6 +46,14 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// Provider for [AssetPicker].
   /// 资源选择器的状态保持
   final AssetPickerProvider<Asset, Path>? selectorProvider;
+
+  /// Whether the preview sequence is reversed.
+  /// 预览时顺序是否为反向
+  ///
+  /// Usually this will be true when users are previewing on Apple OS and
+  /// clicked one item of the asset grid.
+  /// 通常用户使用苹果系统时，点击网格内容进行预览，是反向进行预览。
+  final bool shouldReversePreview;
 
   /// [StreamController] for viewing page index update.
   /// 用于更新当前正在浏览的资源页码的流控制器
@@ -308,6 +317,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     this.previewThumbSize,
     this.specialPickerType,
     int? maxAssets,
+    bool shouldReversePreview = false,
   }) : super(
           currentIndex: currentIndex,
           previewAssets: previewAssets,
@@ -316,6 +326,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           selectedAssets: selectedAssets,
           selectorProvider: selectorProvider,
           maxAssets: maxAssets,
+          shouldReversePreview: shouldReversePreview,
         );
 
   /// Thumb size for the preview of images in the viewer.
@@ -451,57 +462,55 @@ class DefaultAssetPickerViewerBuilderDelegate
         height: context.bottomPadding + bottomDetailHeight,
         child: child!,
       ),
-      child: Padding(
-        padding: EdgeInsetsDirectional.only(bottom: context.bottomPadding),
-        child: ChangeNotifierProvider<
-            AssetPickerViewerProvider<AssetEntity>?>.value(
-          value: provider,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              if (provider != null)
-                ValueListenableBuilder<int>(
-                  valueListenable: selectedNotifier,
-                  builder: (_, int count, __) => Container(
-                    width: count > 0 ? double.maxFinite : 0,
-                    height: bottomPreviewHeight,
-                    color: _backgroundColor,
-                    child: ListView.builder(
-                      controller: previewingListController,
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: count,
-                      itemBuilder: bottomDetailItemBuilder,
-                    ),
-                  ),
-                ),
-              Container(
-                height: bottomBarHeight,
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      width: 1.0,
-                      color: themeData.canvasColor,
-                    ),
-                  ),
+      child:
+          ChangeNotifierProvider<AssetPickerViewerProvider<AssetEntity>?>.value(
+        value: provider,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            if (provider != null)
+              ValueListenableBuilder<int>(
+                valueListenable: selectedNotifier,
+                builder: (_, int count, __) => Container(
+                  width: count > 0 ? double.maxFinite : 0,
+                  height: bottomPreviewHeight,
                   color: _backgroundColor,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    const Spacer(),
-                    if (isAppleOS && (provider != null || isWeChatMoment))
-                      confirmButton(context)
-                    else
-                      selectButton(context),
-                  ],
+                  child: ListView.builder(
+                    controller: previewingListController,
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    physics: const ClampingScrollPhysics(),
+                    itemCount: count,
+                    itemBuilder: bottomDetailItemBuilder,
+                  ),
                 ),
               ),
-            ],
-          ),
+            Container(
+              height: bottomBarHeight + context.bottomPadding,
+              padding: const EdgeInsets.symmetric(horizontal: 20.0)
+                  .copyWith(bottom: context.bottomPadding),
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    width: 1.0,
+                    color: themeData.canvasColor,
+                  ),
+                ),
+                color: _backgroundColor,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const Spacer(),
+                  if (isAppleOS && (provider != null || isWeChatMoment))
+                    confirmButton(context)
+                  else
+                    selectButton(context),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -837,7 +846,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                     controller: pageController,
                     itemCount: previewAssets.length,
                     itemBuilder: assetPageBuilder,
-                    reverse: isAppleOS,
+                    reverse: shouldReversePreview,
                     onPageChanged: (int index) {
                       currentIndex = index;
                       pageStreamController.add(index);
