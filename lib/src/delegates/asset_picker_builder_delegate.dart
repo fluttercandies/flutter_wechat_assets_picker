@@ -769,32 +769,37 @@ class DefaultAssetPickerBuilderDelegate
         Positioned.fill(
           child: Selector<DefaultAssetPickerProvider, bool>(
             selector: (_, DefaultAssetPickerProvider p) => p.hasAssetsToDisplay,
-            builder: (_, bool hasAssetsToDisplay, __) => AnimatedSwitcher(
-              duration: switchingPathDuration,
-              child: hasAssetsToDisplay
-                  ? Stack(
-                      children: <Widget>[
-                        RepaintBoundary(
-                          child: Stack(
-                            children: <Widget>[
-                              Positioned.fill(
-                                child: assetsGridBuilder(context),
-                              ),
-                              if ((!isSingleAssetMode || isAppleOS) &&
-                                  isPreviewEnabled)
+            builder: (_, bool hasAssetsToDisplay, __) {
+              final bool shouldDisplayAssets = hasAssetsToDisplay ||
+                  (allowSpecialItemWhenEmpty &&
+                      specialItemPosition != SpecialItemPosition.none);
+              return AnimatedSwitcher(
+                duration: switchingPathDuration,
+                child: shouldDisplayAssets
+                    ? Stack(
+                        children: <Widget>[
+                          RepaintBoundary(
+                            child: Stack(
+                              children: <Widget>[
                                 Positioned.fill(
-                                  top: null,
-                                  child: bottomActionBar(context),
+                                  child: assetsGridBuilder(context),
                                 ),
-                            ],
+                                if ((!isSingleAssetMode || isAppleOS) &&
+                                    isPreviewEnabled)
+                                  Positioned.fill(
+                                    top: null,
+                                    child: bottomActionBar(context),
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
-                        pathEntityListBackdrop(context),
-                        pathEntityListWidget(context),
-                      ],
-                    )
-                  : loadingIndicator(context),
-            ),
+                          pathEntityListBackdrop(context),
+                          pathEntityListWidget(context),
+                        ],
+                      )
+                    : loadingIndicator(context),
+              );
+            },
           ),
         ),
         appBar(context),
@@ -808,9 +813,10 @@ class DefaultAssetPickerBuilderDelegate
       selector: (_, DefaultAssetPickerProvider p) => p.currentPathEntity,
       builder: (_, AssetPathEntity? path, __) {
         // First, we need the count of the assets.
-        int totalCount = path!.assetCount;
+        int totalCount = path?.assetCount ?? 0;
         // If user chose a special item's position, add 1 count.
-        if (specialItemPosition != SpecialItemPosition.none && path.isAll) {
+        if (specialItemPosition != SpecialItemPosition.none &&
+            path?.isAll == true) {
           totalCount += 1;
         }
         // Then we use the [totalCount] to calculate how many placeholders we need.
