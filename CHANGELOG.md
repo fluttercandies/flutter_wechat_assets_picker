@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.0.3
+
+- Fix path entity nullable issues with the asset grid.
+- Fix assets displaying condition missing with the iOS layout.
+
 ## 6.0.2
 
 - Expose `shouldReversePreview` for `AssetPickerViewerBuilderDelegate`,
