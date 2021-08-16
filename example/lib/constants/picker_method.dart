@@ -277,6 +277,26 @@ class PickMethod {
     );
   }
 
+  factory PickMethod.changeLanguages(int maxAssetsCount) {
+    return PickMethod(
+      icon: '🔤',
+      name: 'Change Languages',
+      description: 'Pass text delegates to change between languages. '
+          '(e.g. EnglishTextDelegate)',
+      method: (
+        BuildContext context,
+        List<AssetEntity> assets,
+      ) async {
+        return await AssetPicker.pickAssets(
+          context,
+          maxAssets: maxAssetsCount,
+          selectedAssets: assets,
+          textDelegate: EnglishTextDelegate(),
+        );
+      },
+    );
+  }
+
   final String icon;
   final String name;
   final String description;

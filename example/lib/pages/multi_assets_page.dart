@@ -21,6 +21,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
   @override
   List<PickMethod> get pickMethods {
     return <PickMethod>[
+      PickMethod.common(maxAssetsCount),
       PickMethod.image(maxAssetsCount),
       PickMethod.video(maxAssetsCount),
       PickMethod.audio(maxAssetsCount),
@@ -30,9 +31,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
             Navigator.of(context).pop(<AssetEntity>[...assets, result]),
       ),
       PickMethod.cameraAndStay(maxAssetsCount: maxAssetsCount),
-      PickMethod.common(maxAssetsCount),
+      PickMethod.changeLanguages(maxAssetsCount),
       PickMethod.threeItemsGrid(maxAssetsCount),
-      PickMethod.customFilterOptions(maxAssetsCount),
       PickMethod.prependItem(maxAssetsCount),
       PickMethod(
         icon: '🎭',
@@ -47,6 +47,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
         },
       ),
       PickMethod.noPreview(maxAssetsCount),
+      PickMethod.customFilterOptions(maxAssetsCount),
       PickMethod.keepScrollOffset(
         provider: () => keepScrollProvider,
         delegate: () => keepScrollDelegate!,
