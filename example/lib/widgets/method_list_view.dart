@@ -23,7 +23,7 @@ class MethodListView extends StatelessWidget {
       onLongPress: model.onLongPress,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: 30.0,
+          horizontal: 20.0,
           vertical: 10.0,
         ),
         child: Row(
@@ -72,11 +72,17 @@ class MethodListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.only(bottom: 10.0),
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 10.0),
-        itemCount: pickMethods.length,
-        itemBuilder: methodItemBuilder,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+      ).copyWith(bottom: 10.0),
+      child: Scrollbar(
+        isAlwaysShown: true,
+        radius: const Radius.circular(999),
+        child: ListView.builder(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          itemCount: pickMethods.length,
+          itemBuilder: methodItemBuilder,
+        ),
       ),
     );
   }
