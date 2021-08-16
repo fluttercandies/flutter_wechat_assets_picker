@@ -415,7 +415,7 @@ class ArabicTextDelegate extends AssetsPickerTextDelegate {
   String get select => 'تحديد';
 
   @override
-  String get emptyList => 'قائمة فارغة';
+  String get emptyList => 'القائمة فارغة';
 
   @override
   String get unSupportedAssetType => 'نوع HEIC غير مدعوم';
