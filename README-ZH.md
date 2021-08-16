@@ -11,7 +11,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
-Language: [English](README.md) | 中文简体
+Language: [English](README.md) | 中文
 
 基于微信 UI 的 **资源选择器**，基于 `photo_manager` 实现资源相关功能，
 `extended_image` 用于查看图片，`provider` 用于协助管理选择器的状态。
@@ -38,7 +38,7 @@ Language: [English](README.md) | 中文简体
 * [使用方法](#使用方法-)
   * [简单的使用方法](#简单的使用方法)
   * [使用自定义代理](#使用自定义代理)
-  * [完整参数的使用方法](#完整参数的使用方法)
+  * [更详细的使用方法](#更详细的使用方法)
   * [展示选中的资源](#展示选中的资源)
   * [注册资源变化回调](#注册资源变化回调)
   * [自定义类型或 UI](#自定义类型或-ui)
@@ -207,9 +207,34 @@ final List<YourAssetEntity>? result = await AssetPicker.pickAssetsWithDelegate(
 你只能在使用 `pickAssetsWithDelegate` 方法时使用 `keepScrollOffset` 的功能。
 更多细节请查看示例内的 `Keep scroll offset` 方法。
 
-### 完整参数的使用方法
+### 更详细的使用方法
 
-欲了解各种选择器模式，请直接运行 example 查看。
+我们已将常用的调用方法封装在 [example](example) 中。
+
+#### 一般的调用选择情况
+
+你可以在 `example/lib/pages/multi_assets_page.dart` 和
+`example/lib/pages/single_assets_page.dart` 找到 `List<PickMethod> pickMethods`，
+它分别定义了多选和单选可用的选择模式。
+在选择资源后，资源会暂存并展示在页面下方。
+
+##### 多选资源
+
+页面中的最大选择数是 `9`，你可以按需修改。
+
+某些模式只能在多选下使用，例如「WeChat Moment」（朋友圈）模式。
+
+##### 单选资源
+
+一次只能且最多能选择一个资源。
+
+#### 自定义选择器
+
+你可以在「Custom」页面尝试自定义的选择器。
+目前我们只提供了一个基于 `Directory` 和 `File`
+（与 `photo_manager` 完全无关）实现的选择器。
+如果你觉得你的实现有价值或能帮助到其他人，欢迎以 PR 的形式进行提交。
+更多细节请阅读 [贡献自定义实现][example/lib/customs/CONTRIBUTING.md]
 
 ### 展示选中的资源
 

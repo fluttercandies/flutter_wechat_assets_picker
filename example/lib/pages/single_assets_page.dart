@@ -19,6 +19,7 @@ class _SingleAssetPageState extends State<SingleAssetPage>
   @override
   int get maxAssetsCount => 1;
 
+  /// Check each method's source code for more details.
   @override
   List<PickMethod> get pickMethods {
     return <PickMethod>[

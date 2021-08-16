@@ -11,7 +11,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
-Language: English | [中文简体](README-ZH.md)
+Language: English | [中文](README-ZH.md)
 
 An **assets picker** which based on the WeChat's UI,
 using `photo_manager` for asset implementation,
@@ -22,9 +22,6 @@ To take a photo or a video for assets, please check the detailed usage in the ex
 [wechat_camera_picker](https://pub.dev/packages/wechat_camera_picker).
 
 All UI designs are based on WeChat 8.x, and it will be updated following the WeChat update in anytime.
-
-*Note:* You can file PRs to create your own implementation if you found your implementation might be useful for others.
-See [Contribute custom implementations](example/lib/customs/CONTRIBUTING.md) for more details.
 
 ## Category 🗂
 
@@ -39,7 +36,7 @@ See [Contribute custom implementations](example/lib/customs/CONTRIBUTING.md) for
   * [macOS](#macos)
 * [Usage](#usage-)
   * [Simple usage](#simple-usage)
-  * [Complete param usage](#complete-param-usage)
+  * [Detailed usage](#detailed-usage)
   * [Display selected assets](#display-selected-assets)
   * [Register assets change observe callback](#register-assets-change-observe-callback)
   * [Customize with your own type or UI](#customize-with-your-own-type-or-ui)
@@ -203,9 +200,37 @@ final List<YourAssetEntity>? result = await AssetPicker.pickAssetsWithDelegate(
 You can use the `keepScrollOffset` feature only with the `pickAssetsWithDelegate` method.
 See the `Keep scroll offset` pick method in the example for how to implement it.
 
-### Complete param usage
+### Detailed usage
 
-For various type of the picker, head over to the example and run it with no doubt.
+TL;DR, we've put multiple common usage with the packages into the [example](example).
+
+#### Regular picking
+
+You can both found `List<PickMethod> pickMethods` in
+`example/lib/pages/multi_assets_page.dart` and `example/lib/pages/single_assets_page.dart`,
+which provide methods in multiple picking and single picking mode.
+Assets will be stored temporary and displayed at the below of the page.
+
+##### Multiple assets picking
+
+The maximum assets limit is `9` in the multiple picking page,
+and you can modify it as you wish.
+
+Some methods can only work with multiple mode, such as "WeChat Moment".
+
+##### Single asset picking
+
+Only one and maximum to one asset can be picked at once.
+
+#### Custom pickers
+
+You can try custom pickers with the "Custom" page.
+We only defined a picker that integrates with `Directory` and `File`
+(completely out of the `photo_manager` scope).
+You can submit PRs to create your own implementation
+if you found your implementation might be useful for others.
+See [Contribute custom implementations][lib/customs/CONTRIBUTING.md]
+for more details.
 
 ### Display selected assets
 

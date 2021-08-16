@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
+/// Define a regular pick method.
 class PickMethod {
   const PickMethod({
     required this.icon,
@@ -300,9 +301,12 @@ class PickMethod {
   final String icon;
   final String name;
   final String description;
+
+  /// The core function that defines how to use the picker.
   final Future<List<AssetEntity>?> Function(
     BuildContext context,
     List<AssetEntity> selectedAssets,
   ) method;
+
   final GestureLongPressCallback? onLongPress;
 }

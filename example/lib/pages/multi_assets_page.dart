@@ -18,6 +18,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
   @override
   int get maxAssetsCount => 9;
 
+  /// Check each method's source code for more details.
   @override
   List<PickMethod> get pickMethods {
     return <PickMethod>[
