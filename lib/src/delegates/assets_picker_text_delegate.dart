@@ -43,8 +43,8 @@ class AssetsPickerTextDelegate {
   String get select => '选择';
 
   /// Empty list string for empty asset list.
-  /// 空資產列表的空列表字符串
-  String get emptyList => '空列表';
+  /// 资源列表为空时的占位字段
+  String get emptyList => '列表为空';
 
   /// Un-supported asset type string for assets that belongs to [AssetType.other].
   /// 未支持的资源类型的字段
@@ -354,7 +354,7 @@ class JapaneseTextDelegate extends AssetsPickerTextDelegate {
   String get select => '選択';
 
   @override
-  String get emptyList => '空のリスト';
+  String get emptyList => '空リスト';
 
   @override
   String get unSupportedAssetType => 'HEIC フォーマットはサポートしていません。';
