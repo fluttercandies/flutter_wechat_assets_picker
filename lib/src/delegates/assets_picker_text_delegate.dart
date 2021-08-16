@@ -42,6 +42,10 @@ class AssetsPickerTextDelegate {
   /// 选择按钮的字段
   String get select => '选择';
 
+  /// Empty list string for empty asset list.
+  /// 空資產列表的空列表字符串
+  String get emptyList => '空列表';
+
   /// Un-supported asset type string for assets that belongs to [AssetType.other].
   /// 未支持的资源类型的字段
   String get unSupportedAssetType => '尚未支持的资源类型';
@@ -108,6 +112,9 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
   String get select => 'Select';
 
   @override
+  String get emptyList => 'Empty list';
+
+  @override
   String get unSupportedAssetType => 'Unsupported HEIC asset type.';
 
   @override
@@ -164,6 +171,9 @@ class HebrewTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get select => 'בחר';
+
+  @override
+  String get emptyList => 'הרשימה ריקה';
 
   @override
   String get unSupportedAssetType => 'סוג קובץ HEIC אינו נתמך';
@@ -223,6 +233,9 @@ class GermanTextDelegate extends AssetsPickerTextDelegate {
   String get select => 'Auswählen';
 
   @override
+  String get emptyList => 'Leere Liste';
+
+  @override
   String get unSupportedAssetType => 'HEIC Format ist nicht unterstützt.';
 
   @override
@@ -277,6 +290,9 @@ class RussianTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get select => 'Выбрать';
+
+  @override
+  String get emptyList => 'Пустой список';
 
   @override
   String get unSupportedAssetType => 'Неподдерживаемый формат ресурса.';
@@ -338,6 +354,9 @@ class JapaneseTextDelegate extends AssetsPickerTextDelegate {
   String get select => '選択';
 
   @override
+  String get emptyList => '空のリスト';
+
+  @override
   String get unSupportedAssetType => 'HEIC フォーマットはサポートしていません。';
 
   @override
@@ -394,6 +413,9 @@ class ArabicTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get select => 'تحديد';
+
+  @override
+  String get emptyList => 'قائمة فارغة';
 
   @override
   String get unSupportedAssetType => 'نوع HEIC غير مدعوم';

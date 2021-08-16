@@ -311,7 +311,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             return loadingIndicatorBuilder!(c, isAssetsEmpty);
           }
           if (isAssetsEmpty) {
-            return const ScaleText('Nothing here.', maxScaleFactor: 1.5);
+            return ScaleText(Constants.textDelegate.emptyList,
+                maxScaleFactor: 1.5);
           }
           return w!;
         },
@@ -1219,7 +1220,8 @@ class DefaultAssetPickerBuilderDelegate
         selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
         builder: (_, bool isAssetsEmpty, __) {
           if (isAssetsEmpty) {
-            return const ScaleText('Nothing here.', maxScaleFactor: 1.5);
+            return ScaleText(Constants.textDelegate.emptyList,
+                maxScaleFactor: 1.5);
           }
           return PlatformProgressIndicator(
             color: theme.iconTheme.color,
