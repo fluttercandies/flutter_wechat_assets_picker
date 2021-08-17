@@ -782,7 +782,7 @@ class FileAssetPickerBuilder
         selector: (_, FileAssetPickerProvider p) => p.isAssetsEmpty,
         builder: (_, bool isAssetsEmpty, __) {
           if (isAssetsEmpty) {
-            return const Text('Nothing here.');
+            return Text(textDelegate.emptyList);
           } else {
             return Center(
               child: SizedBox.fromSize(
