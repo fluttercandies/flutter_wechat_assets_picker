@@ -54,10 +54,7 @@ abstract class AssetsPickerTextDelegate {
   static String defaultDurationIndicatorBuilder(Duration duration) {
     const String separator = ':';
     final String minute = duration.inMinutes.toString().padLeft(2, '0');
-    final String second =
-        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
-            .toString()
-            .padLeft(2, '0');
+    final String second = ((duration - Duration(minutes: duration.inMinutes)).inSeconds).toString().padLeft(2, '0');
     return '$minute$separator$second';
   }
 }
@@ -69,8 +66,7 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
 
   DefaultAssetsPickerTextDelegate._internal();
 
-  static final DefaultAssetsPickerTextDelegate _instance =
-      DefaultAssetsPickerTextDelegate._internal();
+  static final DefaultAssetsPickerTextDelegate _instance = DefaultAssetsPickerTextDelegate._internal();
 
   @override
   String confirm = '确认';
@@ -103,8 +99,7 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
   String unSupportedAssetType = '尚未支持的资源类型';
 
   @override
-  String durationIndicatorBuilder(Duration duration) =>
-      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+  String durationIndicatorBuilder(Duration duration) => AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
 
 /// [AssetsPickerTextDelegate] implements with English.
@@ -147,8 +142,7 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
   String unSupportedAssetType = 'Unsupported HEIC asset type.';
 
   @override
-  String durationIndicatorBuilder(Duration duration) =>
-      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+  String durationIndicatorBuilder(Duration duration) => AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
 
 /// [AssetsPickerTextDelegate] implements with Hebrew.
@@ -191,6 +185,47 @@ class HebrewTextDelegate implements AssetsPickerTextDelegate {
   String unSupportedAssetType = 'סוג קובץ HEIC אינו נתמך';
 
   @override
-  String durationIndicatorBuilder(Duration duration) =>
-      AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+  String durationIndicatorBuilder(Duration duration) => AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
+}
+
+/// [AssetsPickerTextDelegate] implements with Turkish.
+class TurkishTextDelegate implements AssetsPickerTextDelegate {
+  factory TurkishTextDelegate() => _instance;
+
+  TurkishTextDelegate._internal();
+
+  static final TurkishTextDelegate _instance = TurkishTextDelegate._internal();
+
+  @override
+  String confirm = 'Onayla';
+
+  @override
+  String cancel = 'Vazgeç';
+
+  @override
+  String edit = 'Düzenle';
+
+  @override
+  String gifIndicator = 'GIF';
+
+  @override
+  String heicNotSupported = 'Desteklenmeyen HEIC medya tipi.';
+
+  @override
+  String loadFailed = 'Yükleme başarısız';
+
+  @override
+  String original = 'Orijinal';
+
+  @override
+  String preview = 'Önizleme';
+
+  @override
+  String select = 'Seç';
+
+  @override
+  String unSupportedAssetType = 'Desteklenmeyen HEIC medya tipi.';
+
+  @override
+  String durationIndicatorBuilder(Duration duration) => AssetsPickerTextDelegate.defaultDurationIndicatorBuilder(duration);
 }
