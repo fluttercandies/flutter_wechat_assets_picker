@@ -46,7 +46,8 @@ class AssetsPickerTextDelegate {
   /// 资源列表为空时的占位字段
   String get emptyList => '列表为空';
 
-  /// Un-supported asset type string for assets that belongs to [AssetType.other].
+  /// Un-supported asset type string for assets that
+  /// belongs to [AssetType.other].
   /// 未支持的资源类型的字段
   String get unSupportedAssetType => '尚未支持的资源类型';
 
@@ -444,4 +445,68 @@ class ArabicTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get accessiblePathName => 'ملفات يمكن الوصول إليها';
+}
+
+/// [AssetsPickerTextDelegate] implements with French.
+/// Délégué texte français
+class FrenchTextDelegate extends AssetsPickerTextDelegate {
+  @override
+  String get confirm => 'OK';
+
+  @override
+  String get cancel => 'Annuler';
+
+  @override
+  String get edit => 'Modifier';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get heicNotSupported => 'Type de fichier non supporté';
+
+  @override
+  String get loadFailed => 'Echec du chargement';
+
+  @override
+  String get original => 'Original';
+
+  @override
+  String get preview => 'Aperçu';
+
+  @override
+  String get select => 'Choisir';
+
+  @override
+  String get unSupportedAssetType => 'Type de fichier non supporté';
+
+  @override
+  String get unableToAccessAll =>
+      'Impossible d\'accéder aux médias de votre appareil';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'Affichage des médias et albums limité ';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      "Modifier l'accès limité aux médias";
+
+  @override
+  String get accessAllTip =>
+      "L'application ne peut accéder qu'à certains medias. "
+      "Allez dans les paramètres système et autoriser l'application "
+      "à accéder à tous les medias sur l'appareil";
+
+  @override
+  String get goToSystemSettings => 'Allez dans les paramètres système';
+
+  @override
+  String get accessLimitedAssets => 'Continuer avec un accès limité';
+
+  @override
+  String get accessiblePathName => 'Medias accessible';
+
+  @override
+  String get emptyList => 'Liste vide';
 }
