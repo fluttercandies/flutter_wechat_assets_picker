@@ -1031,6 +1031,7 @@ class DefaultAssetPickerBuilderDelegate
       key: ValueKey<String>(asset.id),
       children: <Widget>[
         builder,
+        selectedBackdrop(context, index, asset),
         if (!isWeChatMoment || asset.type != AssetType.video)
           selectIndicator(context, asset),
         itemBannedIndicator(context, asset),
@@ -1134,7 +1135,6 @@ class DefaultAssetPickerBuilderDelegate
           ),
         ),
         const Center(child: Icon(Icons.audiotrack)),
-        selectedBackdrop(context, index, asset),
         audioIndicator(context, asset),
       ],
     );
@@ -1206,7 +1206,6 @@ class DefaultAssetPickerBuilderDelegate
             ),
           ),
         ),
-        selectedBackdrop(context, index, asset),
         if (type == SpecialImageType.gif) // 如果为GIF则显示标识
           gifIndicator(context, asset),
         if (asset.type == AssetType.video) // 如果为视频则显示标识
@@ -1738,10 +1737,9 @@ class DefaultAssetPickerBuilderDelegate
             Navigator.of(context).maybePop(result);
           }
         },
-        child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-          selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
-          builder: (_, List<AssetEntity> selectedAssets, __) {
-            final int index = selectedAssets.indexOf(asset);
+        child: Consumer<DefaultAssetPickerProvider>(
+          builder: (_, DefaultAssetPickerProvider p, __) {
+            final int index = p.selectedAssets.indexOf(asset);
             final bool selected = index != -1;
             return AnimatedContainer(
               duration: switchingPathDuration,
