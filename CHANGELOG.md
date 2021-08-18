@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.0.4
+
+- Add French language text delegate. (Thanks to @didiosn)
+- Export "Nothing here." as a field to text delegate. (#190)
+- Fix selected backdrop not synced all the time.
+- Improve the instructions for the example.
+
 ## 6.0.3
 
 - Fix path entity nullable issues with the asset grid.
