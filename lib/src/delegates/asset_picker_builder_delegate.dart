@@ -1031,7 +1031,7 @@ class DefaultAssetPickerBuilderDelegate
       key: ValueKey<String>(asset.id),
       children: <Widget>[
         builder,
-        selectedBackdrop(context, index, asset),
+        selectedBackdrop(context, currentIndex, asset),
         if (!isWeChatMoment || asset.type != AssetType.video)
           selectIndicator(context, asset),
         itemBannedIndicator(context, asset),
