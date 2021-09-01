@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.0.6
+
+- Use the correct index reference with `selectedBackdrop`. (#195)
+
 ## 6.0.5
 
 - Upgrade dependencies.
