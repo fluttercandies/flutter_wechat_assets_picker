@@ -37,6 +37,7 @@ class _SingleAssetPageState extends State<SingleAssetPage>
       PickMethod.threeItemsGrid(maxAssetsCount),
       PickMethod.prependItem(maxAssetsCount),
       PickMethod.customFilterOptions(maxAssetsCount),
+      PickMethod.preventGIFPicked(maxAssetsCount),
       PickMethod.noPreview(maxAssetsCount),
     ];
   }

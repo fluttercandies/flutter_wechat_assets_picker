@@ -49,6 +49,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
       ),
       PickMethod.noPreview(maxAssetsCount),
       PickMethod.customFilterOptions(maxAssetsCount),
+      PickMethod.preventGIFPicked(maxAssetsCount),
       PickMethod.keepScrollOffset(
         provider: () => keepScrollProvider,
         delegate: () => keepScrollDelegate!,

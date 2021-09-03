@@ -182,10 +182,7 @@ class PickMethod {
       icon: '⏳',
       name: 'Custom filter options',
       description: 'Add filter options for the picker.',
-      method: (
-        BuildContext context,
-        List<AssetEntity> assets,
-      ) {
+      method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
           maxAssets: maxAssetsCount,
@@ -210,11 +207,8 @@ class PickMethod {
       icon: '➕',
       name: 'Prepend special item',
       description: 'A special item will prepend to the assets grid.',
-      method: (
-        BuildContext context,
-        List<AssetEntity> assets,
-      ) async {
-        return await AssetPicker.pickAssets(
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
           context,
           maxAssets: maxAssetsCount,
           selectedAssets: assets,
@@ -235,11 +229,8 @@ class PickMethod {
       icon: '👁️‍🗨️',
       name: 'No preview',
       description: 'Pick assets like the WhatsApp/MegaTok pattern.',
-      method: (
-        BuildContext context,
-        List<AssetEntity> assets,
-      ) async {
-        return await AssetPicker.pickAssets(
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
           context,
           maxAssets: maxAssetsCount,
           selectedAssets: assets,
@@ -284,15 +275,34 @@ class PickMethod {
       name: 'Change Languages',
       description: 'Pass text delegates to change between languages. '
           '(e.g. EnglishTextDelegate)',
-      method: (
-        BuildContext context,
-        List<AssetEntity> assets,
-      ) async {
-        return await AssetPicker.pickAssets(
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
           context,
           maxAssets: maxAssetsCount,
           selectedAssets: assets,
           textDelegate: EnglishTextDelegate(),
+        );
+      },
+    );
+  }
+
+  factory PickMethod.preventGIFPicked(int maxAssetsCount) {
+    return PickMethod(
+      icon: '🈲',
+      name: 'Prevent GIF being picked',
+      description: 'Use selectPredicate to banned GIF picking when tapped.',
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          maxAssets: maxAssetsCount,
+          selectedAssets: assets,
+          selectPredicate: (BuildContext c, AssetEntity a, bool isSelected) {
+            print('Asset title: ${a.title}');
+            if (a.title?.endsWith('.gif') == true) {
+              return false;
+            }
+            return true;
+          }
         );
       },
     );
