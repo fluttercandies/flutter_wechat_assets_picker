@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.1.0
+
+- Introduce `selectPredicate` to predicate asset when picking.
+
 ## 6.0.6
 
 - Use the correct index reference with `selectedBackdrop`. (#195)
