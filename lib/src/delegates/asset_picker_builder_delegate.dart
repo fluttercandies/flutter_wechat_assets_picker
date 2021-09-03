@@ -2,6 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-10-29 21:50
 ///
+import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -20,6 +21,12 @@ import '../widget/scale_text.dart';
 typedef IndicatorBuilder = Widget Function(
   BuildContext context,
   bool isAssetsEmpty,
+);
+
+typedef AssetSelectPredicate<Asset> = FutureOr<bool> Function(
+  BuildContext context,
+  Asset asset,
+  bool isSelected,
 );
 
 /// The delegate to build the whole picker's components.
@@ -41,6 +48,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.loadingIndicatorBuilder,
     this.allowSpecialItemWhenEmpty = false,
     this.keepScrollOffset = false,
+    this.selectPredicate,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -99,6 +107,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Whether the picker should save the scroll offset between pushes and pops.
   /// 选择器是否可以从同样的位置开始选择
   final bool keepScrollOffset;
+
+  /// Predicate whether an asset can be selected or unselected.
+  /// 判断资源可否被选择
+  final AssetSelectPredicate<Asset>? selectPredicate;
 
   /// The [ScrollController] for the preview grid.
   final ScrollController gridScrollController = ScrollController();
@@ -629,6 +641,7 @@ class DefaultAssetPickerBuilderDelegate
     IndicatorBuilder? loadingIndicatorBuilder,
     bool allowSpecialItemWhenEmpty = false,
     bool keepScrollOffset = false,
+    AssetSelectPredicate<AssetEntity>? selectPredicate,
     this.gridThumbSize = Constants.defaultGridThumbSize,
     this.previewThumbSize,
     this.specialPickerType,
@@ -648,6 +661,7 @@ class DefaultAssetPickerBuilderDelegate
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
           keepScrollOffset: keepScrollOffset,
+          selectPredicate: selectPredicate,
         );
 
   /// Thumbnail size in the grid.
@@ -1642,7 +1656,15 @@ class DefaultAssetPickerBuilderDelegate
         );
         final GestureDetector selectorWidget = GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () {
+          onTap: () async {
+            final bool? selectPredicateResult = await selectPredicate?.call(
+              context,
+              asset,
+              selected,
+            );
+            if (selectPredicateResult == false) {
+              return;
+            }
             if (selected) {
               provider.unSelectAsset(asset);
               return;
