@@ -183,6 +183,7 @@ platform :ios, '9.0'
 | specialItemPosition       | `SpecialItemPosition`  | 允许用户在选择器中添加一个自定义item，并指定位置。 | `SpecialPosition.none` |
 | loadingIndicatorBuilder   | `IndicatorBuilder?`    | 加载器的实现                          | `null`                  |
 | allowSpecialItemWhenEmpty | `bool`                 | 在资源为空时是否允许显示自定义item  | `false` |
+| selectPredicate           | `AssetSelectPredicate` | 判断资源可否被选择 | `null`                              |
 | routeCurve                | `Curve`                | 选择构造路由动画的曲线 | `Curves.easeIn` |
 | routeDuration             | `Duration`             | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
 
