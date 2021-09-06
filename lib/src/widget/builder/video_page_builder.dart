@@ -34,7 +34,8 @@ class VideoPageBuilder extends StatefulWidget {
 class _VideoPageBuilderState extends State<VideoPageBuilder> {
   /// Controller for the video player.
   /// 视频播放的控制器
-  late final VideoPlayerController _controller;
+  VideoPlayerController get controller => _controller!;
+  VideoPlayerController? _controller;
 
   /// Whether the controller has initialized.
   /// 控制器是否已初始化
@@ -50,27 +51,27 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
 
   /// Whether the controller is playing.
   /// 播放控制器是否在播放
-  bool get isControllerPlaying => _controller.value.isPlaying;
+  bool get isControllerPlaying => _controller?.value.isPlaying ?? false;
 
-  @override
-  void initState() {
-    super.initState();
-    initializeVideoPlayerController();
-  }
+  bool _isInitializing = false;
+  bool _isLocallyAvailable = false;
 
   @override
   void dispose() {
     /// Remove listener from the controller and dispose it when widget dispose.
     /// 部件销毁时移除控制器的监听并销毁控制器。
-    _controller.removeListener(videoPlayerListener);
-    _controller.pause();
-    _controller.dispose();
+    _controller
+      ?..removeListener(videoPlayerListener)
+      ..pause()
+      ..dispose();
     super.dispose();
   }
 
   /// Get media url from the asset, then initialize the controller and add with a listener.
   /// 从资源获取媒体url后初始化，并添加监听。
   Future<void> initializeVideoPlayerController() async {
+    _isInitializing = true;
+    _isLocallyAvailable = true;
     final String? url = await widget.asset.getMediaUrl();
     if (url == null) {
       hasErrorWhenInitializing = true;
@@ -81,13 +82,13 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
     }
     _controller = VideoPlayerController.network(Uri.parse(url).toString());
     try {
-      await _controller.initialize();
+      await controller.initialize();
       hasLoaded = true;
-      _controller
+      controller
         ..addListener(videoPlayerListener)
         ..setLooping(widget.hasOnlyOneVideoAndMoment);
       if (widget.hasOnlyOneVideoAndMoment) {
-        _controller.play();
+        controller.play();
       }
     } catch (e) {
       realDebugPrint('Error when initialize video controller: $e');
@@ -115,19 +116,19 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   /// 一般来说按钮只切换播放暂停。当视频播放结束时，点击按钮将从头开始播放。
   Future<void> playButtonCallback() async {
     if (isPlaying.value) {
-      _controller.pause();
-    } else {
-      if (widget.delegate.isDisplayingDetail.value) {
-        widget.delegate.switchDisplayingDetail(value: false);
-      }
-      if (_controller.value.duration == _controller.value.position) {
-        _controller
-          ..seekTo(Duration.zero)
-          ..play();
-      } else {
-        _controller.play();
-      }
+      controller.pause();
+      return;
     }
+    if (widget.delegate.isDisplayingDetail.value) {
+      widget.delegate.switchDisplayingDetail(value: false);
+    }
+    if (controller.value.duration == controller.value.position) {
+      controller
+        ..seekTo(Duration.zero)
+        ..play();
+      return;
+    }
+    controller.play();
   }
 
   @override
@@ -138,6 +139,9 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
         if (hasErrorWhenInitializing) {
           return Center(child: ScaleText(Constants.textDelegate.loadFailed));
         }
+        if (!_isLocallyAvailable && !_isInitializing) {
+          initializeVideoPlayerController();
+        }
         if (!hasLoaded) {
           return const SizedBox.shrink();
         }
@@ -147,8 +151,8 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
             Positioned.fill(
               child: Center(
                 child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
+                  aspectRatio: controller.value.aspectRatio,
+                  child: VideoPlayer(controller),
                 ),
               ),
             ),
