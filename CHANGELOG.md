@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.1.1
+
+- Handle iCloud video more gracefully.
+
 ## 6.1.0
 
 - Introduce `selectPredicate` to predicate asset when picking.
