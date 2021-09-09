@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.1.2
+
+- Fix limited resources refresh issue.
+- Update callers to avoid deprecated usage.
+
 ## 6.1.1
 
 - Handle iCloud video more gracefully.
