@@ -759,7 +759,7 @@ class DefaultAssetPickerBuilderDelegate
   @override
   PreferredSizeWidget appBar(BuildContext context) {
     return FixedAppBar(
-      backgroundColor: theme.appBarTheme.color,
+      backgroundColor: theme.appBarTheme.backgroundColor,
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
@@ -787,34 +787,38 @@ class DefaultAssetPickerBuilderDelegate
           child: Selector<DefaultAssetPickerProvider, bool>(
             selector: (_, DefaultAssetPickerProvider p) => p.hasAssetsToDisplay,
             builder: (_, bool hasAssetsToDisplay, __) {
+              final Widget _child;
               final bool shouldDisplayAssets = hasAssetsToDisplay ||
                   (allowSpecialItemWhenEmpty &&
                       specialItemPosition != SpecialItemPosition.none);
+              if (shouldDisplayAssets) {
+                _child = Stack(
+                  children: <Widget>[
+                    RepaintBoundary(
+                      child: Stack(
+                        children: <Widget>[
+                          Positioned.fill(
+                            child: assetsGridBuilder(context),
+                          ),
+                          if ((!isSingleAssetMode || isAppleOS) &&
+                              isPreviewEnabled)
+                            Positioned.fill(
+                              top: null,
+                              child: bottomActionBar(context),
+                            ),
+                        ],
+                      ),
+                    ),
+                    pathEntityListBackdrop(context),
+                    pathEntityListWidget(context),
+                  ],
+                );
+              } else {
+                _child = loadingIndicator(context);
+              }
               return AnimatedSwitcher(
                 duration: switchingPathDuration,
-                child: shouldDisplayAssets
-                    ? Stack(
-                        children: <Widget>[
-                          RepaintBoundary(
-                            child: Stack(
-                              children: <Widget>[
-                                Positioned.fill(
-                                  child: assetsGridBuilder(context),
-                                ),
-                                if ((!isSingleAssetMode || isAppleOS) &&
-                                    isPreviewEnabled)
-                                  Positioned.fill(
-                                    top: null,
-                                    child: bottomActionBar(context),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          pathEntityListBackdrop(context),
-                          pathEntityListWidget(context),
-                        ],
-                      )
-                    : loadingIndicator(context),
+                child: _child,
               );
             },
           ),
@@ -926,29 +930,31 @@ class DefaultAssetPickerBuilderDelegate
               child: ColoredBox(
                 color: theme.canvasColor,
                 child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-                  selector: (_, DefaultAssetPickerProvider provider) =>
-                      provider.currentAssets,
-                  builder: (_, List<AssetEntity> assets, __) =>
-                      CustomScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    controller: gridScrollController,
-                    anchor: isAppleOS ? anchor : 0,
-                    center: isAppleOS ? gridRevertKey : null,
-                    slivers: <Widget>[
-                      if (isAppleOS)
-                        SliverGap.v(context.topPadding + kToolbarHeight),
-                      _sliverGrid(_, assets),
-                      // Ignore the gap when the [anchor] is not equal to 1.
-                      if (isAppleOS && anchor == 1)
-                        SliverGap.v(
-                            context.bottomPadding + bottomSectionHeight),
-                      if (isAppleOS)
-                        SliverToBoxAdapter(
-                          key: gridRevertKey,
-                          child: const SizedBox.shrink(),
-                        ),
-                    ],
-                  ),
+                  selector: (_, DefaultAssetPickerProvider p) =>
+                      p.currentAssets,
+                  builder: (_, List<AssetEntity> assets, __) {
+                    return CustomScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      controller: gridScrollController,
+                      anchor: isAppleOS ? anchor : 0,
+                      center: isAppleOS ? gridRevertKey : null,
+                      slivers: <Widget>[
+                        if (isAppleOS)
+                          SliverGap.v(context.topPadding + kToolbarHeight),
+                        _sliverGrid(_, assets),
+                        // Ignore the gap when the [anchor] is not equal to 1.
+                        if (isAppleOS && anchor == 1)
+                          SliverGap.v(
+                            context.bottomPadding + bottomSectionHeight,
+                          ),
+                        if (isAppleOS)
+                          SliverToBoxAdapter(
+                            key: gridRevertKey,
+                            child: const SizedBox.shrink(),
+                          ),
+                      ],
+                    );
+                  },
                 ),
               ),
             );

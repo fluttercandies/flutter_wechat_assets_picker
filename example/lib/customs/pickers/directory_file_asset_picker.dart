@@ -469,7 +469,7 @@ class FileAssetPickerBuilder
   @override
   PreferredSizeWidget appBar(BuildContext context) {
     return AppBar(
-      backgroundColor: theme.appBarTheme.color,
+      backgroundColor: theme.appBarTheme.backgroundColor,
       centerTitle: isAppleOS,
       title: pathEntitySelector(context),
       leading: backButton(context),
@@ -1359,7 +1359,8 @@ class FileAssetPickerViewerBuilderDelegate
     return AnimatedPositioned(
       duration: kThemeAnimationDuration,
       curve: Curves.easeInOut,
-      top: _isDisplayingDetail ? 0.0 : -(Screens.topSafeHeight + kToolbarHeight),
+      top:
+          _isDisplayingDetail ? 0.0 : -(Screens.topSafeHeight + kToolbarHeight),
       left: 0.0,
       right: 0.0,
       height: Screens.topSafeHeight + kToolbarHeight,
@@ -1543,7 +1544,7 @@ class FileAssetPickerViewerBuilderDelegate
             border: !isSelected
                 ? Border.all(color: themeData.iconTheme.color!)
                 : null,
-            color: isSelected ? themeData.buttonColor : null,
+            color: isSelected ? themeData.colorScheme.secondary : null,
             shape: BoxShape.circle,
           ),
           child: Center(

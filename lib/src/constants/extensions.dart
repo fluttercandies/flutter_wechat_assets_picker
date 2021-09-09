@@ -27,5 +27,6 @@ extension ColorExtension on Color {
 }
 
 extension ThemeDataExtension on ThemeData {
-  Brightness get effectiveBrightness => appBarTheme.brightness ?? brightness;
+  Brightness get effectiveBrightness =>
+      appBarTheme.systemOverlayStyle?.statusBarBrightness ?? brightness;
 }

@@ -754,7 +754,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             border: !isSelected
                 ? Border.all(color: themeData.iconTheme.color!)
                 : null,
-            color: isSelected ? themeData.buttonColor : null,
+            color: isSelected ? themeData.colorScheme.secondary : null,
             shape: BoxShape.circle,
           ),
           child: const Center(child: Icon(Icons.check, size: 20.0)),

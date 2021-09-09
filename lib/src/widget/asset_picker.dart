@@ -194,13 +194,10 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
   /// 通过主题色构建一个默认的暗黑主题
   static ThemeData themeData(Color themeColor) {
     return ThemeData.dark().copyWith(
-      buttonColor: themeColor,
       primaryColor: Colors.grey[900],
       primaryColorBrightness: Brightness.dark,
       primaryColorLight: Colors.grey[900],
       primaryColorDark: Colors.grey[900],
-      accentColor: themeColor,
-      accentColorBrightness: Brightness.dark,
       canvasColor: Colors.grey[850],
       scaffoldBackgroundColor: Colors.grey[900],
       bottomAppBarColor: Colors.grey[900],
@@ -214,9 +211,13 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       ),
       indicatorColor: themeColor,
       appBarTheme: const AppBarTheme(
-        brightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.light,
+        ),
         elevation: 0,
       ),
+      buttonTheme: ButtonThemeData(buttonColor: themeColor),
       colorScheme: ColorScheme(
         primary: Colors.grey[900]!,
         primaryVariant: Colors.grey[900]!,
