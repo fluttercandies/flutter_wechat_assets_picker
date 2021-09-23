@@ -184,6 +184,7 @@ platform :ios, '9.0'
 | loadingIndicatorBuilder   | `IndicatorBuilder?`    | 加载器的实现                          | `null`                  |
 | allowSpecialItemWhenEmpty | `bool`                 | 在资源为空时是否允许显示自定义item  | `false` |
 | selectPredicate           | `AssetSelectPredicate` | 判断资源可否被选择 | `null`                              |
+| shouldRevertGrid          | `bool?`                | 判断资源网格是否需要倒序排列 | `null`                              |
 | routeCurve                | `Curve`                | 选择构造路由动画的曲线 | `Curves.easeIn` |
 | routeDuration             | `Duration`             | 选择构造路由动画的时间 | `const Duration(milliseconds: 500)` |
 

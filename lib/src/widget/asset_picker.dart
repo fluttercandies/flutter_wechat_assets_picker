@@ -9,10 +9,7 @@ import 'package:flutter/services.dart';
 import '../constants/constants.dart';
 
 class AssetPicker<Asset, Path> extends StatefulWidget {
-  const AssetPicker({
-    Key? key,
-    required this.builder,
-  }) : super(key: key);
+  const AssetPicker({Key? key, required this.builder}) : super(key: key);
 
   final AssetPickerBuilderDelegate<Asset, Path> builder;
 
@@ -47,6 +44,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
     bool allowSpecialItemWhenEmpty = false,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
+    bool? shouldRevertGrid,
     bool useRootNavigator = true,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
@@ -113,6 +111,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
           selectPredicate: selectPredicate,
+          shouldRevertGrid: shouldRevertGrid,
         ),
       ),
     );

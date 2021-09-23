@@ -177,6 +177,7 @@ platform :osx, '10.15'
 | loadingIndicatorBuilder   | `IndicatorBuilder?`         | Indicates the loading status for the builder.                | `null`                              |
 | allowSpecialItemWhenEmpty | `bool`                      | Whether the special item will display or not when assets is empty. | `false`                             |
 | selectPredicate           | `AssetSelectPredicate`      | Predicate whether an asset can be selected or unselected.    | `null`                              |
+| shouldRevertGrid          | `bool?`                     | Whether the assets grid should revert.                       | `null`                              |
 | routeCurve                | `Curve`                     | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
 | routeDuration             | `Duration`                  | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
 

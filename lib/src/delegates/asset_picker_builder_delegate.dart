@@ -49,6 +49,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.allowSpecialItemWhenEmpty = false,
     this.keepScrollOffset = false,
     this.selectPredicate,
+    this.shouldRevertGrid,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -119,6 +120,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// [assetsGridBuilder] 用于定位 [ScrollView.center] 的 [GlobalKey]
   final GlobalKey gridRevertKey = GlobalKey();
 
+  /// Whether the assets grid should revert.
+  /// 判断资源网格是否需要倒序排列
+  ///
+  /// [Null] means judging by [isAppleOS].
+  /// 使用 [Null] 即使用 [isAppleOS] 进行判断。
+  final bool? shouldRevertGrid;
+
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
   ThemeData get theme => pickerTheme ?? AssetPicker.themeData(themeColor);
@@ -185,6 +193,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Whether the permission is limited currently.
   /// 当前的权限是否为受限
   bool get isPermissionLimited => permission.value == PermissionState.limited;
+
+  bool get effectiveShouldRevertGrid => shouldRevertGrid ?? isAppleOS;
 
   /// The listener to track the scroll position of the [gridScrollController]
   /// if [keepScrollOffset] is true.
@@ -357,7 +367,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 默认情况下，在 iOS/macOS 上方向会反向。
   TextDirection effectiveGridDirection(BuildContext context) {
     final TextDirection _od = Directionality.of(context);
-    if (isAppleOS) {
+    if (effectiveShouldRevertGrid) {
       if (_od == TextDirection.ltr) {
         return TextDirection.rtl;
       }
@@ -642,6 +652,7 @@ class DefaultAssetPickerBuilderDelegate
     bool allowSpecialItemWhenEmpty = false,
     bool keepScrollOffset = false,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
+    bool? shouldRevertGrid,
     this.gridThumbSize = Constants.defaultGridThumbSize,
     this.previewThumbSize,
     this.specialPickerType,
@@ -662,6 +673,7 @@ class DefaultAssetPickerBuilderDelegate
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
           keepScrollOffset: keepScrollOffset,
           selectPredicate: selectPredicate,
+          shouldRevertGrid: shouldRevertGrid,
         );
 
   /// Thumbnail size in the grid.
@@ -840,11 +852,11 @@ class DefaultAssetPickerBuilderDelegate
             path?.isAll == true) {
           totalCount += 1;
         }
-        // Then we use the [totalCount] to calculate how many placeholders we need.
+        // Then we use the [totalCount] to calculate placeholders we need.
         final int placeholderCount;
-        if (isAppleOS && totalCount % gridCount != 0) {
-          // When there are left items that not filled into one row, filled the row
-          // with placeholders.
+        if (effectiveShouldRevertGrid && totalCount % gridCount != 0) {
+          // When there are left items that not filled into one row,
+          // filled the row with placeholders.
           placeholderCount = gridCount - totalCount % gridCount;
         } else {
           // Otherwise, we don't need placeholders.
@@ -863,7 +875,7 @@ class DefaultAssetPickerBuilderDelegate
             delegate: SliverChildBuilderDelegate(
               (_, int index) => Builder(
                 builder: (BuildContext c) {
-                  if (isAppleOS) {
+                  if (effectiveShouldRevertGrid) {
                     if (index < placeholderCount) {
                       return const SizedBox.shrink();
                     }
@@ -933,25 +945,27 @@ class DefaultAssetPickerBuilderDelegate
                   selector: (_, DefaultAssetPickerProvider p) =>
                       p.currentAssets,
                   builder: (_, List<AssetEntity> assets, __) {
+                    final SliverGap _bottomGap = SliverGap.v(
+                      context.bottomPadding + bottomSectionHeight,
+                    );
                     return CustomScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       controller: gridScrollController,
-                      anchor: isAppleOS ? anchor : 0,
-                      center: isAppleOS ? gridRevertKey : null,
+                      anchor: effectiveShouldRevertGrid ? anchor : 0,
+                      center: effectiveShouldRevertGrid ? gridRevertKey : null,
                       slivers: <Widget>[
                         if (isAppleOS)
                           SliverGap.v(context.topPadding + kToolbarHeight),
                         _sliverGrid(_, assets),
                         // Ignore the gap when the [anchor] is not equal to 1.
-                        if (isAppleOS && anchor == 1)
-                          SliverGap.v(
-                            context.bottomPadding + bottomSectionHeight,
-                          ),
-                        if (isAppleOS)
+                        if (effectiveShouldRevertGrid && anchor == 1)
+                          _bottomGap,
+                        if (effectiveShouldRevertGrid)
                           SliverToBoxAdapter(
                             key: gridRevertKey,
                             child: const SizedBox.shrink(),
                           ),
+                        if (isAppleOS && !effectiveShouldRevertGrid) _bottomGap,
                       ],
                     );
                   },
