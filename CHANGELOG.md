@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.2.0
+
+- Introduce `shouldRevertGrid` to determine whether the assets grid should revert.
+  It's set with Apple OS accordingly before.
+- Upgrade `photo_manager` to resolve issues against `AssetEntity`s comparison.
+
 ## 6.1.2
 
 - Fix limited resources refresh issue.
