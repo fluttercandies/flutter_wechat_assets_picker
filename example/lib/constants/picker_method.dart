@@ -122,15 +122,16 @@ class PickMethod {
                   context,
                   enableRecording: true,
                 );
-                if (result != null) {
-                  final AssetPicker<AssetEntity, AssetPathEntity> picker =
-                      context.findAncestorWidgetOfExactType()!;
-                  final DefaultAssetPickerProvider p =
-                      picker.builder.provider as DefaultAssetPickerProvider;
-                  await p.currentPathEntity!.refreshPathProperties();
-                  await p.switchPath(p.currentPathEntity!);
-                  p.selectAsset(result);
+                if (result == null) {
+                  return;
                 }
+                final AssetPicker<AssetEntity, AssetPathEntity> picker =
+                    context.findAncestorWidgetOfExactType()!;
+                final DefaultAssetPickerProvider p =
+                    picker.builder.provider as DefaultAssetPickerProvider;
+                await p.currentPathEntity!.refreshPathProperties();
+                await p.switchPath(p.currentPathEntity!);
+                p.selectAsset(result);
               },
               child: const Center(
                 child: Icon(Icons.camera_enhance, size: 42.0),
@@ -298,11 +299,8 @@ class PickMethod {
           selectedAssets: assets,
           selectPredicate: (BuildContext c, AssetEntity a, bool isSelected) {
             print('Asset title: ${a.title}');
-            if (a.title?.endsWith('.gif') == true) {
-              return false;
-            }
-            return true;
-          }
+            return a.title?.endsWith('.gif') != true;
+          },
         );
       },
     );
