@@ -27,11 +27,38 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 
 flutter_ios_podfile_setup
 
+def install_plugin_pods(application_path = nil, relative_symlink_dir, platform)
+  # defined_in_file is set by CocoaPods and is a Pathname to the Podfile.
+  application_path ||= File.dirname(defined_in_file.realpath) if self.respond_to?(:defined_in_file)
+  raise 'Could not find application path' unless application_path
+
+  # Prepare symlinks folder. We use symlinks to avoid having Podfile.lock
+  # referring to absolute paths on developers' machines.
+
+  symlink_dir = File.expand_path(relative_symlink_dir, application_path)
+  system('rm', '-rf', symlink_dir) # Avoid the complication of dependencies like FileUtils.
+
+  symlink_plugins_dir = File.expand_path('plugins', symlink_dir)
+  system('mkdir', '-p', symlink_plugins_dir)
+
+  plugins_file = File.join(application_path, '..', '.flutter-plugins-dependencies')
+  plugin_pods = flutter_parse_plugins_file(plugins_file, platform)
+  plugin_pods.each do |plugin_hash|
+    plugin_name = plugin_hash['name']
+    plugin_path = plugin_hash['path']
+    if (plugin_name && plugin_path)
+      specPath = "#{plugin_path}/#{platform}/#{plugin_name}.podspec"
+      pod plugin_name, :path => specPath
+    end
+  end
+end
+
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  flutter_install_ios_engine_pod(File.dirname(File.realpath(__FILE__)))
+  install_plugin_pods(File.dirname(File.realpath(__FILE__)), '.symlinks', 'ios')
 end
 
 post_install do |installer|
