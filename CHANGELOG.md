@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.2.1
+
+- Migrate to `extended_image` 5.x.
+- Use `.contentUri` constructor for `VideoPlayerController`.
+
 ## 6.2.0
 
 - Introduce `shouldRevertGrid` to determine whether the assets grid should revert.
