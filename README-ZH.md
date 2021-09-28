@@ -270,8 +270,9 @@ AssetPicker.unregisterObserve(); // 取消注册回调
 
 ### Execution failed for task ':photo_manager:compileDebugKotlin'
 
-查看 [photo_manager#561]https://github.com/CaiJingLong/flutter_photo_manager/issues/561
-了解详细的解决方法。
+查看 [photo_manager#561][] 了解详细的解决方法。
+
+[photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
 
 ### 如何获取资源的路径以进行上传或编辑等操作的整合？
 

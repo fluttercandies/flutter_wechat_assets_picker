@@ -265,7 +265,9 @@ in the example which has an implementation based on `<File, Directory>` types.
 
 ### Execution failed for task ':photo_manager:compileDebugKotlin'
 
-See [photo_manager#561]https://github.com/CaiJingLong/flutter_photo_manager/issues/561 for more details.
+See [photo_manager#561][] for more details.
+
+[photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
 
 ### How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?
 
