@@ -80,7 +80,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       }
       return;
     }
-    _controller = VideoPlayerController.network(Uri.parse(url).toString());
+    _controller = VideoPlayerController.contentUri(Uri.parse(url));
     try {
       await controller.initialize();
       hasLoaded = true;
