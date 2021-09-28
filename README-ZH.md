@@ -43,7 +43,7 @@ Language: [English](README.md) | 中文
   * [注册资源变化回调](#注册资源变化回调)
   * [自定义类型或 UI](#自定义类型或-ui)
 * [常见问题](#常见问题-)
-  * [编译时报错 `Unresolved reference: R`](#编译时报错-unresolved-reference-r)
+  * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photo_managercompiledebugkotlin)
   * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合)
   * [如何更改 'Recent' 或其他路径的名称或属性？](#如何更改-recent-或其他路径的名称或属性)
   * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
@@ -268,19 +268,10 @@ AssetPicker.unregisterObserve(); // 取消注册回调
 
 ## 常见问题 ❔
 
-### 编译时报错 `Unresolved reference: R`
+### Execution failed for task ':photo_manager:compileDebugKotlin'
 
-```groovy
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerDeleteManager.kt: (116, 36): Unresolved reference: R
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerDeleteManager.kt: (119, 36): Unresolved reference: createTrashRequest
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerPlugin.kt: (341, 84): Unresolved reference: R
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\utils\Android30DbUtils.kt: (34, 34): Unresolved reference: R
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\utils\IDBUtils.kt: (27, 67): Unresolved reference: R
-
-FAILURE: Build failed with an exception.
-```
-
-请执行 `flutter clean`。
+查看 [photo_manager#561]https://github.com/CaiJingLong/flutter_photo_manager/issues/561
+了解详细的解决方法。
 
 ### 如何获取资源的路径以进行上传或编辑等操作的整合？
 

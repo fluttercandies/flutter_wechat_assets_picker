@@ -41,7 +41,7 @@ All UI designs are based on WeChat 8.x, and it will be updated following the WeC
   * [Register assets change observe callback](#register-assets-change-observe-callback)
   * [Customize with your own type or UI](#customize-with-your-own-type-or-ui)
 * [Frequently asked question](#frequently-asked-question-)
-  * [Build failed with `Unresolved reference: R`](#build-failed-with-unresolved-reference-r)
+  * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photo_managercompiledebugkotlin)
   * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
   * [How can I change the name of "Recent" or other entities name/properties?](#how-can-i-change-the-name-of-recent-or-other-entities-nameproperties)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
@@ -118,7 +118,7 @@ If you don't need the `ACCESS_MEDIA_LOCATION` permission,
 see [Disable `ACCESS_MEDIA_LOCATION` permission](#disable-access_media_location-permission).
 
 If you found some warning logs with `Glide` appearing,
-then the main project needs an implementation of `AppGlideModule`. 
+then the main project needs an implementation of `AppGlideModule`.
 See [Generated API](https://sjudd.github.io/glide/doc/generatedapi.html).
 
 ### iOS
@@ -263,19 +263,9 @@ in the example which has an implementation based on `<File, Directory>` types.
 
 ## Frequently asked question ❔
 
-### Build failed with `Unresolved reference: R`
+### Execution failed for task ':photo_manager:compileDebugKotlin'
 
-```groovy
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerDeleteManager.kt: (116, 36): Unresolved reference: R
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerDeleteManager.kt: (119, 36): Unresolved reference: createTrashRequest
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\PhotoManagerPlugin.kt: (341, 84): Unresolved reference: R
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\utils\Android30DbUtils.kt: (34, 34): Unresolved reference: R
-e: <path>\photo_manager-x.y.z\android\src\main\kotlin\top\kikt\imagescanner\core\utils\IDBUtils.kt: (27, 67): Unresolved reference: R
-
-FAILURE: Build failed with an exception.
-```
-
-Run `flutter clean` first.
+See [photo_manager#561]https://github.com/CaiJingLong/flutter_photo_manager/issues/561 for more details.
 
 ### How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?
 
@@ -408,7 +398,7 @@ Contributions of any kind welcomed!!
 ## Acknowledgement
 
 > Every aspect of IntelliJ IDEA has been designed to maximize developer productivity.
-  Together, intelligent coding assistance and ergonomic design make development not only productive but also enjoyable.
+Together, intelligent coding assistance and ergonomic design make development not only productive but also enjoyable.
 
 Thanks to [JetBrains](https://www.jetbrains.com/?from=fluttercandies) for allocating free open-source licenses for IDEs
 such as [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies).
