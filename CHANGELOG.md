@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.2.2
+
+- Use `.contentUri` for video preview only on Android.
+
 ## 6.2.1
 
 - Migrate to `extended_image` 5.x.
