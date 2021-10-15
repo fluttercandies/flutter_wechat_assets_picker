@@ -2,6 +2,8 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/4/6 18:58
 ///
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -80,7 +82,11 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       }
       return;
     }
-    _controller = VideoPlayerController.contentUri(Uri.parse(url));
+    if (Platform.isAndroid) {
+      _controller = VideoPlayerController.contentUri(Uri.parse(url));
+    } else {
+      _controller = VideoPlayerController.network(url);
+    }
     try {
       await controller.initialize();
       hasLoaded = true;
