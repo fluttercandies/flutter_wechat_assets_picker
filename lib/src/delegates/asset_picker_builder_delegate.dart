@@ -23,6 +23,10 @@ typedef IndicatorBuilder = Widget Function(
   bool isAssetsEmpty,
 );
 
+/// {@template wechat_assets_picker.AssetSelectPredicate}
+/// Predicate whether an asset can be selected or unselected.
+/// 判断资源可否被选择
+/// {@endtemplate}
 typedef AssetSelectPredicate<Asset> = FutureOr<bool> Function(
   BuildContext context,
   Asset asset,
@@ -109,8 +113,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 选择器是否可以从同样的位置开始选择
   final bool keepScrollOffset;
 
-  /// Predicate whether an asset can be selected or unselected.
-  /// 判断资源可否被选择
+  /// {@macro wechat_assets_picker.AssetSelectPredicate}
   final AssetSelectPredicate<Asset>? selectPredicate;
 
   /// The [ScrollController] for the preview grid.

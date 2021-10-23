@@ -25,6 +25,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     this.selectedAssets,
     this.maxAssets,
     this.shouldReversePreview = false,
+    this.selectPredicate,
   });
 
   /// [ChangeNotifier] for photo selector viewer.
@@ -54,6 +55,9 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// clicked one item of the asset grid.
   /// 通常用户使用苹果系统时，点击网格内容进行预览，是反向进行预览。
   final bool shouldReversePreview;
+
+  /// {@macro wechat_assets_picker.AssetSelectPredicate}
+  final AssetSelectPredicate<Asset>? selectPredicate;
 
   /// [StreamController] for viewing page index update.
   /// 用于更新当前正在浏览的资源页码的流控制器
@@ -229,6 +233,26 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     }
   }
 
+  Future<void> onChangingSelected(
+    BuildContext context,
+    Asset asset,
+    bool isSelected,
+  ) async {
+    final bool? selectPredicateResult = await selectPredicate?.call(
+      context,
+      asset,
+      isSelected,
+    );
+    if (selectPredicateResult == false) {
+      return;
+    }
+    if (isSelected) {
+      unSelectAsset(asset);
+      return;
+    }
+    selectAsset(asset);
+  }
+
   /// Method to switch [isDisplayingDetail].
   /// 切换显示详情状态的方法
   void switchDisplayingDetail({bool? value}) {
@@ -319,6 +343,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     this.specialPickerType,
     int? maxAssets,
     bool shouldReversePreview = false,
+    AssetSelectPredicate<AssetEntity>? selectPredicate,
   }) : super(
           currentIndex: currentIndex,
           previewAssets: previewAssets,
@@ -328,6 +353,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           selectorProvider: selectorProvider,
           maxAssets: maxAssets,
           shouldReversePreview: shouldReversePreview,
+          selectPredicate: selectPredicate,
         );
 
   /// Thumb size for the preview of images in the viewer.
@@ -733,7 +759,11 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   /// Select button for apple OS.
   /// 苹果系列系统的选择按钮
-  Widget _appleOSSelectButton(bool isSelected, AssetEntity asset) {
+  Widget _appleOSSelectButton(
+    BuildContext context,
+    bool isSelected,
+    AssetEntity asset,
+  ) {
     if (!isSelected && selectedMaximumAssets) {
       return const SizedBox.shrink();
     }
@@ -741,13 +771,7 @@ class DefaultAssetPickerViewerBuilderDelegate
       padding: const EdgeInsetsDirectional.only(end: 10.0),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () {
-          if (isSelected) {
-            unSelectAsset(asset);
-            return;
-          }
-          selectAsset(asset);
-        },
+        onTap: () => onChangingSelected(context, asset, isSelected),
         child: AnimatedContainer(
           duration: kThemeAnimationDuration,
           width: 28.0,
@@ -766,19 +790,17 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   /// Select button for Android.
   /// 安卓系统的选择按钮
-  Widget _androidSelectButton(bool isSelected, AssetEntity asset) {
+  Widget _androidSelectButton(
+    BuildContext context,
+    bool isSelected,
+    AssetEntity asset,
+  ) {
     return CustomCheckbox(
       value: isSelected,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(999999),
       ),
-      onChanged: (bool? value) {
-        if (isSelected) {
-          unSelectAsset(asset);
-          return;
-        }
-        selectAsset(asset);
-      },
+      onChanged: (_) => onChangingSelected(context, asset, isSelected),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
   }
@@ -801,15 +823,21 @@ class DefaultAssetPickerViewerBuilderDelegate
                   AssetPickerViewerProvider<AssetEntity> p,
                 ) =>
                     p.currentlySelectedAssets,
-                builder: (_, List<AssetEntity> currentlySelectedAssets, __) {
-                  final AssetEntity asset =
-                      previewAssets.elementAt(snapshot.data!);
-                  final bool isSelected =
-                      currentlySelectedAssets.contains(asset);
+                builder: (
+                  BuildContext c,
+                  List<AssetEntity> currentlySelectedAssets,
+                  __,
+                ) {
+                  final AssetEntity asset = previewAssets.elementAt(
+                    snapshot.data!,
+                  );
+                  final bool isSelected = currentlySelectedAssets.contains(
+                    asset,
+                  );
                   if (isAppleOS) {
-                    return _appleOSSelectButton(isSelected, asset);
+                    return _appleOSSelectButton(c, isSelected, asset);
                   }
-                  return _androidSelectButton(isSelected, asset);
+                  return _androidSelectButton(c, isSelected, asset);
                 },
               ),
             );
