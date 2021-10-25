@@ -193,7 +193,7 @@ see [Migration Guide](guides/migration_guide.md) for more details.
 - Reset to the top for the asset grid view after switching path.
 - Add ability to select assets in any position of the picker.
 - Implement mime type for image type judgement.
-- Fix disappeared GIF's indicator.
+- Fix disappeared GIFs indicator.
 
 ## 5.0.5
 
@@ -343,7 +343,7 @@ see [Migration Guide](guides/migration_guide.md) for more details.
 - Support audio assets.
 - Support single asset mode.
 - Enlarge preview button's detector area size.
-- Fix wrong properties usage causing infinite build when the page reaches the end.
+- Fix wrong properties' usage causing infinite build when the page reaches the end.
 
 ### Breaking changes
 
