@@ -1,6 +1,10 @@
 name: Build test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   test_iOS:
@@ -21,10 +25,11 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: flutter analyze lib example/lib
+      - run: flutter pub publish --dry-run
       - run: cd example; flutter build ios --no-codesign
 
   test_android:
-    name: Test android on ${{ matrix.os }}
+    name: Test Android on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -41,5 +46,6 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: flutter analyze lib example/lib
+      - run: flutter pub publish --dry-run
       - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;20.0.5594570"
       - run: cd example; flutter build apk --debug
