@@ -367,22 +367,24 @@ class DefaultAssetPickerProvider
 
   @override
   Future<void> switchPath([AssetPathEntity? pathEntity]) async {
-    assert(() {
-      if (_currentPathEntity == null && pathEntity == null) {
-        throw FlutterError.fromParts(<DiagnosticsNode>[
-          ErrorSummary('Empty $AssetPathEntity was switched.'),
-          ErrorDescription(
-            'Neither currentPathEntity nor pathEntity is non-null, which makes '
-            'this method useless.',
-          ),
-          ErrorHint(
-            'You need to pass a non-null $AssetPathEntity or call this method '
-            'when currentPathEntity is not null.',
-          ),
-        ]);
-      }
-      return true;
-    }());
+    assert(
+      () {
+        if (_currentPathEntity == null && pathEntity == null) {
+          throw FlutterError.fromParts(<DiagnosticsNode>[
+            ErrorSummary('Empty $AssetPathEntity was switched.'),
+            ErrorDescription(
+              'Neither currentPathEntity nor pathEntity is non-null, '
+              'which makes this method useless.',
+            ),
+            ErrorHint(
+              'You need to pass a non-null $AssetPathEntity '
+              'or call this method when currentPathEntity is not null.',
+            ),
+          ]);
+        }
+        return true;
+      }(),
+    );
     if (_currentPathEntity == null && pathEntity == null) {
       return;
     }

@@ -18,9 +18,9 @@ PackageInfo? packageInfo;
 
 void main() {
   runApp(MyApp());
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-    statusBarColor: Colors.transparent,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent),
+  );
   AssetPicker.registerObserve();
 }
 
@@ -62,6 +62,9 @@ class NoGlowScrollBehavior extends ScrollBehavior {
 
   @override
   Widget buildViewportChrome(
-          BuildContext context, Widget child, AxisDirection axisDirection) =>
+    BuildContext context,
+    Widget child,
+    AxisDirection axisDirection,
+  ) =>
       child;
 }

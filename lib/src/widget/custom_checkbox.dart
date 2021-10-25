@@ -385,17 +385,23 @@ class _CustomCheckboxState extends State<CustomCheckbox>
         break;
       case MaterialTapTargetSize.shrinkWrap:
         size = const Size(
-            kMinInteractiveDimension - 8.0, kMinInteractiveDimension - 8.0);
+          kMinInteractiveDimension - 8.0,
+          kMinInteractiveDimension - 8.0,
+        );
         break;
     }
     size += effectiveVisualDensity.baseSizeAdjustment;
     final BoxConstraints additionalConstraints = BoxConstraints.tight(size);
     final MouseCursor effectiveMouseCursor =
         MaterialStateProperty.resolveAs<MouseCursor?>(
-                widget.mouseCursor, _states) ??
+              widget.mouseCursor,
+              _states,
+            ) ??
             themeData.checkboxTheme.mouseCursor?.resolve(_states) ??
             MaterialStateProperty.resolveAs<MouseCursor>(
-                MaterialStateMouseCursor.clickable, _states);
+              MaterialStateMouseCursor.clickable,
+              _states,
+            );
     // Colors need to be resolved in selected and non selected states separately
     // so that they can be lerped between.
     final Set<MaterialState> activeStates = _states
@@ -1285,12 +1291,23 @@ abstract class RenderToggleable extends RenderConstrainedBox {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(FlagProperty('value',
-        value: value, ifTrue: 'checked', ifFalse: 'unchecked', showName: true));
-    properties.add(FlagProperty('isInteractive',
+    properties.add(
+      FlagProperty(
+        'value',
+        value: value,
+        ifTrue: 'checked',
+        ifFalse: 'unchecked',
+        showName: true,
+      ),
+    );
+    properties.add(
+      FlagProperty(
+        'isInteractive',
         value: isInteractive,
         ifTrue: 'enabled',
         ifFalse: 'disabled',
-        defaultValue: true));
+        defaultValue: true,
+      ),
+    );
   }
 }

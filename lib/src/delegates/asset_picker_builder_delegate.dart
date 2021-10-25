@@ -472,11 +472,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         bottom: context.bottomPadding,
       ),
       color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1),
-      child: Row(children: <Widget>[
-        if (!isSingleAssetMode || !isAppleOS) previewButton(context),
-        if (isAppleOS) const Spacer(),
-        if (isAppleOS) confirmButton(context),
-      ]),
+      child: Row(
+        children: <Widget>[
+          if (!isSingleAssetMode || !isAppleOS) previewButton(context),
+          if (isAppleOS) const Spacer(),
+          if (isAppleOS) confirmButton(context),
+        ],
+      ),
     );
     if (isPermissionLimited) {
       child = Column(
