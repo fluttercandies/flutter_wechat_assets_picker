@@ -29,7 +29,7 @@ All UI designs are based on WeChat 8.x, and it will be updated following the WeC
 * [Features](#features-)
 * [Screenshots](#screenshots-)
 * [Preparing for use](#preparing-for-use-)
-  * [Version constraints](#version-constraints)
+  * [Versions compatibility](#version-compatibility)
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
@@ -87,9 +87,13 @@ please run the example or refer to [photo_manager](https://github.com/CaiJingLon
 
 ## Preparing for use 🍭
 
-### Version constraints
+### Versions compatibility
 
-Flutter SDK: `>=2.0.0` .
+|        | 2.0.0 | 2.2.0 | 2.5.0 |
+|--------|:-----:|:-----:|:-----:|
+| 6.2.1+ |   ❌   |   ❌   |   ✅   |
+| 6.2.0  |   ✅   |   ✅   |   ✅   |
+| 5.0.0+ |   ✅   |  N/A  |  N/A  |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
 please use `dependency_overrides` to fix it. See [here](#version-resolve-conflict-with-xxx-eg-dartx) .
