@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.2.3
+
+- Pass through `selectPredicate` to `AssetPickerViewer`. (#211)
+- Bump sdk constraints (since 6.2.1).
+
 ## 6.2.2
 
 - Use `.contentUri` for video preview only on Android.
