@@ -54,6 +54,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.keepScrollOffset = false,
     this.selectPredicate,
     this.shouldRevertGrid,
+    this.hideLimitedOverlayPredicate,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -115,6 +116,15 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// {@macro wechat_assets_picker.AssetSelectPredicate}
   final AssetSelectPredicate<Asset>? selectPredicate;
+
+  /// Whether to hide the limited overlay on iOS when the permission state is
+  /// [PermissionState.limited].
+  /// 是否在权限状态为 [PermissionState.limited] 时隐藏受限的覆盖层提示
+  ///
+  /// [hasShown] indicates if the overlay has been displayed at least once
+  /// in the app's lifecycle.
+  /// [hasShown] 参数代表了当前应用的周期内，覆盖层是否至少显示了一次。
+  final bool Function(bool hasShown)? hideLimitedOverlayPredicate;
 
   /// The [ScrollController] for the preview grid.
   final ScrollController gridScrollController = ScrollController();
@@ -190,8 +200,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       ValueNotifier<PermissionState>(
     initialPermission,
   );
-  final ValueNotifier<bool> permissionOverlayHidden = ValueNotifier<bool>(
-    Constants.limitedOverlayPresented,
+  late final ValueNotifier<bool> permissionOverlayHidden = ValueNotifier<bool>(
+    hideLimitedOverlayPredicate?.call(Constants.limitedOverlayPresented) ??
+        Constants.limitedOverlayPresented,
   );
 
   /// Whether the permission is limited currently.
@@ -588,7 +599,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       firstNotifier: permission,
       secondNotifier: permissionOverlayHidden,
       builder: (_, PermissionState ps, bool isHidden, __) {
-        if (ps.isAuth || isHidden) {
+        final bool _isHidden = hideLimitedOverlayPredicate
+                ?.call(Constants.limitedOverlayPresented) ??
+            isHidden;
+        if (ps.isAuth || _isHidden) {
           return const SizedBox.shrink();
         }
         return Positioned.fill(
