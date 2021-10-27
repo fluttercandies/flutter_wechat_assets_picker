@@ -277,9 +277,18 @@ See [photo_manager#561][] for more details.
 
 You don't need it (might be).
 
-You can always request the `File` object with `entity.originFile`, if `Uint8List` then `entity.originBytes`.
+You can always request the `File` object with
+`entity.file` or `entity.originFile`,
+and `entity.originBytes` for `Uint8List`.
 
 If you still need path after requested the `File`, get it through `file.absolutePath`.
+
+```dart
+final File file = await entity.file; // Thumbnails or edited files.
+final File originFile = await entity.originFile; // Original files.
+final String path = file.path;
+final String originPath = originFile.path;
+```
 
 ### How can I change the name of "Recent" or other entities name/properties?
 

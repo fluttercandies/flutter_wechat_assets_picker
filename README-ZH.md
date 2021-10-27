@@ -282,9 +282,17 @@ AssetPicker.unregisterObserve(); // 取消注册回调
 
 你不需要获得路径（也许）。
 
-`File` 对象可以通过 `entity.originFile` 获得，如果需要 `Uint8List` 则使用 `entity.originBytes`。
+`File` 对象可以通过 `entity.file` 或 `entity.originFile` 获得，
+如果需要 `Uint8List` 则使用 `entity.originBytes`。
 
-如果再此之后你仍然需要路径，那么可以通过已获得的 `File` 对象获取： `file.absolutePath`。
+如果再此之后你仍然需要路径，那么可以通过已获得的 `File` 对象获取： `file.path`。
+
+```dart
+final File file = await entity.file; // 缩略图或编辑后的视频
+final File originFile = await entity.originFile; // 原图或者原视频
+final String path = file.path;
+final String originPath = originFile.path;
+```
 
 ### 如何更改 'Recent' 或其他路径的名称或属性？
 
