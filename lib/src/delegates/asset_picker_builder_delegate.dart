@@ -190,8 +190,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       ValueNotifier<PermissionState>(
     initialPermission,
   );
-  final ValueNotifier<bool> permissionOverlayHidden =
-      ValueNotifier<bool>(false);
+  final ValueNotifier<bool> permissionOverlayHidden = ValueNotifier<bool>(
+    Constants.limitedOverlayPresented,
+  );
 
   /// Whether the permission is limited currently.
   /// 当前的权限是否为受限
@@ -524,6 +525,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// The overlay when the permission is limited on iOS.
   Widget iOSPermissionOverlay(BuildContext context) {
+    Constants.limitedOverlayPresented = true;
+
     final Size size = context.mediaQuery.size;
     final Widget _closeButton = Container(
       margin: const EdgeInsetsDirectional.only(start: 16, top: 4),

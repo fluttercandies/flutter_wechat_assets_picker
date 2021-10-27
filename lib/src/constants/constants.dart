@@ -40,7 +40,8 @@ export 'extensions.dart';
 class Constants {
   const Constants._();
 
-  static GlobalKey pickerKey = GlobalKey();
+  static const int defaultGridThumbSize = 200;
+  static final GlobalKey pickerKey = GlobalKey();
 
   static AssetsPickerTextDelegate textDelegate = AssetsPickerTextDelegate();
   static SortPathDelegate<dynamic> sortPathDelegate = SortPathDelegate.common;
@@ -51,7 +52,9 @@ class Constants {
   ///  * [AssetPickerBuilderDelegate.keepScrollOffset]
   static ScrollPosition? scrollPosition;
 
-  static const int defaultGridThumbSize = 200;
+  /// Whether the limited permissions overlay has been presented during
+  /// the running app's lifecycle.
+  static bool limitedOverlayPresented = false;
 }
 
 /// Log only in debug mode.
