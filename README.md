@@ -281,7 +281,7 @@ You can always request the `File` object with
 `entity.file` or `entity.originFile`,
 and `entity.originBytes` for `Uint8List`.
 
-If you still need path after requested the `File`, get it through `file.absolutePath`.
+If you still need path after requested the `File`, get it through `file.path`.
 
 ```dart
 final File file = await entity.file; // Thumbnails or edited files.
