@@ -389,7 +389,7 @@ class JapaneseTextDelegate extends AssetsPickerTextDelegate {
 /// الترجمة العربية
 class ArabicTextDelegate extends AssetsPickerTextDelegate {
   @override
-  String get confirm => 'تؤكد';
+  String get confirm => 'تاكيد';
 
   @override
   String get cancel => 'إلغاء';
@@ -438,10 +438,10 @@ class ArabicTextDelegate extends AssetsPickerTextDelegate {
       'افتح إعدادات النظام واسمح للتطبيق بالوصول إلى جميع الملفات الموجودة على الجهاز.';
 
   @override
-  String get goToSystemSettings => 'افتح إعدادات النظام';
+  String get goToSystemSettings => 'فتح إعدادات النظام';
 
   @override
-  String get accessLimitedAssets => 'تواصل مع وصول محدود';
+  String get accessLimitedAssets => 'الاستمرار مع صلاحيات محدوده';
 
   @override
   String get accessiblePathName => 'ملفات يمكن الوصول إليها';
