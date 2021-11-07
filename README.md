@@ -400,6 +400,9 @@ Many thanks to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/didiosn"><img src="https://avatars.githubusercontent.com/u/15895051?v=4?s=50" width="50px;" alt=""/><br /><sub><b>DidiosFaust</b></sub></a><br /><a href="#translation-didiosn" title="Translation">🌍</a></td>
     <td align="center"><a href="https://github.com/ConanXie"><img src="https://avatars.githubusercontent.com/u/10040846?v=4?s=50" width="50px;" alt=""/><br /><sub><b>xiejie</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3AConanXie" title="Bug reports">🐛</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/maxzod"><img src="https://avatars.githubusercontent.com/u/47630729?v=4?s=50" width="50px;" alt=""/><br /><sub><b>Ahmed Masoud </b></sub></a><br /><a href="#translation-maxzod" title="Translation">🌍</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
