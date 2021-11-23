@@ -1174,7 +1174,7 @@ class DefaultAssetPickerBuilderDelegate
           ),
         ),
         const Align(
-          alignment: AlignmentDirectional.bottomEnd,
+          alignment: Alignment.bottomRight,
           child: Padding(
             padding: EdgeInsetsDirectional.only(end: 4, bottom: 8),
             child: Icon(Icons.audiotrack),
