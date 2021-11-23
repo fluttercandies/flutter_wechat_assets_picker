@@ -1174,11 +1174,8 @@ class DefaultAssetPickerBuilderDelegate
           ),
         ),
         const Align(
-          alignment: AlignmentDirectional.bottomEnd,
-          child: Padding(
-            padding: EdgeInsetsDirectional.only(end: 4, bottom: 8),
-            child: Icon(Icons.audiotrack),
-          ),
+          alignment: AlignmentDirectional(0.9, 0.8),
+          child: Icon(Icons.audiotrack),
         ),
         audioIndicator(context, asset),
       ],
