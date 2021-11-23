@@ -1168,12 +1168,12 @@ class DefaultAssetPickerBuilderDelegate
             child: ScaleText(
               asset.title ?? '',
               style: const TextStyle(fontSize: 16),
-              maxLines: 1,
+              maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
-        const Center(child: Icon(Icons.audiotrack)),
+        const Align(alignment: AlignmentDirectional.bottomEnd, child: Icon(Icons.audiotrack)),
         audioIndicator(context, asset),
       ],
     );
