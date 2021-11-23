@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.2.4
+
+- Improve audio item layout.
+- Improve workflows.
+- Indicate path getter more precisely.
+- Improve Arabic text delegate.
+
 ## 6.2.3
 
 - Pass through `selectPredicate` to `AssetPickerViewer`. (#211)
