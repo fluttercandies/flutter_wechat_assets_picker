@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/picker_method.dart';
 
-class MethodListView extends StatelessWidget {
+class MethodListView extends StatefulWidget {
   const MethodListView({
     Key? key,
     required this.pickMethods,
@@ -16,10 +16,17 @@ class MethodListView extends StatelessWidget {
   final List<PickMethod> pickMethods;
   final Function(PickMethod method) onSelectMethod;
 
+  @override
+  _MethodListViewState createState() => _MethodListViewState();
+}
+
+class _MethodListViewState extends State<MethodListView> {
+  final ScrollController _controller = ScrollController();
+
   Widget methodItemBuilder(BuildContext context, int index) {
-    final PickMethod model = pickMethods[index];
+    final PickMethod model = widget.pickMethods[index];
     return InkWell(
-      onTap: () => onSelectMethod(model),
+      onTap: () => widget.onSelectMethod(model),
       onLongPress: model.onLongPress,
       child: Container(
         padding: const EdgeInsets.symmetric(
@@ -76,11 +83,13 @@ class MethodListView extends StatelessWidget {
         horizontal: 10,
       ).copyWith(bottom: 10.0),
       child: Scrollbar(
+        controller: _controller,
         isAlwaysShown: true,
         radius: const Radius.circular(999),
         child: ListView.builder(
+          controller: _controller,
           padding: const EdgeInsets.symmetric(vertical: 10.0),
-          itemCount: pickMethods.length,
+          itemCount: widget.pickMethods.length,
           itemBuilder: methodItemBuilder,
         ),
       ),
