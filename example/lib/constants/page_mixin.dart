@@ -2,7 +2,6 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2021/7/13 11:46
 ///
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart'
     show

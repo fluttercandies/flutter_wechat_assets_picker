@@ -7,7 +7,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../../constants/constants.dart';
 import '../../constants/extensions.dart';
 import '../scale_text.dart';
 
