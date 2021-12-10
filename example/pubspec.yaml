@@ -4,8 +4,8 @@ version: 6.0.0
 publish_to: none
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
-  flutter: '>=2.0.0'
+  sdk: '>=2.15.0 <3.0.0'
+  flutter: '>=2.8.0'
 
 dependencies:
   flutter:
@@ -15,12 +15,12 @@ dependencies:
 
   wechat_assets_picker:
     path: ../
-  wechat_camera_picker: ^2.4.0
+  wechat_camera_picker: ^2.6.2
 
-  extended_image: ^5.1.0
-  package_info_plus: ^1.0.6
+  extended_image: ^6.0.1
+  package_info_plus: ^1.3.0
   path: ^1.8.0
-  path_provider: ^2.0.4
+  path_provider: ^2.0.8
   provider: ^6.0.1
 
 flutter:
