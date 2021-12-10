@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.3.0
+
+- Support for Flutter 2.8.0, also drop supports for Flutter below 2.8.0.
+
 ## 6.2.4
 
 - Improve audio item layout.
