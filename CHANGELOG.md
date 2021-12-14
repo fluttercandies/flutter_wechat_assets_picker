@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.3.1
+
+- Improve image type determine when resolving image data.
+  This mostly resolved the occasionally HEIC loading issue
+  when apps are running under the release mode.
+
 ## 6.3.0
 
 - Support for Flutter 2.8.0, also drop supports for Flutter below 2.8.0.
