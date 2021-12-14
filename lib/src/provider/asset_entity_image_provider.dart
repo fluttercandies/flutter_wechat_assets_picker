@@ -70,37 +70,54 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     AssetEntityImageProvider key,
     DecoderCallback decode,
   ) async {
-    assert(key == this);
-    Uint8List? data;
-    if (isOriginal) {
+    try {
+      assert(key == this);
       if (key.entity.type == AssetType.audio ||
           key.entity.type == AssetType.other) {
         throw UnsupportedError(
           'Image data for the ${key.entity.type} is not supported.',
         );
       }
-      if (key.entity.type == AssetType.video) {
-        data = await key.entity.thumbDataWithOption(
-          _thumbOption(
-            Constants.defaultGridThumbSize,
-            Constants.defaultGridThumbSize,
-          ),
-        );
-      } else if (imageFileType == ImageFileType.heic) {
-        data = await (await key.entity.file)?.readAsBytes();
+      Uint8List? data;
+      final ImageFileType _type;
+      if (key.imageFileType == ImageFileType.other) {
+        // Assume the title is invalid here, try again with the async getter.
+        _type = _getType(await key.entity.titleAsync);
       } else {
-        data = await key.entity.originBytes;
+        _type = key.imageFileType;
       }
-    } else {
-      final List<int> _thumbSize = thumbSize!;
-      data = await key.entity.thumbDataWithOption(
-        _thumbOption(_thumbSize[0], _thumbSize[1]),
-      );
+      if (isOriginal) {
+        if (key.entity.type == AssetType.video) {
+          data = await key.entity.thumbDataWithOption(
+            _thumbOption(
+              Constants.defaultGridThumbSize,
+              Constants.defaultGridThumbSize,
+            ),
+          );
+        } else if (_type == ImageFileType.heic) {
+          data = await (await key.entity.file)?.readAsBytes();
+        } else {
+          data = await key.entity.originBytes;
+        }
+      } else {
+        final List<int> _thumbSize = thumbSize!;
+        data = await key.entity.thumbDataWithOption(
+          _thumbOption(_thumbSize[0], _thumbSize[1]),
+        );
+      }
+      if (data == null) {
+        throw StateError('The data of the entity is null: $entity');
+      }
+      return decode(data);
+    } catch (e) {
+      // Depending on where the exception was thrown, the image cache may not
+      // have had a chance to track the key in the cache at all.
+      // Schedule a microtask to give the cache a chance to add the key.
+      Future<void>.microtask(() {
+        PaintingBinding.instance?.imageCache?.evict(key);
+      });
+      rethrow;
     }
-    if (data == null) {
-      throw AssertionError('Null data in entity: $entity');
-    }
-    return decode(data);
   }
 
   ThumbOption _thumbOption(int width, int height) {
@@ -120,10 +137,11 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// ⚠ Not all the system version support read file name from the entity,
   /// so this method might not work sometime.
   /// 并非所有的系统版本都支持读取文件名，所以该方法有时无法返回正确的type。
-  ImageFileType _getType() {
+  ImageFileType _getType([String? filename]) {
     ImageFileType? type;
-    final String? extension =
-        entity.mimeType?.split('/').last ?? entity.title?.split('.').last;
+    final String? extension = filename?.split('.').last ??
+        entity.mimeType?.split('/').last ??
+        entity.title?.split('.').last;
     if (extension != null) {
       switch (extension.toLowerCase()) {
         case 'jpg':
