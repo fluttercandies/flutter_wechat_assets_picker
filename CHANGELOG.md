@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.0-dev.1
+
+- Migrate to the latest photo_manager.
+
 ## 6.3.1
 
 - Improve image type determine when resolving image data.
