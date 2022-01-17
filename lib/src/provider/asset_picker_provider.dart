@@ -341,23 +341,22 @@ class DefaultAssetPickerProvider
 
   @override
   Future<void> getAssetsFromEntity(int page, AssetPathEntity pathEntity) async {
-    _currentAssets = (await pathEntity.getAssetListPaged(
-      page,
-      pageSize,
-    ))
-        .toList();
+    final List<AssetEntity> list = await pathEntity.getAssetListPaged(
+      page: page,
+      size: pageSize,
+    );
+    _currentAssets = List<AssetEntity>.of(list);
     _hasAssetsToDisplay = currentAssets.isNotEmpty;
     notifyListeners();
   }
 
   @override
   Future<void> loadMoreAssets() async {
-    final List<AssetEntity> assets =
-        (await currentPathEntity!.getAssetListPaged(
-      currentAssetsListPage,
-      pageSize,
-    ))
-            .toList();
+    final List<AssetEntity> list = await currentPathEntity!.getAssetListPaged(
+      page: currentAssetsListPage,
+      size: pageSize,
+    );
+    final List<AssetEntity> assets = List<AssetEntity>.of(list);
     if (assets.isNotEmpty && currentAssets.contains(assets[0])) {
       return;
     }

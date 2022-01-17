@@ -20,7 +20,6 @@ import '../constants/constants.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../delegates/assets_picker_text_delegate.dart';
-import '../provider/asset_entity_image_provider.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_viewer.dart';

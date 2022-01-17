@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
-import '../../provider/asset_entity_image_provider.dart';
 import 'locally_available_builder.dart';
 
 class ImagePageBuilder extends StatefulWidget {
