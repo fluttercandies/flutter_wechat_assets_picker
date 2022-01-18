@@ -9,6 +9,7 @@ class ScaleText extends StatelessWidget {
     this.overflow,
     this.textAlign,
     this.textDirection,
+    this.semanticsLabel,
     this.minScaleFactor = 0.7,
     this.maxScaleFactor = 1.3,
   });
@@ -20,6 +21,8 @@ class ScaleText extends StatelessWidget {
   final TextOverflow? overflow;
   final TextAlign? textAlign;
   final TextDirection? textDirection;
+  final String? semanticsLabel;
+
   final double minScaleFactor;
   final double maxScaleFactor;
 
@@ -38,6 +41,7 @@ class ScaleText extends StatelessWidget {
         textAlign: textAlign,
         overflow: overflow,
         textDirection: textDirection,
+        semanticsLabel: semanticsLabel,
       ),
     );
   }
