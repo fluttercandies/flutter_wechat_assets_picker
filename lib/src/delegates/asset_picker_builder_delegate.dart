@@ -533,6 +533,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: IconButton(
         onPressed: Navigator.of(context).maybePop,
+        tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         icon: const Icon(Icons.close),
       ),
     );
@@ -833,7 +834,10 @@ class DefaultAssetPickerBuilderDelegate
     return FixedAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
       centerTitle: isAppleOS,
-      title: pathEntitySelector(context),
+      title: Semantics(
+        onTapHint: textDelegate.sActionSwitchPathLabel,
+        child: pathEntitySelector(context),
+      ),
       leading: backButton(context),
       // Condition for displaying the confirm button:
       // - On Android, show if preview is enabled or if multi asset mode.
@@ -933,19 +937,21 @@ class DefaultAssetPickerBuilderDelegate
         Widget _sliverGrid(BuildContext ctx, List<AssetEntity> assets) {
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
-              (_, int index) => Builder(
-                builder: (BuildContext c) {
-                  if (effectiveShouldRevertGrid) {
-                    if (index < placeholderCount) {
-                      return const SizedBox.shrink();
+              (_, int index) => MergeSemantics(
+                child: Builder(
+                  builder: (BuildContext c) {
+                    if (effectiveShouldRevertGrid) {
+                      if (index < placeholderCount) {
+                        return const SizedBox.shrink();
+                      }
+                      index -= placeholderCount;
                     }
-                    index -= placeholderCount;
-                  }
-                  return Directionality(
-                    textDirection: Directionality.of(context),
-                    child: assetGridItemBuilder(c, index, assets),
-                  );
-                },
+                    return Directionality(
+                      textDirection: Directionality.of(context),
+                      child: assetGridItemBuilder(c, index, assets),
+                    );
+                  },
+                ),
               ),
               childCount: assetsGridItemCount(
                 context: ctx,
@@ -1504,7 +1510,10 @@ class DefaultAssetPickerBuilderDelegate
   Widget pathEntitySelector(BuildContext context) {
     return UnconstrainedBox(
       child: GestureDetector(
-        onTap: () => provider.isSwitchingPath = !provider.isSwitchingPath,
+        onTap: () {
+          Feedback.forTap(context);
+          provider.isSwitchingPath = !provider.isSwitchingPath;
+        },
         child: Container(
           height: appBarItemHeight,
           constraints: BoxConstraints(
@@ -1598,72 +1607,83 @@ class DefaultAssetPickerBuilderDelegate
       return ColoredBox(color: theme.colorScheme.primary.withOpacity(0.12));
     }
 
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        splashFactory: InkSplash.splashFactory,
-        onTap: () {
-          provider.switchPath(pathEntity);
-          gridScrollController.jumpTo(0);
-        },
-        child: SizedBox(
-          height: isAppleOS ? 64 : 52,
-          child: Row(
-            children: <Widget>[
-              RepaintBoundary(
-                child: AspectRatio(aspectRatio: 1, child: builder()),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                    start: 15,
-                    end: 20,
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.only(end: 10),
-                          child: ScaleText(
-                            isPermissionLimited && pathEntity.isAll
-                                ? Constants.textDelegate.accessiblePathName
-                                : pathEntity.name,
-                            style: const TextStyle(fontSize: 17),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+    final String semanticsName = isPermissionLimited && pathEntity.isAll
+        ? textDelegate.accessiblePathName
+        : pathEntity.name;
+    final String semanticsCount = '${pathEntity.assetCount}';
+    return Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
+      selector: (_, DefaultAssetPickerProvider p) => p.currentPathEntity,
+      builder: (_, AssetPathEntity? currentPathEntity, __) {
+        final bool isSelected = currentPathEntity == pathEntity;
+        return Semantics(
+          label: '$semanticsName, '
+              '${textDelegate.sUnitAssetCountLabel}: '
+              '$semanticsCount',
+          selected: isSelected,
+          onTapHint: textDelegate.sActionPreviewHint,
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              splashFactory: InkSplash.splashFactory,
+              onTap: () {
+                provider.switchPath(pathEntity);
+                gridScrollController.jumpTo(0);
+              },
+              child: SizedBox(
+                height: isAppleOS ? 64 : 52,
+                child: Row(
+                  children: <Widget>[
+                    RepaintBoundary(
+                      child: AspectRatio(aspectRatio: 1, child: builder()),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.only(
+                          start: 15,
+                          end: 20,
+                        ),
+                        child: ExcludeSemantics(
+                          child: Row(
+                            children: <Widget>[
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.only(
+                                    end: 10,
+                                  ),
+                                  child: ScaleText(
+                                    semanticsName,
+                                    style: const TextStyle(fontSize: 17),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              ScaleText(
+                                '($semanticsCount)',
+                                style: TextStyle(
+                                  color: theme.textTheme.caption?.color,
+                                  fontSize: 17,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      ScaleText(
-                        '(${pathEntity.assetCount})',
-                        style: TextStyle(
-                          color: theme.textTheme.caption?.color,
-                          fontSize: 17,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    ),
+                    if (isSelected)
+                      AspectRatio(
+                        aspectRatio: 1,
+                        child: Icon(Icons.check, color: themeColor, size: 26),
                       ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
-              Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
-                selector: (_, DefaultAssetPickerProvider p) =>
-                    p.currentPathEntity,
-                builder: (_, AssetPathEntity? currentPathEntity, __) {
-                  if (currentPathEntity == pathEntity) {
-                    return AspectRatio(
-                      aspectRatio: 1,
-                      child: Icon(Icons.check, color: themeColor, size: 26),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -1796,7 +1816,12 @@ class DefaultAssetPickerBuilderDelegate
             child: selectorWidget,
           );
         }
-        return selectorWidget;
+        return Semantics(
+          button: true,
+          checked: selected,
+          selected: selected,
+          child: selectorWidget,
+        );
       },
     );
   }

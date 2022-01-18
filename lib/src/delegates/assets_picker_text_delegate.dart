@@ -80,6 +80,32 @@ class AssetsPickerTextDelegate {
             .padLeft(2, '0');
     return '$minute$separator$second';
   }
+
+  /// Semantics fields.
+  ///
+  /// Fields below are only for semantics usage. For customizable these fields,
+  /// head over to [EnglishTextDelegate] for fields understanding.
+  String get sTypeAudioLabel => '音频';
+
+  String get sTypeImageLabel => '图片';
+
+  String get sTypeVideoLabel => '视频';
+
+  String get sTypeOtherLabel => '其他资源';
+
+  String get sActionPreviewHint => '预览';
+
+  String get sActionSelectHint => '选中';
+
+  String get sActionSwitchPathLabel => '切换路径';
+
+  String get sNameDurationLabel => '时长';
+
+  String get sUnitAssetCountLabel => '数量';
+
+  String sUnitColumnLabel(int value) => '第$value行';
+
+  String sUnitRowLabel(int value) => '第$value列';
 }
 
 /// [AssetsPickerTextDelegate] implements with English.
