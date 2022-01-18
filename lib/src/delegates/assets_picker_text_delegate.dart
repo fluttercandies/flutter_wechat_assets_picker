@@ -102,10 +102,6 @@ class AssetsPickerTextDelegate {
   String get sNameDurationLabel => '时长';
 
   String get sUnitAssetCountLabel => '数量';
-
-  String sUnitColumnLabel(int value) => '第$value行';
-
-  String sUnitRowLabel(int value) => '第$value列';
 }
 
 /// [AssetsPickerTextDelegate] implements with English.

@@ -670,6 +670,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               children: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.close),
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
                   onPressed: Navigator.of(context).maybePop,
                 ),
                 const Spacer(),

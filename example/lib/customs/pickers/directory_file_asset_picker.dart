@@ -679,7 +679,7 @@ class FileAssetPickerBuilder
       fit: StackFit.expand,
       children: <Widget>[
         Positioned.fill(child: builder),
-        selectIndicator(context, asset),
+        selectIndicator(context, index, asset),
       ],
     );
   }
@@ -1070,16 +1070,12 @@ class FileAssetPickerBuilder
   }
 
   @override
-  Widget selectIndicator(BuildContext context, File asset) {
+  Widget selectIndicator(BuildContext context, int index, File asset) {
     return Selector<FileAssetPickerProvider, List<File>>(
       selector: (_, FileAssetPickerProvider p) => p.selectedAssets,
       builder: (_, List<File> selectedAssets, __) {
         final bool isSelected =
             selectedAssets.where((File f) => f.path == asset.path).isNotEmpty;
-        int index = 0;
-        if (isSelected) {
-          index = selectedAssets.indexWhere((File f) => f.path == asset.path);
-        }
         final double indicatorSize = Screens.width / gridCount / 3;
         return Positioned(
           top: 0.0,

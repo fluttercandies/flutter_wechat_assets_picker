@@ -326,7 +326,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// Indicator for assets selected status.
   /// 资源是否已选的指示器
-  Widget selectIndicator(BuildContext context, Asset asset);
+  Widget selectIndicator(BuildContext context, int index, Asset asset);
 
   /// Indicator when the asset cannot be selected.
   /// 当资源无法被选中时的遮罩
@@ -429,7 +429,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// The [Semantics] builder for the assets' grid.
   /// 资源列表项的语义构建
-  Semantics assetGridItemSemanticsBuilder(
+  Widget assetGridItemSemanticsBuilder(
     BuildContext context,
     int index,
     Asset asset,
@@ -793,6 +793,63 @@ class DefaultAssetPickerBuilderDelegate
     }
   }
 
+  Future<void> _pushAssetToViewer(
+    BuildContext context,
+    int index,
+    AssetEntity asset,
+  ) async {
+    bool selectedAllAndNotSelected() =>
+        !provider.selectedAssets.contains(asset) &&
+        provider.selectedMaximumAssets;
+    bool selectedPhotosAndIsVideo() =>
+        isWeChatMoment &&
+        asset.type == AssetType.video &&
+        provider.selectedAssets.isNotEmpty;
+    // When we reached the maximum select count and the asset
+    // is not selected, do nothing.
+    // When the special type is WeChat Moment, pictures and videos cannot
+    // be selected at the same time. Video select should be banned if any
+    // pictures are selected.
+    if (selectedAllAndNotSelected() || selectedPhotosAndIsVideo()) {
+      return;
+    }
+    final List<AssetEntity> _current;
+    final List<AssetEntity>? _selected;
+    final int _index;
+    if (isWeChatMoment) {
+      if (asset.type == AssetType.video) {
+        _current = <AssetEntity>[asset];
+        _selected = null;
+        _index = 0;
+      } else {
+        _current = provider.currentAssets
+            .where((AssetEntity e) => e.type == AssetType.image)
+            .toList();
+        _selected = provider.selectedAssets;
+        _index = _current.indexOf(asset);
+      }
+    } else {
+      _current = provider.currentAssets;
+      _selected = provider.selectedAssets;
+      _index = index;
+    }
+    final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
+      context,
+      currentIndex: _index,
+      previewAssets: _current,
+      themeData: theme,
+      previewThumbSize: previewThumbSize,
+      selectedAssets: _selected,
+      selectorProvider: provider as DefaultAssetPickerProvider,
+      specialPickerType: specialPickerType,
+      maxAssets: provider.maxAssets,
+      shouldReversePreview: isAppleOS,
+    );
+    if (result != null) {
+      Navigator.of(context).maybePop(result);
+    }
+  }
+
   @override
   Widget androidLayout(BuildContext context) {
     return FixedAppBarWrapper(
@@ -937,21 +994,19 @@ class DefaultAssetPickerBuilderDelegate
         Widget _sliverGrid(BuildContext ctx, List<AssetEntity> assets) {
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
-              (_, int index) => MergeSemantics(
-                child: Builder(
-                  builder: (BuildContext c) {
-                    if (effectiveShouldRevertGrid) {
-                      if (index < placeholderCount) {
-                        return const SizedBox.shrink();
-                      }
-                      index -= placeholderCount;
+              (_, int index) => Builder(
+                builder: (BuildContext c) {
+                  if (effectiveShouldRevertGrid) {
+                    if (index < placeholderCount) {
+                      return const SizedBox.shrink();
                     }
-                    return Directionality(
-                      textDirection: Directionality.of(context),
-                      child: assetGridItemBuilder(c, index, assets),
-                    );
-                  },
-                ),
+                    index -= placeholderCount;
+                  }
+                  return Directionality(
+                    textDirection: Directionality.of(context),
+                    child: assetGridItemBuilder(c, index, assets),
+                  );
+                },
               ),
               childCount: assetsGridItemCount(
                 context: ctx,
@@ -1127,47 +1182,70 @@ class DefaultAssetPickerBuilderDelegate
         builder = const SizedBox.shrink();
         break;
     }
-    return Stack(
+    final Widget _content = Stack(
       key: ValueKey<String>(asset.id),
       children: <Widget>[
-        assetGridItemSemanticsBuilder(context, index, asset, builder),
+        builder,
         selectedBackdrop(context, currentIndex, asset),
         if (!isWeChatMoment || asset.type != AssetType.video)
-          selectIndicator(context, asset),
+          selectIndicator(context, index, asset),
         itemBannedIndicator(context, asset),
       ],
     );
+    return assetGridItemSemanticsBuilder(context, index, asset, _content);
+  }
+
+  String _semanticLabel(AssetEntity asset) {
+    switch (asset.type) {
+      case AssetType.audio:
+        return textDelegate.sTypeAudioLabel;
+      case AssetType.image:
+        return textDelegate.sTypeImageLabel;
+      case AssetType.video:
+        return textDelegate.sTypeVideoLabel;
+      case AssetType.other:
+        return textDelegate.sTypeOtherLabel;
+    }
+  }
+
+  int _semanticIndex(int index) {
+    if (specialItemPosition != SpecialItemPosition.prepend) {
+      return index + 1;
+    }
+    return index;
   }
 
   @override
-  Semantics assetGridItemSemanticsBuilder(
+  Widget assetGridItemSemanticsBuilder(
     BuildContext context,
     int index,
     AssetEntity asset,
     Widget child,
   ) {
-    final String builderLabel;
-    switch (asset.type) {
-      case AssetType.audio:
-        builderLabel = textDelegate.sTypeAudioLabel;
-        break;
-      case AssetType.image:
-        builderLabel = textDelegate.sTypeImageLabel;
-        break;
-      case AssetType.video:
-        builderLabel = textDelegate.sTypeVideoLabel;
-        break;
-      case AssetType.other:
-        builderLabel = textDelegate.sTypeOtherLabel;
-        break;
-    }
-    return Semantics(
-      label: '$builderLabel ${index + 1}, '
-          '${asset.createDateTime.toString().replaceAll('.000', '')}, '
-          '${textDelegate.sUnitColumnLabel(index ~/ gridCount)} '
-          '${textDelegate.sUnitRowLabel(index % gridCount)}, ',
-      onTapHint: textDelegate.sActionPreviewHint,
-      onLongPressHint: textDelegate.sActionSelectHint,
+    return Selector<DefaultAssetPickerProvider, String>(
+      selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
+      builder: (_, String desc, Widget? child) {
+        final bool isSelected = desc.contains(asset.toString());
+        return Semantics(
+          selected: isSelected,
+          label: '${_semanticLabel(asset)} ${_semanticIndex(index)}, '
+              '${asset.createDateTime.toString().replaceAll('.000', '')}, ',
+          hint: asset.title,
+          image: asset.type == AssetType.image || asset.type == AssetType.video,
+          onTap: () => _pushAssetToViewer(context, index, asset),
+          onTapHint: textDelegate.sActionPreviewHint,
+          child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
+            selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
+            builder: (_, List<AssetEntity> selectedAssets, __) {
+              final int _index = selectedAssets.indexOf(asset) + 1;
+              return Semantics(
+                value: _index > 0 ? '$_index' : null,
+                child: child,
+              );
+            },
+          ),
+        );
+      },
       child: child,
     );
   }
@@ -1749,21 +1827,26 @@ class DefaultAssetPickerBuilderDelegate
   Widget itemBannedIndicator(BuildContext context, AssetEntity asset) {
     return Consumer<DefaultAssetPickerProvider>(
       builder: (_, DefaultAssetPickerProvider p, __) {
-        if ((!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
-            (isWeChatMoment &&
-                asset.type == AssetType.video &&
-                p.selectedAssets.isNotEmpty)) {
-          return Container(
+        final Widget child;
+        final bool isDisabled =
+            (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
+                (isWeChatMoment &&
+                    asset.type == AssetType.video &&
+                    p.selectedAssets.isNotEmpty);
+        if (isDisabled) {
+          child = Container(
             color: theme.colorScheme.background.withOpacity(.85),
           );
+        } else {
+          child = const SizedBox.shrink();
         }
-        return const SizedBox.shrink();
+        return Semantics(enabled: false, child: child);
       },
     );
   }
 
   @override
-  Widget selectIndicator(BuildContext context, AssetEntity asset) {
+  Widget selectIndicator(BuildContext context, int index, AssetEntity asset) {
     final Duration duration = switchingPathDuration * 0.75;
     return Selector<DefaultAssetPickerProvider, String>(
       selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
@@ -1793,20 +1876,25 @@ class DefaultAssetPickerBuilderDelegate
                 : const SizedBox.shrink(),
           ),
         );
-        final GestureDetector selectorWidget = GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => selectAsset(context, asset, selected),
-          onLongPress: () => selectAsset(context, asset, selected),
-          child: Container(
-            margin: EdgeInsets.all(
-              context.mediaQuery.size.width / gridCount / 12,
+        final Widget selectorWidget = Semantics(
+          container: true,
+          checked: selected,
+          onTapHint: textDelegate.sActionSelectHint,
+          label: '${_semanticLabel(asset)} ${_semanticIndex(index)}',
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => selectAsset(context, asset, selected),
+            child: Container(
+              margin: EdgeInsets.all(
+                context.mediaQuery.size.width / gridCount / 12,
+              ),
+              width: isPreviewEnabled ? indicatorSize : null,
+              height: isPreviewEnabled ? indicatorSize : null,
+              alignment: AlignmentDirectional.topEnd,
+              child: (!isPreviewEnabled && isSingleAssetMode && !selected)
+                  ? const SizedBox.shrink()
+                  : innerSelector,
             ),
-            width: isPreviewEnabled ? indicatorSize : null,
-            height: isPreviewEnabled ? indicatorSize : null,
-            alignment: AlignmentDirectional.topEnd,
-            child: (!isPreviewEnabled && isSingleAssetMode && !selected)
-                ? const SizedBox.shrink()
-                : innerSelector,
           ),
         );
         if (isPreviewEnabled) {
@@ -1816,74 +1904,17 @@ class DefaultAssetPickerBuilderDelegate
             child: selectorWidget,
           );
         }
-        return Semantics(
-          button: true,
-          checked: selected,
-          selected: selected,
-          child: selectorWidget,
-        );
+        return selectorWidget;
       },
     );
   }
 
   @override
   Widget selectedBackdrop(BuildContext context, int index, AssetEntity asset) {
-    bool selectedAllAndNotSelected() =>
-        !provider.selectedAssets.contains(asset) &&
-        provider.selectedMaximumAssets;
-    bool selectedPhotosAndIsVideo() =>
-        isWeChatMoment &&
-        asset.type == AssetType.video &&
-        provider.selectedAssets.isNotEmpty;
-
     return Positioned.fill(
       child: GestureDetector(
-        onTap: () async {
-          // When we reached the maximum select count and the asset
-          // is not selected, do nothing.
-          // When the special type is WeChat Moment, pictures and videos cannot
-          // be selected at the same time. Video select should be banned if any
-          // pictures are selected.
-          if (selectedAllAndNotSelected() || selectedPhotosAndIsVideo()) {
-            return;
-          }
-          final List<AssetEntity> _current;
-          final List<AssetEntity>? _selected;
-          final int _index;
-          if (isWeChatMoment) {
-            if (asset.type == AssetType.video) {
-              _current = <AssetEntity>[asset];
-              _selected = null;
-              _index = 0;
-            } else {
-              _current = provider.currentAssets
-                  .where((AssetEntity e) => e.type == AssetType.image)
-                  .toList();
-              _selected = provider.selectedAssets;
-              _index = _current.indexOf(asset);
-            }
-          } else {
-            _current = provider.currentAssets;
-            _selected = provider.selectedAssets;
-            _index = index;
-          }
-          final List<AssetEntity>? result =
-              await AssetPickerViewer.pushToViewer(
-            context,
-            currentIndex: _index,
-            previewAssets: _current,
-            themeData: theme,
-            previewThumbSize: previewThumbSize,
-            selectedAssets: _selected,
-            selectorProvider: provider as DefaultAssetPickerProvider,
-            specialPickerType: specialPickerType,
-            maxAssets: provider.maxAssets,
-            shouldReversePreview: isAppleOS,
-          );
-          if (result != null) {
-            Navigator.of(context).maybePop(result);
-          }
-        },
+        excludeFromSemantics: true,
+        onTap: () => _pushAssetToViewer(context, index, asset),
         child: Consumer<DefaultAssetPickerProvider>(
           builder: (_, DefaultAssetPickerProvider p, __) {
             final int index = p.selectedAssets.indexOf(asset);
