@@ -379,8 +379,6 @@ class FileAssetPickerBuilder
     required FileAssetPickerProvider provider,
   }) : super(provider: provider, initialPermission: PermissionState.authorized);
 
-  AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
-
   Duration get switchingPathDuration => kThemeAnimationDuration * 1.5;
 
   Curve get switchingPathCurve => Curves.easeInOut;
@@ -422,6 +420,18 @@ class FileAssetPickerBuilder
       },
     );
     return Navigator.of(context).push<List<File>?>(pageRoute);
+  }
+
+  @override
+  void selectAsset(BuildContext context, File asset, bool selected) {
+    if (selected) {
+      provider.unSelectAsset(asset);
+    } else {
+      if (isSingleAssetMode) {
+        provider.selectedAssets.clear();
+      }
+      provider.selectAsset(asset);
+    }
   }
 
   @override
@@ -672,6 +682,16 @@ class FileAssetPickerBuilder
         selectIndicator(context, asset),
       ],
     );
+  }
+
+  @override
+  Semantics assetGridItemSemanticsBuilder(
+    BuildContext context,
+    int index,
+    File asset,
+    Widget child,
+  ) {
+    return Semantics(child: child);
   }
 
   @override

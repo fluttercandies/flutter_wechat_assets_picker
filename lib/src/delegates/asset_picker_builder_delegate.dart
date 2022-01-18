@@ -211,6 +211,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   bool get effectiveShouldRevertGrid => shouldRevertGrid ?? isAppleOS;
 
+  AssetsPickerTextDelegate get textDelegate => Constants.textDelegate;
+
   /// The listener to track the scroll position of the [gridScrollController]
   /// if [keepScrollOffset] is true.
   /// 当 [keepScrollOffset] 为 true 时，跟踪 [gridScrollController] 位置的监听。
@@ -219,6 +221,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       Constants.scrollPosition = gridScrollController.position;
     }
   }
+
+  /// The method to select assets. Delegates can implement this method
+  /// to involve with predications, callbacks, etc.
+  /// 选择资源的方法。自定义的 delegate 可以通过实现该方法，整合判断、回调等操作。
+  void selectAsset(BuildContext context, Asset asset, bool selected);
 
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
@@ -286,7 +293,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
                 )
               : null,
           child: ScaleText(
-            Constants.textDelegate.gifIndicator,
+            textDelegate.gifIndicator,
             style: TextStyle(
               color: isAppleOS
                   ? theme.textTheme.bodyText2?.color
@@ -349,7 +356,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           }
           if (isAssetsEmpty) {
             return ScaleText(
-              Constants.textDelegate.emptyList,
+              textDelegate.emptyList,
               maxScaleFactor: 1.5,
             );
           }
@@ -368,7 +375,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   Widget failedItemBuilder(BuildContext context) {
     return Center(
       child: ScaleText(
-        Constants.textDelegate.loadFailed,
+        textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18),
       ),
@@ -420,6 +427,15 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     List<Asset> currentAssets,
   );
 
+  /// The [Semantics] builder for the assets' grid.
+  /// 资源列表项的语义构建
+  Semantics assetGridItemSemanticsBuilder(
+    BuildContext context,
+    int index,
+    Asset asset,
+    Widget child,
+  );
+
   /// The item builder for audio type of asset.
   /// 音频资源的部件构建
   Widget audioItemBuilder(
@@ -459,7 +475,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             const SizedBox(width: 15),
             Expanded(
               child: ScaleText(
-                Constants.textDelegate.accessAllTip,
+                textDelegate.accessAllTip,
                 style: context.themeData.textTheme.caption?.copyWith(
                   fontSize: 14,
                 ),
@@ -554,13 +570,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           ScaleText(
-            Constants.textDelegate.unableToAccessAll,
+            textDelegate.unableToAccessAll,
             style: const TextStyle(fontSize: 22),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: size.height / 30),
           ScaleText(
-            Constants.textDelegate.accessAllTip,
+            textDelegate.accessAllTip,
             style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
@@ -578,7 +594,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: ScaleText(
-        Constants.textDelegate.goToSystemSettings,
+        textDelegate.goToSystemSettings,
         style: const TextStyle(fontSize: 17),
       ),
       onPressed: PhotoManager.openSetting,
@@ -588,7 +604,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     final Widget _accessLimitedButton = GestureDetector(
       onTap: () => permissionOverlayHidden.value = true,
       child: ScaleText(
-        Constants.textDelegate.accessLimitedAssets,
+        textDelegate.accessLimitedAssets,
         style: TextStyle(color: interactiveTextColor(context)),
       ),
     );
@@ -748,6 +764,33 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the preview of assets is enabled.
   /// 资源的预览是否启用
   bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
+
+  @override
+  Future<void> selectAsset(
+    BuildContext context,
+    AssetEntity asset,
+    bool selected,
+  ) async {
+    final bool? selectPredicateResult = await selectPredicate?.call(
+      context,
+      asset,
+      selected,
+    );
+    if (selectPredicateResult == false) {
+      return;
+    }
+    if (selected) {
+      provider.unSelectAsset(asset);
+      return;
+    }
+    if (isSingleAssetMode) {
+      provider.selectedAssets.clear();
+    }
+    provider.selectAsset(asset);
+    if (isSingleAssetMode && !isPreviewEnabled) {
+      Navigator.of(context).maybePop(provider.selectedAssets);
+    }
+  }
 
   @override
   Widget androidLayout(BuildContext context) {
@@ -1065,7 +1108,7 @@ class DefaultAssetPickerBuilderDelegate
     }
 
     final AssetEntity asset = currentAssets.elementAt(currentIndex);
-    Widget builder;
+    final Widget builder;
     switch (asset.type) {
       case AssetType.audio:
         builder = audioItemBuilder(context, currentIndex, asset);
@@ -1081,12 +1124,45 @@ class DefaultAssetPickerBuilderDelegate
     return Stack(
       key: ValueKey<String>(asset.id),
       children: <Widget>[
-        builder,
+        assetGridItemSemanticsBuilder(context, index, asset, builder),
         selectedBackdrop(context, currentIndex, asset),
         if (!isWeChatMoment || asset.type != AssetType.video)
           selectIndicator(context, asset),
         itemBannedIndicator(context, asset),
       ],
+    );
+  }
+
+  @override
+  Semantics assetGridItemSemanticsBuilder(
+    BuildContext context,
+    int index,
+    AssetEntity asset,
+    Widget child,
+  ) {
+    final String builderLabel;
+    switch (asset.type) {
+      case AssetType.audio:
+        builderLabel = textDelegate.sTypeAudioLabel;
+        break;
+      case AssetType.image:
+        builderLabel = textDelegate.sTypeImageLabel;
+        break;
+      case AssetType.video:
+        builderLabel = textDelegate.sTypeVideoLabel;
+        break;
+      case AssetType.other:
+        builderLabel = textDelegate.sTypeOtherLabel;
+        break;
+    }
+    return Semantics(
+      label: '$builderLabel ${index + 1}, '
+          '${asset.createDateTime.toString().replaceAll('.000', '')}, '
+          '${textDelegate.sUnitColumnLabel(index ~/ gridCount)} '
+          '${textDelegate.sUnitRowLabel(index % gridCount)}, ',
+      onTapHint: textDelegate.sActionPreviewHint,
+      onLongPressHint: textDelegate.sActionSelectHint,
+      child: child,
     );
   }
 
@@ -1137,6 +1213,9 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget audioIndicator(BuildContext context, AssetEntity asset) {
+    final String durationText = textDelegate.durationIndicatorBuilder(
+      Duration(seconds: asset.duration),
+    );
     return Container(
       width: double.maxFinite,
       alignment: AlignmentDirectional.bottomStart,
@@ -1151,9 +1230,9 @@ class DefaultAssetPickerBuilderDelegate
       child: Padding(
         padding: const EdgeInsetsDirectional.only(start: 4),
         child: ScaleText(
-          Constants.textDelegate.durationIndicatorBuilder(
-            Duration(seconds: asset.duration),
-          ),
+          durationText,
+          semanticsLabel: '${textDelegate.sNameDurationLabel}: '
+              '$durationText',
           style: const TextStyle(fontSize: 16),
         ),
       ),
@@ -1211,9 +1290,9 @@ class DefaultAssetPickerBuilderDelegate
           ),
           child: ScaleText(
             provider.isSelectedNotEmpty && !isSingleAssetMode
-                ? '${Constants.textDelegate.confirm}'
+                ? '${textDelegate.confirm}'
                     ' (${provider.selectedAssets.length}/${provider.maxAssets})'
-                : Constants.textDelegate.confirm,
+                : textDelegate.confirm,
             style: TextStyle(
               color: provider.isSelectedNotEmpty
                   ? theme.textTheme.bodyText1?.color
@@ -1276,7 +1355,7 @@ class DefaultAssetPickerBuilderDelegate
         builder: (_, bool isAssetsEmpty, __) {
           if (isAssetsEmpty) {
             return ScaleText(
-              Constants.textDelegate.emptyList,
+              textDelegate.emptyList,
               maxScaleFactor: 1.5,
             );
           }
@@ -1363,11 +1442,11 @@ class DefaultAssetPickerBuilderDelegate
                     TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                          text: Constants.textDelegate.viewingLimitedAssetsTip,
+                          text: textDelegate.viewingLimitedAssetsTip,
                         ),
                         TextSpan(
                           text: ' '
-                              '${Constants.textDelegate.changeAccessibleLimitedAssets}',
+                              '${textDelegate.changeAccessibleLimitedAssets}',
                           style:
                               TextStyle(color: interactiveTextColor(context)),
                           recognizer: TapGestureRecognizer()
@@ -1445,7 +1524,7 @@ class DefaultAssetPickerBuilderDelegate
                   Flexible(
                     child: ScaleText(
                       isPermissionLimited && p.isAll
-                          ? Constants.textDelegate.accessiblePathName
+                          ? textDelegate.accessiblePathName
                           : p.name,
                       style: const TextStyle(
                         fontSize: 17,
@@ -1628,9 +1707,9 @@ class DefaultAssetPickerBuilderDelegate
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: ScaleText(
                 isSelectedNotEmpty
-                    ? '${Constants.textDelegate.preview}'
+                    ? '${textDelegate.preview}'
                         ' (${provider.selectedAssets.length})'
-                    : Constants.textDelegate.preview,
+                    : textDelegate.preview,
                 style: TextStyle(
                   color: isSelectedNotEmpty
                       ? null
@@ -1696,27 +1775,8 @@ class DefaultAssetPickerBuilderDelegate
         );
         final GestureDetector selectorWidget = GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () async {
-            final bool? selectPredicateResult = await selectPredicate?.call(
-              context,
-              asset,
-              selected,
-            );
-            if (selectPredicateResult == false) {
-              return;
-            }
-            if (selected) {
-              provider.unSelectAsset(asset);
-              return;
-            }
-            if (isSingleAssetMode) {
-              provider.selectedAssets.clear();
-            }
-            provider.selectAsset(asset);
-            if (isSingleAssetMode && !isPreviewEnabled) {
-              Navigator.of(context).maybePop(provider.selectedAssets);
-            }
-          },
+          onTap: () => selectAsset(context, asset, selected),
+          onLongPress: () => selectAsset(context, asset, selected),
           child: Container(
             margin: EdgeInsets.all(
               context.mediaQuery.size.width / gridCount / 12,
@@ -1862,7 +1922,7 @@ class DefaultAssetPickerBuilderDelegate
               child: Padding(
                 padding: const EdgeInsetsDirectional.only(start: 4),
                 child: ScaleText(
-                  Constants.textDelegate.durationIndicatorBuilder(
+                  textDelegate.durationIndicatorBuilder(
                     Duration(seconds: asset.duration),
                   ),
                   style: const TextStyle(color: Colors.white, fontSize: 15),
