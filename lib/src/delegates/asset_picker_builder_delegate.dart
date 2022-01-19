@@ -433,8 +433,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     BuildContext context,
     int index,
     Asset asset,
-    Widget child,
-  );
+    Widget child, {
+    GestureTapCallback? onTap,
+    String? onTapHint,
+  });
 
   /// The item builder for audio type of asset.
   /// 音频资源的部件构建
@@ -1220,8 +1222,10 @@ class DefaultAssetPickerBuilderDelegate
     BuildContext context,
     int index,
     AssetEntity asset,
-    Widget child,
-  ) {
+    Widget child, {
+    GestureTapCallback? onTap,
+    String? onTapHint,
+  }) {
     return Consumer<DefaultAssetPickerProvider>(
       child: child,
       builder: (_, DefaultAssetPickerProvider p, Widget? child) {
@@ -1243,8 +1247,8 @@ class DefaultAssetPickerBuilderDelegate
           value: _index > 0 ? '$_index' : null,
           hint: asset.title,
           image: asset.type == AssetType.image || asset.type == AssetType.video,
-          onTap: () => _pushAssetToViewer(context, index, asset),
-          onTapHint: textDelegate.sActionPreviewHint,
+          onTap: onTap ?? () => _pushAssetToViewer(context, index, asset),
+          onTapHint: onTapHint ?? textDelegate.sActionPreviewHint,
           child: child,
         );
       },
@@ -1894,6 +1898,8 @@ class DefaultAssetPickerBuilderDelegate
                     : innerSelector,
               ),
             ),
+            onTap: () => selectAsset(context, asset, selected),
+            onTapHint: textDelegate.sActionSelectHint,
           ),
         );
         if (isPreviewEnabled) {
