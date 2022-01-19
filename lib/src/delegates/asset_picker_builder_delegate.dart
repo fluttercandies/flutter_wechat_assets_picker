@@ -1222,31 +1222,32 @@ class DefaultAssetPickerBuilderDelegate
     AssetEntity asset,
     Widget child,
   ) {
-    return Selector<DefaultAssetPickerProvider, String>(
-      selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
-      builder: (_, String desc, Widget? child) {
-        final bool isSelected = desc.contains(asset.toString());
+    return Consumer<DefaultAssetPickerProvider>(
+      child: child,
+      builder: (_, DefaultAssetPickerProvider p, Widget? child) {
+        final bool isBanned =
+            (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
+                (isWeChatMoment &&
+                    asset.type == AssetType.video &&
+                    p.selectedAssets.isNotEmpty);
+        final bool isSelected = p.selectedDescriptions.contains(
+          asset.toString(),
+        );
+        final int _index = p.selectedAssets.indexOf(asset) + 1;
         return Semantics(
+          hidden: p.isSwitchingPath,
+          enabled: !isBanned,
           selected: isSelected,
           label: '${_semanticLabel(asset)} ${_semanticIndex(index)}, '
               '${asset.createDateTime.toString().replaceAll('.000', '')}, ',
+          value: _index > 0 ? '$_index' : null,
           hint: asset.title,
           image: asset.type == AssetType.image || asset.type == AssetType.video,
           onTap: () => _pushAssetToViewer(context, index, asset),
           onTapHint: textDelegate.sActionPreviewHint,
-          child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-            selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
-            builder: (_, List<AssetEntity> selectedAssets, __) {
-              final int _index = selectedAssets.indexOf(asset) + 1;
-              return Semantics(
-                value: _index > 0 ? '$_index' : null,
-                child: child,
-              );
-            },
-          ),
+          child: child,
         );
       },
-      child: child,
     );
   }
 
@@ -1827,20 +1828,17 @@ class DefaultAssetPickerBuilderDelegate
   Widget itemBannedIndicator(BuildContext context, AssetEntity asset) {
     return Consumer<DefaultAssetPickerProvider>(
       builder: (_, DefaultAssetPickerProvider p, __) {
-        final Widget child;
         final bool isDisabled =
             (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
                 (isWeChatMoment &&
                     asset.type == AssetType.video &&
                     p.selectedAssets.isNotEmpty);
         if (isDisabled) {
-          child = Container(
+          return Container(
             color: theme.colorScheme.background.withOpacity(.85),
           );
-        } else {
-          child = const SizedBox.shrink();
         }
-        return Semantics(enabled: false, child: child);
+        return const SizedBox.shrink();
       },
     );
   }
@@ -1876,24 +1874,25 @@ class DefaultAssetPickerBuilderDelegate
                 : const SizedBox.shrink(),
           ),
         );
-        final Widget selectorWidget = Semantics(
-          container: true,
-          checked: selected,
-          onTapHint: textDelegate.sActionSelectHint,
-          label: '${_semanticLabel(asset)} ${_semanticIndex(index)}',
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => selectAsset(context, asset, selected),
-            child: Container(
-              margin: EdgeInsets.all(
-                context.mediaQuery.size.width / gridCount / 12,
+        final Widget selectorWidget = MergeSemantics(
+          child: assetGridItemSemanticsBuilder(
+            context,
+            index,
+            asset,
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => selectAsset(context, asset, selected),
+              child: Container(
+                margin: EdgeInsets.all(
+                  context.mediaQuery.size.width / gridCount / 12,
+                ),
+                width: isPreviewEnabled ? indicatorSize : null,
+                height: isPreviewEnabled ? indicatorSize : null,
+                alignment: AlignmentDirectional.topEnd,
+                child: (!isPreviewEnabled && isSingleAssetMode && !selected)
+                    ? const SizedBox.shrink()
+                    : innerSelector,
               ),
-              width: isPreviewEnabled ? indicatorSize : null,
-              height: isPreviewEnabled ? indicatorSize : null,
-              alignment: AlignmentDirectional.topEnd,
-              child: (!isPreviewEnabled && isSingleAssetMode && !selected)
-                  ? const SizedBox.shrink()
-                  : innerSelector,
             ),
           ),
         );
@@ -1928,15 +1927,17 @@ class DefaultAssetPickerBuilderDelegate
                   ? Container(
                       alignment: AlignmentDirectional.topStart,
                       padding: const EdgeInsets.all(14),
-                      child: ScaleText(
-                        '${index + 1}',
-                        style: TextStyle(
-                          color: theme.textTheme.bodyText1?.color
-                              ?.withOpacity(.75),
-                          fontWeight: FontWeight.w600,
-                          height: 1,
+                      child: ExcludeSemantics(
+                        child: ScaleText(
+                          '${index + 1}',
+                          style: TextStyle(
+                            color: theme.textTheme.bodyText1?.color
+                                ?.withOpacity(.75),
+                            fontWeight: FontWeight.w600,
+                            height: 1,
+                          ),
+                          maxScaleFactor: 1.4,
                         ),
-                        maxScaleFactor: 1.4,
                       ),
                     )
                   : const SizedBox.shrink(),
