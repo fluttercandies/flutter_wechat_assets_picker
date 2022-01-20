@@ -689,11 +689,9 @@ class FileAssetPickerBuilder
     BuildContext context,
     int index,
     File asset,
-    Widget child, {
-    GestureTapCallback? onTap,
-    String? onTapHint,
-  }) {
-    return Semantics(onTap: onTap, onTapHint: onTapHint, child: child);
+    Widget child,
+  ) {
+    return Semantics(child: child);
   }
 
   @override

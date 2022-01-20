@@ -433,10 +433,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     BuildContext context,
     int index,
     Asset asset,
-    Widget child, {
-    GestureTapCallback? onTap,
-    String? onTapHint,
-  });
+    Widget child,
+  );
 
   /// The item builder for audio type of asset.
   /// 音频资源的部件构建
@@ -1004,9 +1002,11 @@ class DefaultAssetPickerBuilderDelegate
                     }
                     index -= placeholderCount;
                   }
-                  return Directionality(
-                    textDirection: Directionality.of(context),
-                    child: assetGridItemBuilder(c, index, assets),
+                  return MergeSemantics(
+                    child: Directionality(
+                      textDirection: Directionality.of(context),
+                      child: assetGridItemBuilder(c, index, assets),
+                    ),
                   );
                 },
               ),
@@ -1222,11 +1222,8 @@ class DefaultAssetPickerBuilderDelegate
     BuildContext context,
     int index,
     AssetEntity asset,
-    Widget child, {
-    GestureTapCallback? onTap,
-    String? onTapHint,
-    bool useLongPressHint = true,
-  }) {
+    Widget child,
+  ) {
     return Consumer<DefaultAssetPickerProvider>(
       child: child,
       builder: (_, DefaultAssetPickerProvider p, Widget? child) {
@@ -1239,6 +1236,14 @@ class DefaultAssetPickerBuilderDelegate
           asset.toString(),
         );
         final int _index = p.selectedAssets.indexOf(asset) + 1;
+        String hint = asset.title ?? '';
+        if (asset.type == AssetType.audio || asset.type == AssetType.video) {
+          if (hint.isNotEmpty) {
+            hint += ',';
+          }
+          hint += '${textDelegate.sNameDurationLabel}: ';
+          hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
+        }
         return Semantics(
           hidden: p.isSwitchingPath,
           enabled: !isBanned,
@@ -1247,12 +1252,11 @@ class DefaultAssetPickerBuilderDelegate
           label: '${_semanticLabel(asset)} ${_semanticIndex(index)}, '
               '${asset.createDateTime.toString().replaceAll('.000', '')}, ',
           value: _index > 0 ? '$_index' : null,
-          hint: asset.title,
+          hint: hint,
           image: asset.type == AssetType.image || asset.type == AssetType.video,
-          onTap: onTap ?? () => _pushAssetToViewer(context, index, asset),
-          onTapHint: onTapHint ?? textDelegate.sActionPreviewHint,
-          onLongPressHint:
-              useLongPressHint ? textDelegate.sActionPreviewHint : null,
+          onTap: () => _pushAssetToViewer(context, index, asset),
+          onTapHint: textDelegate.sActionPreviewHint,
+          onLongPressHint: textDelegate.sActionPreviewHint,
           child: child,
         );
       },
@@ -1882,29 +1886,19 @@ class DefaultAssetPickerBuilderDelegate
                 : const SizedBox.shrink(),
           ),
         );
-        final Widget selectorWidget = MergeSemantics(
-          child: assetGridItemSemanticsBuilder(
-            context,
-            index,
-            asset,
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => selectAsset(context, asset, selected),
-              child: Container(
-                margin: EdgeInsets.all(
-                  context.mediaQuery.size.width / gridCount / 12,
-                ),
-                width: isPreviewEnabled ? indicatorSize : null,
-                height: isPreviewEnabled ? indicatorSize : null,
-                alignment: AlignmentDirectional.topEnd,
-                child: (!isPreviewEnabled && isSingleAssetMode && !selected)
-                    ? const SizedBox.shrink()
-                    : innerSelector,
-              ),
+        final Widget selectorWidget = GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => selectAsset(context, asset, selected),
+          child: Container(
+            margin: EdgeInsets.all(
+              context.mediaQuery.size.width / gridCount / 12,
             ),
-            onTap: () => selectAsset(context, asset, selected),
-            onTapHint: textDelegate.sActionSelectHint,
-            useLongPressHint: false,
+            width: isPreviewEnabled ? indicatorSize : null,
+            height: isPreviewEnabled ? indicatorSize : null,
+            alignment: AlignmentDirectional.topEnd,
+            child: (!isPreviewEnabled && isSingleAssetMode && !selected)
+                ? const SizedBox.shrink()
+                : innerSelector,
           ),
         );
         if (isPreviewEnabled) {
