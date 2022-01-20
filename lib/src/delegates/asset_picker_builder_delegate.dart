@@ -1225,6 +1225,7 @@ class DefaultAssetPickerBuilderDelegate
     Widget child, {
     GestureTapCallback? onTap,
     String? onTapHint,
+    bool useLongPressHint = true,
   }) {
     return Consumer<DefaultAssetPickerProvider>(
       child: child,
@@ -1242,6 +1243,7 @@ class DefaultAssetPickerBuilderDelegate
           hidden: p.isSwitchingPath,
           enabled: !isBanned,
           selected: isSelected,
+          button: false,
           label: '${_semanticLabel(asset)} ${_semanticIndex(index)}, '
               '${asset.createDateTime.toString().replaceAll('.000', '')}, ',
           value: _index > 0 ? '$_index' : null,
@@ -1249,6 +1251,8 @@ class DefaultAssetPickerBuilderDelegate
           image: asset.type == AssetType.image || asset.type == AssetType.video,
           onTap: onTap ?? () => _pushAssetToViewer(context, index, asset),
           onTapHint: onTapHint ?? textDelegate.sActionPreviewHint,
+          onLongPressHint:
+              useLongPressHint ? textDelegate.sActionPreviewHint : null,
           child: child,
         );
       },
@@ -1900,6 +1904,7 @@ class DefaultAssetPickerBuilderDelegate
             ),
             onTap: () => selectAsset(context, asset, selected),
             onTapHint: textDelegate.sActionSelectHint,
+            useLongPressHint: false,
           ),
         );
         if (isPreviewEnabled) {
@@ -1920,6 +1925,9 @@ class DefaultAssetPickerBuilderDelegate
       child: GestureDetector(
         excludeFromSemantics: true,
         onTap: () => _pushAssetToViewer(context, index, asset),
+        onLongPress: context.mediaQuery.accessibleNavigation
+            ? () => _pushAssetToViewer(context, index, asset)
+            : null,
         child: Consumer<DefaultAssetPickerProvider>(
           builder: (_, DefaultAssetPickerProvider p, __) {
             final int index = p.selectedAssets.indexOf(asset);
