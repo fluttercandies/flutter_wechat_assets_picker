@@ -1216,8 +1216,6 @@ class FileAssetPickerViewerBuilderDelegate
 
   bool _isDisplayingDetail = true;
 
-  AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
-
   @override
   void switchDisplayingDetail({bool? value}) {
     _isDisplayingDetail = value ?? !_isDisplayingDetail;

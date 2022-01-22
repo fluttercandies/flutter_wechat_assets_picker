@@ -8,6 +8,7 @@ import 'dart:math' as math;
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -185,6 +186,11 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
       ..stop()
       ..reset()
       ..dispose();
+  }
+
+  /// Produce [OrdinalSortKey] with the fixed name.
+  OrdinalSortKey ordinalSortKey(double value) {
+    return OrdinalSortKey(value, name: 'AssetPickerViewerBuilderDelegate');
   }
 
   /// Execute scale animation when double tap.
@@ -705,35 +711,61 @@ class DefaultAssetPickerViewerBuilderDelegate
       child: Container(
         padding: EdgeInsetsDirectional.only(top: context.topPadding),
         color: themeData.canvasColor,
-        child: Stack(
-          fit: StackFit.expand,
+        child: Row(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                  onPressed: Navigator.of(context).maybePop,
-                ),
-                const Spacer(),
-                if (isAppleOS && provider != null) selectButton(context),
-                if (!isAppleOS && (provider != null || isWeChatMoment))
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 14),
-                    child: confirmButton(context),
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Semantics(
+                  sortKey: ordinalSortKey(0),
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).backButtonTooltip,
+                    onPressed: Navigator.of(context).maybePop,
                   ),
-              ],
+                ),
+              ),
             ),
             if (!isAppleOS && specialPickerType == null)
-              StreamBuilder<int>(
-                initialData: currentIndex,
-                stream: pageStreamController.stream,
-                builder: (_, AsyncSnapshot<int> snapshot) => Center(
-                  child: ScaleText(
-                    '${snapshot.data! + 1}/${previewAssets.length}',
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
+              Expanded(
+                child: Center(
+                  child: Semantics(
+                    sortKey: ordinalSortKey(0.1),
+                    child: StreamBuilder<int>(
+                      initialData: currentIndex,
+                      stream: pageStreamController.stream,
+                      builder: (_, AsyncSnapshot<int> snapshot) => ScaleText(
+                        '${snapshot.data! + 1}/${previewAssets.length}',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            if (isAppleOS && provider != null)
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: Semantics(
+                    sortKey: ordinalSortKey(0.2),
+                    child: selectButton(context),
+                  ),
+                ),
+              ),
+            if (!isAppleOS && (provider != null || isWeChatMoment))
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: Semantics(
+                    sortKey: ordinalSortKey(0.3),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 14),
+                      child: confirmButton(context),
                     ),
                   ),
                 ),
@@ -922,19 +954,22 @@ class DefaultAssetPickerViewerBuilderDelegate
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
-                  child: ExtendedImageGesturePageView.builder(
-                    physics: previewAssets.length == 1
-                        ? const CustomClampingScrollPhysics()
-                        : const CustomBouncingScrollPhysics(),
-                    controller: pageController,
-                    itemCount: previewAssets.length,
-                    itemBuilder: assetPageBuilder,
-                    reverse: shouldReversePreview,
-                    onPageChanged: (int index) {
-                      currentIndex = index;
-                      pageStreamController.add(index);
-                    },
-                    scrollDirection: Axis.horizontal,
+                  child: Semantics(
+                    sortKey: ordinalSortKey(1),
+                    child: ExtendedImageGesturePageView.builder(
+                      physics: previewAssets.length == 1
+                          ? const CustomClampingScrollPhysics()
+                          : const CustomBouncingScrollPhysics(),
+                      controller: pageController,
+                      itemCount: previewAssets.length,
+                      itemBuilder: assetPageBuilder,
+                      reverse: shouldReversePreview,
+                      onPageChanged: (int index) {
+                        currentIndex = index;
+                        pageStreamController.add(index);
+                      },
+                      scrollDirection: Axis.horizontal,
+                    ),
                   ),
                 ),
                 if (isWeChatMoment && hasVideo) ...<Widget>[
