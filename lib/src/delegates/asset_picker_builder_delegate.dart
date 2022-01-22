@@ -1240,9 +1240,10 @@ class DefaultAssetPickerBuilderDelegate
         if (asset.type == AssetType.audio || asset.type == AssetType.video) {
           hint += '${textDelegate.sNameDurationLabel}: ';
           hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
-          hint += ',';
         }
-        hint += asset.title ?? '';
+        if (asset.title?.isNotEmpty == true) {
+          hint += ', ${asset.title}';
+        }
         return Semantics(
           hidden: p.isSwitchingPath,
           enabled: !isBanned,
@@ -1255,15 +1256,17 @@ class DefaultAssetPickerBuilderDelegate
           image: asset.type == AssetType.image || asset.type == AssetType.video,
           onTap: () => selectAsset(context, asset, isSelected),
           onTapHint: textDelegate.sActionSelectHint,
-          onLongPress: () => _pushAssetToViewer(context, index, asset),
+          onLongPress: isPreviewEnabled
+              ? () => _pushAssetToViewer(context, index, asset)
+              : null,
           onLongPressHint: textDelegate.sActionPreviewHint,
           excludeSemantics: true,
           child: GestureDetector(
-            excludeFromSemantics: true,
             // Regression https://github.com/flutter/flutter/issues/35112.
-            onLongPress: context.mediaQuery.accessibleNavigation
-                ? () => _pushAssetToViewer(context, index, asset)
-                : null,
+            onLongPress:
+                isPreviewEnabled && context.mediaQuery.accessibleNavigation
+                    ? () => _pushAssetToViewer(context, index, asset)
+                    : null,
             child: child,
           ),
         );
@@ -1920,7 +1923,9 @@ class DefaultAssetPickerBuilderDelegate
   Widget selectedBackdrop(BuildContext context, int index, AssetEntity asset) {
     return Positioned.fill(
       child: GestureDetector(
-        onTap: () => _pushAssetToViewer(context, index, asset),
+        onTap: isPreviewEnabled
+            ? () => _pushAssetToViewer(context, index, asset)
+            : null,
         child: Consumer<DefaultAssetPickerProvider>(
           builder: (_, DefaultAssetPickerProvider p, __) {
             final int index = p.selectedAssets.indexOf(asset);
