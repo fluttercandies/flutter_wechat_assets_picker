@@ -1236,14 +1236,13 @@ class DefaultAssetPickerBuilderDelegate
           asset.toString(),
         );
         final int _index = p.selectedAssets.indexOf(asset) + 1;
-        String hint = asset.title ?? '';
+        String hint = '';
         if (asset.type == AssetType.audio || asset.type == AssetType.video) {
-          if (hint.isNotEmpty) {
-            hint += ',';
-          }
           hint += '${textDelegate.sNameDurationLabel}: ';
           hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
+          hint += ',';
         }
+        hint += asset.title ?? '';
         return Semantics(
           hidden: p.isSwitchingPath,
           enabled: !isBanned,
@@ -1254,10 +1253,19 @@ class DefaultAssetPickerBuilderDelegate
           value: _index > 0 ? '$_index' : null,
           hint: hint,
           image: asset.type == AssetType.image || asset.type == AssetType.video,
-          onTap: () => _pushAssetToViewer(context, index, asset),
-          onTapHint: textDelegate.sActionPreviewHint,
+          onTap: () => selectAsset(context, asset, isSelected),
+          onTapHint: textDelegate.sActionSelectHint,
+          onLongPress: () => _pushAssetToViewer(context, index, asset),
           onLongPressHint: textDelegate.sActionPreviewHint,
-          child: child,
+          excludeSemantics: true,
+          child: GestureDetector(
+            excludeFromSemantics: true,
+            // Regression https://github.com/flutter/flutter/issues/35112.
+            onLongPress: context.mediaQuery.accessibleNavigation
+                ? () => _pushAssetToViewer(context, index, asset)
+                : null,
+            child: child,
+          ),
         );
       },
     );
@@ -1376,33 +1384,32 @@ class DefaultAssetPickerBuilderDelegate
   @override
   Widget confirmButton(BuildContext context) {
     return Consumer<DefaultAssetPickerProvider>(
-      builder: (_, DefaultAssetPickerProvider provider, __) {
+      builder: (_, DefaultAssetPickerProvider p, __) {
         return MaterialButton(
-          minWidth: provider.isSelectedNotEmpty ? 48 : 20,
+          minWidth: p.isSelectedNotEmpty ? 48 : 20,
           height: appBarItemHeight,
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          color: provider.isSelectedNotEmpty ? themeColor : theme.dividerColor,
+          disabledColor: theme.dividerColor,
+          color: p.isSelectedNotEmpty ? themeColor : theme.dividerColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(3),
           ),
           child: ScaleText(
-            provider.isSelectedNotEmpty && !isSingleAssetMode
+            p.isSelectedNotEmpty && !isSingleAssetMode
                 ? '${textDelegate.confirm}'
-                    ' (${provider.selectedAssets.length}/${provider.maxAssets})'
+                    ' (${p.selectedAssets.length}/${p.maxAssets})'
                 : textDelegate.confirm,
             style: TextStyle(
-              color: provider.isSelectedNotEmpty
+              color: p.isSelectedNotEmpty
                   ? theme.textTheme.bodyText1?.color
                   : theme.textTheme.caption?.color,
               fontSize: 17,
               fontWeight: FontWeight.normal,
             ),
           ),
-          onPressed: () {
-            if (provider.isSelectedNotEmpty) {
-              Navigator.of(context).maybePop(provider.selectedAssets);
-            }
-          },
+          onPressed: p.isSelectedNotEmpty
+              ? () => Navigator.of(context).maybePop(p.selectedAssets)
+              : null,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         );
       },
@@ -1711,12 +1718,14 @@ class DefaultAssetPickerBuilderDelegate
               '${textDelegate.sUnitAssetCountLabel}: '
               '$semanticsCount',
           selected: isSelected,
-          onTapHint: textDelegate.sActionPreviewHint,
+          onTapHint: textDelegate.sActionSwitchPathLabel,
+          button: false,
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
               splashFactory: InkSplash.splashFactory,
               onTap: () {
+                Feedback.forTap(context);
                 provider.switchPath(pathEntity);
                 gridScrollController.jumpTo(0);
               },
@@ -1780,54 +1789,52 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget previewButton(BuildContext context) {
+    Future<void> _onTap() async {
+      final List<AssetEntity> _selected;
+      if (isWeChatMoment) {
+        _selected = provider.selectedAssets
+            .where((AssetEntity e) => e.type == AssetType.image)
+            .toList();
+      } else {
+        _selected = provider.selectedAssets;
+      }
+      final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
+        context,
+        currentIndex: 0,
+        previewAssets: _selected,
+        previewThumbSize: previewThumbSize,
+        selectedAssets: _selected,
+        selectorProvider: provider as DefaultAssetPickerProvider,
+        themeData: theme,
+        maxAssets: provider.maxAssets,
+      );
+      if (result != null) {
+        Navigator.of(context).maybePop(result);
+      }
+    }
+
     return Selector<DefaultAssetPickerProvider, bool>(
       selector: (_, DefaultAssetPickerProvider p) => p.isSelectedNotEmpty,
-      builder: (BuildContext c, bool isSelectedNotEmpty, Widget? child) {
-        return GestureDetector(
-          onTap: () async {
-            if (!isSelectedNotEmpty) {
-              return;
-            }
-            final List<AssetEntity> _selected;
-            if (isWeChatMoment) {
-              _selected = provider.selectedAssets
-                  .where((AssetEntity e) => e.type == AssetType.image)
-                  .toList();
-            } else {
-              _selected = provider.selectedAssets;
-            }
-            final List<AssetEntity>? result =
-                await AssetPickerViewer.pushToViewer(
-              context,
-              currentIndex: 0,
-              previewAssets: _selected,
-              previewThumbSize: previewThumbSize,
-              selectedAssets: _selected,
-              selectorProvider: provider as DefaultAssetPickerProvider,
-              themeData: theme,
-              maxAssets: provider.maxAssets,
-            );
-            if (result != null) {
-              Navigator.of(context).maybePop(result);
-            }
-          },
-          child: Selector<DefaultAssetPickerProvider, String>(
-            selector: (_, DefaultAssetPickerProvider p) =>
-                p.selectedDescriptions,
-            builder: (_, __, ___) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: ScaleText(
-                isSelectedNotEmpty
-                    ? '${textDelegate.preview}'
-                        ' (${provider.selectedAssets.length})'
-                    : textDelegate.preview,
-                style: TextStyle(
-                  color: isSelectedNotEmpty
-                      ? null
-                      : theme.textTheme.caption?.color,
-                  fontSize: 17,
+      builder: (BuildContext c, bool isNotEmpty, Widget? child) {
+        return Semantics(
+          enabled: isNotEmpty,
+          onTapHint: textDelegate.sActionPreviewHint,
+          child: GestureDetector(
+            onTap: isNotEmpty ? _onTap : null,
+            child: Selector<DefaultAssetPickerProvider, String>(
+              selector: (_, DefaultAssetPickerProvider p) =>
+                  p.selectedDescriptions,
+              builder: (_, __, ___) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: ScaleText(
+                  '${textDelegate.preview}'
+                  '${isNotEmpty ? ' (${provider.selectedAssets.length})' : ''}',
+                  style: TextStyle(
+                    color: isNotEmpty ? null : theme.textTheme.caption?.color,
+                    fontSize: 17,
+                  ),
+                  maxScaleFactor: 1.2,
                 ),
-                maxScaleFactor: 1.2,
               ),
             ),
           ),
@@ -1860,12 +1867,8 @@ class DefaultAssetPickerBuilderDelegate
     final Duration duration = switchingPathDuration * 0.75;
     return Selector<DefaultAssetPickerProvider, String>(
       selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
-      builder: (BuildContext context, _, __) {
-        final List<AssetEntity> selectedAssets =
-            context.select<DefaultAssetPickerProvider, List<AssetEntity>>(
-          (DefaultAssetPickerProvider p) => p.selectedAssets,
-        );
-        final bool selected = selectedAssets.contains(asset);
+      builder: (BuildContext context, String descriptions, __) {
+        final bool selected = descriptions.contains(asset.toString());
         final double indicatorSize =
             context.mediaQuery.size.width / gridCount / 3;
         final Widget innerSelector = AnimatedContainer(
@@ -1917,11 +1920,7 @@ class DefaultAssetPickerBuilderDelegate
   Widget selectedBackdrop(BuildContext context, int index, AssetEntity asset) {
     return Positioned.fill(
       child: GestureDetector(
-        excludeFromSemantics: true,
         onTap: () => _pushAssetToViewer(context, index, asset),
-        onLongPress: context.mediaQuery.accessibleNavigation
-            ? () => _pushAssetToViewer(context, index, asset)
-            : null,
         child: Consumer<DefaultAssetPickerProvider>(
           builder: (_, DefaultAssetPickerProvider p, __) {
             final int index = p.selectedAssets.indexOf(asset);
@@ -1935,17 +1934,15 @@ class DefaultAssetPickerBuilderDelegate
                   ? Container(
                       alignment: AlignmentDirectional.topStart,
                       padding: const EdgeInsets.all(14),
-                      child: ExcludeSemantics(
-                        child: ScaleText(
-                          '${index + 1}',
-                          style: TextStyle(
-                            color: theme.textTheme.bodyText1?.color
-                                ?.withOpacity(.75),
-                            fontWeight: FontWeight.w600,
-                            height: 1,
-                          ),
-                          maxScaleFactor: 1.4,
+                      child: ScaleText(
+                        '${index + 1}',
+                        style: TextStyle(
+                          color: theme.textTheme.bodyText1?.color
+                              ?.withOpacity(.75),
+                          fontWeight: FontWeight.w600,
+                          height: 1,
                         ),
+                        maxScaleFactor: 1.4,
                       ),
                     )
                   : const SizedBox.shrink(),
