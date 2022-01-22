@@ -1197,20 +1197,7 @@ class DefaultAssetPickerBuilderDelegate
     return assetGridItemSemanticsBuilder(context, index, asset, _content);
   }
 
-  String _semanticLabel(AssetEntity asset) {
-    switch (asset.type) {
-      case AssetType.audio:
-        return textDelegate.sTypeAudioLabel;
-      case AssetType.image:
-        return textDelegate.sTypeImageLabel;
-      case AssetType.video:
-        return textDelegate.sTypeVideoLabel;
-      case AssetType.other:
-        return textDelegate.sTypeOtherLabel;
-    }
-  }
-
-  int _semanticIndex(int index) {
+  int semanticIndex(int index) {
     if (specialItemPosition != SpecialItemPosition.prepend) {
       return index + 1;
     }
@@ -1235,7 +1222,7 @@ class DefaultAssetPickerBuilderDelegate
         final bool isSelected = p.selectedDescriptions.contains(
           asset.toString(),
         );
-        final int _index = p.selectedAssets.indexOf(asset) + 1;
+        final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
         String hint = '';
         if (asset.type == AssetType.audio || asset.type == AssetType.video) {
           hint += '${textDelegate.sNameDurationLabel}: ';
@@ -1249,9 +1236,10 @@ class DefaultAssetPickerBuilderDelegate
           enabled: !isBanned,
           selected: isSelected,
           button: false,
-          label: '${_semanticLabel(asset)} ${_semanticIndex(index)}, '
-              '${asset.createDateTime.toString().replaceAll('.000', '')}, ',
-          value: _index > 0 ? '$_index' : null,
+          label: '${textDelegate.semanticTypeLabel(asset)}'
+              '${semanticIndex(index)}, '
+              '${asset.createDateTime.toString().replaceAll('.000', '')}',
+          value: selectedIndex > 0 ? '$selectedIndex' : null,
           hint: hint,
           image: asset.type == AssetType.image || asset.type == AssetType.video,
           onTap: () => selectAsset(context, asset, isSelected),
