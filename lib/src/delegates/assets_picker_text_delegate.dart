@@ -116,6 +116,8 @@ class AssetsPickerTextDelegate {
 
   String get sActionSwitchPathLabel => '切换路径';
 
+  String get sActionUseCameraHint => '使用相机';
+
   String get sNameDurationLabel => '时长';
 
   String get sUnitAssetCountLabel => '数量';
@@ -204,6 +206,9 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get sActionSwitchPathLabel => 'switch path';
+
+  @override
+  String get sActionUseCameraHint => 'use camera';
 
   @override
   String get sNameDurationLabel => 'duration';

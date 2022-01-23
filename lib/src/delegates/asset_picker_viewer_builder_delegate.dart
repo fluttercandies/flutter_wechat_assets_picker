@@ -505,21 +505,24 @@ class DefaultAssetPickerViewerBuilderDelegate
     return PositionedDirectional(
       start: 16,
       top: context.topPadding + 16,
-      child: IconButton(
-        onPressed: Navigator.of(context).maybePop,
-        padding: EdgeInsets.zero,
-        constraints: BoxConstraints.tight(const Size.square(28)),
-        tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-        iconSize: 18,
-        icon: Container(
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: themeData.iconTheme.color,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.keyboard_return_rounded,
-            color: themeData.canvasColor,
+      child: Semantics(
+        sortKey: ordinalSortKey(0),
+        child: IconButton(
+          onPressed: Navigator.of(context).maybePop,
+          padding: EdgeInsets.zero,
+          constraints: BoxConstraints.tight(const Size.square(28)),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          iconSize: 18,
+          icon: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: themeData.iconTheme.color,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.keyboard_return_rounded,
+              color: themeData.canvasColor,
+            ),
           ),
         ),
       ),
@@ -758,7 +761,9 @@ class DefaultAssetPickerViewerBuilderDelegate
                     child: selectButton(context),
                   ),
                 ),
-              ),
+              )
+            else if (isAppleOS)
+              const Spacer(),
             if (!isAppleOS && (provider != null || isWeChatMoment))
               Expanded(
                 child: Align(
@@ -771,7 +776,9 @@ class DefaultAssetPickerViewerBuilderDelegate
                     ),
                   ),
                 ),
-              ),
+              )
+            else if (!isAppleOS)
+              const Spacer(),
           ],
         ),
       ),

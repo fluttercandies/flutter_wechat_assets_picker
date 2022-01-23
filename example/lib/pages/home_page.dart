@@ -3,6 +3,7 @@
 /// [Date] 2020-05-31 21:38
 ///
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 
 import '../constants/screens.dart';
@@ -71,16 +72,20 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const Text(
-                'WeChat Asset Picker',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
+              Semantics(
+                sortKey: const OrdinalSortKey(0),
+                child: const Text(
+                  'WeChat Asset Picker',
+                  semanticsLabel: 'WeChat Asset Picker',
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
               ),
-              Text(
-                packageInfo == null ? 'Unknown version' : packageInfo!.version,
-                style: Theme.of(context).textTheme.caption,
+              Semantics(
+                sortKey: const OrdinalSortKey(0.1),
+                child: Text(
+                  packageInfo == null ? 'Unknown version' : packageInfo!.version,
+                  style: Theme.of(context).textTheme.caption,
+                ),
               ),
             ],
           ),

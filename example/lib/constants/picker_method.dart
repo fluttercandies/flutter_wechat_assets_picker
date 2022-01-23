@@ -80,19 +80,25 @@ class PickMethod {
           requestType: RequestType.common,
           specialItemPosition: SpecialItemPosition.prepend,
           specialItemBuilder: (BuildContext context) {
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () async {
-                final AssetEntity? result = await CameraPicker.pickFromCamera(
-                  context,
-                  enableRecording: true,
-                );
-                if (result != null) {
-                  handleResult(context, result);
-                }
-              },
-              child: const Center(
-                child: Icon(Icons.camera_enhance, size: 42.0),
+            return Semantics(
+              label: AssetsPickerTextDelegate().sActionUseCameraHint,
+              button: true,
+              onTapHint: AssetsPickerTextDelegate().sActionUseCameraHint,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () async {
+                  Feedback.forTap(context);
+                  final AssetEntity? result = await CameraPicker.pickFromCamera(
+                    context,
+                    enableRecording: true,
+                  );
+                  if (result != null) {
+                    handleResult(context, result);
+                  }
+                },
+                child: const Center(
+                  child: Icon(Icons.camera_enhance, size: 42.0),
+                ),
               ),
             );
           },
@@ -115,26 +121,31 @@ class PickMethod {
           requestType: RequestType.common,
           specialItemPosition: SpecialItemPosition.prepend,
           specialItemBuilder: (BuildContext context) {
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () async {
-                final AssetEntity? result = await CameraPicker.pickFromCamera(
-                  context,
-                  enableRecording: true,
-                );
-                if (result == null) {
-                  return;
-                }
-                final AssetPicker<AssetEntity, AssetPathEntity> picker =
-                    context.findAncestorWidgetOfExactType()!;
-                final DefaultAssetPickerProvider p =
-                    picker.builder.provider as DefaultAssetPickerProvider;
-                await p.currentPathEntity!.refreshPathProperties();
-                await p.switchPath(p.currentPathEntity!);
-                p.selectAsset(result);
-              },
-              child: const Center(
-                child: Icon(Icons.camera_enhance, size: 42.0),
+            return Semantics(
+              label: AssetsPickerTextDelegate().sActionUseCameraHint,
+              button: true,
+              onTapHint: AssetsPickerTextDelegate().sActionUseCameraHint,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () async {
+                  final AssetEntity? result = await CameraPicker.pickFromCamera(
+                    context,
+                    enableRecording: true,
+                  );
+                  if (result == null) {
+                    return;
+                  }
+                  final AssetPicker<AssetEntity, AssetPathEntity> picker =
+                      context.findAncestorWidgetOfExactType()!;
+                  final DefaultAssetPickerProvider p =
+                      picker.builder.provider as DefaultAssetPickerProvider;
+                  await p.currentPathEntity!.refreshPathProperties();
+                  await p.switchPath(p.currentPathEntity!);
+                  p.selectAsset(result);
+                },
+                child: const Center(
+                  child: Icon(Icons.camera_enhance, size: 42.0),
+                ),
               ),
             );
           },
