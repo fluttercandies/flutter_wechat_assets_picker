@@ -74,16 +74,15 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               Semantics(
                 sortKey: const OrdinalSortKey(0),
-                child: const Text(
+                child: Text(
                   'WeChat Asset Picker',
-                  semanticsLabel: 'WeChat Asset Picker',
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
               Semantics(
                 sortKey: const OrdinalSortKey(0.1),
                 child: Text(
-                  packageInfo == null ? 'Unknown version' : packageInfo!.version,
+                  'Version: ${packageVersion ?? 'unknown'}',
                   style: Theme.of(context).textTheme.caption,
                 ),
               ),
