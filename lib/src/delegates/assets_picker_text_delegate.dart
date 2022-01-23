@@ -180,6 +180,36 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
 
   @override
   String get accessiblePathName => 'Accessible assets';
+
+  @override
+  String get sTypeAudioLabel => 'Audio';
+
+  @override
+  String get sTypeImageLabel => 'Image';
+
+  @override
+  String get sTypeVideoLabel => 'Video';
+
+  @override
+  String get sTypeOtherLabel => 'Other asset';
+
+  @override
+  String get sActionPlayHint => 'play';
+
+  @override
+  String get sActionPreviewHint => 'preview';
+
+  @override
+  String get sActionSelectHint => 'select';
+
+  @override
+  String get sActionSwitchPathLabel => 'switch path';
+
+  @override
+  String get sNameDurationLabel => 'duration';
+
+  @override
+  String get sUnitAssetCountLabel => 'count';
 }
 
 /// [AssetsPickerTextDelegate] implements with Hebrew.
