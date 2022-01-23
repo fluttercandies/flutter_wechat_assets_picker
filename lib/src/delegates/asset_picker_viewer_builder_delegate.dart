@@ -429,33 +429,36 @@ class DefaultAssetPickerViewerBuilderDelegate
         );
         break;
     }
-    return Consumer<AssetPickerViewerProvider<AssetEntity>?>(
-      builder: (
-        BuildContext c,
-        AssetPickerViewerProvider<AssetEntity>? p,
-        Widget? w,
-      ) {
-        final bool isSelected =
-            (p?.currentlySelectedAssets ?? selectedAssets)?.contains(asset) ==
-                true;
-        String hint = '';
-        if (asset.type == AssetType.audio || asset.type == AssetType.video) {
-          hint += '${textDelegate.sNameDurationLabel}: ';
-          hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
-        }
-        if (asset.title?.isNotEmpty == true) {
-          hint += ', ${asset.title}';
-        }
-        return Semantics(
-          label: '${textDelegate.semanticTypeLabel(asset)}${index + 1}, '
-              '${asset.createDateTime.toString().replaceAll('.000', '')}',
-          selected: isSelected,
-          hint: hint,
-          image: asset.type == AssetType.image || asset.type == AssetType.video,
-          child: w,
-        );
-      },
-      child: _builder,
+    return MergeSemantics(
+      child: Consumer<AssetPickerViewerProvider<AssetEntity>?>(
+        builder: (
+          BuildContext c,
+          AssetPickerViewerProvider<AssetEntity>? p,
+          Widget? w,
+        ) {
+          final bool isSelected =
+              (p?.currentlySelectedAssets ?? selectedAssets)?.contains(asset) ==
+                  true;
+          String hint = '';
+          if (asset.type == AssetType.audio || asset.type == AssetType.video) {
+            hint += '${textDelegate.sNameDurationLabel}: ';
+            hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
+          }
+          if (asset.title?.isNotEmpty == true) {
+            hint += ', ${asset.title}';
+          }
+          return Semantics(
+            label: '${textDelegate.semanticTypeLabel(asset)}${index + 1}, '
+                '${asset.createDateTime.toString().replaceAll('.000', '')}',
+            selected: isSelected,
+            hint: hint,
+            image:
+                asset.type == AssetType.image || asset.type == AssetType.video,
+            child: w,
+          );
+        },
+        child: _builder,
+      ),
     );
   }
 
@@ -948,24 +951,21 @@ class DefaultAssetPickerViewerBuilderDelegate
   }
 
   Widget _pageViewBuilder(BuildContext context) {
-    return MergeSemantics(
-      child: Semantics(
-        sortKey: ordinalSortKey(1),
-        liveRegion: true,
-        child: ExtendedImageGesturePageView.builder(
-          physics: previewAssets.length == 1
-              ? const CustomClampingScrollPhysics()
-              : const CustomBouncingScrollPhysics(),
-          controller: pageController,
-          itemCount: previewAssets.length,
-          itemBuilder: assetPageBuilder,
-          reverse: shouldReversePreview,
-          onPageChanged: (int index) {
-            currentIndex = index;
-            pageStreamController.add(index);
-          },
-          scrollDirection: Axis.horizontal,
-        ),
+    return Semantics(
+      sortKey: ordinalSortKey(1),
+      child: ExtendedImageGesturePageView.builder(
+        physics: previewAssets.length == 1
+            ? const CustomClampingScrollPhysics()
+            : const CustomBouncingScrollPhysics(),
+        controller: pageController,
+        itemCount: previewAssets.length,
+        itemBuilder: assetPageBuilder,
+        reverse: shouldReversePreview,
+        onPageChanged: (int index) {
+          currentIndex = index;
+          pageStreamController.add(index);
+        },
+        scrollDirection: Axis.horizontal,
       ),
     );
   }
