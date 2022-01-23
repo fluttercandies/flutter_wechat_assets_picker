@@ -11,6 +11,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -460,7 +461,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 当访问受限时在底部展示的提示
   Widget accessLimitedBottomTip(BuildContext context) {
     return GestureDetector(
-      onTap: PhotoManager.openSetting,
+      onTap: () {
+        Feedback.forTap(context);
+        PhotoManager.openSetting();
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         height: permissionLimitedBarHeight,
@@ -562,6 +566,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         icon: const Icon(Icons.close),
         padding: EdgeInsets.zero,
         constraints: BoxConstraints.tight(const Size.square(32)),
+        tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
       ),
     );
 
@@ -618,17 +623,20 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           return const SizedBox.shrink();
         }
         return Positioned.fill(
-          child: Container(
-            padding: context.mediaQuery.padding,
-            color: context.themeData.canvasColor,
-            child: Column(
-              children: <Widget>[
-                _closeButton,
-                Expanded(child: _limitedTips),
-                _goToSettingsButton,
-                SizedBox(height: size.height / 18),
-                _accessLimitedButton,
-              ],
+          child: Semantics(
+            sortKey: const OrdinalSortKey(0),
+            child: Container(
+              padding: context.mediaQuery.padding,
+              color: context.themeData.canvasColor,
+              child: Column(
+                children: <Widget>[
+                  _closeButton,
+                  Expanded(child: _limitedTips),
+                  _goToSettingsButton,
+                  SizedBox(height: size.height / 18),
+                  _accessLimitedButton,
+                ],
+              ),
             ),
           ),
         );
@@ -914,50 +922,75 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget appleOSLayout(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Positioned.fill(
-          child: Selector<DefaultAssetPickerProvider, bool>(
-            selector: (_, DefaultAssetPickerProvider p) => p.hasAssetsToDisplay,
-            builder: (_, bool hasAssetsToDisplay, __) {
-              final Widget _child;
-              final bool shouldDisplayAssets = hasAssetsToDisplay ||
-                  (allowSpecialItemWhenEmpty &&
-                      specialItemPosition != SpecialItemPosition.none);
-              if (shouldDisplayAssets) {
-                _child = Stack(
-                  children: <Widget>[
-                    RepaintBoundary(
-                      child: Stack(
-                        children: <Widget>[
-                          Positioned.fill(
-                            child: assetsGridBuilder(context),
-                          ),
-                          if ((!isSingleAssetMode || isAppleOS) &&
-                              isPreviewEnabled)
-                            Positioned.fill(
-                              top: null,
-                              child: bottomActionBar(context),
-                            ),
-                        ],
-                      ),
-                    ),
-                    pathEntityListBackdrop(context),
-                    pathEntityListWidget(context),
-                  ],
-                );
-              } else {
-                _child = loadingIndicator(context);
-              }
-              return AnimatedSwitcher(
-                duration: switchingPathDuration,
-                child: _child,
-              );
-            },
+    Widget _gridLayout(BuildContext context) {
+      return Selector<DefaultAssetPickerProvider, bool>(
+        selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
+        builder: (_, bool isSwitchingPath, __) => Semantics(
+          excludeSemantics: isSwitchingPath,
+          child: RepaintBoundary(
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(child: assetsGridBuilder(context)),
+                if ((!isSingleAssetMode || isAppleOS) && isPreviewEnabled)
+                  Positioned.fill(
+                    top: null,
+                    child: bottomActionBar(context),
+                  ),
+              ],
+            ),
           ),
         ),
-        appBar(context),
-      ],
+      );
+    }
+
+    Widget _layout(BuildContext context) {
+      return Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: Selector<DefaultAssetPickerProvider, bool>(
+              selector: (_, DefaultAssetPickerProvider p) =>
+                  p.hasAssetsToDisplay,
+              builder: (_, bool hasAssetsToDisplay, __) {
+                final Widget _child;
+                final bool shouldDisplayAssets = hasAssetsToDisplay ||
+                    (allowSpecialItemWhenEmpty &&
+                        specialItemPosition != SpecialItemPosition.none);
+                if (shouldDisplayAssets) {
+                  _child = Stack(
+                    children: <Widget>[
+                      _gridLayout(context),
+                      pathEntityListBackdrop(context),
+                      pathEntityListWidget(context),
+                    ],
+                  );
+                } else {
+                  _child = loadingIndicator(context);
+                }
+                return AnimatedSwitcher(
+                  duration: switchingPathDuration,
+                  child: _child,
+                );
+              },
+            ),
+          ),
+          Semantics(sortKey: const OrdinalSortKey(0), child: appBar(context)),
+        ],
+      );
+    }
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: permissionOverlayHidden,
+      builder: (_, bool value, Widget? child) {
+        if (value) {
+          return child!;
+        }
+        return Semantics(
+          excludeSemantics: true,
+          sortKey: const OrdinalSortKey(1),
+          child: child,
+        );
+      },
+      child: _layout(context),
     );
   }
 
@@ -1002,10 +1035,16 @@ class DefaultAssetPickerBuilderDelegate
                     }
                     index -= placeholderCount;
                   }
-                  return MergeSemantics(
-                    child: Directionality(
-                      textDirection: Directionality.of(context),
-                      child: assetGridItemBuilder(c, index, assets),
+                  return Semantics(
+                    sortKey: OrdinalSortKey(
+                      semanticIndex(index).toDouble(),
+                      name: 'GridItem',
+                    ),
+                    child: MergeSemantics(
+                      child: Directionality(
+                        textDirection: Directionality.of(context),
+                        child: assetGridItemBuilder(c, index, assets),
+                      ),
                     ),
                   );
                 },
@@ -1474,6 +1513,7 @@ class DefaultAssetPickerBuilderDelegate
         selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
         builder: (_, bool isSwitchingPath, __) => IgnorePointer(
           ignoring: !isSwitchingPath,
+          ignoringSemantics: true,
           child: GestureDetector(
             onTap: () => provider.isSwitchingPath = false,
             child: AnimatedOpacity(
@@ -1492,10 +1532,8 @@ class DefaultAssetPickerBuilderDelegate
     return Positioned.fill(
       top: isAppleOS ? context.topPadding + kToolbarHeight : 0,
       bottom: null,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(
-          bottom: Radius.circular(10),
-        ),
+      child: Semantics(
+        sortKey: const OrdinalSortKey(1),
         child: Selector<DefaultAssetPickerProvider, bool>(
           selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
           builder: (_, bool isSwitchingPath, Widget? w) => AnimatedAlign(
@@ -1507,13 +1545,18 @@ class DefaultAssetPickerBuilderDelegate
               duration: switchingPathDuration,
               curve: switchingPathCurve,
               opacity: !isAppleOS || isSwitchingPath ? 1 : 0,
-              child: Container(
-                constraints: BoxConstraints(
-                  maxHeight:
-                      context.mediaQuery.size.height * (isAppleOS ? .6 : .8),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(10),
                 ),
-                color: theme.colorScheme.background,
-                child: w,
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxHeight:
+                        context.mediaQuery.size.height * (isAppleOS ? .6 : .8),
+                  ),
+                  color: theme.colorScheme.background,
+                  child: w,
+                ),
               ),
             ),
           ),
