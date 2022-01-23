@@ -1275,7 +1275,7 @@ class DefaultAssetPickerBuilderDelegate
           enabled: !isBanned,
           selected: isSelected,
           button: false,
-          label: '${textDelegate.semanticTypeLabel(asset)}'
+          label: '${textDelegate.semanticTypeLabel(asset.type)}'
               '${semanticIndex(index)}, '
               '${asset.createDateTime.toString().replaceAll('.000', '')}',
           value: selectedIndex > 0 ? '$selectedIndex' : null,

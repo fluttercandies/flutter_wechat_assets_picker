@@ -448,7 +448,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             hint += ', ${asset.title}';
           }
           return Semantics(
-            label: '${textDelegate.semanticTypeLabel(asset)}${index + 1}, '
+            label: '${textDelegate.semanticTypeLabel(asset.type)}${index + 1}, '
                 '${asset.createDateTime.toString().replaceAll('.000', '')}',
             selected: isSelected,
             hint: hint,
@@ -652,7 +652,8 @@ class DefaultAssetPickerViewerBuilderDelegate
               }
             }();
             return Semantics(
-              label: '${textDelegate.semanticTypeLabel(asset)}${index + 1}',
+              label: '${textDelegate.semanticTypeLabel(asset.type)}'
+                  '${index + 1}',
               selected: isViewing,
               onTap: () => onTap(asset),
               onTapHint: textDelegate.sActionPreviewHint,

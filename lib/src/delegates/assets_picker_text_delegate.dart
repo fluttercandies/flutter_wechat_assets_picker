@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/4/7 10:25
 ///
-import 'package:photo_manager/photo_manager.dart' show AssetEntity, AssetType;
+import 'package:photo_manager/photo_manager.dart' show AssetType;
 
 /// Text delegate that controls text in widgets.
 /// 控制部件中的文字实现
@@ -95,8 +95,8 @@ class AssetsPickerTextDelegate {
 
   String get sTypeOtherLabel => '其他资源';
 
-  String semanticTypeLabel(AssetEntity asset) {
-    switch (asset.type) {
+  String semanticTypeLabel(AssetType type) {
+    switch (type) {
       case AssetType.audio:
         return sTypeAudioLabel;
       case AssetType.image:
