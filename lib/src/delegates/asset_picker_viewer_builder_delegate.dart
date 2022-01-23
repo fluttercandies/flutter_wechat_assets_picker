@@ -446,14 +446,13 @@ class DefaultAssetPickerViewerBuilderDelegate
         if (asset.title?.isNotEmpty == true) {
           hint += ', ${asset.title}';
         }
-        return MergeSemantics(
-          child: Semantics(
-            label: '${textDelegate.semanticTypeLabel(asset)}${index + 1}, '
-                '${asset.createDateTime.toString().replaceAll('.000', '')}',
-            selected: isSelected,
-            hint: hint,
-            child: w,
-          ),
+        return Semantics(
+          label: '${textDelegate.semanticTypeLabel(asset)}${index + 1}, '
+              '${asset.createDateTime.toString().replaceAll('.000', '')}',
+          selected: isSelected,
+          hint: hint,
+          image: asset.type == AssetType.image || asset.type == AssetType.video,
+          child: w,
         );
       },
       child: _builder,
@@ -506,9 +505,13 @@ class DefaultAssetPickerViewerBuilderDelegate
     return PositionedDirectional(
       start: 16,
       top: context.topPadding + 16,
-      child: GestureDetector(
-        onTap: Navigator.of(context).maybePop,
-        child: Container(
+      child: IconButton(
+        onPressed: Navigator.of(context).maybePop,
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints.tight(const Size.square(28)),
+        tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+        iconSize: 18,
+        icon: Container(
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             color: themeData.iconTheme.color,
@@ -517,7 +520,6 @@ class DefaultAssetPickerViewerBuilderDelegate
           child: Icon(
             Icons.keyboard_return_rounded,
             color: themeData.canvasColor,
-            size: 18,
           ),
         ),
       ),
@@ -938,6 +940,29 @@ class DefaultAssetPickerViewerBuilderDelegate
     );
   }
 
+  Widget _pageViewBuilder(BuildContext context) {
+    return MergeSemantics(
+      child: Semantics(
+        sortKey: ordinalSortKey(1),
+        liveRegion: true,
+        child: ExtendedImageGesturePageView.builder(
+          physics: previewAssets.length == 1
+              ? const CustomClampingScrollPhysics()
+              : const CustomBouncingScrollPhysics(),
+          controller: pageController,
+          itemCount: previewAssets.length,
+          itemBuilder: assetPageBuilder,
+          reverse: shouldReversePreview,
+          onPageChanged: (int index) {
+            currentIndex = index;
+            pageStreamController.add(index);
+          },
+          scrollDirection: Axis.horizontal,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -953,25 +978,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             color: Colors.black,
             child: Stack(
               children: <Widget>[
-                Positioned.fill(
-                  child: Semantics(
-                    sortKey: ordinalSortKey(1),
-                    child: ExtendedImageGesturePageView.builder(
-                      physics: previewAssets.length == 1
-                          ? const CustomClampingScrollPhysics()
-                          : const CustomBouncingScrollPhysics(),
-                      controller: pageController,
-                      itemCount: previewAssets.length,
-                      itemBuilder: assetPageBuilder,
-                      reverse: shouldReversePreview,
-                      onPageChanged: (int index) {
-                        currentIndex = index;
-                        pageStreamController.add(index);
-                      },
-                      scrollDirection: Axis.horizontal,
-                    ),
-                  ),
-                ),
+                Positioned.fill(child: _pageViewBuilder(context)),
                 if (isWeChatMoment && hasVideo) ...<Widget>[
                   momentVideoBackButton(context),
                   PositionedDirectional(
