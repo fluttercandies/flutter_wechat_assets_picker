@@ -317,6 +317,25 @@ class PickMethod {
     );
   }
 
+  factory PickMethod.customizableTheme(int maxAssetsCount) {
+    return PickMethod(
+      icon: '🎨',
+      name: 'Customizable theme',
+      description: 'Picking assets with the light theme with different color.',
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          maxAssets: maxAssetsCount,
+          selectedAssets: assets,
+          pickerTheme: AssetPicker.themeData(
+            Colors.lightBlueAccent,
+            light: true,
+          ),
+        );
+      },
+    );
+  }
+
   final String icon;
   final String name;
   final String description;
