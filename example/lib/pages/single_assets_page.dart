@@ -39,6 +39,7 @@ class _SingleAssetPageState extends State<SingleAssetPage>
       PickMethod.customFilterOptions(maxAssetsCount),
       PickMethod.preventGIFPicked(maxAssetsCount),
       PickMethod.noPreview(maxAssetsCount),
+      PickMethod.customizableTheme(maxAssetsCount),
     ];
   }
 
