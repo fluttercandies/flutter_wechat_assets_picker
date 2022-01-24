@@ -1035,16 +1035,10 @@ class DefaultAssetPickerBuilderDelegate
                     }
                     index -= placeholderCount;
                   }
-                  return Semantics(
-                    sortKey: OrdinalSortKey(
-                      semanticIndex(index).toDouble(),
-                      name: 'GridItem',
-                    ),
-                    child: MergeSemantics(
-                      child: Directionality(
-                        textDirection: Directionality.of(context),
-                        child: assetGridItemBuilder(c, index, assets),
-                      ),
+                  return MergeSemantics(
+                    child: Directionality(
+                      textDirection: Directionality.of(context),
+                      child: assetGridItemBuilder(c, index, assets),
                     ),
                   );
                 },
@@ -1064,6 +1058,8 @@ class DefaultAssetPickerBuilderDelegate
                 }
                 return null;
               },
+              // Explicitly disable semantic indexes for custom usage.
+              addSemanticIndexes: false,
             ),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: gridCount,
@@ -1288,6 +1284,10 @@ class DefaultAssetPickerBuilderDelegate
               : null,
           onLongPressHint: textDelegate.sActionPreviewHint,
           selected: isSelected,
+          sortKey: OrdinalSortKey(
+            semanticIndex(index).toDouble(),
+            name: 'GridItem',
+          ),
           value: selectedIndex > 0 ? '$selectedIndex' : null,
           child: GestureDetector(
             // Regression https://github.com/flutter/flutter/issues/35112.
@@ -1295,7 +1295,7 @@ class DefaultAssetPickerBuilderDelegate
                 isPreviewEnabled && context.mediaQuery.accessibleNavigation
                     ? () => _pushAssetToViewer(context, index, asset)
                     : null,
-            child: child,
+            child: IndexedSemantics(index: semanticIndex(index), child: child),
           ),
         );
       },
@@ -1533,8 +1533,13 @@ class DefaultAssetPickerBuilderDelegate
     return Positioned.fill(
       top: isAppleOS ? context.topPadding + kToolbarHeight : 0,
       bottom: null,
-      child: Semantics(
-        sortKey: const OrdinalSortKey(1),
+      child: Consumer<DefaultAssetPickerProvider>(
+        builder: (_, DefaultAssetPickerProvider p, Widget? child) => Semantics(
+          focusable: p.isSwitchingPath,
+          sortKey: const OrdinalSortKey(1),
+          hidden: !p.isSwitchingPath,
+          child: child,
+        ),
         child: Selector<DefaultAssetPickerProvider, bool>(
           selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
           builder: (_, bool isSwitchingPath, Widget? w) => AnimatedAlign(
@@ -1566,12 +1571,16 @@ class DefaultAssetPickerBuilderDelegate
             children: <Widget>[
               ValueListenableBuilder<PermissionState>(
                 valueListenable: permission,
-                builder: (_, PermissionState ps, Widget? child) {
-                  if (isPermissionLimited) {
-                    return child!;
-                  }
-                  return const SizedBox.shrink();
-                },
+                builder: (_, PermissionState ps, Widget? child) => Semantics(
+                  label: '${textDelegate.viewingLimitedAssetsTip}, '
+                      '${textDelegate.changeAccessibleLimitedAssets}',
+                  button: true,
+                  onTap: PhotoManager.presentLimited,
+                  hidden: !isPermissionLimited,
+                  focusable: isPermissionLimited,
+                  excludeSemantics: true,
+                  child: isPermissionLimited ? child : const SizedBox.shrink(),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
