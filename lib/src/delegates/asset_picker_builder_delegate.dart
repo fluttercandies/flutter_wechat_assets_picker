@@ -1271,14 +1271,14 @@ class DefaultAssetPickerBuilderDelegate
           hint += ', ${asset.title}';
         }
         return Semantics(
-          hidden: p.isSwitchingPath,
-          enabled: !isBanned,
-          selected: isSelected,
           button: false,
+          enabled: !isBanned,
+          excludeSemantics: true,
+          focusable: p.isSwitchingPath,
           label: '${textDelegate.semanticTypeLabel(asset.type)}'
               '${semanticIndex(index)}, '
               '${asset.createDateTime.toString().replaceAll('.000', '')}',
-          value: selectedIndex > 0 ? '$selectedIndex' : null,
+          hidden: p.isSwitchingPath,
           hint: hint,
           image: asset.type == AssetType.image || asset.type == AssetType.video,
           onTap: () => selectAsset(context, asset, isSelected),
@@ -1287,7 +1287,8 @@ class DefaultAssetPickerBuilderDelegate
               ? () => _pushAssetToViewer(context, index, asset)
               : null,
           onLongPressHint: textDelegate.sActionPreviewHint,
-          excludeSemantics: true,
+          selected: isSelected,
+          value: selectedIndex > 0 ? '$selectedIndex' : null,
           child: GestureDetector(
             // Regression https://github.com/flutter/flutter/issues/35112.
             onLongPress:
@@ -1847,33 +1848,36 @@ class DefaultAssetPickerBuilderDelegate
       }
     }
 
-    return Selector<DefaultAssetPickerProvider, bool>(
-      selector: (_, DefaultAssetPickerProvider p) => p.isSelectedNotEmpty,
-      builder: (BuildContext c, bool isNotEmpty, Widget? child) {
-        return Semantics(
-          enabled: isNotEmpty,
-          onTapHint: textDelegate.sActionPreviewHint,
-          child: GestureDetector(
-            onTap: isNotEmpty ? _onTap : null,
-            child: Selector<DefaultAssetPickerProvider, String>(
-              selector: (_, DefaultAssetPickerProvider p) =>
-                  p.selectedDescriptions,
-              builder: (_, __, ___) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: ScaleText(
-                  '${textDelegate.preview}'
-                  '${isNotEmpty ? ' (${provider.selectedAssets.length})' : ''}',
-                  style: TextStyle(
-                    color: isNotEmpty ? null : theme.textTheme.caption?.color,
-                    fontSize: 17,
-                  ),
-                  maxScaleFactor: 1.2,
+    return Consumer<DefaultAssetPickerProvider>(
+      builder: (_, DefaultAssetPickerProvider p, Widget? child) => Semantics(
+        enabled: p.isSelectedNotEmpty,
+        focusable: p.isSwitchingPath,
+        hidden: p.isSwitchingPath,
+        onTapHint: textDelegate.sActionPreviewHint,
+        child: child,
+      ),
+      child: Selector<DefaultAssetPickerProvider, bool>(
+        selector: (_, DefaultAssetPickerProvider p) => p.isSelectedNotEmpty,
+        builder: (_, bool isNotEmpty, __) => GestureDetector(
+          onTap: isNotEmpty ? _onTap : null,
+          child: Selector<DefaultAssetPickerProvider, String>(
+            selector: (_, DefaultAssetPickerProvider p) =>
+                p.selectedDescriptions,
+            builder: (_, __, ___) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: ScaleText(
+                '${textDelegate.preview}'
+                '${isNotEmpty ? ' (${provider.selectedAssets.length})' : ''}',
+                style: TextStyle(
+                  color: isNotEmpty ? null : theme.textTheme.caption?.color,
+                  fontSize: 17,
                 ),
+                maxScaleFactor: 1.2,
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
