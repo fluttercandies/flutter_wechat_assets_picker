@@ -759,11 +759,11 @@ class DefaultAssetPickerBuilderDelegate
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
-  Duration get switchingPathDuration => kThemeAnimationDuration;
+  Duration get switchingPathDuration => const Duration(milliseconds: 300);
 
   /// [Curve] when triggering path switching.
   /// 切换路径时的动画曲线
-  Curve get switchingPathCurve => Curves.easeInOut;
+  Curve get switchingPathCurve => Curves.easeInOutQuad;
 
   /// Whether the [SpecialPickerType.wechatMoment] is enabled.
   /// 当前是否为微信朋友圈选择模式

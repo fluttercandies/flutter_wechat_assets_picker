@@ -199,7 +199,50 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
 
   /// Build a dark theme according to the theme color.
   /// 通过主题色构建一个默认的暗黑主题
-  static ThemeData themeData(Color themeColor) {
+  static ThemeData themeData(Color themeColor, {bool light = false}) {
+    if (light) {
+      return ThemeData.light().copyWith(
+        primaryColor: Colors.grey[50],
+        primaryColorBrightness: Brightness.dark,
+        primaryColorLight: Colors.grey[50],
+        primaryColorDark: Colors.grey[50],
+        canvasColor: Colors.grey[100],
+        scaffoldBackgroundColor: Colors.grey[50],
+        bottomAppBarColor: Colors.grey[50],
+        cardColor: Colors.grey[50],
+        highlightColor: Colors.transparent,
+        toggleableActiveColor: themeColor,
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: themeColor,
+          selectionColor: themeColor.withAlpha(100),
+          selectionHandleColor: themeColor,
+        ),
+        indicatorColor: themeColor,
+        appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarBrightness: Brightness.light,
+            statusBarIconBrightness: Brightness.dark,
+          ),
+          elevation: 0,
+        ),
+        buttonTheme: ButtonThemeData(buttonColor: themeColor),
+        colorScheme: ColorScheme(
+          primary: Colors.grey[50]!,
+          primaryVariant: Colors.grey[50]!,
+          secondary: themeColor,
+          secondaryVariant: themeColor,
+          background: Colors.grey[50]!,
+          surface: Colors.grey[50]!,
+          brightness: Brightness.light,
+          error: const Color(0xffcf6679),
+          onPrimary: Colors.white,
+          onSecondary: Colors.white,
+          onSurface: Colors.black,
+          onBackground: Colors.black,
+          onError: Colors.white,
+        ),
+      );
+    }
     return ThemeData.dark().copyWith(
       primaryColor: Colors.grey[900],
       primaryColorBrightness: Brightness.dark,

@@ -983,7 +983,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                   ? SystemUiOverlayStyle.light
                   : SystemUiOverlayStyle.dark),
           child: Material(
-            color: Colors.black,
+            color: themeData.colorScheme.onSecondary,
             child: Stack(
               children: <Widget>[
                 Positioned.fill(child: _pageViewBuilder(context)),
