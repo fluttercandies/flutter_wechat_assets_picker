@@ -139,6 +139,56 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
     controller.play();
   }
 
+  Widget _contentBuilder(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        Positioned.fill(
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: controller.value.aspectRatio,
+              child: VideoPlayer(controller),
+            ),
+          ),
+        ),
+        if (!widget.hasOnlyOneVideoAndMoment)
+          ValueListenableBuilder<bool>(
+            valueListenable: isPlaying,
+            builder: (_, bool value, __) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: value
+                  ? playButtonCallback
+                  : widget.delegate.switchDisplayingDetail,
+              child: Center(
+                child: AnimatedOpacity(
+                  duration: kThemeAnimationDuration,
+                  opacity: value ? 0.0 : 1.0,
+                  child: GestureDetector(
+                    onTap: playButtonCallback,
+                    child: DecoratedBox(
+                      decoration: const BoxDecoration(
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(color: Colors.black12)
+                        ],
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        value
+                            ? Icons.pause_circle_outline
+                            : Icons.play_circle_filled,
+                        size: 70.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
@@ -153,52 +203,15 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
         if (!hasLoaded) {
           return const SizedBox.shrink();
         }
-        return Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            Positioned.fill(
-              child: Center(
-                child: AspectRatio(
-                  aspectRatio: controller.value.aspectRatio,
-                  child: VideoPlayer(controller),
-                ),
-              ),
-            ),
-            if (!widget.hasOnlyOneVideoAndMoment)
-              ValueListenableBuilder<bool>(
-                valueListenable: isPlaying,
-                builder: (_, bool value, __) => GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: value
-                      ? playButtonCallback
-                      : widget.delegate.switchDisplayingDetail,
-                  child: Center(
-                    child: AnimatedOpacity(
-                      duration: kThemeAnimationDuration,
-                      opacity: value ? 0.0 : 1.0,
-                      child: GestureDetector(
-                        onTap: playButtonCallback,
-                        child: DecoratedBox(
-                          decoration: const BoxDecoration(
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(color: Colors.black12)
-                            ],
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            value
-                                ? Icons.pause_circle_outline
-                                : Icons.play_circle_filled,
-                            size: 70.0,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-          ],
+        return Semantics(
+          onLongPress: playButtonCallback,
+          onLongPressHint: Constants.textDelegate.sActionPlayHint,
+          child: GestureDetector(
+            onLongPress: MediaQuery.of(context).accessibleNavigation
+                ? playButtonCallback
+                : null,
+            child: _contentBuilder(context),
+          ),
         );
       },
     );

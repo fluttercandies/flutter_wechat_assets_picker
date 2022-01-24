@@ -8,6 +8,7 @@ import 'dart:math' as math;
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ import '../constants/custom_scroll_physics.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
+import '../delegates/assets_picker_text_delegate.dart';
 import '../provider/asset_picker_provider.dart';
 import '../provider/asset_picker_viewer_provider.dart';
 import '../widget/asset_picker_viewer.dart';
@@ -151,6 +153,8 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// 当前平台是否为苹果系列系统
   bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
 
+  AssetsPickerTextDelegate get textDelegate => Constants.textDelegate;
+
   /// Call when viewer is calling [initState].
   /// 当预览器调用 [initState] 时注册 [State] 和 [TickerProvider]。
   void initStateAndTicker(
@@ -182,6 +186,11 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
       ..stop()
       ..reset()
       ..dispose();
+  }
+
+  /// Produce [OrdinalSortKey] with the fixed name.
+  OrdinalSortKey ordinalSortKey(double value) {
+    return OrdinalSortKey(value, name: 'AssetPickerViewerBuilderDelegate');
   }
 
   /// Execute scale animation when double tap.
@@ -315,7 +324,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   Widget failedItemBuilder(BuildContext context) {
     return Center(
       child: ScaleText(
-        Constants.textDelegate.loadFailed,
+        textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),
       ),
@@ -395,7 +404,7 @@ class DefaultAssetPickerViewerBuilderDelegate
   @override
   Widget assetPageBuilder(BuildContext context, int index) {
     final AssetEntity asset = previewAssets.elementAt(index);
-    Widget _builder;
+    final Widget _builder;
     switch (asset.type) {
       case AssetType.audio:
         _builder = AudioPageBuilder(asset: asset);
@@ -416,11 +425,41 @@ class DefaultAssetPickerViewerBuilderDelegate
         break;
       case AssetType.other:
         _builder = Center(
-          child: ScaleText(Constants.textDelegate.unSupportedAssetType),
+          child: ScaleText(textDelegate.unSupportedAssetType),
         );
         break;
     }
-    return _builder;
+    return MergeSemantics(
+      child: Consumer<AssetPickerViewerProvider<AssetEntity>?>(
+        builder: (
+          BuildContext c,
+          AssetPickerViewerProvider<AssetEntity>? p,
+          Widget? w,
+        ) {
+          final bool isSelected =
+              (p?.currentlySelectedAssets ?? selectedAssets)?.contains(asset) ==
+                  true;
+          String hint = '';
+          if (asset.type == AssetType.audio || asset.type == AssetType.video) {
+            hint += '${textDelegate.sNameDurationLabel}: ';
+            hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
+          }
+          if (asset.title?.isNotEmpty == true) {
+            hint += ', ${asset.title}';
+          }
+          return Semantics(
+            label: '${textDelegate.semanticTypeLabel(asset.type)}${index + 1}, '
+                '${asset.createDateTime.toString().replaceAll('.000', '')}',
+            selected: isSelected,
+            hint: hint,
+            image:
+                asset.type == AssetType.image || asset.type == AssetType.video,
+            child: w,
+          );
+        },
+        child: _builder,
+      ),
+    );
   }
 
   /// Preview item widgets for audios.
@@ -469,18 +508,24 @@ class DefaultAssetPickerViewerBuilderDelegate
     return PositionedDirectional(
       start: 16,
       top: context.topPadding + 16,
-      child: GestureDetector(
-        onTap: Navigator.of(context).maybePop,
-        child: Container(
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: themeData.iconTheme.color,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.keyboard_return_rounded,
-            color: themeData.canvasColor,
-            size: 18,
+      child: Semantics(
+        sortKey: ordinalSortKey(0),
+        child: IconButton(
+          onPressed: Navigator.of(context).maybePop,
+          padding: EdgeInsets.zero,
+          constraints: BoxConstraints.tight(const Size.square(28)),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          iconSize: 18,
+          icon: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: themeData.iconTheme.color,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.keyboard_return_rounded,
+              color: themeData.canvasColor,
+            ),
           ),
         ),
       ),
@@ -559,6 +604,28 @@ class DefaultAssetPickerViewerBuilderDelegate
   @override
   Widget bottomDetailItemBuilder(BuildContext context, int index) {
     const double padding = 8.0;
+
+    void onTap(AssetEntity asset) {
+      final int page;
+      if (previewAssets != selectedAssets) {
+        page = previewAssets.indexOf(asset);
+      } else {
+        page = index;
+      }
+      if (pageController.page == page.toDouble()) {
+        return;
+      }
+      pageController.jumpToPage(page);
+      final double offset =
+          (index - 0.5) * (bottomPreviewHeight - padding * 3) -
+              context.mediaQuery.size.width / 4;
+      previewingListController.animateTo(
+        math.max(0, offset),
+        curve: Curves.ease,
+        duration: kThemeChangeDuration,
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: padding,
@@ -584,60 +651,50 @@ class DefaultAssetPickerViewerBuilderDelegate
                   return const SizedBox.shrink();
               }
             }();
-            return GestureDetector(
-              onTap: () {
-                if (pageController.page == index.toDouble()) {
-                  return;
-                }
-                final int page;
-                if (previewAssets != selectedAssets) {
-                  page = previewAssets.indexOf(asset);
-                } else {
-                  page = index;
-                }
-                pageController.jumpToPage(page);
-                final double offset =
-                    (index - 0.5) * (bottomPreviewHeight - padding * 3) -
-                        context.mediaQuery.size.width / 4;
-                previewingListController.animateTo(
-                  math.max(0, offset),
-                  curve: Curves.ease,
-                  duration: kThemeChangeDuration,
-                );
-              },
-              child: Selector<AssetPickerViewerProvider<AssetEntity>?,
-                  List<AssetEntity>?>(
-                selector: (_, AssetPickerViewerProvider<AssetEntity>? p) =>
-                    p?.currentlySelectedAssets,
-                child: _item,
-                builder: (
-                  _,
-                  List<AssetEntity>? currentlySelectedAssets,
-                  Widget? w,
-                ) {
-                  final bool isSelected =
-                      currentlySelectedAssets?.contains(asset) ?? false;
-                  return Stack(
-                    children: <Widget>[
-                      w!,
-                      AnimatedContainer(
-                        duration: kThemeAnimationDuration,
-                        curve: Curves.easeInOut,
-                        decoration: BoxDecoration(
-                          border: isViewing
-                              ? Border.all(
-                                  color: themeData.colorScheme.secondary,
-                                  width: 3,
-                                )
-                              : null,
-                          color: isSelected
-                              ? null
-                              : themeData.colorScheme.surface.withOpacity(0.54),
+            return Semantics(
+              label: '${textDelegate.semanticTypeLabel(asset.type)}'
+                  '${index + 1}',
+              selected: isViewing,
+              onTap: () => onTap(asset),
+              onTapHint: textDelegate.sActionPreviewHint,
+              excludeSemantics: true,
+              child: GestureDetector(
+                onTap: () => onTap(asset),
+                child: Selector<AssetPickerViewerProvider<AssetEntity>?,
+                    List<AssetEntity>?>(
+                  selector: (_, AssetPickerViewerProvider<AssetEntity>? p) =>
+                      p?.currentlySelectedAssets,
+                  child: _item,
+                  builder: (
+                    _,
+                    List<AssetEntity>? currentlySelectedAssets,
+                    Widget? w,
+                  ) {
+                    final bool isSelected =
+                        currentlySelectedAssets?.contains(asset) ?? false;
+                    return Stack(
+                      children: <Widget>[
+                        w!,
+                        AnimatedContainer(
+                          duration: kThemeAnimationDuration,
+                          curve: Curves.easeInOut,
+                          decoration: BoxDecoration(
+                            border: isViewing
+                                ? Border.all(
+                                    color: themeData.colorScheme.secondary,
+                                    width: 3,
+                                  )
+                                : null,
+                            color: isSelected
+                                ? null
+                                : themeData.colorScheme.surface
+                                    .withOpacity(0.54),
+                          ),
                         ),
-                      ),
-                    ],
-                  );
-                },
+                      ],
+                    );
+                  },
+                ),
               ),
             );
           },
@@ -663,38 +720,69 @@ class DefaultAssetPickerViewerBuilderDelegate
       child: Container(
         padding: EdgeInsetsDirectional.only(top: context.topPadding),
         color: themeData.canvasColor,
-        child: Stack(
-          fit: StackFit.expand,
+        child: Row(
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: Navigator.of(context).maybePop,
-                ),
-                const Spacer(),
-                if (isAppleOS && provider != null) selectButton(context),
-                if (!isAppleOS && (provider != null || isWeChatMoment))
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(end: 14),
-                    child: confirmButton(context),
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Semantics(
+                  sortKey: ordinalSortKey(0),
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).backButtonTooltip,
+                    onPressed: Navigator.of(context).maybePop,
                   ),
-              ],
+                ),
+              ),
             ),
             if (!isAppleOS && specialPickerType == null)
-              StreamBuilder<int>(
-                initialData: currentIndex,
-                stream: pageStreamController.stream,
-                builder: (_, AsyncSnapshot<int> snapshot) => Center(
-                  child: ScaleText(
-                    '${snapshot.data! + 1}/${previewAssets.length}',
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
+              Expanded(
+                child: Center(
+                  child: Semantics(
+                    sortKey: ordinalSortKey(0.1),
+                    child: StreamBuilder<int>(
+                      initialData: currentIndex,
+                      stream: pageStreamController.stream,
+                      builder: (_, AsyncSnapshot<int> snapshot) => ScaleText(
+                        '${snapshot.data! + 1}/${previewAssets.length}',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
+            if (isAppleOS && provider != null)
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: Semantics(
+                    sortKey: ordinalSortKey(0.2),
+                    child: selectButton(context),
+                  ),
+                ),
+              )
+            else if (isAppleOS)
+              const Spacer(),
+            if (!isAppleOS && (provider != null || isWeChatMoment))
+              Expanded(
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: Semantics(
+                    sortKey: ordinalSortKey(0.3),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 14),
+                      child: confirmButton(context),
+                    ),
+                  ),
+                ),
+              )
+            else if (!isAppleOS)
+              const Spacer(),
           ],
         ),
       ),
@@ -733,15 +821,15 @@ class DefaultAssetPickerViewerBuilderDelegate
             child: ScaleText(
               () {
                 if (isWeChatMoment && hasVideo) {
-                  return Constants.textDelegate.confirm;
+                  return textDelegate.confirm;
                 }
                 if (provider!.isSelectedNotEmpty) {
-                  return '${Constants.textDelegate.confirm}'
+                  return '${textDelegate.confirm}'
                       ' (${provider.currentlySelectedAssets.length}'
                       '/'
                       '${selectorProvider!.maxAssets})';
                 }
-                return Constants.textDelegate.confirm;
+                return textDelegate.confirm;
               }(),
               style: TextStyle(
                 color: themeData.textTheme.bodyText1?.color,
@@ -784,7 +872,10 @@ class DefaultAssetPickerViewerBuilderDelegate
       padding: const EdgeInsetsDirectional.only(end: 10.0),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => onChangingSelected(context, asset, isSelected),
+        onTap: () {
+          Feedback.forTap(context);
+          onChangingSelected(context, asset, isSelected);
+        },
         child: AnimatedContainer(
           duration: kThemeAnimationDuration,
           width: 28.0,
@@ -820,48 +911,63 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   @override
   Widget selectButton(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        StreamBuilder<int>(
-          initialData: currentIndex,
-          stream: pageStreamController.stream,
-          builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
-            return ChangeNotifierProvider<
-                AssetPickerViewerProvider<AssetEntity>>.value(
-              value: provider!,
-              child: Selector<AssetPickerViewerProvider<AssetEntity>,
-                  List<AssetEntity>>(
-                selector: (
-                  _,
-                  AssetPickerViewerProvider<AssetEntity> p,
-                ) =>
-                    p.currentlySelectedAssets,
-                builder: (
-                  BuildContext c,
-                  List<AssetEntity> currentlySelectedAssets,
-                  __,
-                ) {
-                  final AssetEntity asset = previewAssets.elementAt(
-                    snapshot.data!,
-                  );
-                  final bool isSelected = currentlySelectedAssets.contains(
-                    asset,
-                  );
-                  if (isAppleOS) {
-                    return _appleOSSelectButton(c, isSelected, asset);
-                  }
-                  return _androidSelectButton(c, isSelected, asset);
-                },
-              ),
-            );
-          },
-        ),
-        if (!isAppleOS)
-          ScaleText(
-            Constants.textDelegate.select,
-            style: const TextStyle(fontSize: 17, height: 1),
-          ),
-      ],
+    return ChangeNotifierProvider<AssetPickerViewerProvider<AssetEntity>>.value(
+      value: provider!,
+      builder: (_, Widget? w) => StreamBuilder<int>(
+        initialData: currentIndex,
+        stream: pageStreamController.stream,
+        builder: (BuildContext _, AsyncSnapshot<int> s) {
+          final AssetEntity asset = previewAssets.elementAt(s.data!);
+          return Selector<AssetPickerViewerProvider<AssetEntity>,
+              List<AssetEntity>>(
+            selector: (_, AssetPickerViewerProvider<AssetEntity> p) =>
+                p.currentlySelectedAssets,
+            builder: (BuildContext c, List<AssetEntity> assets, _) {
+              final bool isSelected = assets.contains(asset);
+              return Semantics(
+                selected: isSelected,
+                label: textDelegate.select,
+                onTap: () => onChangingSelected(context, asset, isSelected),
+                onTapHint: textDelegate.select,
+                excludeSemantics: true,
+                child: Row(
+                  children: <Widget>[
+                    if (isAppleOS)
+                      _appleOSSelectButton(c, isSelected, asset)
+                    else
+                      _androidSelectButton(c, isSelected, asset),
+                    if (!isAppleOS)
+                      ScaleText(
+                        textDelegate.select,
+                        style: const TextStyle(fontSize: 17, height: 1),
+                      ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _pageViewBuilder(BuildContext context) {
+    return Semantics(
+      sortKey: ordinalSortKey(1),
+      child: ExtendedImageGesturePageView.builder(
+        physics: previewAssets.length == 1
+            ? const CustomClampingScrollPhysics()
+            : const CustomBouncingScrollPhysics(),
+        controller: pageController,
+        itemCount: previewAssets.length,
+        itemBuilder: assetPageBuilder,
+        reverse: shouldReversePreview,
+        onPageChanged: (int index) {
+          currentIndex = index;
+          pageStreamController.add(index);
+        },
+        scrollDirection: Axis.horizontal,
+      ),
     );
   }
 
@@ -880,22 +986,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             color: Colors.black,
             child: Stack(
               children: <Widget>[
-                Positioned.fill(
-                  child: ExtendedImageGesturePageView.builder(
-                    physics: previewAssets.length == 1
-                        ? const CustomClampingScrollPhysics()
-                        : const CustomBouncingScrollPhysics(),
-                    controller: pageController,
-                    itemCount: previewAssets.length,
-                    itemBuilder: assetPageBuilder,
-                    reverse: shouldReversePreview,
-                    onPageChanged: (int index) {
-                      currentIndex = index;
-                      pageStreamController.add(index);
-                    },
-                    scrollDirection: Axis.horizontal,
-                  ),
-                ),
+                Positioned.fill(child: _pageViewBuilder(context)),
                 if (isWeChatMoment && hasVideo) ...<Widget>[
                   momentVideoBackButton(context),
                   PositionedDirectional(

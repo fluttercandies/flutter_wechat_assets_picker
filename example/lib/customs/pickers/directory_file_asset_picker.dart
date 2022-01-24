@@ -379,8 +379,6 @@ class FileAssetPickerBuilder
     required FileAssetPickerProvider provider,
   }) : super(provider: provider, initialPermission: PermissionState.authorized);
 
-  AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
-
   Duration get switchingPathDuration => kThemeAnimationDuration * 1.5;
 
   Curve get switchingPathCurve => Curves.easeInOut;
@@ -422,6 +420,18 @@ class FileAssetPickerBuilder
       },
     );
     return Navigator.of(context).push<List<File>?>(pageRoute);
+  }
+
+  @override
+  void selectAsset(BuildContext context, File asset, bool selected) {
+    if (selected) {
+      provider.unSelectAsset(asset);
+    } else {
+      if (isSingleAssetMode) {
+        provider.selectedAssets.clear();
+      }
+      provider.selectAsset(asset);
+    }
   }
 
   @override
@@ -669,9 +679,19 @@ class FileAssetPickerBuilder
       fit: StackFit.expand,
       children: <Widget>[
         Positioned.fill(child: builder),
-        selectIndicator(context, asset),
+        selectIndicator(context, index, asset),
       ],
     );
+  }
+
+  @override
+  Semantics assetGridItemSemanticsBuilder(
+    BuildContext context,
+    int index,
+    File asset,
+    Widget child,
+  ) {
+    return Semantics(child: child);
   }
 
   @override
@@ -1050,16 +1070,12 @@ class FileAssetPickerBuilder
   }
 
   @override
-  Widget selectIndicator(BuildContext context, File asset) {
+  Widget selectIndicator(BuildContext context, int index, File asset) {
     return Selector<FileAssetPickerProvider, List<File>>(
       selector: (_, FileAssetPickerProvider p) => p.selectedAssets,
       builder: (_, List<File> selectedAssets, __) {
         final bool isSelected =
             selectedAssets.where((File f) => f.path == asset.path).isNotEmpty;
-        int index = 0;
-        if (isSelected) {
-          index = selectedAssets.indexWhere((File f) => f.path == asset.path);
-        }
         final double indicatorSize = Screens.width / gridCount / 3;
         return Positioned(
           top: 0.0,
@@ -1199,8 +1215,6 @@ class FileAssetPickerViewerBuilderDelegate
         );
 
   bool _isDisplayingDetail = true;
-
-  AssetsPickerTextDelegate get textDelegate => AssetsPickerTextDelegate();
 
   @override
   void switchDisplayingDetail({bool? value}) {
