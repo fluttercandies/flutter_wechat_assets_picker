@@ -23,10 +23,6 @@ class AssetPickerTextDelegate {
   /// GIF指示的字段
   String get gifIndicator => 'GIF';
 
-  /// HEIC failed string.
-  /// HEIC 类型资源加载失败的字段
-  String get heicNotSupported => '尚未支持HEIC类型资源';
-
   /// Load failed string for item.
   /// 资源加载失败时的字段
   String get loadFailed => '加载失败';
@@ -139,9 +135,6 @@ class EnglishTextDelegate extends AssetPickerTextDelegate {
   String get gifIndicator => 'GIF';
 
   @override
-  String get heicNotSupported => 'Unsupported HEIC asset type.';
-
-  @override
   String get loadFailed => 'Load failed';
 
   @override
@@ -233,9 +226,6 @@ class HebrewTextDelegate extends AssetPickerTextDelegate {
   String get gifIndicator => 'GIF';
 
   @override
-  String get heicNotSupported => 'קובץ HEIC לא נתמך.';
-
-  @override
   String get loadFailed => 'הטעינה נכשלה';
 
   @override
@@ -293,9 +283,6 @@ class GermanTextDelegate extends AssetPickerTextDelegate {
   String get gifIndicator => 'GIF';
 
   @override
-  String get heicNotSupported => 'HEIC Format ist nicht unterstützt.';
-
-  @override
   String get loadFailed => 'Ladevorgang ist fehlgeschlagen';
 
   @override
@@ -350,9 +337,6 @@ class RussianTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get gifIndicator => 'GIF';
-
-  @override
-  String get heicNotSupported => 'Формат HEIC не поддерживается.';
 
   @override
   String get loadFailed => 'Ошибка при загрузке';
@@ -414,9 +398,6 @@ class JapaneseTextDelegate extends AssetPickerTextDelegate {
   String get gifIndicator => 'GIF';
 
   @override
-  String get heicNotSupported => 'HEIC フォーマットはサポートしていません。';
-
-  @override
   String get loadFailed => '読み込みに失敗しました。';
 
   @override
@@ -473,9 +454,6 @@ class ArabicTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get gifIndicator => 'GIF';
-
-  @override
-  String get heicNotSupported => 'نوع HEIC غير مدعوم.';
 
   @override
   String get loadFailed => 'فشل التحميل';
@@ -535,9 +513,6 @@ class FrenchTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get gifIndicator => 'GIF';
-
-  @override
-  String get heicNotSupported => 'Type de fichier non supporté';
 
   @override
   String get loadFailed => 'Echec du chargement';
