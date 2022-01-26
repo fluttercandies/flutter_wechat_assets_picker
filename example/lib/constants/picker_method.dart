@@ -292,7 +292,7 @@ class PickMethod {
           context,
           maxAssets: maxAssetsCount,
           selectedAssets: assets,
-          textDelegate: EnglishTextDelegate(),
+          textDelegate: EnglishAssetPickerTextDelegate(),
         );
       },
     );

@@ -81,7 +81,7 @@ class AssetPickerTextDelegate {
   /// Semantics fields.
   ///
   /// Fields below are only for semantics usage. For customizable these fields,
-  /// head over to [EnglishTextDelegate] for fields understanding.
+  /// head over to [EnglishAssetPickerTextDelegate] for fields understanding.
 
   String get sTypeAudioLabel => '音频';
 
@@ -121,7 +121,7 @@ class AssetPickerTextDelegate {
 
 /// [AssetPickerTextDelegate] implements with English.
 /// English Localization
-class EnglishTextDelegate extends AssetPickerTextDelegate {
+class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'Confirm';
 
@@ -212,7 +212,7 @@ class EnglishTextDelegate extends AssetPickerTextDelegate {
 
 /// [AssetPickerTextDelegate] implements with Hebrew.
 /// תרגום בשפה העברית
-class HebrewTextDelegate extends AssetPickerTextDelegate {
+class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'אישור';
 
@@ -269,7 +269,7 @@ class HebrewTextDelegate extends AssetPickerTextDelegate {
 
 /// [AssetPickerTextDelegate] implementiert mit der deutschen Übersetzung.
 /// Deutsche Textimplementierung.
-class GermanTextDelegate extends AssetPickerTextDelegate {
+class GermanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'Bestätigen';
 
@@ -325,7 +325,7 @@ class GermanTextDelegate extends AssetPickerTextDelegate {
 
 /// [AssetPickerTextDelegate] implements with Russian.
 /// Локализация на русский язык.
-class RussianTextDelegate extends AssetPickerTextDelegate {
+class RussianAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'Готово';
 
@@ -384,7 +384,7 @@ class RussianTextDelegate extends AssetPickerTextDelegate {
 
 /// [AssetPickerTextDelegate] implements with Japanese.
 /// 日本語の TextDelegate
-class JapaneseTextDelegate extends AssetPickerTextDelegate {
+class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => '決定';
 
@@ -442,7 +442,7 @@ class JapaneseTextDelegate extends AssetPickerTextDelegate {
 
 /// [AssetPickerTextDelegate] implements with Arabic.
 /// الترجمة العربية
-class ArabicTextDelegate extends AssetPickerTextDelegate {
+class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'تاكيد';
 
@@ -501,7 +501,7 @@ class ArabicTextDelegate extends AssetPickerTextDelegate {
 
 /// [AssetPickerTextDelegate] implements with French.
 /// Délégué texte français
-class FrenchTextDelegate extends AssetPickerTextDelegate {
+class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'OK';
 
