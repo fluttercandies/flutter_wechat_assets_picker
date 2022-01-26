@@ -7,7 +7,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../delegates/assets_picker_text_delegate.dart';
+import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
 
 class Constants {
@@ -15,7 +15,7 @@ class Constants {
 
   static GlobalKey pickerKey = GlobalKey();
 
-  static AssetsPickerTextDelegate textDelegate = AssetsPickerTextDelegate();
+  static AssetPickerTextDelegate textDelegate = AssetPickerTextDelegate();
   static SortPathDelegate<dynamic> sortPathDelegate = SortPathDelegate.common;
 
   /// The last scroll position where the picker scrolled.

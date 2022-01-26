@@ -6,7 +6,7 @@ import 'package:photo_manager/photo_manager.dart' show AssetType;
 
 /// Text delegate that controls text in widgets.
 /// 控制部件中的文字实现
-class AssetsPickerTextDelegate {
+class AssetPickerTextDelegate {
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
   String get confirm => '确认';
@@ -123,9 +123,9 @@ class AssetsPickerTextDelegate {
   String get sUnitAssetCountLabel => '数量';
 }
 
-/// [AssetsPickerTextDelegate] implements with English.
+/// [AssetPickerTextDelegate] implements with English.
 /// English Localization
-class EnglishTextDelegate extends AssetsPickerTextDelegate {
+class EnglishTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'Confirm';
 
@@ -217,9 +217,9 @@ class EnglishTextDelegate extends AssetsPickerTextDelegate {
   String get sUnitAssetCountLabel => 'count';
 }
 
-/// [AssetsPickerTextDelegate] implements with Hebrew.
+/// [AssetPickerTextDelegate] implements with Hebrew.
 /// תרגום בשפה העברית
-class HebrewTextDelegate extends AssetsPickerTextDelegate {
+class HebrewTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'אישור';
 
@@ -277,9 +277,9 @@ class HebrewTextDelegate extends AssetsPickerTextDelegate {
   String get accessiblePathName => 'קבצים נגישים';
 }
 
-/// [AssetsPickerTextDelegate] implementiert mit der deutschen Übersetzung.
+/// [AssetPickerTextDelegate] implementiert mit der deutschen Übersetzung.
 /// Deutsche Textimplementierung.
-class GermanTextDelegate extends AssetsPickerTextDelegate {
+class GermanTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'Bestätigen';
 
@@ -336,9 +336,9 @@ class GermanTextDelegate extends AssetsPickerTextDelegate {
   String get accessiblePathName => 'Verfügbare Assets';
 }
 
-/// [AssetsPickerTextDelegate] implements with Russian.
+/// [AssetPickerTextDelegate] implements with Russian.
 /// Локализация на русский язык.
-class RussianTextDelegate extends AssetsPickerTextDelegate {
+class RussianTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'Готово';
 
@@ -398,9 +398,9 @@ class RussianTextDelegate extends AssetsPickerTextDelegate {
   String get accessiblePathName => 'Доступные файлы';
 }
 
-/// [AssetsPickerTextDelegate] implements with Japanese.
+/// [AssetPickerTextDelegate] implements with Japanese.
 /// 日本語の TextDelegate
-class JapaneseTextDelegate extends AssetsPickerTextDelegate {
+class JapaneseTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => '決定';
 
@@ -459,9 +459,9 @@ class JapaneseTextDelegate extends AssetsPickerTextDelegate {
   String get accessiblePathName => 'アクセスできるリソース';
 }
 
-/// [AssetsPickerTextDelegate] implements with Arabic.
+/// [AssetPickerTextDelegate] implements with Arabic.
 /// الترجمة العربية
-class ArabicTextDelegate extends AssetsPickerTextDelegate {
+class ArabicTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'تاكيد';
 
@@ -521,9 +521,9 @@ class ArabicTextDelegate extends AssetsPickerTextDelegate {
   String get accessiblePathName => 'ملفات يمكن الوصول إليها';
 }
 
-/// [AssetsPickerTextDelegate] implements with French.
+/// [AssetPickerTextDelegate] implements with French.
 /// Délégué texte français
-class FrenchTextDelegate extends AssetsPickerTextDelegate {
+class FrenchTextDelegate extends AssetPickerTextDelegate {
   @override
   String get confirm => 'OK';
 
