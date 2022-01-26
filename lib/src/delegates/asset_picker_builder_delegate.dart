@@ -67,13 +67,14 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.shouldRevertGrid,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
+    Locale? locale,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
         ),
         themeColor =
             pickerTheme?.colorScheme.secondary ?? themeColor ?? C.themeColor {
-    Constants.textDelegate = textDelegate ?? AssetPickerTextDelegate();
+    Constants.textDelegate = textDelegate ?? _textDelegateWithLocale(locale);
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
       gridScrollController.addListener(keepScrollOffsetListener);
@@ -677,6 +678,26 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       ),
     );
   }
+
+  static AssetPickerTextDelegate _textDelegateWithLocale(Locale? locale) {
+    switch (locale?.languageCode.toLowerCase()) {
+      case 'en':
+        return EnglishAssetPickerTextDelegate();
+      case 'he':
+        return HebrewAssetPickerTextDelegate();
+      case 'de':
+        return GermanAssetPickerTextDelegate();
+      case 'ru':
+        return RussianAssetPickerTextDelegate();
+      case 'ja':
+        return JapaneseAssetPickerTextDelegate();
+      case 'ar':
+        return ArabicAssetPickerTextDelegate();
+      case 'fr':
+        return FrenchAssetPickerTextDelegate();
+    }
+    return AssetPickerTextDelegate();
+  }
 }
 
 class DefaultAssetPickerBuilderDelegate
@@ -685,8 +706,6 @@ class DefaultAssetPickerBuilderDelegate
     required DefaultAssetPickerProvider provider,
     required PermissionState initialPermission,
     int gridCount = 4,
-    Color? themeColor,
-    AssetPickerTextDelegate? textDelegate,
     ThemeData? pickerTheme,
     SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
     WidgetBuilder? specialItemBuilder,
@@ -698,6 +717,9 @@ class DefaultAssetPickerBuilderDelegate
     this.gridThumbSize = Constants.defaultGridThumbSize,
     this.previewThumbSize,
     this.specialPickerType,
+    Color? themeColor,
+    AssetPickerTextDelegate? textDelegate,
+    Locale? locale,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -706,8 +728,6 @@ class DefaultAssetPickerBuilderDelegate
           provider: provider,
           initialPermission: initialPermission,
           gridCount: gridCount,
-          themeColor: themeColor,
-          textDelegate: textDelegate,
           pickerTheme: pickerTheme,
           specialItemPosition: specialItemPosition,
           specialItemBuilder: specialItemBuilder,
@@ -716,6 +736,9 @@ class DefaultAssetPickerBuilderDelegate
           keepScrollOffset: keepScrollOffset,
           selectPredicate: selectPredicate,
           shouldRevertGrid: shouldRevertGrid,
+          themeColor: themeColor,
+          textDelegate: textDelegate,
+          locale: locale,
         );
 
   /// Thumbnail size in the grid.

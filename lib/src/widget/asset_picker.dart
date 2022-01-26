@@ -108,8 +108,6 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
           provider: provider,
           initialPermission: _ps,
           gridCount: gridCount,
-          textDelegate: textDelegate,
-          themeColor: themeColor,
           pickerTheme: pickerTheme,
           gridThumbSize: gridThumbSize,
           previewThumbSize: previewThumbSize,
@@ -120,6 +118,9 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
           selectPredicate: selectPredicate,
           shouldRevertGrid: shouldRevertGrid,
+          textDelegate: textDelegate,
+          themeColor: themeColor,
+          locale: Localizations.maybeLocaleOf(context),
         ),
       ),
     );
