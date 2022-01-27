@@ -547,8 +547,7 @@ class DefaultAssetPickerViewerBuilderDelegate
         height: context.bottomPadding + bottomDetailHeight,
         child: child!,
       ),
-      child:
-          ChangeNotifierProvider<AssetPickerViewerProvider<AssetEntity>?>.value(
+      child: CNP<AssetPickerViewerProvider<AssetEntity>?>.value(
         value: provider,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -795,8 +794,7 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// 资源选择器将识别并一同返回。
   @override
   Widget confirmButton(BuildContext context) {
-    return ChangeNotifierProvider<
-        AssetPickerViewerProvider<AssetEntity>?>.value(
+    return CNP<AssetPickerViewerProvider<AssetEntity>?>.value(
       value: provider,
       child: Consumer<AssetPickerViewerProvider<AssetEntity>?>(
         builder: (_, AssetPickerViewerProvider<AssetEntity>? provider, __) {
@@ -911,7 +909,7 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   @override
   Widget selectButton(BuildContext context) {
-    return ChangeNotifierProvider<AssetPickerViewerProvider<AssetEntity>>.value(
+    return CNP<AssetPickerViewerProvider<AssetEntity>>.value(
       value: provider!,
       builder: (_, Widget? w) => StreamBuilder<int>(
         initialData: currentIndex,

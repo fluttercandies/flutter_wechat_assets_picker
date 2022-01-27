@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../constants/enums.dart';
+import '../constants/extensions.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
 import '../delegates/assets_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
@@ -149,7 +150,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
   }) async {
     await permissionCheck();
 
-    final Widget picker = ChangeNotifierProvider<PickerProvider>.value(
+    final Widget picker = CNP<PickerProvider>.value(
       value: provider,
       child: AssetPicker<Asset, Path>(
         key: Constants.pickerKey,

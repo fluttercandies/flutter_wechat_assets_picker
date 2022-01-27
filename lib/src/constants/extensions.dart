@@ -3,6 +3,9 @@
 /// [Date] 2020/8/19 10:34
 ///
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+typedef CNP<T extends ChangeNotifier?> = ChangeNotifierProvider<T>;
 
 extension BuildContextExtension on BuildContext {
   MediaQueryData get mediaQuery => MediaQuery.of(this);

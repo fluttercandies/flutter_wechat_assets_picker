@@ -661,7 +661,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       value: overlayStyle,
       child: Theme(
         data: theme,
-        child: ChangeNotifierProvider<AssetPickerProvider<Asset, Path>>.value(
+        child: CNP<AssetPickerProvider<Asset, Path>>.value(
           value: provider,
           builder: (BuildContext c, __) => Material(
             color: theme.canvasColor,
