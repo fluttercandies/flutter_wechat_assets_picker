@@ -74,7 +74,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         ),
         themeColor =
             pickerTheme?.colorScheme.secondary ?? themeColor ?? C.themeColor {
-    Constants.textDelegate = textDelegate ?? _textDelegateWithLocale(locale);
+    Constants.textDelegate =
+        textDelegate ?? assetPickerTextDelegateFromLocale(locale);
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
       gridScrollController.addListener(keepScrollOffsetListener);
@@ -677,26 +678,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         ),
       ),
     );
-  }
-
-  static AssetPickerTextDelegate _textDelegateWithLocale(Locale? locale) {
-    switch (locale?.languageCode.toLowerCase()) {
-      case 'en':
-        return EnglishAssetPickerTextDelegate();
-      case 'he':
-        return HebrewAssetPickerTextDelegate();
-      case 'de':
-        return GermanAssetPickerTextDelegate();
-      case 'ru':
-        return RussianAssetPickerTextDelegate();
-      case 'ja':
-        return JapaneseAssetPickerTextDelegate();
-      case 'ar':
-        return ArabicAssetPickerTextDelegate();
-      case 'fr':
-        return FrenchAssetPickerTextDelegate();
-    }
-    return AssetPickerTextDelegate();
   }
 }
 

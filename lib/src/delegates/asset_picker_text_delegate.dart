@@ -2,11 +2,38 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/4/7 10:25
 ///
+import 'package:collection/collection.dart';
+import 'package:flutter/rendering.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetType;
+
+/// All text delegates.
+final List<AssetPickerTextDelegate> assetPickerTextDelegates =
+    <AssetPickerTextDelegate>[
+  AssetPickerTextDelegate(),
+  EnglishAssetPickerTextDelegate(),
+  HebrewAssetPickerTextDelegate(),
+  GermanAssetPickerTextDelegate(),
+  RussianAssetPickerTextDelegate(),
+  JapaneseAssetPickerTextDelegate(),
+  ArabicAssetPickerTextDelegate(),
+  FrenchAssetPickerTextDelegate(),
+];
+
+/// Obtain the text delegate from the given locale.
+AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
+  final AssetPickerTextDelegate? match =
+      assetPickerTextDelegates.singleWhereOrNull(
+    (AssetPickerTextDelegate e) =>
+        e.languageCode == locale?.languageCode.toLowerCase(),
+  );
+  return match ?? AssetPickerTextDelegate();
+}
 
 /// Text delegate that controls text in widgets.
 /// 控制部件中的文字实现
 class AssetPickerTextDelegate {
+  String get languageCode => 'zh';
+
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
   String get confirm => '确认';
@@ -123,6 +150,9 @@ class AssetPickerTextDelegate {
 /// English Localization
 class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
+  String get languageCode => 'en';
+
+  @override
   String get confirm => 'Confirm';
 
   @override
@@ -214,6 +244,9 @@ class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// תרגום בשפה העברית
 class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
+  String get languageCode => 'he';
+
+  @override
   String get confirm => 'אישור';
 
   @override
@@ -271,6 +304,9 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// Deutsche Textimplementierung.
 class GermanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
+  String get languageCode => 'de';
+
+  @override
   String get confirm => 'Bestätigen';
 
   @override
@@ -326,6 +362,9 @@ class GermanAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implements with Russian.
 /// Локализация на русский язык.
 class RussianAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  @override
+  String get languageCode => 'ru';
+
   @override
   String get confirm => 'Готово';
 
@@ -386,6 +425,9 @@ class RussianAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// 日本語の TextDelegate
 class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
+  String get languageCode => 'ja';
+
+  @override
   String get confirm => '決定';
 
   @override
@@ -443,6 +485,9 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implements with Arabic.
 /// الترجمة العربية
 class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  @override
+  String get languageCode => 'ar';
+
   @override
   String get confirm => 'تاكيد';
 
@@ -502,6 +547,9 @@ class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implements with French.
 /// Délégué texte français
 class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  @override
+  String get languageCode => 'fr';
+
   @override
   String get confirm => 'OK';
 
