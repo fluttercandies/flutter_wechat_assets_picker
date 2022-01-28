@@ -2,7 +2,6 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/4/7 10:25
 ///
-import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetType;
 
@@ -21,12 +20,16 @@ final List<AssetPickerTextDelegate> assetPickerTextDelegates =
 
 /// Obtain the text delegate from the given locale.
 AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
-  final AssetPickerTextDelegate? match =
-      assetPickerTextDelegates.singleWhereOrNull(
-    (AssetPickerTextDelegate e) =>
-        e.languageCode == locale?.languageCode.toLowerCase(),
-  );
-  return match ?? AssetPickerTextDelegate();
+  if (locale == null) {
+    return AssetPickerTextDelegate();
+  }
+  final String languageCode = locale.languageCode.toLowerCase();
+  for (final AssetPickerTextDelegate delegate in assetPickerTextDelegates) {
+    if (delegate.languageCode == languageCode) {
+      return delegate;
+    }
+  }
+  return AssetPickerTextDelegate();
 }
 
 /// Text delegate that controls text in widgets.
