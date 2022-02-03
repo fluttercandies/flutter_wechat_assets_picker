@@ -81,9 +81,9 @@ class PickMethod {
           specialItemPosition: SpecialItemPosition.prepend,
           specialItemBuilder: (BuildContext context) {
             return Semantics(
-              label: AssetsPickerTextDelegate().sActionUseCameraHint,
+              label: AssetPickerTextDelegate().sActionUseCameraHint,
               button: true,
-              onTapHint: AssetsPickerTextDelegate().sActionUseCameraHint,
+              onTapHint: AssetPickerTextDelegate().sActionUseCameraHint,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () async {
@@ -122,9 +122,9 @@ class PickMethod {
           specialItemPosition: SpecialItemPosition.prepend,
           specialItemBuilder: (BuildContext context) {
             return Semantics(
-              label: AssetsPickerTextDelegate().sActionUseCameraHint,
+              label: AssetPickerTextDelegate().sActionUseCameraHint,
               button: true,
-              onTapHint: AssetsPickerTextDelegate().sActionUseCameraHint,
+              onTapHint: AssetPickerTextDelegate().sActionUseCameraHint,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () async {
@@ -292,7 +292,7 @@ class PickMethod {
           context,
           maxAssets: maxAssetsCount,
           selectedAssets: assets,
-          textDelegate: EnglishTextDelegate(),
+          textDelegate: EnglishAssetPickerTextDelegate(),
         );
       },
     );

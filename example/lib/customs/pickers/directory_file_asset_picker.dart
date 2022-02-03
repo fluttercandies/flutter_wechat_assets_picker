@@ -45,12 +45,13 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
 
   ThemeData get currentTheme => Theme.of(context);
 
-  Future<void> callPicker() async {
+  Future<void> callPicker(BuildContext context) async {
     final FileAssetPickerProvider provider = FileAssetPickerProvider(
       selectedAssets: fileList,
     );
     final FileAssetPickerBuilder builder = FileAssetPickerBuilder(
       provider: provider,
+      locale: Localizations.maybeLocaleOf(context),
     );
     final List<File>? result = await AssetPicker.pickAssetsWithDelegate(
       context,
@@ -279,7 +280,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
                     'Put files into the path to see how this custom picker work.',
                   ),
                   TextButton(
-                    onPressed: callPicker,
+                    onPressed: () => callPicker(context),
                     child: const Text(
                       '🎁 Call the Picker',
                       style: TextStyle(fontSize: 22),
@@ -377,7 +378,12 @@ class FileAssetPickerBuilder
     extends AssetPickerBuilderDelegate<File, Directory> {
   FileAssetPickerBuilder({
     required FileAssetPickerProvider provider,
-  }) : super(provider: provider, initialPermission: PermissionState.authorized);
+    Locale? locale,
+  }) : super(
+          provider: provider,
+          initialPermission: PermissionState.authorized,
+          locale: locale,
+        );
 
   Duration get switchingPathDuration => kThemeAnimationDuration * 1.5;
 

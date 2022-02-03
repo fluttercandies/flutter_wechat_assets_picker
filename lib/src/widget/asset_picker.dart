@@ -12,7 +12,7 @@ import '../constants/constants.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
-import '../delegates/assets_picker_text_delegate.dart';
+import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
 import '../provider/asset_picker_provider.dart';
 import 'asset_picker_page_route.dart';
@@ -46,7 +46,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     Color? themeColor,
     ThemeData? pickerTheme,
     SortPathDelegate<AssetPathEntity>? sortPathDelegate,
-    AssetsPickerTextDelegate? textDelegate,
+    AssetPickerTextDelegate? textDelegate,
     FilterOptionGroup? filterOptions,
     WidgetBuilder? specialItemBuilder,
     IndicatorBuilder? loadingIndicatorBuilder,
@@ -109,8 +109,6 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
           provider: provider,
           initialPermission: _ps,
           gridCount: gridCount,
-          textDelegate: textDelegate,
-          themeColor: themeColor,
           pickerTheme: pickerTheme,
           gridThumbSize: gridThumbSize,
           previewThumbSize: previewThumbSize,
@@ -121,6 +119,9 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
           selectPredicate: selectPredicate,
           shouldRevertGrid: shouldRevertGrid,
+          textDelegate: textDelegate,
+          themeColor: themeColor,
+          locale: Localizations.maybeLocaleOf(context),
         ),
       ),
     );

@@ -20,7 +20,7 @@ import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
-import '../delegates/assets_picker_text_delegate.dart';
+import '../delegates/asset_picker_text_delegate.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_viewer.dart';
@@ -57,8 +57,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required this.provider,
     required this.initialPermission,
     this.gridCount = 4,
-    Color? themeColor,
-    AssetsPickerTextDelegate? textDelegate,
     this.pickerTheme,
     this.specialItemPosition = SpecialItemPosition.none,
     this.specialItemBuilder,
@@ -67,13 +65,17 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.keepScrollOffset = false,
     this.selectPredicate,
     this.shouldRevertGrid,
+    Color? themeColor,
+    AssetPickerTextDelegate? textDelegate,
+    Locale? locale,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
         ),
         themeColor =
             pickerTheme?.colorScheme.secondary ?? themeColor ?? C.themeColor {
-    Constants.textDelegate = textDelegate ?? AssetsPickerTextDelegate();
+    Constants.textDelegate =
+        textDelegate ?? assetPickerTextDelegateFromLocale(locale);
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
       gridScrollController.addListener(keepScrollOffsetListener);
@@ -212,7 +214,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   bool get effectiveShouldRevertGrid => shouldRevertGrid ?? isAppleOS;
 
-  AssetsPickerTextDelegate get textDelegate => Constants.textDelegate;
+  AssetPickerTextDelegate get textDelegate => Constants.textDelegate;
 
   /// The listener to track the scroll position of the [gridScrollController]
   /// if [keepScrollOffset] is true.
@@ -685,8 +687,6 @@ class DefaultAssetPickerBuilderDelegate
     required DefaultAssetPickerProvider provider,
     required PermissionState initialPermission,
     int gridCount = 4,
-    Color? themeColor,
-    AssetsPickerTextDelegate? textDelegate,
     ThemeData? pickerTheme,
     SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
     WidgetBuilder? specialItemBuilder,
@@ -698,6 +698,9 @@ class DefaultAssetPickerBuilderDelegate
     this.gridThumbSize = Constants.defaultGridThumbSize,
     this.previewThumbSize,
     this.specialPickerType,
+    Color? themeColor,
+    AssetPickerTextDelegate? textDelegate,
+    Locale? locale,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
@@ -706,8 +709,6 @@ class DefaultAssetPickerBuilderDelegate
           provider: provider,
           initialPermission: initialPermission,
           gridCount: gridCount,
-          themeColor: themeColor,
-          textDelegate: textDelegate,
           pickerTheme: pickerTheme,
           specialItemPosition: specialItemPosition,
           specialItemBuilder: specialItemBuilder,
@@ -716,6 +717,9 @@ class DefaultAssetPickerBuilderDelegate
           keepScrollOffset: keepScrollOffset,
           selectPredicate: selectPredicate,
           shouldRevertGrid: shouldRevertGrid,
+          themeColor: themeColor,
+          textDelegate: textDelegate,
+          locale: locale,
         );
 
   /// Thumbnail size in the grid.
