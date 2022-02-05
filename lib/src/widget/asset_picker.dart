@@ -205,7 +205,6 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     if (light) {
       return ThemeData.light().copyWith(
         primaryColor: Colors.grey[50],
-        primaryColorBrightness: Brightness.dark,
         primaryColorLight: Colors.grey[50],
         primaryColorDark: Colors.grey[50],
         canvasColor: Colors.grey[100],
@@ -230,9 +229,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
         buttonTheme: ButtonThemeData(buttonColor: themeColor),
         colorScheme: ColorScheme(
           primary: Colors.grey[50]!,
-          primaryVariant: Colors.grey[50]!,
           secondary: themeColor,
-          secondaryVariant: themeColor,
           background: Colors.grey[50]!,
           surface: Colors.grey[50]!,
           brightness: Brightness.light,
@@ -247,7 +244,6 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     }
     return ThemeData.dark().copyWith(
       primaryColor: Colors.grey[900],
-      primaryColorBrightness: Brightness.dark,
       primaryColorLight: Colors.grey[900],
       primaryColorDark: Colors.grey[900],
       canvasColor: Colors.grey[850],
@@ -272,9 +268,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       buttonTheme: ButtonThemeData(buttonColor: themeColor),
       colorScheme: ColorScheme(
         primary: Colors.grey[900]!,
-        primaryVariant: Colors.grey[900]!,
         secondary: themeColor,
-        secondaryVariant: themeColor,
         background: Colors.grey[900]!,
         surface: Colors.grey[900]!,
         brightness: Brightness.dark,
