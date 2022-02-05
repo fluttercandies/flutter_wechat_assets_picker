@@ -593,7 +593,7 @@ class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get sTypeOtherLabel => 'آخر';
 
   @override
-  String get sActionPlayHint => 'العب';
+  String get sActionPlayHint => 'تشغيل';
 
   @override
   String get sActionPreviewHint => 'معاينة';
@@ -602,7 +602,7 @@ class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get sActionSelectHint => 'تحديد';
 
   @override
-  String get sActionSwitchPathLabel => 'مسار التبديل';
+  String get sActionSwitchPathLabel => 'تبديل المسار';
 
   @override
   String get sActionUseCameraHint => 'استخدم الكاميرا';
