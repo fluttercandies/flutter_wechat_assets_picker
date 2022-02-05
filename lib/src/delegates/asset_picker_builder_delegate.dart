@@ -1250,66 +1250,57 @@ class DefaultAssetPickerBuilderDelegate
     AssetEntity asset,
     Widget child,
   ) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isSwitchingPath,
-      builder: (_, bool isSwitchingPath, __) {
-        return Consumer<DefaultAssetPickerProvider>(
-          child: child,
-          builder: (_, DefaultAssetPickerProvider p, Widget? child) {
-            final bool isBanned = (!p.selectedAssets.contains(asset) &&
-                    p.selectedMaximumAssets) ||
+    return Consumer<DefaultAssetPickerProvider>(
+      child: child,
+      builder: (_, DefaultAssetPickerProvider p, Widget? child) {
+        final bool isBanned =
+            (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
                 (isWeChatMoment &&
                     asset.type == AssetType.video &&
                     p.selectedAssets.isNotEmpty);
-            final bool isSelected = p.selectedDescriptions.contains(
-              asset.toString(),
-            );
-            final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
-            String hint = '';
-            if (asset.type == AssetType.audio ||
-                asset.type == AssetType.video) {
-              hint += '${textDelegate.sNameDurationLabel}: ';
-              hint +=
-                  textDelegate.durationIndicatorBuilder(asset.videoDuration);
-            }
-            if (asset.title?.isNotEmpty == true) {
-              hint += ', ${asset.title}';
-            }
-            return Semantics(
-              button: false,
-              enabled: !isBanned,
-              excludeSemantics: true,
-              focusable: isSwitchingPath,
-              label: '${textDelegate.semanticTypeLabel(asset.type)}'
-                  '${semanticIndex(index)}, '
-                  '${asset.createDateTime.toString().replaceAll('.000', '')}',
-              hidden: isSwitchingPath,
-              hint: hint,
-              image: asset.type == AssetType.image ||
-                  asset.type == AssetType.video,
-              onTap: () => selectAsset(context, asset, isSelected),
-              onTapHint: textDelegate.sActionSelectHint,
-              onLongPress: isPreviewEnabled
-                  ? () => _pushAssetToViewer(context, index, asset)
-                  : null,
-              onLongPressHint: textDelegate.sActionPreviewHint,
-              selected: isSelected,
-              sortKey: OrdinalSortKey(
-                semanticIndex(index).toDouble(),
-                name: 'GridItem',
-              ),
-              value: selectedIndex > 0 ? '$selectedIndex' : null,
-              child: GestureDetector(
-                // Regression https://github.com/flutter/flutter/issues/35112.
-                onLongPress:
-                    isPreviewEnabled && context.mediaQuery.accessibleNavigation
-                        ? () => _pushAssetToViewer(context, index, asset)
-                        : null,
-                child:
-                    IndexedSemantics(index: semanticIndex(index), child: child),
-              ),
-            );
-          },
+        final bool isSelected = p.selectedDescriptions.contains(
+          asset.toString(),
+        );
+        final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
+        String hint = '';
+        if (asset.type == AssetType.audio || asset.type == AssetType.video) {
+          hint += '${textDelegate.sNameDurationLabel}: ';
+          hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
+        }
+        if (asset.title?.isNotEmpty == true) {
+          hint += ', ${asset.title}';
+        }
+        return Semantics(
+          button: false,
+          enabled: !isBanned,
+          excludeSemantics: true,
+          focusable: !isSwitchingPath.value,
+          label: '${textDelegate.semanticTypeLabel(asset.type)}'
+              '${semanticIndex(index)}, '
+              '${asset.createDateTime.toString().replaceAll('.000', '')}',
+          hidden: isSwitchingPath.value,
+          hint: hint,
+          image: asset.type == AssetType.image || asset.type == AssetType.video,
+          onTap: () => selectAsset(context, asset, isSelected),
+          onTapHint: textDelegate.sActionSelectHint,
+          onLongPress: isPreviewEnabled
+              ? () => _pushAssetToViewer(context, index, asset)
+              : null,
+          onLongPressHint: textDelegate.sActionPreviewHint,
+          selected: isSelected,
+          sortKey: OrdinalSortKey(
+            semanticIndex(index).toDouble(),
+            name: 'GridItem',
+          ),
+          value: selectedIndex > 0 ? '$selectedIndex' : null,
+          child: GestureDetector(
+            // Regression https://github.com/flutter/flutter/issues/35112.
+            onLongPress:
+                isPreviewEnabled && context.mediaQuery.accessibleNavigation
+                    ? () => _pushAssetToViewer(context, index, asset)
+                    : null,
+            child: IndexedSemantics(index: semanticIndex(index), child: child),
+          ),
         );
       },
     );
