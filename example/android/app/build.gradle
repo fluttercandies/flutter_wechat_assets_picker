@@ -46,9 +46,24 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        forAll {
+            storeFile file("${rootDir.absolutePath}/key.jks")
+            storePassword 'picker'
+            keyAlias 'picker'
+            keyPassword 'picker'
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.forAll
+        }
+        profile {
+            signingConfig signingConfigs.forAll
+        }
         release {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.forAll
         }
     }
 }
