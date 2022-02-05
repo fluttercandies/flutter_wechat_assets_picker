@@ -213,7 +213,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// Called when assets changed and obtained notifications from the OS.
   /// 系统发出资源变更的通知时调用的方法
-  Future<void> onAssetsUpdated(MethodCall call, StateSetter setState) async {}
+  Future<void> onAssetsChanged(MethodCall call, StateSetter setState) async {}
 
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
@@ -793,7 +793,7 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
-  Future<void> onAssetsUpdated(MethodCall call, StateSetter setState) async {
+  Future<void> onAssetsChanged(MethodCall call, StateSetter setState) async {
     if (!isPermissionLimited) {
       return;
     }

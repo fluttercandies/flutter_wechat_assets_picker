@@ -315,7 +315,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   }
 
   Future<void> _onLimitedAssetsUpdated(MethodCall call) async {
-    await widget.builder.onAssetsUpdated(
+    await widget.builder.onAssetsChanged(
       call,
       (VoidCallback fn) {
         fn();
