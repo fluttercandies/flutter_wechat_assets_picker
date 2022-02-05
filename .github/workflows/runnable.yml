@@ -1,4 +1,4 @@
-name: Build test (stable)
+name: Runnable (stable)
 
 on:
   push:
@@ -7,7 +7,27 @@ on:
   pull_request:
 
 jobs:
+  analyze:
+    name: Analyze on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - run: dart --version
+      - run: flutter --version
+      - run: flutter pub get
+      - run: flutter analyze lib example/lib
+
   test_iOS:
+    needs: analyze
     name: Test iOS on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -27,6 +47,7 @@ jobs:
       - run: cd example; flutter build ios --no-codesign
 
   test_android:
+    needs: analyze
     name: Test Android on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
