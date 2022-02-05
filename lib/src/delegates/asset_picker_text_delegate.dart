@@ -301,6 +301,40 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get accessiblePathName => 'קבצים נגישים';
+
+  // Using English for semantics usage, since Hebrew is not supported for TalkBack.
+  @override
+  String get sTypeAudioLabel => 'Audio';
+
+  @override
+  String get sTypeImageLabel => 'Image';
+
+  @override
+  String get sTypeVideoLabel => 'Video';
+
+  @override
+  String get sTypeOtherLabel => 'Other asset';
+
+  @override
+  String get sActionPlayHint => 'play';
+
+  @override
+  String get sActionPreviewHint => 'preview';
+
+  @override
+  String get sActionSelectHint => 'select';
+
+  @override
+  String get sActionSwitchPathLabel => 'switch path';
+
+  @override
+  String get sActionUseCameraHint => 'use camera';
+
+  @override
+  String get sNameDurationLabel => 'duration';
+
+  @override
+  String get sUnitAssetCountLabel => 'count';
 }
 
 /// [AssetPickerTextDelegate] implementiert mit der deutschen Übersetzung.
@@ -545,6 +579,39 @@ class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get accessiblePathName => 'ملفات يمكن الوصول إليها';
+
+  @override
+  String get sTypeAudioLabel => 'صوتي';
+
+  @override
+  String get sTypeImageLabel => 'صورة';
+
+  @override
+  String get sTypeVideoLabel => 'فيديو';
+
+  @override
+  String get sTypeOtherLabel => 'آخر';
+
+  @override
+  String get sActionPlayHint => 'العب';
+
+  @override
+  String get sActionPreviewHint => 'معاينة';
+
+  @override
+  String get sActionSelectHint => 'تحديد';
+
+  @override
+  String get sActionSwitchPathLabel => 'مسار التبديل';
+
+  @override
+  String get sActionUseCameraHint => 'استخدم الكاميرا';
+
+  @override
+  String get sNameDurationLabel => 'مدة';
+
+  @override
+  String get sUnitAssetCountLabel => 'عدد';
 }
 
 /// [AssetPickerTextDelegate] implements with French.
