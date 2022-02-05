@@ -377,17 +377,18 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
 class FileAssetPickerBuilder
     extends AssetPickerBuilderDelegate<File, Directory> {
   FileAssetPickerBuilder({
-    required FileAssetPickerProvider provider,
+    required this.provider,
     Locale? locale,
-  }) : super(
-          provider: provider,
-          initialPermission: PermissionState.authorized,
-          locale: locale,
-        );
+  }) : super(initialPermission: PermissionState.authorized, locale: locale);
+
+  final FileAssetPickerProvider provider;
 
   Duration get switchingPathDuration => kThemeAnimationDuration * 1.5;
 
   Curve get switchingPathCurve => Curves.easeInOut;
+
+  @override
+  bool get isSingleAssetMode => provider.maxAssets == 1;
 
   Future<List<File>?> pushToPicker(
     BuildContext context, {
@@ -1043,7 +1044,7 @@ class FileAssetPickerBuilder
                     index: 0,
                     previewAssets: provider.selectedAssets,
                     selectedAssets: provider.selectedAssets,
-                    selectorProvider: provider as FileAssetPickerProvider,
+                    selectorProvider: provider,
                   );
                   if (result != null) {
                     Navigator.of(context).pop(result);
@@ -1187,6 +1188,29 @@ class FileAssetPickerBuilder
     int placeholderCount = 0,
   }) {
     return assets.indexWhere((File file) => file.path == id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlayStyle,
+      child: Theme(
+        data: theme,
+        child: ChangeNotifierProvider<FileAssetPickerProvider>.value(
+          value: provider,
+          builder: (BuildContext c, __) => Material(
+            color: theme.canvasColor,
+            child: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                if (isAppleOS) appleOSLayout(c) else androidLayout(c),
+                if (Platform.isIOS) iOSPermissionOverlay(c),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

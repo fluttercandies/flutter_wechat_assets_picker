@@ -54,7 +54,6 @@ typedef AssetSelectPredicate<Asset> = FutureOr<bool> Function(
 ///  * [Path] The type of your paths. Defaults to [AssetPathEntity].
 abstract class AssetPickerBuilderDelegate<Asset, Path> {
   AssetPickerBuilderDelegate({
-    required this.provider,
     required this.initialPermission,
     this.gridCount = 4,
     this.pickerTheme,
@@ -62,7 +61,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.specialItemBuilder,
     this.loadingIndicatorBuilder,
     this.allowSpecialItemWhenEmpty = false,
-    this.keepScrollOffset = false,
     this.selectPredicate,
     this.shouldRevertGrid,
     Color? themeColor,
@@ -76,15 +74,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             pickerTheme?.colorScheme.secondary ?? themeColor ?? C.themeColor {
     Constants.textDelegate =
         textDelegate ?? assetPickerTextDelegateFromLocale(locale);
-    // Add the listener if [keepScrollOffset] is true.
-    if (keepScrollOffset) {
-      gridScrollController.addListener(keepScrollOffsetListener);
-    }
   }
-
-  /// [ChangeNotifier] for asset picker.
-  /// 资源选择器状态保持
-  final AssetPickerProvider<Asset, Path> provider;
 
   /// The [PermissionState] when the picker is called.
   /// 当选择器被拉起时的权限状态
@@ -123,10 +113,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Whether the special item will display or not when assets is empty.
   /// 当没有资源时是否显示自定义item
   final bool allowSpecialItemWhenEmpty;
-
-  /// Whether the picker should save the scroll offset between pushes and pops.
-  /// 选择器是否可以从同样的位置开始选择
-  final bool keepScrollOffset;
 
   /// {@macro wechat_assets_picker.AssetSelectPredicate}
   final AssetSelectPredicate<Asset>? selectPredicate;
@@ -172,7 +158,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// Whether the picker is under the single asset mode.
   /// 选择器是否为单选模式
-  bool get isSingleAssetMode => provider.maxAssets == 1;
+  bool get isSingleAssetMode;
 
   /// Space between assets item widget.
   /// 资源部件之间的间隔
@@ -216,25 +202,17 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   AssetPickerTextDelegate get textDelegate => Constants.textDelegate;
 
-  /// The listener to track the scroll position of the [gridScrollController]
-  /// if [keepScrollOffset] is true.
-  /// 当 [keepScrollOffset] 为 true 时，跟踪 [gridScrollController] 位置的监听。
-  void keepScrollOffsetListener() {
-    if (gridScrollController.hasClients) {
-      Constants.scrollPosition = gridScrollController.position;
-    }
-  }
-
   /// The method to select assets. Delegates can implement this method
   /// to involve with predications, callbacks, etc.
   /// 选择资源的方法。自定义的 delegate 可以通过实现该方法，整合判断、回调等操作。
   void selectAsset(BuildContext context, Asset asset, bool selected);
 
+  /// Called when assets changed and obtained notifications from the OS.
+  /// 系统发出资源变更的通知时调用的方法
+  Future<void> onAssetsUpdated(MethodCall call, StateSetter setState) async {}
+
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
-  ///
-  /// Be aware that the method will do nothing when [keepScrollOffset] is true.
-  /// 注意当 [keepScrollOffset] 为 true 时方法不会进行释放。
   void dispose() {
     Constants.scrollPosition = null;
     gridScrollController.dispose();
@@ -648,43 +626,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// Yes, the build method.
   /// 没错，是它是它就是它，我们亲爱的 build 方法~
-  Widget build(BuildContext context) {
-    // Schedule the scroll position's restoration callback if this feature
-    // is enabled and offsets are different.
-    if (keepScrollOffset && Constants.scrollPosition != null) {
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
-        // Update only if the controller has clients.
-        if (gridScrollController.hasClients) {
-          gridScrollController.jumpTo(Constants.scrollPosition!.pixels);
-        }
-      });
-    }
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: overlayStyle,
-      child: Theme(
-        data: theme,
-        child: CNP<AssetPickerProvider<Asset, Path>>.value(
-          value: provider,
-          builder: (BuildContext c, __) => Material(
-            color: theme.canvasColor,
-            child: Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                if (isAppleOS) appleOSLayout(c) else androidLayout(c),
-                if (Platform.isIOS) iOSPermissionOverlay(c),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context);
 }
 
 class DefaultAssetPickerBuilderDelegate
     extends AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerBuilderDelegate({
-    required DefaultAssetPickerProvider provider,
+    required this.provider,
     required PermissionState initialPermission,
     int gridCount = 4,
     ThemeData? pickerTheme,
@@ -692,12 +640,12 @@ class DefaultAssetPickerBuilderDelegate
     WidgetBuilder? specialItemBuilder,
     IndicatorBuilder? loadingIndicatorBuilder,
     bool allowSpecialItemWhenEmpty = false,
-    bool keepScrollOffset = false,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     bool? shouldRevertGrid,
     this.gridThumbSize = Constants.defaultGridThumbSize,
     this.previewThumbSize,
     this.specialPickerType,
+    this.keepScrollOffset = false,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
@@ -706,7 +654,6 @@ class DefaultAssetPickerBuilderDelegate
           'Theme and theme color cannot be set at the same time.',
         ),
         super(
-          provider: provider,
           initialPermission: initialPermission,
           gridCount: gridCount,
           pickerTheme: pickerTheme,
@@ -714,13 +661,21 @@ class DefaultAssetPickerBuilderDelegate
           specialItemBuilder: specialItemBuilder,
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
-          keepScrollOffset: keepScrollOffset,
           selectPredicate: selectPredicate,
           shouldRevertGrid: shouldRevertGrid,
           themeColor: themeColor,
           textDelegate: textDelegate,
           locale: locale,
-        );
+        ) {
+    // Add the listener if [keepScrollOffset] is true.
+    if (keepScrollOffset) {
+      gridScrollController.addListener(keepScrollOffsetListener);
+    }
+  }
+
+  /// [ChangeNotifier] for asset picker.
+  /// 资源选择器状态保持
+  final DefaultAssetPickerProvider provider;
 
   /// Thumbnail size in the grid.
   /// 预览时网络的缩略图大小
@@ -761,6 +716,10 @@ class DefaultAssetPickerBuilderDelegate
   /// * [SpecialPickerType.noPreview] 禁用资源预览。多选时单击资产将直接选中，单选时选中并返回。
   final SpecialPickerType? specialPickerType;
 
+  /// Whether the picker should save the scroll offset between pushes and pops.
+  /// 选择器是否可以从同样的位置开始选择
+  final bool keepScrollOffset;
+
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
   Duration get switchingPathDuration => const Duration(milliseconds: 300);
@@ -777,6 +736,29 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the preview of assets is enabled.
   /// 资源的预览是否启用
   bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
+
+  @override
+  bool get isSingleAssetMode => provider.maxAssets == 1;
+
+  /// The listener to track the scroll position of the [gridScrollController]
+  /// if [keepScrollOffset] is true.
+  /// 当 [keepScrollOffset] 为 true 时，跟踪 [gridScrollController] 位置的监听。
+  void keepScrollOffsetListener() {
+    if (gridScrollController.hasClients) {
+      Constants.scrollPosition = gridScrollController.position;
+    }
+  }
+
+  /// Be aware that the method will do nothing when [keepScrollOffset] is true.
+  /// 注意当 [keepScrollOffset] 为 true 时方法不会进行释放。
+  @override
+  void dispose() {
+    // Skip delegate's dispose when it's keeping scroll offset.
+    if (keepScrollOffset) {
+      return;
+    }
+    super.dispose();
+  }
 
   @override
   Future<void> selectAsset(
@@ -802,6 +784,18 @@ class DefaultAssetPickerBuilderDelegate
     provider.selectAsset(asset);
     if (isSingleAssetMode && !isPreviewEnabled) {
       Navigator.of(context).maybePop(provider.selectedAssets);
+    }
+  }
+
+  @override
+  Future<void> onAssetsUpdated(MethodCall call, StateSetter setState) async {
+    if (!isPermissionLimited) {
+      return;
+    }
+    if (provider.currentPathEntity != null) {
+      final AssetPathEntity? _currentPathEntity = provider.currentPathEntity;
+      await _currentPathEntity?.refreshPathProperties();
+      await provider.switchPath(_currentPathEntity);
     }
   }
 
@@ -852,7 +846,7 @@ class DefaultAssetPickerBuilderDelegate
       themeData: theme,
       previewThumbSize: previewThumbSize,
       selectedAssets: _selected,
-      selectorProvider: provider as DefaultAssetPickerProvider,
+      selectorProvider: provider,
       specialPickerType: specialPickerType,
       maxAssets: provider.maxAssets,
       shouldReversePreview: isAppleOS,
@@ -1631,9 +1625,7 @@ class DefaultAssetPickerBuilderDelegate
                           context: c,
                           list: list,
                           index: i,
-                          isAudio: (provider as DefaultAssetPickerProvider)
-                                  .requestType ==
-                              RequestType.audio,
+                          isAudio: provider.requestType == RequestType.audio,
                         ),
                         separatorBuilder: (_, __) => Container(
                           margin: const EdgeInsetsDirectional.only(start: 60),
@@ -1852,7 +1844,7 @@ class DefaultAssetPickerBuilderDelegate
         previewAssets: _selected,
         previewThumbSize: previewThumbSize,
         selectedAssets: _selected,
-        selectorProvider: provider as DefaultAssetPickerProvider,
+        selectorProvider: provider,
         themeData: theme,
         maxAssets: provider.maxAssets,
       );
@@ -2051,6 +2043,39 @@ class DefaultAssetPickerBuilderDelegate
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Schedule the scroll position's restoration callback if this feature
+    // is enabled and offsets are different.
+    if (keepScrollOffset && Constants.scrollPosition != null) {
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        // Update only if the controller has clients.
+        if (gridScrollController.hasClients) {
+          gridScrollController.jumpTo(Constants.scrollPosition!.pixels);
+        }
+      });
+    }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlayStyle,
+      child: Theme(
+        data: theme,
+        child: CNP<DefaultAssetPickerProvider>.value(
+          value: provider,
+          builder: (BuildContext c, __) => Material(
+            color: theme.canvasColor,
+            child: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                if (isAppleOS) appleOSLayout(c) else androidLayout(c),
+                if (Platform.isIOS) iOSPermissionOverlay(c),
+              ],
+            ),
+          ),
         ),
       ),
     );
