@@ -422,6 +422,39 @@ class RussianAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get accessiblePathName => 'Доступные файлы';
+
+  @override
+  String get sTypeAudioLabel => 'Аудио';
+
+  @override
+  String get sTypeImageLabel => 'Изображение';
+
+  @override
+  String get sTypeVideoLabel => 'Видео';
+
+  @override
+  String get sTypeOtherLabel => 'Другой файл';
+
+  @override
+  String get sActionPlayHint => 'воспроизвести';
+
+  @override
+  String get sActionPreviewHint => 'просмотр';
+
+  @override
+  String get sActionSelectHint => 'выбрать';
+
+  @override
+  String get sActionSwitchPathLabel => 'изменить путь';
+
+  @override
+  String get sActionUseCameraHint => 'использовать камеру';
+
+  @override
+  String get sNameDurationLabel => 'продолжительность';
+
+  @override
+  String get sUnitAssetCountLabel => 'количество';
 }
 
 /// [AssetPickerTextDelegate] implements with Japanese.
