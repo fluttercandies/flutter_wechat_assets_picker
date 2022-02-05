@@ -120,6 +120,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// The [ScrollController] for the preview grid.
   final ScrollController gridScrollController = ScrollController();
 
+  /// If path switcher opened.
+  /// 是否正在进行路径选择
+  final ValueNotifier<bool> isSwitchingPath = ValueNotifier<bool>(false);
+
   /// The [GlobalKey] for [assetsGridBuilder] to locate the [ScrollView.center].
   /// [assetsGridBuilder] 用于定位 [ScrollView.center] 的 [GlobalKey]
   final GlobalKey gridRevertKey = GlobalKey();
@@ -216,6 +220,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   void dispose() {
     Constants.scrollPosition = null;
     gridScrollController.dispose();
+    isSwitchingPath.dispose();
     permission.dispose();
     permissionOverlayHidden.dispose();
   }
@@ -796,6 +801,7 @@ class DefaultAssetPickerBuilderDelegate
       final AssetPathEntity? _currentPathEntity = provider.currentPathEntity;
       await _currentPathEntity?.refreshPathProperties();
       await provider.switchPath(_currentPathEntity);
+      isSwitchingPath.value = false;
     }
   }
 
@@ -921,8 +927,8 @@ class DefaultAssetPickerBuilderDelegate
   @override
   Widget appleOSLayout(BuildContext context) {
     Widget _gridLayout(BuildContext context) {
-      return Selector<DefaultAssetPickerProvider, bool>(
-        selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
+      return ValueListenableBuilder<bool>(
+        valueListenable: isSwitchingPath,
         builder: (_, bool isSwitchingPath, __) => Semantics(
           excludeSemantics: isSwitchingPath,
           child: RepaintBoundary(
@@ -1244,57 +1250,66 @@ class DefaultAssetPickerBuilderDelegate
     AssetEntity asset,
     Widget child,
   ) {
-    return Consumer<DefaultAssetPickerProvider>(
-      child: child,
-      builder: (_, DefaultAssetPickerProvider p, Widget? child) {
-        final bool isBanned =
-            (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
+    return ValueListenableBuilder<bool>(
+      valueListenable: isSwitchingPath,
+      builder: (_, bool isSwitchingPath, __) {
+        return Consumer<DefaultAssetPickerProvider>(
+          child: child,
+          builder: (_, DefaultAssetPickerProvider p, Widget? child) {
+            final bool isBanned = (!p.selectedAssets.contains(asset) &&
+                    p.selectedMaximumAssets) ||
                 (isWeChatMoment &&
                     asset.type == AssetType.video &&
                     p.selectedAssets.isNotEmpty);
-        final bool isSelected = p.selectedDescriptions.contains(
-          asset.toString(),
-        );
-        final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
-        String hint = '';
-        if (asset.type == AssetType.audio || asset.type == AssetType.video) {
-          hint += '${textDelegate.sNameDurationLabel}: ';
-          hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
-        }
-        if (asset.title?.isNotEmpty == true) {
-          hint += ', ${asset.title}';
-        }
-        return Semantics(
-          button: false,
-          enabled: !isBanned,
-          excludeSemantics: true,
-          focusable: p.isSwitchingPath,
-          label: '${textDelegate.semanticTypeLabel(asset.type)}'
-              '${semanticIndex(index)}, '
-              '${asset.createDateTime.toString().replaceAll('.000', '')}',
-          hidden: p.isSwitchingPath,
-          hint: hint,
-          image: asset.type == AssetType.image || asset.type == AssetType.video,
-          onTap: () => selectAsset(context, asset, isSelected),
-          onTapHint: textDelegate.sActionSelectHint,
-          onLongPress: isPreviewEnabled
-              ? () => _pushAssetToViewer(context, index, asset)
-              : null,
-          onLongPressHint: textDelegate.sActionPreviewHint,
-          selected: isSelected,
-          sortKey: OrdinalSortKey(
-            semanticIndex(index).toDouble(),
-            name: 'GridItem',
-          ),
-          value: selectedIndex > 0 ? '$selectedIndex' : null,
-          child: GestureDetector(
-            // Regression https://github.com/flutter/flutter/issues/35112.
-            onLongPress:
-                isPreviewEnabled && context.mediaQuery.accessibleNavigation
-                    ? () => _pushAssetToViewer(context, index, asset)
-                    : null,
-            child: IndexedSemantics(index: semanticIndex(index), child: child),
-          ),
+            final bool isSelected = p.selectedDescriptions.contains(
+              asset.toString(),
+            );
+            final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
+            String hint = '';
+            if (asset.type == AssetType.audio ||
+                asset.type == AssetType.video) {
+              hint += '${textDelegate.sNameDurationLabel}: ';
+              hint +=
+                  textDelegate.durationIndicatorBuilder(asset.videoDuration);
+            }
+            if (asset.title?.isNotEmpty == true) {
+              hint += ', ${asset.title}';
+            }
+            return Semantics(
+              button: false,
+              enabled: !isBanned,
+              excludeSemantics: true,
+              focusable: isSwitchingPath,
+              label: '${textDelegate.semanticTypeLabel(asset.type)}'
+                  '${semanticIndex(index)}, '
+                  '${asset.createDateTime.toString().replaceAll('.000', '')}',
+              hidden: isSwitchingPath,
+              hint: hint,
+              image: asset.type == AssetType.image ||
+                  asset.type == AssetType.video,
+              onTap: () => selectAsset(context, asset, isSelected),
+              onTapHint: textDelegate.sActionSelectHint,
+              onLongPress: isPreviewEnabled
+                  ? () => _pushAssetToViewer(context, index, asset)
+                  : null,
+              onLongPressHint: textDelegate.sActionPreviewHint,
+              selected: isSelected,
+              sortKey: OrdinalSortKey(
+                semanticIndex(index).toDouble(),
+                name: 'GridItem',
+              ),
+              value: selectedIndex > 0 ? '$selectedIndex' : null,
+              child: GestureDetector(
+                // Regression https://github.com/flutter/flutter/issues/35112.
+                onLongPress:
+                    isPreviewEnabled && context.mediaQuery.accessibleNavigation
+                        ? () => _pushAssetToViewer(context, index, asset)
+                        : null,
+                child:
+                    IndexedSemantics(index: semanticIndex(index), child: child),
+              ),
+            );
+          },
         );
       },
     );
@@ -1507,14 +1522,14 @@ class DefaultAssetPickerBuilderDelegate
   /// 当选择器正在选择路径时，它会出现。用户点击它时，列表会折叠收起。
   @override
   Widget pathEntityListBackdrop(BuildContext context) {
-    return Positioned.fill(
-      child: Selector<DefaultAssetPickerProvider, bool>(
-        selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
-        builder: (_, bool isSwitchingPath, __) => IgnorePointer(
+    return ValueListenableBuilder<bool>(
+      valueListenable: isSwitchingPath,
+      builder: (_, bool isSwitchingPath, __) => Positioned.fill(
+        child: IgnorePointer(
           ignoring: !isSwitchingPath,
           ignoringSemantics: true,
           child: GestureDetector(
-            onTap: () => provider.isSwitchingPath = false,
+            onTap: () => this.isSwitchingPath.value = false,
             child: AnimatedOpacity(
               duration: switchingPathDuration,
               opacity: isSwitchingPath ? .75 : 0,
@@ -1531,16 +1546,13 @@ class DefaultAssetPickerBuilderDelegate
     return Positioned.fill(
       top: isAppleOS ? context.topPadding + kToolbarHeight : 0,
       bottom: null,
-      child: Consumer<DefaultAssetPickerProvider>(
-        builder: (_, DefaultAssetPickerProvider p, Widget? child) => Semantics(
-          focusable: p.isSwitchingPath,
+      child: ValueListenableBuilder<bool>(
+        valueListenable: isSwitchingPath,
+        builder: (_, bool isSwitchingPath, Widget? child) => Semantics(
+          focusable: isSwitchingPath,
           sortKey: const OrdinalSortKey(1),
-          hidden: !p.isSwitchingPath,
-          child: child,
-        ),
-        child: Selector<DefaultAssetPickerProvider, bool>(
-          selector: (_, DefaultAssetPickerProvider p) => p.isSwitchingPath,
-          builder: (_, bool isSwitchingPath, Widget? w) => AnimatedAlign(
+          hidden: !isSwitchingPath,
+          child: AnimatedAlign(
             duration: switchingPathDuration,
             curve: switchingPathCurve,
             alignment: Alignment.bottomCenter,
@@ -1559,86 +1571,84 @@ class DefaultAssetPickerBuilderDelegate
                         context.mediaQuery.size.height * (isAppleOS ? .6 : .8),
                   ),
                   color: theme.colorScheme.background,
-                  child: w,
+                  child: child,
                 ),
               ),
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ValueListenableBuilder<PermissionState>(
-                valueListenable: permission,
-                builder: (_, PermissionState ps, Widget? child) => Semantics(
-                  label: '${textDelegate.viewingLimitedAssetsTip}, '
-                      '${textDelegate.changeAccessibleLimitedAssets}',
-                  button: true,
-                  onTap: PhotoManager.presentLimited,
-                  hidden: !isPermissionLimited,
-                  focusable: isPermissionLimited,
-                  excludeSemantics: true,
-                  child: isPermissionLimited ? child : const SizedBox.shrink(),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ValueListenableBuilder<PermissionState>(
+              valueListenable: permission,
+              builder: (_, PermissionState ps, Widget? child) => Semantics(
+                label: '${textDelegate.viewingLimitedAssetsTip}, '
+                    '${textDelegate.changeAccessibleLimitedAssets}',
+                button: true,
+                onTap: PhotoManager.presentLimited,
+                hidden: !isPermissionLimited,
+                focusable: isPermissionLimited,
+                excludeSemantics: true,
+                child: isPermissionLimited ? child : const SizedBox.shrink(),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
+                child: Text.rich(
+                  TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: textDelegate.viewingLimitedAssetsTip,
+                      ),
+                      TextSpan(
+                        text: ' '
+                            '${textDelegate.changeAccessibleLimitedAssets}',
+                        style: TextStyle(color: interactiveTextColor(context)),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = PhotoManager.presentLimited,
+                      ),
+                    ],
                   ),
-                  child: Text.rich(
-                    TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: textDelegate.viewingLimitedAssetsTip,
-                        ),
-                        TextSpan(
-                          text: ' '
-                              '${textDelegate.changeAccessibleLimitedAssets}',
-                          style:
-                              TextStyle(color: interactiveTextColor(context)),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = PhotoManager.presentLimited,
-                        ),
-                      ],
-                    ),
-                    style: context.themeData.textTheme.caption?.copyWith(
-                      fontSize: 14,
-                    ),
+                  style: context.themeData.textTheme.caption?.copyWith(
+                    fontSize: 14,
                   ),
                 ),
               ),
-              Flexible(
-                child: Selector<DefaultAssetPickerProvider, int>(
+            ),
+            Flexible(
+              child: Selector<DefaultAssetPickerProvider, int>(
+                selector: (_, DefaultAssetPickerProvider p) =>
+                    p.validPathThumbCount,
+                builder: (_, int count, __) => Selector<
+                    DefaultAssetPickerProvider,
+                    Map<AssetPathEntity, Uint8List?>>(
                   selector: (_, DefaultAssetPickerProvider p) =>
-                      p.validPathThumbCount,
-                  builder: (_, int count, __) => Selector<
-                      DefaultAssetPickerProvider,
-                      Map<AssetPathEntity, Uint8List?>>(
-                    selector: (_, DefaultAssetPickerProvider p) =>
-                        p.pathEntityList,
-                    builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
-                      return ListView.separated(
-                        padding: const EdgeInsetsDirectional.only(top: 1),
-                        shrinkWrap: true,
-                        itemCount: list.length,
-                        itemBuilder: (BuildContext c, int i) =>
-                            pathEntityWidget(
-                          context: c,
-                          list: list,
-                          index: i,
-                          isAudio: provider.requestType == RequestType.audio,
-                        ),
-                        separatorBuilder: (_, __) => Container(
-                          margin: const EdgeInsetsDirectional.only(start: 60),
-                          height: 1,
-                          color: theme.canvasColor,
-                        ),
-                      );
-                    },
-                  ),
+                      p.pathEntityList,
+                  builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
+                    return ListView.separated(
+                      padding: const EdgeInsetsDirectional.only(top: 1),
+                      shrinkWrap: true,
+                      itemCount: list.length,
+                      itemBuilder: (BuildContext c, int i) => pathEntityWidget(
+                        context: c,
+                        list: list,
+                        index: i,
+                        isAudio: provider.requestType == RequestType.audio,
+                      ),
+                      separatorBuilder: (_, __) => Container(
+                        margin: const EdgeInsetsDirectional.only(start: 60),
+                        height: 1,
+                        color: theme.canvasColor,
+                      ),
+                    );
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -1650,7 +1660,7 @@ class DefaultAssetPickerBuilderDelegate
       child: GestureDetector(
         onTap: () {
           Feedback.forTap(context);
-          provider.isSwitchingPath = !provider.isSwitchingPath;
+          isSwitchingPath.value = !isSwitchingPath.value;
         },
         child: Container(
           height: appBarItemHeight,
@@ -1692,15 +1702,15 @@ class DefaultAssetPickerBuilderDelegate
                   shape: BoxShape.circle,
                   color: theme.iconTheme.color!.withOpacity(0.5),
                 ),
-                child: Selector<DefaultAssetPickerProvider, bool>(
-                  selector: (_, DefaultAssetPickerProvider p) =>
-                      p.isSwitchingPath,
-                  builder: (_, bool isSwitchingPath, Widget? w) =>
-                      Transform.rotate(
-                    angle: isSwitchingPath ? math.pi : 0,
-                    alignment: Alignment.center,
-                    child: w,
-                  ),
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: isSwitchingPath,
+                  builder: (_, bool isSwitchingPath, Widget? w) {
+                    return Transform.rotate(
+                      angle: isSwitchingPath ? math.pi : 0,
+                      alignment: Alignment.center,
+                      child: w,
+                    );
+                  },
                   child: Icon(
                     Icons.keyboard_arrow_down,
                     size: 20,
@@ -1767,6 +1777,7 @@ class DefaultAssetPickerBuilderDelegate
               onTap: () {
                 Feedback.forTap(context);
                 provider.switchPath(pathEntity);
+                isSwitchingPath.value = false;
                 gridScrollController.jumpTo(0);
               },
               child: SizedBox(
@@ -1854,13 +1865,18 @@ class DefaultAssetPickerBuilderDelegate
     }
 
     return Consumer<DefaultAssetPickerProvider>(
-      builder: (_, DefaultAssetPickerProvider p, Widget? child) => Semantics(
-        enabled: p.isSelectedNotEmpty,
-        focusable: p.isSwitchingPath,
-        hidden: p.isSwitchingPath,
-        onTapHint: textDelegate.sActionPreviewHint,
-        child: child,
-      ),
+      builder: (_, DefaultAssetPickerProvider p, Widget? child) {
+        return ValueListenableBuilder<bool>(
+          valueListenable: isSwitchingPath,
+          builder: (_, bool isSwitchingPath, __) => Semantics(
+            enabled: p.isSelectedNotEmpty,
+            focusable: !isSwitchingPath,
+            hidden: isSwitchingPath,
+            onTapHint: textDelegate.sActionPreviewHint,
+            child: child,
+          ),
+        );
+      },
       child: Selector<DefaultAssetPickerProvider, bool>(
         selector: (_, DefaultAssetPickerProvider p) => p.isSelectedNotEmpty,
         builder: (_, bool isNotEmpty, __) => GestureDetector(

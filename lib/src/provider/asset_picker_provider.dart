@@ -47,7 +47,6 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   @override
   void dispose() {
     _isAssetsEmpty = false;
-    _isSwitchingPath = false;
     _pathEntityList.clear();
     _currentPathEntity = null;
     _currentAssets.clear();
@@ -103,20 +102,6 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
       return;
     }
     _totalAssetsCount = value;
-    notifyListeners();
-  }
-
-  /// If path switcher opened.
-  /// 是否正在进行路径选择
-  bool _isSwitchingPath = false;
-
-  bool get isSwitchingPath => _isSwitchingPath;
-
-  set isSwitchingPath(bool value) {
-    if (value == _isSwitchingPath) {
-      return;
-    }
-    _isSwitchingPath = value;
     notifyListeners();
   }
 
@@ -390,7 +375,6 @@ class DefaultAssetPickerProvider
       return;
     }
     pathEntity ??= _currentPathEntity!;
-    _isSwitchingPath = false;
     _currentPathEntity = pathEntity;
     _totalAssetsCount = pathEntity.assetCount;
     notifyListeners();

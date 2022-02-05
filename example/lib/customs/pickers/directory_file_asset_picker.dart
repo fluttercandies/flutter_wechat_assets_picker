@@ -366,7 +366,6 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
     if (pathEntity == null) {
       return;
     }
-    isSwitchingPath = false;
     currentPathEntity = pathEntity;
     totalAssetsCount = 0;
     notifyListeners();
@@ -829,23 +828,19 @@ class FileAssetPickerBuilder
 
   @override
   Widget pathEntityListBackdrop(BuildContext context) {
-    return Selector<FileAssetPickerProvider, bool>(
-      selector: (_, FileAssetPickerProvider p) => p.isSwitchingPath,
-      builder: (BuildContext context, bool isSwitchingPath, _) {
-        return IgnorePointer(
-          ignoring: !isSwitchingPath,
-          child: GestureDetector(
-            onTap: () {
-              context.read<FileAssetPickerProvider>().isSwitchingPath = false;
-            },
-            child: AnimatedOpacity(
-              duration: switchingPathDuration,
-              opacity: isSwitchingPath ? 1.0 : 0.0,
-              child: Container(color: Colors.black.withOpacity(0.75)),
-            ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: isSwitchingPath,
+      builder: (_, bool isSwitchingPath, __) => IgnorePointer(
+        ignoring: !isSwitchingPath,
+        child: GestureDetector(
+          onTap: () => this.isSwitchingPath.value = false,
+          child: AnimatedOpacity(
+            duration: switchingPathDuration,
+            opacity: isSwitchingPath ? 1.0 : 0.0,
+            child: Container(color: Colors.black.withOpacity(0.75)),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -853,8 +848,8 @@ class FileAssetPickerBuilder
   Widget pathEntityListWidget(BuildContext context) {
     final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
     final double maxHeight = Screens.height * 0.825;
-    return Selector<FileAssetPickerProvider, bool>(
-      selector: (_, FileAssetPickerProvider p) => p.isSwitchingPath,
+    return ValueListenableBuilder<bool>(
+      valueListenable: isSwitchingPath,
       builder: (_, bool isSwitchingPath, Widget? w) => AnimatedPositioned(
         duration: switchingPathDuration,
         curve: switchingPathCurve,
@@ -905,58 +900,65 @@ class FileAssetPickerBuilder
   @override
   Widget pathEntitySelector(BuildContext context) {
     return UnconstrainedBox(
-      child: Consumer<FileAssetPickerProvider>(
-        builder: (_, FileAssetPickerProvider provider, __) {
-          return GestureDetector(
-            onTap: () {
-              provider.isSwitchingPath = !provider.isSwitchingPath;
-            },
-            child: Container(
-              height: appBarItemHeight,
-              constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
-              padding: const EdgeInsetsDirectional.only(start: 12.0, end: 6.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(999),
-                color: theme.dividerColor,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  if (provider.currentPathEntity != null)
-                    Flexible(
-                      child: Text(
-                        provider.currentPathEntity!.path,
-                        style: const TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.normal,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+      child: GestureDetector(
+        onTap: () => isSwitchingPath.value = !isSwitchingPath.value,
+        child: Container(
+          height: appBarItemHeight,
+          constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
+          padding: const EdgeInsetsDirectional.only(start: 12.0, end: 6.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(999),
+            color: theme.dividerColor,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Selector<FileAssetPickerProvider, Directory?>(
+                selector: (_, FileAssetPickerProvider p) => p.currentPathEntity,
+                builder: (_, Directory? currentPathEntity, __) {
+                  if (currentPathEntity == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return Flexible(
+                    child: Text(
+                      provider.currentPathEntity!.path,
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.normal,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 5.0),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: theme.iconTheme.color?.withOpacity(0.5),
-                      ),
-                      child: Transform.rotate(
-                        angle: provider.isSwitchingPath ? math.pi : 0.0,
+                  );
+                },
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(start: 5.0),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: theme.iconTheme.color?.withOpacity(0.5),
+                  ),
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: isSwitchingPath,
+                    builder: (_, bool isSwitchingPath, Widget? w) {
+                      return Transform.rotate(
+                        angle: isSwitchingPath ? math.pi : 0.0,
                         alignment: Alignment.center,
-                        child: Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 20.0,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ),
+                        child: w,
+                      );
+                    },
+                    child: Icon(
+                      Icons.keyboard_arrow_down,
+                      size: 20.0,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          );
-        },
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -985,7 +987,10 @@ class FileAssetPickerBuilder
       type: MaterialType.transparency,
       child: InkWell(
         splashFactory: InkSplash.splashFactory,
-        onTap: () => provider.switchPath(path),
+        onTap: () {
+          provider.switchPath(path);
+          isSwitchingPath.value = false;
+        },
         child: SizedBox(
           height: isAppleOS ? 64.0 : 52.0,
           child: Row(
