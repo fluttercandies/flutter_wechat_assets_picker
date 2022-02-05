@@ -360,6 +360,39 @@ class GermanAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get accessiblePathName => 'Verfügbare Assets';
+
+  @override
+  String get sTypeAudioLabel => 'Audio';
+
+  @override
+  String get sTypeImageLabel => 'Bild';
+
+  @override
+  String get sTypeVideoLabel => 'Video';
+
+  @override
+  String get sTypeOtherLabel => 'Andere Medien';
+
+  @override
+  String get sActionPlayHint => 'Abspielen';
+
+  @override
+  String get sActionPreviewHint => 'Vorschau';
+
+  @override
+  String get sActionSelectHint => 'Auswählen';
+
+  @override
+  String get sActionSwitchPathLabel => 'Dateipfad ändern';
+
+  @override
+  String get sActionUseCameraHint => 'Kamera benutzen';
+
+  @override
+  String get sNameDurationLabel => 'Dauer';
+
+  @override
+  String get sUnitAssetCountLabel => 'Anzahl';
 }
 
 /// [AssetPickerTextDelegate] implements with Russian.
