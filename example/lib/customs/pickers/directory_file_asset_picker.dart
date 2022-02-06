@@ -9,7 +9,7 @@ import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path/path.dart' as path;
+import 'package:path/path.dart' show basename;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -302,30 +302,30 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
     required List<File> selectedAssets,
   }) : super(selectedAssets: selectedAssets) {
     Future<void>.delayed(const Duration(milliseconds: 300), () async {
-      await getAssetPathList();
-      getAssetsFromEntity(0, pathEntityList.keys.elementAt(0));
+      await getPaths();
+      getAssetsFromPath(0, pathsList.keys.elementAt(0));
     });
   }
 
   @override
-  Future<void> getAssetPathList() async {
+  Future<void> getPaths() async {
     currentAssets = <File>[];
-    pathEntityList.clear();
+    pathsList.clear();
     final Directory? directory = await getExternalStorageDirectory();
     if (directory != null) {
-      pathEntityList[directory] = null;
-      currentPathEntity = directory;
-      pathEntityList[directory] = await getFirstThumbFromPathEntity(directory);
+      pathsList[directory] = null;
+      currentPath = directory;
+      pathsList[directory] = await getThumbnailFromPath(directory);
     }
   }
 
   @override
-  Future<void> getAssetsFromEntity(int page, Directory pathEntity) async {
+  Future<void> getAssetsFromPath(int page, Directory path) async {
     final List<FileSystemEntity> entities =
-        pathEntity.listSync().whereType<File>().toList();
+        path.listSync().whereType<File>().toList();
     currentAssets.clear();
     for (final FileSystemEntity entity in entities) {
-      final String extension = path.basename(entity.path).split('.').last;
+      final String extension = basename(entity.path).split('.').last;
       if (entity is File && imagesExtensions.contains(extension)) {
         currentAssets.add(entity);
       }
@@ -335,12 +335,12 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<Uint8List?> getFirstThumbFromPathEntity(Directory pathEntity) async {
+  Future<Uint8List?> getThumbnailFromPath(Directory path) async {
     final List<FileSystemEntity> entities =
-        pathEntity.listSync().whereType<File>().toList();
+        path.listSync().whereType<File>().toList();
     currentAssets.clear();
     for (final FileSystemEntity entity in entities) {
-      final String extension = path.basename(entity.path).split('.').last;
+      final String extension = basename(entity.path).split('.').last;
       if (entity is File && imagesExtensions.contains(extension)) {
         final Uint8List data = await entity.readAsBytes();
         return data;
@@ -362,14 +362,14 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<void> switchPath([Directory? pathEntity]) async {
-    if (pathEntity == null) {
+  Future<void> switchPath([Directory? path]) async {
+    if (path == null) {
       return;
     }
-    currentPathEntity = pathEntity;
+    currentPath = path;
     totalAssetsCount = 0;
     notifyListeners();
-    await getAssetsFromEntity(0, currentPathEntity!);
+    await getAssetsFromPath(0, currentPath!);
   }
 }
 
@@ -876,7 +876,7 @@ class FileAssetPickerBuilder
         ),
       ),
       child: Selector<FileAssetPickerProvider, Map<Directory, Uint8List?>>(
-        selector: (_, FileAssetPickerProvider p) => p.pathEntityList,
+        selector: (_, FileAssetPickerProvider p) => p.pathsList,
         builder: (_, Map<Directory, Uint8List?> pathEntityList, __) {
           return ListView.separated(
             padding: const EdgeInsetsDirectional.only(top: 1.0),
@@ -914,14 +914,14 @@ class FileAssetPickerBuilder
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Selector<FileAssetPickerProvider, Directory?>(
-                selector: (_, FileAssetPickerProvider p) => p.currentPathEntity,
+                selector: (_, FileAssetPickerProvider p) => p.currentPath,
                 builder: (_, Directory? currentPathEntity, __) {
                   if (currentPathEntity == null) {
                     return const SizedBox.shrink();
                   }
                   return Flexible(
                     child: Text(
-                      provider.currentPathEntity!.path,
+                      provider.currentPath!.path,
                       style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.normal,
@@ -1016,8 +1016,7 @@ class FileAssetPickerBuilder
                 ),
               ),
               Selector<FileAssetPickerProvider, Directory>(
-                selector: (_, FileAssetPickerProvider p) =>
-                    p.currentPathEntity!,
+                selector: (_, FileAssetPickerProvider p) => p.currentPath!,
                 builder: (_, Directory currentPathEntity, __) {
                   if (currentPathEntity == path) {
                     return const AspectRatio(

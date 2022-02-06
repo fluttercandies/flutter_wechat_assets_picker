@@ -261,6 +261,99 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 确认按钮
   Widget confirmButton(BuildContext context);
 
+  /// Audio asset type indicator.
+  /// 音频类型资源指示
+  Widget audioIndicator(BuildContext context, Asset asset);
+
+  /// Video asset type indicator.
+  /// 视频类型资源指示
+  Widget videoIndicator(BuildContext context, Asset asset);
+
+  /// Animated backdrop widget for items.
+  /// 部件选中时的动画遮罩部件
+  Widget selectedBackdrop(
+    BuildContext context,
+    int index,
+    Asset asset,
+  );
+
+  /// Indicator for assets selected status.
+  /// 资源是否已选的指示器
+  Widget selectIndicator(BuildContext context, int index, Asset asset);
+
+  /// The main grid view builder for assets.
+  /// 主要的资源查看网格部件
+  Widget assetsGridBuilder(BuildContext context);
+
+  /// Indicates how would the grid found a reusable [RenderObject] through [id].
+  /// 为 Grid 布局指示如何找到可复用的 [RenderObject]。
+  ///
+  /// See also:
+  ///  * [SliverChildBuilderDelegate.findChildIndexCallback].
+  int? findChildIndexBuilder({
+    required String id,
+    required List<Asset> assets,
+    int placeholderCount = 0,
+  }) =>
+      null;
+
+  /// The function which return items count for the assets' grid.
+  /// 为资源列表提供内容数量计算的方法
+  int assetsGridItemCount({
+    required BuildContext context,
+    required List<Asset> assets,
+    int placeholderCount = 0,
+  });
+
+  /// The item builder for the assets' grid.
+  /// 资源列表项的构建
+  Widget assetGridItemBuilder(
+    BuildContext context,
+    int index,
+    List<Asset> currentAssets,
+  );
+
+  /// The [Semantics] builder for the assets' grid.
+  /// 资源列表项的语义构建
+  Widget assetGridItemSemanticsBuilder(
+    BuildContext context,
+    int index,
+    Asset asset,
+    Widget child,
+  );
+
+  /// The item builder for audio type of asset.
+  /// 音频资源的部件构建
+  Widget audioItemBuilder(
+    BuildContext context,
+    int index,
+    Asset asset,
+  );
+
+  /// The item builder for images and video type of asset.
+  /// 图片和视频资源的部件构建
+  Widget imageAndVideoItemBuilder(
+    BuildContext context,
+    int index,
+    Asset asset,
+  );
+
+  /// Preview button to preview selected assets.
+  /// 预览已选资源的按钮
+  Widget previewButton(BuildContext context);
+
+  /// Custom app bar for the picker.
+  /// 选择器自定义的顶栏
+  PreferredSizeWidget appBar(BuildContext context);
+
+  /// Layout for Apple OS devices.
+  /// 苹果系列设备的选择器布局
+  Widget appleOSLayout(BuildContext context);
+
+  /// Layout for Android devices.
+  /// Android设备的选择器布局
+  Widget androidLayout(BuildContext context);
+
   /// GIF image type indicator.
   /// GIF 类型图片指示
   Widget gifIndicator(BuildContext context, Asset asset) {
@@ -709,8 +802,8 @@ class DefaultAssetPickerBuilderDelegate
     if (!isPermissionLimited) {
       return;
     }
-    if (provider.currentPathEntity != null) {
-      final AssetPathEntity? _currentPathEntity = provider.currentPathEntity;
+    if (provider.currentPath != null) {
+      final AssetPathEntity? _currentPathEntity = provider.currentPath;
       await _currentPathEntity?.refreshPathProperties();
       await provider.switchPath(_currentPathEntity);
       isSwitchingPath.value = false;
@@ -913,7 +1006,7 @@ class DefaultAssetPickerBuilderDelegate
   @override
   Widget assetsGridBuilder(BuildContext context) {
     return Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
-      selector: (_, DefaultAssetPickerProvider p) => p.currentPathEntity,
+      selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
       builder: (_, AssetPathEntity? path, __) {
         // First, we need the count of the assets.
         int totalCount = path?.assetCount ?? 0;
@@ -1077,7 +1170,7 @@ class DefaultAssetPickerBuilderDelegate
   ) {
     final AssetPathEntity? currentPathEntity =
         context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
-      (DefaultAssetPickerProvider p) => p.currentPathEntity,
+      (DefaultAssetPickerProvider p) => p.currentPath,
     );
 
     int currentIndex;
@@ -1240,7 +1333,7 @@ class DefaultAssetPickerBuilderDelegate
   }) {
     final AssetPathEntity? currentPathEntity =
         context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
-      (DefaultAssetPickerProvider p) => p.currentPathEntity,
+      (DefaultAssetPickerProvider p) => p.currentPath,
     );
 
     if (currentPathEntity == null &&
@@ -1524,12 +1617,11 @@ class DefaultAssetPickerBuilderDelegate
             Flexible(
               child: Selector<DefaultAssetPickerProvider, int>(
                 selector: (_, DefaultAssetPickerProvider p) =>
-                    p.validPathThumbCount,
+                    p.validPathThumbnailsCount,
                 builder: (_, int count, __) => Selector<
                     DefaultAssetPickerProvider,
                     Map<AssetPathEntity, Uint8List?>>(
-                  selector: (_, DefaultAssetPickerProvider p) =>
-                      p.pathEntityList,
+                  selector: (_, DefaultAssetPickerProvider p) => p.pathsList,
                   builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
                     return ListView.separated(
                       padding: const EdgeInsetsDirectional.only(top: 1),
@@ -1576,7 +1668,7 @@ class DefaultAssetPickerBuilderDelegate
             color: theme.dividerColor,
           ),
           child: Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
-            selector: (_, DefaultAssetPickerProvider p) => p.currentPathEntity,
+            selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
             builder: (_, AssetPathEntity? p, Widget? w) => Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -1663,7 +1755,7 @@ class DefaultAssetPickerBuilderDelegate
         : pathEntity.name;
     final String semanticsCount = '${pathEntity.assetCount}';
     return Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
-      selector: (_, DefaultAssetPickerProvider p) => p.currentPathEntity,
+      selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
       builder: (_, AssetPathEntity? currentPathEntity, __) {
         final bool isSelected = currentPathEntity == pathEntity;
         return Semantics(
