@@ -4,6 +4,7 @@
 ///
 import 'package:flutter/widgets.dart';
 
+@immutable
 class CustomPickMethod {
   const CustomPickMethod({
     required this.icon,
