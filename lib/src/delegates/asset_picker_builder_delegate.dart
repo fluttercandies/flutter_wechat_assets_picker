@@ -206,17 +206,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   AssetPickerTextDelegate get textDelegate => Constants.textDelegate;
 
-  /// The method to select assets. Delegates can implement this method
-  /// to involve with predications, callbacks, etc.
-  /// 选择资源的方法。自定义的 delegate 可以通过实现该方法，整合判断、回调等操作。
-  void selectAsset(BuildContext context, Asset asset, bool selected);
-
-  /// Called when assets changed and obtained notifications from the OS.
-  /// 系统发出资源变更的通知时调用的方法
-  Future<void> onAssetsChanged(MethodCall call, StateSetter setState) async {}
-
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
+  @mustCallSuper
   void dispose() {
     Constants.scrollPosition = null;
     gridScrollController.dispose();
@@ -224,6 +216,20 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     permission.dispose();
     permissionOverlayHidden.dispose();
   }
+
+  /// The method to select assets. Delegates can implement this method
+  /// to involve with predications, callbacks, etc.
+  /// 选择资源的方法。自定义的 delegate 可以通过实现该方法，整合判断、回调等操作。
+  @protected
+  void selectAsset(BuildContext context, Asset asset, bool selected);
+
+  /// Called when assets changed and obtained notifications from the OS.
+  /// 系统发出资源变更的通知时调用的方法
+  Future<void> onAssetsChanged(MethodCall call, StateSetter setState) async {}
+
+  /// Yes, the build method.
+  /// 没错，是它是它就是它，我们亲爱的 build 方法~
+  Widget build(BuildContext context);
 
   /// Path entity select widget builder.
   /// 路径选择部件构建
@@ -294,26 +300,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     );
   }
 
-  /// Audio asset type indicator.
-  /// 音频类型资源指示
-  Widget audioIndicator(BuildContext context, Asset asset);
-
-  /// Video asset type indicator.
-  /// 视频类型资源指示
-  Widget videoIndicator(BuildContext context, Asset asset);
-
-  /// Animated backdrop widget for items.
-  /// 部件选中时的动画遮罩部件
-  Widget selectedBackdrop(
-    BuildContext context,
-    int index,
-    Asset asset,
-  );
-
-  /// Indicator for assets selected status.
-  /// 资源是否已选的指示器
-  Widget selectIndicator(BuildContext context, int index, Asset asset);
-
   /// Indicator when the asset cannot be selected.
   /// 当资源无法被选中时的遮罩
   Widget itemBannedIndicator(BuildContext context, Asset asset) {
@@ -383,64 +369,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     }
     return _od;
   }
-
-  /// The main grid view builder for assets.
-  /// 主要的资源查看网格部件
-  Widget assetsGridBuilder(BuildContext context);
-
-  /// Indicates how would the grid found a reusable [RenderObject] through [id].
-  /// 为 Grid 布局指示如何找到可复用的 [RenderObject]。
-  int? findChildIndexBuilder({
-    required String id,
-    required List<Asset> assets,
-    int placeholderCount = 0,
-  }) =>
-      null;
-
-  /// The function which return items count for the assets' grid.
-  /// 为资源列表提供内容数量计算的方法
-  int assetsGridItemCount({
-    required BuildContext context,
-    required List<Asset> assets,
-    int placeholderCount = 0,
-  });
-
-  /// The item builder for the assets' grid.
-  /// 资源列表项的构建
-  Widget assetGridItemBuilder(
-    BuildContext context,
-    int index,
-    List<Asset> currentAssets,
-  );
-
-  /// The [Semantics] builder for the assets' grid.
-  /// 资源列表项的语义构建
-  Widget assetGridItemSemanticsBuilder(
-    BuildContext context,
-    int index,
-    Asset asset,
-    Widget child,
-  );
-
-  /// The item builder for audio type of asset.
-  /// 音频资源的部件构建
-  Widget audioItemBuilder(
-    BuildContext context,
-    int index,
-    Asset asset,
-  );
-
-  /// The item builder for images and video type of asset.
-  /// 图片和视频资源的部件构建
-  Widget imageAndVideoItemBuilder(
-    BuildContext context,
-    int index,
-    Asset asset,
-  );
-
-  /// Preview button to preview selected assets.
-  /// 预览已选资源的按钮
-  Widget previewButton(BuildContext context);
 
   /// The tip widget displays when the access is limited.
   /// 当访问受限时在底部展示的提示
@@ -527,18 +455,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       ),
     );
   }
-
-  /// Custom app bar for the picker.
-  /// 选择器自定义的顶栏
-  PreferredSizeWidget appBar(BuildContext context);
-
-  /// Layout for Apple OS devices.
-  /// 苹果系列设备的选择器布局
-  Widget appleOSLayout(BuildContext context);
-
-  /// Layout for Android devices.
-  /// Android设备的选择器布局
-  Widget androidLayout(BuildContext context);
 
   /// The overlay when the permission is limited on iOS.
   Widget iOSPermissionOverlay(BuildContext context) {
@@ -628,10 +544,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       },
     );
   }
-
-  /// Yes, the build method.
-  /// 没错，是它是它就是它，我们亲爱的 build 方法~
-  Widget build(BuildContext context);
 }
 
 class DefaultAssetPickerBuilderDelegate
