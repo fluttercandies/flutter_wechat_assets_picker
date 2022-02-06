@@ -41,5 +41,5 @@ enum SpecialItemPosition {
 
   /// Add as trailing of the list.
   /// 在列表后放入
-  append
+  append,
 }

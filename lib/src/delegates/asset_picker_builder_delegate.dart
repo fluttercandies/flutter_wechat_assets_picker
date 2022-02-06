@@ -16,11 +16,11 @@ import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
-import '../constants/colors.dart';
 import '../constants/constants.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../delegates/asset_picker_text_delegate.dart';
+import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_viewer.dart';
@@ -70,9 +70,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           pickerTheme == null || themeColor == null,
           'Theme and theme color cannot be set at the same time.',
         ),
-        themeColor =
-            pickerTheme?.colorScheme.secondary ?? themeColor ?? C.themeColor {
-    Constants.textDelegate =
+        themeColor = pickerTheme?.colorScheme.secondary ??
+            themeColor ??
+            defaultThemeColorWeChat {
+    Singleton.textDelegate =
         textDelegate ?? assetPickerTextDelegateFromLocale(locale);
   }
 
@@ -204,13 +205,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   bool get effectiveShouldRevertGrid => shouldRevertGrid ?? isAppleOS;
 
-  AssetPickerTextDelegate get textDelegate => Constants.textDelegate;
+  AssetPickerTextDelegate get textDelegate => Singleton.textDelegate;
 
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
   @mustCallSuper
   void dispose() {
-    Constants.scrollPosition = null;
+    Singleton.scrollPosition = null;
     gridScrollController.dispose();
     isSwitchingPath.dispose();
     permission.dispose();
@@ -652,7 +653,7 @@ class DefaultAssetPickerBuilderDelegate
     bool allowSpecialItemWhenEmpty = false,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     bool? shouldRevertGrid,
-    this.gridThumbSize = Constants.defaultGridThumbSize,
+    this.gridThumbSize = defaultAssetGridPreviewSize,
     this.previewThumbSize,
     this.specialPickerType,
     this.keepScrollOffset = false,
@@ -755,7 +756,7 @@ class DefaultAssetPickerBuilderDelegate
   /// 当 [keepScrollOffset] 为 true 时，跟踪 [gridScrollController] 位置的监听。
   void keepScrollOffsetListener() {
     if (gridScrollController.hasClients) {
-      Constants.scrollPosition = gridScrollController.position;
+      Singleton.scrollPosition = gridScrollController.position;
     }
   }
 
@@ -2063,11 +2064,11 @@ class DefaultAssetPickerBuilderDelegate
   Widget build(BuildContext context) {
     // Schedule the scroll position's restoration callback if this feature
     // is enabled and offsets are different.
-    if (keepScrollOffset && Constants.scrollPosition != null) {
+    if (keepScrollOffset && Singleton.scrollPosition != null) {
       SchedulerBinding.instance!.addPostFrameCallback((_) {
         // Update only if the controller has clients.
         if (gridScrollController.hasClients) {
-          gridScrollController.jumpTo(Constants.scrollPosition!.pixels);
+          gridScrollController.jumpTo(Singleton.scrollPosition!.pixels);
         }
       });
     }

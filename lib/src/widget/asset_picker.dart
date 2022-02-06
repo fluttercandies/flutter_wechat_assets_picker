@@ -6,7 +6,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../constants/enums.dart';
@@ -14,6 +13,8 @@ import '../constants/extensions.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
+import '../internal/methods.dart';
+import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import 'asset_picker_page_route.dart';
 
@@ -37,7 +38,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     List<AssetEntity>? selectedAssets,
     int maxAssets = 9,
     int pageSize = 80,
-    int gridThumbSize = Constants.defaultGridThumbSize,
+    int gridThumbSize = defaultAssetGridPreviewSize,
     int pathThumbSize = 80,
     int gridCount = 4,
     RequestType requestType = RequestType.image,
@@ -100,11 +101,10 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       filterOptions: filterOptions,
       routeDuration: routeDuration,
     );
-    final Widget picker =
-        ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+    final Widget picker = CNP<DefaultAssetPickerProvider>.value(
       value: provider,
       child: AssetPicker<AssetEntity, AssetPathEntity>(
-        key: Constants.pickerKey,
+        key: Singleton.pickerKey,
         builder: DefaultAssetPickerBuilderDelegate(
           provider: provider,
           initialPermission: _ps,
@@ -154,7 +154,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     final Widget picker = CNP<PickerProvider>.value(
       value: provider,
       child: AssetPicker<Asset, Path>(
-        key: Constants.pickerKey,
+        key: Singleton.pickerKey,
         builder: delegate,
       ),
     );

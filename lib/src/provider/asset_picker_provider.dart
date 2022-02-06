@@ -8,8 +8,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../constants/constants.dart';
 import '../delegates/sort_path_delegate.dart';
+import '../internal/singleton.dart';
 
 /// [ChangeNotifier] for assets picker.
 ///
@@ -239,7 +239,7 @@ class DefaultAssetPickerProvider
           pathThumbSize: pathThumbSize,
           selectedAssets: selectedAssets,
         ) {
-    Constants.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
+    Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
     // Call [getAssetList] with route duration when constructing.
     Future<void>.delayed(routeDuration).then(
       (dynamic _) async {
@@ -291,7 +291,7 @@ class DefaultAssetPickerProvider
     );
 
     // Sort path using sort path delegate.
-    Constants.sortPathDelegate.sort(_list);
+    Singleton.sortPathDelegate.sort(_list);
 
     for (final AssetPathEntity pathEntity in _list) {
       // Use sync method to avoid unnecessary wait.
