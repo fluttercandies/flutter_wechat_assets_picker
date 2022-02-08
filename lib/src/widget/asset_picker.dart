@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/3/31 15:39
 ///
-
+// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -229,7 +229,9 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
         buttonTheme: ButtonThemeData(buttonColor: themeColor),
         colorScheme: ColorScheme(
           primary: Colors.grey[50]!,
+          primaryVariant: Colors.grey[50]!,
           secondary: themeColor,
+          secondaryVariant: themeColor,
           background: Colors.grey[50]!,
           surface: Colors.grey[50]!,
           brightness: Brightness.light,
@@ -268,7 +270,9 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       buttonTheme: ButtonThemeData(buttonColor: themeColor),
       colorScheme: ColorScheme(
         primary: Colors.grey[900]!,
+        primaryVariant: Colors.grey[900]!,
         secondary: themeColor,
+        secondaryVariant: themeColor,
         background: Colors.grey[900]!,
         surface: Colors.grey[900]!,
         brightness: Brightness.dark,
