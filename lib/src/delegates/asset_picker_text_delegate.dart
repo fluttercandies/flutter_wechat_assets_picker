@@ -439,7 +439,7 @@ class RussianAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get sActionPlayHint => 'воспроизвести';
 
   @override
-  String get sActionPreviewHint => 'просмотр';
+  String get sActionPreviewHint => 'просмотреть';
 
   @override
   String get sActionSelectHint => 'выбрать';
