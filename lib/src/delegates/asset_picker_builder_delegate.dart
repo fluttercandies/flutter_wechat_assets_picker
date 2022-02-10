@@ -419,8 +419,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   Widget loadingIndicator(BuildContext context) {
     return Center(
       child: Selector<AssetPickerProvider<Asset, Path>, bool>(
-        selector: (_, AssetPickerProvider<Asset, Path> provider) =>
-            provider.isAssetsEmpty,
+        selector: (_, AssetPickerProvider<Asset, Path> p) => p.isAssetsEmpty,
         builder: (BuildContext c, bool isAssetsEmpty, Widget? w) {
           if (loadingIndicatorBuilder != null) {
             return loadingIndicatorBuilder!(c, isAssetsEmpty);
@@ -790,6 +789,8 @@ class DefaultAssetPickerBuilderDelegate
     if (selectPredicateResult == false) {
       return;
     }
+    final DefaultAssetPickerProvider provider =
+        context.read<DefaultAssetPickerProvider>();
     if (selected) {
       provider.unSelectAsset(asset);
       return;
@@ -821,6 +822,8 @@ class DefaultAssetPickerBuilderDelegate
     int index,
     AssetEntity asset,
   ) async {
+    final DefaultAssetPickerProvider provider =
+        context.read<DefaultAssetPickerProvider>();
     bool selectedAllAndNotSelected() =>
         !provider.selectedAssets.contains(asset) &&
         provider.selectedMaximumAssets;
@@ -878,8 +881,7 @@ class DefaultAssetPickerBuilderDelegate
     return AssetPickerAppBarWrapper(
       appBar: appBar(context),
       body: Selector<DefaultAssetPickerProvider, bool>(
-        selector: (_, DefaultAssetPickerProvider provider) =>
-            provider.hasAssetsToDisplay,
+        selector: (_, DefaultAssetPickerProvider p) => p.hasAssetsToDisplay,
         builder: (_, bool hasAssetsToDisplay, __) {
           final bool shouldDisplayAssets = hasAssetsToDisplay ||
               (allowSpecialItemWhenEmpty &&
@@ -1217,7 +1219,7 @@ class DefaultAssetPickerBuilderDelegate
         context.select<DefaultAssetPickerProvider, bool>(
           (DefaultAssetPickerProvider p) => p.hasMoreToLoad,
         )) {
-      provider.loadMoreAssets();
+      context.read<DefaultAssetPickerProvider>().loadMoreAssets();
     }
 
     final AssetEntity asset = currentAssets.elementAt(currentIndex);
@@ -1621,32 +1623,25 @@ class DefaultAssetPickerBuilderDelegate
               ),
             ),
             Flexible(
-              child: Selector<DefaultAssetPickerProvider, int>(
-                selector: (_, DefaultAssetPickerProvider p) =>
-                    p.validPathThumbnailsCount,
-                builder: (_, int count, __) => Selector<
-                    DefaultAssetPickerProvider,
-                    Map<AssetPathEntity, Uint8List?>>(
-                  selector: (_, DefaultAssetPickerProvider p) => p.pathsList,
-                  builder: (_, Map<AssetPathEntity, Uint8List?> list, __) {
-                    return ListView.separated(
-                      padding: const EdgeInsetsDirectional.only(top: 1),
-                      shrinkWrap: true,
-                      itemCount: list.length,
-                      itemBuilder: (BuildContext c, int i) => pathEntityWidget(
-                        context: c,
-                        list: list,
-                        index: i,
-                        isAudio: provider.requestType == RequestType.audio,
-                      ),
-                      separatorBuilder: (_, __) => Container(
-                        margin: const EdgeInsetsDirectional.only(start: 60),
-                        height: 1,
-                        color: theme.canvasColor,
-                      ),
-                    );
-                  },
-                ),
+              child: Consumer<DefaultAssetPickerProvider>(
+                builder: (_, DefaultAssetPickerProvider p, __) {
+                  return ListView.separated(
+                    padding: const EdgeInsetsDirectional.only(top: 1),
+                    shrinkWrap: true,
+                    itemCount: p.pathsList.length,
+                    itemBuilder: (BuildContext c, int i) => pathEntityWidget(
+                      context: c,
+                      list: p.pathsList,
+                      index: i,
+                      isAudio: p.requestType == RequestType.audio,
+                    ),
+                    separatorBuilder: (_, __) => Container(
+                      margin: const EdgeInsetsDirectional.only(start: 60),
+                      height: 1,
+                      color: theme.canvasColor,
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -1777,7 +1772,9 @@ class DefaultAssetPickerBuilderDelegate
               splashFactory: InkSplash.splashFactory,
               onTap: () {
                 Feedback.forTap(context);
-                provider.switchPath(pathEntity);
+                context
+                    .read<DefaultAssetPickerProvider>()
+                    .switchPath(pathEntity);
                 isSwitchingPath.value = false;
                 gridScrollController.jumpTo(0);
               },
@@ -1842,13 +1839,16 @@ class DefaultAssetPickerBuilderDelegate
   @override
   Widget previewButton(BuildContext context) {
     Future<void> _onTap() async {
+      final DefaultAssetPickerProvider p =
+          context.read<DefaultAssetPickerProvider>();
+      final List<AssetEntity> _selectedAssets = p.selectedAssets;
       final List<AssetEntity> _selected;
       if (isWeChatMoment) {
-        _selected = provider.selectedAssets
+        _selected = _selectedAssets
             .where((AssetEntity e) => e.type == AssetType.image)
             .toList();
       } else {
-        _selected = provider.selectedAssets;
+        _selected = _selectedAssets;
       }
       final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
         context,
@@ -1858,7 +1858,7 @@ class DefaultAssetPickerBuilderDelegate
         selectedAssets: _selected,
         selectorProvider: provider,
         themeData: theme,
-        maxAssets: provider.maxAssets,
+        maxAssets: p.maxAssets,
       );
       if (result != null) {
         Navigator.of(context).maybePop(result);
@@ -1878,20 +1878,21 @@ class DefaultAssetPickerBuilderDelegate
           ),
         );
       },
-      child: Selector<DefaultAssetPickerProvider, bool>(
-        selector: (_, DefaultAssetPickerProvider p) => p.isSelectedNotEmpty,
-        builder: (_, bool isNotEmpty, __) => GestureDetector(
-          onTap: isNotEmpty ? _onTap : null,
+      child: Consumer<DefaultAssetPickerProvider>(
+        builder: (_, DefaultAssetPickerProvider p, __) => GestureDetector(
+          onTap: p.isSelectedNotEmpty ? _onTap : null,
           child: Selector<DefaultAssetPickerProvider, String>(
             selector: (_, DefaultAssetPickerProvider p) =>
                 p.selectedDescriptions,
-            builder: (_, __, ___) => Padding(
+            builder: (BuildContext c, __, ___) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: ScaleText(
                 '${textDelegate.preview}'
-                '${isNotEmpty ? ' (${provider.selectedAssets.length})' : ''}',
+                '${p.isSelectedNotEmpty ? ' (${p.selectedAssets.length})' : ''}',
                 style: TextStyle(
-                  color: isNotEmpty ? null : theme.textTheme.caption?.color,
+                  color: p.isSelectedNotEmpty
+                      ? null
+                      : c.themeData.textTheme.caption?.color,
                   fontSize: 17,
                 ),
                 maxScaleFactor: 1.2,
