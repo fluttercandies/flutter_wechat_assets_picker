@@ -11,8 +11,8 @@ import '../constants/extensions.dart';
 
 /// A custom app bar.
 /// 自定义的顶栏
-class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const FixedAppBar({
+class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const AssetPickerAppBar({
     Key? key,
     this.automaticallyImplyLeading = true,
     this.title,
@@ -51,7 +51,7 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 是否会自动检测并添加返回按钮至头部
   final bool automaticallyImplyLeading;
 
-  /// Whether the [title] should be at the center of the [FixedAppBar].
+  /// Whether the [title] should be at the center of the [AssetPickerAppBar].
   /// [title] 是否会在正中间
   final bool centerTitle;
 
@@ -167,10 +167,10 @@ class FixedAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-/// Wrapper for [FixedAppBar]. Avoid elevation covered by body.
+/// Wrapper for [AssetPickerAppBar]. Avoid elevation covered by body.
 /// 顶栏封装。防止内容块层级高于顶栏导致遮挡阴影。
-class FixedAppBarWrapper extends StatelessWidget {
-  const FixedAppBarWrapper({
+class AssetPickerAppBarWrapper extends StatelessWidget {
+  const AssetPickerAppBarWrapper({
     Key? key,
     required this.appBar,
     required this.body,

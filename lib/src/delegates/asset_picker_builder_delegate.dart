@@ -23,10 +23,10 @@ import '../delegates/asset_picker_text_delegate.dart';
 import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
+import '../widget/asset_picker_app_bar.dart';
 import '../widget/asset_picker_viewer.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
-import '../widget/fixed_appbar.dart';
 import '../widget/gaps.dart';
 import '../widget/platform_progress_indicator.dart';
 import '../widget/scale_text.dart';
@@ -870,7 +870,7 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget androidLayout(BuildContext context) {
-    return FixedAppBarWrapper(
+    return AssetPickerAppBarWrapper(
       appBar: appBar(context),
       body: Selector<DefaultAssetPickerProvider, bool>(
         selector: (_, DefaultAssetPickerProvider provider) =>
@@ -906,7 +906,7 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   PreferredSizeWidget appBar(BuildContext context) {
-    return FixedAppBar(
+    return AssetPickerAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
       centerTitle: isAppleOS,
       title: Semantics(
