@@ -2076,17 +2076,14 @@ class DefaultAssetPickerBuilderDelegate
       value: overlayStyle,
       child: Theme(
         data: theme,
-        child: CNP<DefaultAssetPickerProvider>.value(
-          value: provider,
-          builder: (BuildContext c, __) => Material(
-            color: theme.canvasColor,
-            child: Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                if (isAppleOS) appleOSLayout(c) else androidLayout(c),
-                if (Platform.isIOS) iOSPermissionOverlay(c),
-              ],
-            ),
+        child: Material(
+          color: theme.canvasColor,
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              if (isAppleOS) appleOSLayout(context) else androidLayout(context),
+              if (Platform.isIOS) iOSPermissionOverlay(context),
+            ],
           ),
         ),
       ),
