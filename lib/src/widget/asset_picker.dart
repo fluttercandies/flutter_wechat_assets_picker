@@ -6,7 +6,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../constants/enums.dart';
@@ -14,6 +13,8 @@ import '../constants/extensions.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
+import '../internal/methods.dart';
+import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import 'asset_picker_page_route.dart';
 
@@ -37,7 +38,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     List<AssetEntity>? selectedAssets,
     int maxAssets = 9,
     int pageSize = 80,
-    int gridThumbSize = Constants.defaultGridThumbSize,
+    int gridThumbSize = defaultAssetGridPreviewSize,
     int pathThumbSize = 80,
     int gridCount = 4,
     RequestType requestType = RequestType.image,
@@ -100,11 +101,10 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       filterOptions: filterOptions,
       routeDuration: routeDuration,
     );
-    final Widget picker =
-        ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+    final Widget picker = CNP<DefaultAssetPickerProvider>.value(
       value: provider,
       child: AssetPicker<AssetEntity, AssetPathEntity>(
-        key: Constants.pickerKey,
+        key: Singleton.pickerKey,
         builder: DefaultAssetPickerBuilderDelegate(
           provider: provider,
           initialPermission: _ps,
@@ -144,19 +144,15 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       PickerProvider extends AssetPickerProvider<Asset, Path>>(
     BuildContext context, {
     required AssetPickerBuilderDelegate<Asset, Path> delegate,
-    required PickerProvider provider,
     bool useRootNavigator = true,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
     await permissionCheck();
 
-    final Widget picker = CNP<PickerProvider>.value(
-      value: provider,
-      child: AssetPicker<Asset, Path>(
-        key: Constants.pickerKey,
-        builder: delegate,
-      ),
+    final Widget picker = AssetPicker<Asset, Path>(
+      key: Singleton.pickerKey,
+      builder: delegate,
     );
     final List<Asset>? result = await Navigator.of(
       context,
@@ -292,12 +288,13 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
 }
 
 class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
-    with WidgetsBindingObserver {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
     AssetPicker.registerObserve(_onLimitedAssetsUpdated);
+    widget.builder.initState(this);
   }
 
   @override
@@ -314,28 +311,20 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
     AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
-    // Skip delegate's dispose when it's keeping scroll offset.
-    if (!widget.builder.keepScrollOffset) {
-      widget.builder.dispose();
-    }
+    widget.builder.dispose();
     super.dispose();
   }
 
   Future<void> _onLimitedAssetsUpdated(MethodCall call) async {
-    if (!widget.builder.isPermissionLimited) {
-      return;
-    }
-    if (widget.builder.provider.currentPathEntity != null) {
-      final Path? _currentPathEntity =
-          widget.builder.provider.currentPathEntity;
-      if (_currentPathEntity is AssetPathEntity) {
-        await _currentPathEntity.refreshPathProperties();
-      }
-      await widget.builder.provider.switchPath(_currentPathEntity);
-      if (mounted) {
-        setState(() {});
-      }
-    }
+    await widget.builder.onAssetsChanged(
+      call,
+      (VoidCallback fn) {
+        fn();
+        if (mounted) {
+          setState(() {});
+        }
+      },
+    );
   }
 
   @override

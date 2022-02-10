@@ -13,12 +13,12 @@ import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
-import '../constants/constants.dart';
 import '../constants/custom_scroll_physics.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
 import '../delegates/asset_picker_text_delegate.dart';
+import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import '../provider/asset_picker_viewer_provider.dart';
 import '../widget/asset_picker_viewer.dart';
@@ -153,7 +153,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// 当前平台是否为苹果系列系统
   bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
 
-  AssetPickerTextDelegate get textDelegate => Constants.textDelegate;
+  AssetPickerTextDelegate get textDelegate => Singleton.textDelegate;
 
   /// Call when viewer is calling [initState].
   /// 当预览器调用 [initState] 时注册 [State] 和 [TickerProvider]。

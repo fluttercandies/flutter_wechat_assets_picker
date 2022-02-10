@@ -14,7 +14,7 @@ class MultiAssetsPage extends StatefulWidget {
 }
 
 class _MultiAssetsPageState extends State<MultiAssetsPage>
-    with AutomaticKeepAliveClientMixin, ExamplePageMixin<MultiAssetsPage> {
+    with AutomaticKeepAliveClientMixin, ExamplePageMixin {
   @override
   int get maxAssetsCount => 9;
 
@@ -52,7 +52,6 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
       PickMethod.customFilterOptions(maxAssetsCount),
       PickMethod.preventGIFPicked(maxAssetsCount),
       PickMethod.keepScrollOffset(
-        provider: () => keepScrollProvider,
         delegate: () => keepScrollDelegate!,
         onPermission: (PermissionState state) {
           keepScrollDelegate ??= DefaultAssetPickerBuilderDelegate(

@@ -1,3 +1,3 @@
 # WeChat Assets Picker example
 
-This is an example for the `wechat_assets_picker` package.
+This is the example for the `wechat_assets_picker` package.

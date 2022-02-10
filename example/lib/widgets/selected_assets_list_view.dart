@@ -20,8 +20,8 @@ class SelectedAssetsListView extends StatelessWidget {
 
   final List<AssetEntity> assets;
   final ValueNotifier<bool> isDisplayingDetail;
-  final Function(List<AssetEntity>? result) onResult;
-  final Function(int index) onRemoveAsset;
+  final void Function(List<AssetEntity>? result) onResult;
+  final void Function(int index) onRemoveAsset;
 
   Widget _selectedAssetWidget(BuildContext context, int index) {
     final AssetEntity asset = assets.elementAt(index);

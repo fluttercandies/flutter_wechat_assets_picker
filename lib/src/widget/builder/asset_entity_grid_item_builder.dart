@@ -6,7 +6,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../../constants/constants.dart';
+import '../../internal/singleton.dart';
 import '../../widget/scale_text.dart';
 
 class AssetEntityGridItemBuilder extends StatefulWidget {
@@ -25,13 +25,11 @@ class AssetEntityGridItemBuilder extends StatefulWidget {
 }
 
 class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
-  AssetEntityImageProvider get imageProvider => widget.image;
-
   Widget? child;
 
   Widget get newChild {
     return ExtendedImage(
-      image: imageProvider,
+      image: widget.image,
       fit: BoxFit.cover,
       loadStateChanged: (ExtendedImageState state) {
         Widget loader = const SizedBox.shrink();
@@ -56,7 +54,7 @@ class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
   Widget failedItemBuilder(BuildContext context) {
     return Center(
       child: ScaleText(
-        Constants.textDelegate.loadFailed,
+        Singleton.textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),
       ),

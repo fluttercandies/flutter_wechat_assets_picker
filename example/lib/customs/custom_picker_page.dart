@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/custom_pick_method.dart';
 import 'pickers/directory_file_asset_picker.dart';
+import 'pickers/multi_tabs_assets_picker.dart';
 
 class CustomPickersPage extends StatefulWidget {
   @override
@@ -37,6 +38,15 @@ class _CustomPickerPageState extends State<CustomPickersPage>
           MaterialPageRoute<void>(
             builder: (_) => const DirectoryFileAssetPicker(),
           ),
+        ),
+      ),
+      CustomPickMethod(
+        icon: '🔀',
+        name: 'Multi tab picker',
+        description: 'The picker contains multiple tab with different types of '
+            'assets for the picking at the same time.',
+        method: (BuildContext context) => Navigator.of(context).push<void>(
+          MaterialPageRoute<void>(builder: (_) => const MultiTabAssetPicker()),
         ),
       ),
     ];

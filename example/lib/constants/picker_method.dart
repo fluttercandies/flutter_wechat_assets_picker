@@ -137,10 +137,11 @@ class PickMethod {
                   }
                   final AssetPicker<AssetEntity, AssetPathEntity> picker =
                       context.findAncestorWidgetOfExactType()!;
-                  final DefaultAssetPickerProvider p =
-                      picker.builder.provider as DefaultAssetPickerProvider;
-                  await p.currentPathEntity!.refreshPathProperties();
-                  await p.switchPath(p.currentPathEntity!);
+                  final DefaultAssetPickerBuilderDelegate builder =
+                      picker.builder as DefaultAssetPickerBuilderDelegate;
+                  final DefaultAssetPickerProvider p = builder.provider;
+                  await p.currentPath!.refreshPathProperties();
+                  await p.switchPath(p.currentPath!);
                   p.selectAsset(result);
                 },
                 child: const Center(
@@ -254,7 +255,6 @@ class PickMethod {
   }
 
   factory PickMethod.keepScrollOffset({
-    required DefaultAssetPickerProvider Function() provider,
     required DefaultAssetPickerBuilderDelegate Function() delegate,
     required Function(PermissionState state) onPermission,
     GestureLongPressCallback? onLongPress,
@@ -273,7 +273,6 @@ class PickMethod {
         onPermission(_ps);
         return AssetPicker.pickAssetsWithDelegate(
           context,
-          provider: provider(),
           delegate: delegate(),
         );
       },

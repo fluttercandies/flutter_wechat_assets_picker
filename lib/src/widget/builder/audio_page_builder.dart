@@ -8,8 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../constants/constants.dart';
 import '../../constants/extensions.dart';
+import '../../internal/methods.dart';
+import '../../internal/singleton.dart';
 import '../scale_text.dart';
 
 class AudioPageBuilder extends StatefulWidget {
@@ -143,9 +144,9 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       stream: durationStreamController.stream,
       builder: (BuildContext _, AsyncSnapshot<Duration> data) {
         return ScaleText(
-          '${Constants.textDelegate.durationIndicatorBuilder(data.data!)}'
+          '${Singleton.textDelegate.durationIndicatorBuilder(data.data!)}'
           ' / '
-          '${Constants.textDelegate.durationIndicatorBuilder(assetDuration)}',
+          '${Singleton.textDelegate.durationIndicatorBuilder(assetDuration)}',
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.normal,
@@ -159,7 +160,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   Widget build(BuildContext context) {
     return Semantics(
       onLongPress: playButtonCallback,
-      onLongPressHint: Constants.textDelegate.sActionPlayHint,
+      onLongPressHint: Singleton.textDelegate.sActionPlayHint,
       child: ColoredBox(
         color: context.themeData.backgroundColor,
         child: isLoaded

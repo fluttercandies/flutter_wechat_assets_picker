@@ -9,7 +9,7 @@ import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path/path.dart' as path;
+import 'package:path/path.dart' show basename;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -37,8 +37,7 @@ class DirectoryFileAssetPicker extends StatefulWidget {
       _DirectoryFileAssetPickerState();
 }
 
-class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
-    with AutomaticKeepAliveClientMixin {
+class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
   final List<File> fileList = <File>[];
 
   bool isDisplayingDetail = true;
@@ -56,7 +55,6 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
     final List<File>? result = await AssetPicker.pickAssetsWithDelegate(
       context,
       delegate: builder,
-      provider: provider,
     );
     if (result != null) {
       fileList
@@ -248,12 +246,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
-  @mustCallSuper
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Directory+File picker')),
       body: Column(
@@ -302,30 +295,30 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
     required List<File> selectedAssets,
   }) : super(selectedAssets: selectedAssets) {
     Future<void>.delayed(const Duration(milliseconds: 300), () async {
-      await getAssetPathList();
-      getAssetsFromEntity(0, pathEntityList.keys.elementAt(0));
+      await getPaths();
+      getAssetsFromPath(0, pathsList.keys.elementAt(0));
     });
   }
 
   @override
-  Future<void> getAssetPathList() async {
+  Future<void> getPaths() async {
     currentAssets = <File>[];
-    pathEntityList.clear();
+    pathsList.clear();
     final Directory? directory = await getExternalStorageDirectory();
     if (directory != null) {
-      pathEntityList[directory] = null;
-      currentPathEntity = directory;
-      pathEntityList[directory] = await getFirstThumbFromPathEntity(directory);
+      pathsList[directory] = null;
+      currentPath = directory;
+      pathsList[directory] = await getThumbnailFromPath(directory);
     }
   }
 
   @override
-  Future<void> getAssetsFromEntity(int page, Directory pathEntity) async {
+  Future<void> getAssetsFromPath(int page, Directory path) async {
     final List<FileSystemEntity> entities =
-        pathEntity.listSync().whereType<File>().toList();
+        path.listSync().whereType<File>().toList();
     currentAssets.clear();
     for (final FileSystemEntity entity in entities) {
-      final String extension = path.basename(entity.path).split('.').last;
+      final String extension = basename(entity.path).split('.').last;
       if (entity is File && imagesExtensions.contains(extension)) {
         currentAssets.add(entity);
       }
@@ -335,12 +328,12 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<Uint8List?> getFirstThumbFromPathEntity(Directory pathEntity) async {
+  Future<Uint8List?> getThumbnailFromPath(Directory path) async {
     final List<FileSystemEntity> entities =
-        pathEntity.listSync().whereType<File>().toList();
+        path.listSync().whereType<File>().toList();
     currentAssets.clear();
     for (final FileSystemEntity entity in entities) {
-      final String extension = path.basename(entity.path).split('.').last;
+      final String extension = basename(entity.path).split('.').last;
       if (entity is File && imagesExtensions.contains(extension)) {
         final Uint8List data = await entity.readAsBytes();
         return data;
@@ -362,32 +355,32 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<void> switchPath([Directory? pathEntity]) async {
-    if (pathEntity == null) {
+  Future<void> switchPath([Directory? path]) async {
+    if (path == null) {
       return;
     }
-    isSwitchingPath = false;
-    currentPathEntity = pathEntity;
+    currentPath = path;
     totalAssetsCount = 0;
     notifyListeners();
-    await getAssetsFromEntity(0, currentPathEntity!);
+    await getAssetsFromPath(0, currentPath!);
   }
 }
 
 class FileAssetPickerBuilder
     extends AssetPickerBuilderDelegate<File, Directory> {
   FileAssetPickerBuilder({
-    required FileAssetPickerProvider provider,
+    required this.provider,
     Locale? locale,
-  }) : super(
-          provider: provider,
-          initialPermission: PermissionState.authorized,
-          locale: locale,
-        );
+  }) : super(initialPermission: PermissionState.authorized, locale: locale);
+
+  final FileAssetPickerProvider provider;
 
   Duration get switchingPathDuration => kThemeAnimationDuration * 1.5;
 
   Curve get switchingPathCurve => Curves.easeInOut;
+
+  @override
+  bool get isSingleAssetMode => provider.maxAssets == 1;
 
   Future<List<File>?> pushToPicker(
     BuildContext context, {
@@ -828,23 +821,19 @@ class FileAssetPickerBuilder
 
   @override
   Widget pathEntityListBackdrop(BuildContext context) {
-    return Selector<FileAssetPickerProvider, bool>(
-      selector: (_, FileAssetPickerProvider p) => p.isSwitchingPath,
-      builder: (BuildContext context, bool isSwitchingPath, _) {
-        return IgnorePointer(
-          ignoring: !isSwitchingPath,
-          child: GestureDetector(
-            onTap: () {
-              context.read<FileAssetPickerProvider>().isSwitchingPath = false;
-            },
-            child: AnimatedOpacity(
-              duration: switchingPathDuration,
-              opacity: isSwitchingPath ? 1.0 : 0.0,
-              child: Container(color: Colors.black.withOpacity(0.75)),
-            ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: isSwitchingPath,
+      builder: (_, bool isSwitchingPath, __) => IgnorePointer(
+        ignoring: !isSwitchingPath,
+        child: GestureDetector(
+          onTap: () => this.isSwitchingPath.value = false,
+          child: AnimatedOpacity(
+            duration: switchingPathDuration,
+            opacity: isSwitchingPath ? 1.0 : 0.0,
+            child: Container(color: Colors.black.withOpacity(0.75)),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -852,8 +841,8 @@ class FileAssetPickerBuilder
   Widget pathEntityListWidget(BuildContext context) {
     final double appBarHeight = kToolbarHeight + Screens.topSafeHeight;
     final double maxHeight = Screens.height * 0.825;
-    return Selector<FileAssetPickerProvider, bool>(
-      selector: (_, FileAssetPickerProvider p) => p.isSwitchingPath,
+    return ValueListenableBuilder<bool>(
+      valueListenable: isSwitchingPath,
       builder: (_, bool isSwitchingPath, Widget? w) => AnimatedPositioned(
         duration: switchingPathDuration,
         curve: switchingPathCurve,
@@ -880,7 +869,7 @@ class FileAssetPickerBuilder
         ),
       ),
       child: Selector<FileAssetPickerProvider, Map<Directory, Uint8List?>>(
-        selector: (_, FileAssetPickerProvider p) => p.pathEntityList,
+        selector: (_, FileAssetPickerProvider p) => p.pathsList,
         builder: (_, Map<Directory, Uint8List?> pathEntityList, __) {
           return ListView.separated(
             padding: const EdgeInsetsDirectional.only(top: 1.0),
@@ -904,58 +893,65 @@ class FileAssetPickerBuilder
   @override
   Widget pathEntitySelector(BuildContext context) {
     return UnconstrainedBox(
-      child: Consumer<FileAssetPickerProvider>(
-        builder: (_, FileAssetPickerProvider provider, __) {
-          return GestureDetector(
-            onTap: () {
-              provider.isSwitchingPath = !provider.isSwitchingPath;
-            },
-            child: Container(
-              height: appBarItemHeight,
-              constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
-              padding: const EdgeInsetsDirectional.only(start: 12.0, end: 6.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(999),
-                color: theme.dividerColor,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  if (provider.currentPathEntity != null)
-                    Flexible(
-                      child: Text(
-                        provider.currentPathEntity!.path,
-                        style: const TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.normal,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+      child: GestureDetector(
+        onTap: () => isSwitchingPath.value = !isSwitchingPath.value,
+        child: Container(
+          height: appBarItemHeight,
+          constraints: BoxConstraints(maxWidth: Screens.width * 0.5),
+          padding: const EdgeInsetsDirectional.only(start: 12.0, end: 6.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(999),
+            color: theme.dividerColor,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Selector<FileAssetPickerProvider, Directory?>(
+                selector: (_, FileAssetPickerProvider p) => p.currentPath,
+                builder: (_, Directory? currentPathEntity, __) {
+                  if (currentPathEntity == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return Flexible(
+                    child: Text(
+                      provider.currentPath!.path,
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.normal,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 5.0),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: theme.iconTheme.color?.withOpacity(0.5),
-                      ),
-                      child: Transform.rotate(
-                        angle: provider.isSwitchingPath ? math.pi : 0.0,
+                  );
+                },
+              ),
+              Padding(
+                padding: const EdgeInsetsDirectional.only(start: 5.0),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: theme.iconTheme.color?.withOpacity(0.5),
+                  ),
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: isSwitchingPath,
+                    builder: (_, bool isSwitchingPath, Widget? w) {
+                      return Transform.rotate(
+                        angle: isSwitchingPath ? math.pi : 0.0,
                         alignment: Alignment.center,
-                        child: Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 20.0,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ),
+                        child: w,
+                      );
+                    },
+                    child: Icon(
+                      Icons.keyboard_arrow_down,
+                      size: 20.0,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          );
-        },
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -984,7 +980,10 @@ class FileAssetPickerBuilder
       type: MaterialType.transparency,
       child: InkWell(
         splashFactory: InkSplash.splashFactory,
-        onTap: () => provider.switchPath(path),
+        onTap: () {
+          provider.switchPath(path);
+          isSwitchingPath.value = false;
+        },
         child: SizedBox(
           height: isAppleOS ? 64.0 : 52.0,
           child: Row(
@@ -1010,8 +1009,7 @@ class FileAssetPickerBuilder
                 ),
               ),
               Selector<FileAssetPickerProvider, Directory>(
-                selector: (_, FileAssetPickerProvider p) =>
-                    p.currentPathEntity!,
+                selector: (_, FileAssetPickerProvider p) => p.currentPath!,
                 builder: (_, Directory currentPathEntity, __) {
                   if (currentPathEntity == path) {
                     return const AspectRatio(
@@ -1043,7 +1041,7 @@ class FileAssetPickerBuilder
                     index: 0,
                     previewAssets: provider.selectedAssets,
                     selectedAssets: provider.selectedAssets,
-                    selectorProvider: provider as FileAssetPickerProvider,
+                    selectorProvider: provider,
                   );
                   if (result != null) {
                     Navigator.of(context).pop(result);
@@ -1187,6 +1185,29 @@ class FileAssetPickerBuilder
     int placeholderCount = 0,
   }) {
     return assets.indexWhere((File file) => file.path == id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlayStyle,
+      child: Theme(
+        data: theme,
+        child: ChangeNotifierProvider<FileAssetPickerProvider>.value(
+          value: provider,
+          builder: (BuildContext c, __) => Material(
+            color: theme.canvasColor,
+            child: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                if (isAppleOS) appleOSLayout(c) else androidLayout(c),
+                if (Platform.isIOS) iOSPermissionOverlay(c),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
