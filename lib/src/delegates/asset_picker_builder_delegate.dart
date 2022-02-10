@@ -910,7 +910,7 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
-  PreferredSizeWidget appBar(BuildContext context) {
+  AssetPickerAppBar appBar(BuildContext context) {
     return AssetPickerAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
       centerTitle: isAppleOS,
