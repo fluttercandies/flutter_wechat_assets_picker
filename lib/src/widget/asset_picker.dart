@@ -144,19 +144,15 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       PickerProvider extends AssetPickerProvider<Asset, Path>>(
     BuildContext context, {
     required AssetPickerBuilderDelegate<Asset, Path> delegate,
-    required PickerProvider provider,
     bool useRootNavigator = true,
     Curve routeCurve = Curves.easeIn,
     Duration routeDuration = const Duration(milliseconds: 300),
   }) async {
     await permissionCheck();
 
-    final Widget picker = CNP<PickerProvider>.value(
-      value: provider,
-      child: AssetPicker<Asset, Path>(
-        key: Singleton.pickerKey,
-        builder: delegate,
-      ),
+    final Widget picker = AssetPicker<Asset, Path>(
+      key: Singleton.pickerKey,
+      builder: delegate,
     );
     final List<Asset>? result = await Navigator.of(
       context,

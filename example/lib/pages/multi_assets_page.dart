@@ -52,7 +52,6 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
       PickMethod.customFilterOptions(maxAssetsCount),
       PickMethod.preventGIFPicked(maxAssetsCount),
       PickMethod.keepScrollOffset(
-        provider: () => keepScrollProvider,
         delegate: () => keepScrollDelegate!,
         onPermission: (PermissionState state) {
           keepScrollDelegate ??= DefaultAssetPickerBuilderDelegate(

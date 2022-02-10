@@ -255,7 +255,6 @@ class PickMethod {
   }
 
   factory PickMethod.keepScrollOffset({
-    required DefaultAssetPickerProvider Function() provider,
     required DefaultAssetPickerBuilderDelegate Function() delegate,
     required Function(PermissionState state) onPermission,
     GestureLongPressCallback? onLongPress,
@@ -274,7 +273,6 @@ class PickMethod {
         onPermission(_ps);
         return AssetPicker.pickAssetsWithDelegate(
           context,
-          provider: provider(),
           delegate: delegate(),
         );
       },

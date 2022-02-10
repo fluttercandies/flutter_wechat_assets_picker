@@ -37,8 +37,7 @@ class DirectoryFileAssetPicker extends StatefulWidget {
       _DirectoryFileAssetPickerState();
 }
 
-class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
-    with AutomaticKeepAliveClientMixin {
+class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
   final List<File> fileList = <File>[];
 
   bool isDisplayingDetail = true;
@@ -56,7 +55,6 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
     final List<File>? result = await AssetPicker.pickAssetsWithDelegate(
       context,
       delegate: builder,
-      provider: provider,
     );
     if (result != null) {
       fileList
@@ -248,12 +246,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker>
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
-  @mustCallSuper
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Directory+File picker')),
       body: Column(
