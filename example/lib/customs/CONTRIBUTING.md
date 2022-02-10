@@ -18,4 +18,4 @@ Please think twice before you confirmed it should be pushed as a new implementat
 4. Brought all your implementations into the file you've just created.
 5. Add a `CustomPickMethod` at the `custom_picker_page.dart` file in `pickMethods`
    in order to build an entrance to your picker.
-6. Submit your PR with proper explainations with how your picker works.
+6. Submit your PR with proper explanations with how your picker works.

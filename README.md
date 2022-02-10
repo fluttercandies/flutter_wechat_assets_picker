@@ -21,7 +21,8 @@ and `provider` to help control the state of the picker.
 To take a photo or a video for assets, please check the detailed usage in the example, and head over to
 [wechat_camera_picker](https://pub.dev/packages/wechat_camera_picker).
 
-All UI designs are based on WeChat 8.x, and it will be updated following the WeChat update in anytime.
+Current WeChat version that UI based on: **8.x**
+UI designs will be updated following the WeChat update in anytime.
 
 ## Category 🗂
 
@@ -29,7 +30,7 @@ All UI designs are based on WeChat 8.x, and it will be updated following the WeC
 * [Features](#features-)
 * [Screenshots](#screenshots-)
 * [Preparing for use](#preparing-for-use-)
-  * [Versions compatibility](#version-compatibility)
+  * [Versions compatibility](#versions-compatibility)
   * [Flutter](#flutter)
   * [Android](#android)
   * [iOS](#ios)
@@ -58,7 +59,7 @@ See [Migration Guide](guides/migration_guide.md).
 - 💚 99% similar to WeChat style
 - ⚡️ Adjustable performance according to parameters
 - 📷 Image asset support
-  - 🔬 HEIC/HEIF Image type support
+  - 🔬 HEIF Image type support
 - 🎥 Video asset support
 - 🎶 Audio asset support
 - 1️⃣ Single asset mode
@@ -74,7 +75,7 @@ See [Migration Guide](guides/migration_guide.md).
 ## Screenshots 📸
 
 | ![1](https://pic.alexv525.com/2021-07-05-picker_1.jpg)   | ![2](https://pic.alexv525.com/2021-07-05-picker_2.jpg)   | ![3](https://pic.alexv525.com/2021-07-05-picker_3.jpg)   |
-| -------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- |
+|----------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
 | ![4](https://pic.alexv525.com/2021-07-05-picker_4.jpg)   | ![5](https://pic.alexv525.com/2021-07-05-picker_5.jpg)   | ![6](https://pic.alexv525.com/2021-07-05-picker_6.jpg)   |
 | ![7](https://pic.alexv525.com/2021-07-06-picker_7.jpg)   | ![8](https://pic.alexv525.com/2021-07-05-picker_8.jpg)   | ![9](https://pic.alexv525.com/2021-07-05-picker_9-1.jpg) |
 | ![10](https://pic.alexv525.com/2021-07-05-picker_10.png) | ![10](https://pic.alexv525.com/2021-07-05-picker_11.png) | ![12](https://pic.alexv525.com/2021-07-05-picker_12.png) |
@@ -97,7 +98,7 @@ please run the example or refer to [photo_manager](https://github.com/CaiJingLon
 | 5.0.0+ |   ✅   |  N/A  |  N/A  |  N/A  |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
-please use `dependency_overrides` to fix it. See [here](#version-resolve-conflict-with-xxx-eg-dartx) .
+please use `dependency_overrides` to fix it.
 
 ### Flutter
 
@@ -161,30 +162,30 @@ platform :osx, '10.15'
 
 ## Usage 📖
 
-| Name                      | Type                        | Description                                                  | Default                             |
-| ------------------------- | --------------------------- | ------------------------------------------------------------ | ----------------------------------- |
+| Name                      | Type                        | Description                                                                                                         | Default                             |
+|---------------------------|-----------------------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------|
 | selectedAssets            | `List<AssetEntity>?`        | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
-| maxAssets                 | `int`                       | Maximum asset that the picker can pick.                      | 9                                   |
-| pageSize                  | `int?`                      | Number of assets per page. **Must be a multiple of `gridCount`**. | 320 (80 * 4)                        |
-| gridThumbSize             | `int`                       | Thumbnail size for the grid's item.                          | 200                                 |
-| pathThumbSize             | `int`                       | Thumbnail size for the path selector.                        | 80                                  |
-| previewThumbSize          | `List<int>?`                | Preview thumbnail size in the viewer.                        | `null`                              |
-| gridCount                 | `int`                       | Grid count in picker.                                        | 4                                   |
-| requestType               | `RequestType`               | Request type for picker.                                     | `RequestType.image`                 |
-| specialPickerType         | `SpacialPickerType?`        | Provides the option to integrate a custom picker type.       | `null`                              |
-| themeColor                | `Color?`                    | Main theme color for the picker.                             | `Color(0xff00bc56)`                 |
-| pickerTheme               | `ThemeData?`                | Theme data provider for the picker and the viewer.           | `null`                              |
-| sortPathDelegate          | `SortPathDeleage?`          | Path entities sort delegate for the picker, sort paths as you want. | `CommonSortPathDelegate`            |
-| textDelegate              | `AssetsPickerTextDelegate?` | Text delegate for the picker, for customize the texts.       | `DefaultAssetsPickerTextDelegate()` |
-| filterOptions             | `FilterOptionGroup?`        | Allow users to customize assets filter options.              | `null`                              |
-| specialItemBuilder        | `WidgetBuilder?`            | The widget builder for the special item.                     | `null`                              |
-| specialItemPosition       | `SpecialItemPosition`       | Allow users set a special item in the picker with several positions. | `SpecialItemPosition.none`          |
-| loadingIndicatorBuilder   | `IndicatorBuilder?`         | Indicates the loading status for the builder.                | `null`                              |
-| allowSpecialItemWhenEmpty | `bool`                      | Whether the special item will display or not when assets is empty. | `false`                             |
-| selectPredicate           | `AssetSelectPredicate`      | Predicate whether an asset can be selected or unselected.    | `null`                              |
-| shouldRevertGrid          | `bool?`                     | Whether the assets grid should revert.                       | `null`                              |
-| routeCurve                | `Curve`                     | The curve which the picker use to build page route transition. | `Curves.easeIn`                     |
-| routeDuration             | `Duration`                  | The duration which the picker use to build page route transition. | `const Duration(milliseconds: 500)` |
+| maxAssets                 | `int`                       | Maximum asset that the picker can pick.                                                                             | 9                                   |
+| pageSize                  | `int?`                      | Number of assets per page. **Must be a multiple of `gridCount`**.                                                   | 320 (80 * 4)                        |
+| gridThumbSize             | `int`                       | Thumbnail size for the grid's item.                                                                                 | 200                                 |
+| pathThumbSize             | `int`                       | Thumbnail size for the path selector.                                                                               | 80                                  |
+| previewThumbSize          | `List<int>?`                | Preview thumbnail size in the viewer.                                                                               | `null`                              |
+| gridCount                 | `int`                       | Grid count in picker.                                                                                               | 4                                   |
+| requestType               | `RequestType`               | Request type for picker.                                                                                            | `RequestType.image`                 |
+| specialPickerType         | `SpacialPickerType?`        | Provides the option to integrate a custom picker type.                                                              | `null`                              |
+| themeColor                | `Color?`                    | Main theme color for the picker.                                                                                    | `Color(0xff00bc56)`                 |
+| pickerTheme               | `ThemeData?`                | Theme data provider for the picker and the viewer.                                                                  | `null`                              |
+| sortPathDelegate          | `SortPathDeleage?`          | Path entities sort delegate for the picker, sort paths as you want.                                                 | `CommonSortPathDelegate`            |
+| textDelegate              | `AssetsPickerTextDelegate?` | Text delegate for the picker, for customize the texts.                                                              | `DefaultAssetsPickerTextDelegate()` |
+| filterOptions             | `FilterOptionGroup?`        | Allow users to customize assets filter options.                                                                     | `null`                              |
+| specialItemBuilder        | `WidgetBuilder?`            | The widget builder for the special item.                                                                            | `null`                              |
+| specialItemPosition       | `SpecialItemPosition`       | Allow users set a special item in the picker with several positions.                                                | `SpecialItemPosition.none`          |
+| loadingIndicatorBuilder   | `IndicatorBuilder?`         | Indicates the loading status for the builder.                                                                       | `null`                              |
+| allowSpecialItemWhenEmpty | `bool`                      | Whether the special item will display or not when assets is empty.                                                  | `false`                             |
+| selectPredicate           | `AssetSelectPredicate`      | Predicate whether an asset can be selected or unselected.                                                           | `null`                              |
+| shouldRevertGrid          | `bool?`                     | Whether the assets grid should revert.                                                                              | `null`                              |
+| routeCurve                | `Curve`                     | The curve which the picker use to build page route transition.                                                      | `Curves.easeIn`                     |
+| routeDuration             | `Duration`                  | The duration which the picker use to build page route transition.                                                   | `const Duration(milliseconds: 500)` |
 
 ### Simple usage
 
@@ -194,18 +195,11 @@ final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
 
 ### Using custom delegate
 
-```dart
-final YourAssetPickerProvider provider = yourProvider;
-final CustomAssetPickerBuilderDelegate builder = yourBuilder(provider);
-final List<YourAssetEntity>? result = await AssetPicker.pickAssetsWithDelegate(
-  context,
-  provider: provider,
-  delegate: builder,
-);
-```
-
 You can use the `keepScrollOffset` feature only with the `pickAssetsWithDelegate` method.
 See the `Keep scroll offset` pick method in the example for how to implement it.
+
+For more details about custom delegates,
+head over to [`example/lib/customs`](example/lib/customs).
 
 ### Detailed usage
 
@@ -232,8 +226,9 @@ Only one and maximum to one asset can be picked at once.
 #### Custom pickers
 
 You can try custom pickers with the "Custom" page.
-We only defined a picker that integrates with `Directory` and `File`
-(completely out of the `photo_manager` scope).
+We've defined a picker that integrates with `Directory` and `File`
+(completely out of the `photo_manager` scope),
+and a picker with multiple tabs switching.
 You can submit PRs to create your own implementation
 if you found your implementation might be useful for others.
 See [Contribute custom implementations][lib/customs/CONTRIBUTING.md]
@@ -337,13 +332,23 @@ In order to combine this package with camera shooting or something related,
 there's a solution about how to create an `AssetEntity` with `File` or `Uint8List` object.
 
 ```dart
-final File file = your_file; // Your file object
-final Uint8List byteData = await file.readAsBytes(); // Convert to Uint8List
-final AssetEntity imageEntity = await PhotoManager.editor.saveImage(byteData); // Saved in the device then create an AssetEntity
+final File file = your_file; // Your `File` object
+final String path = file.path;
+final AssetEntity fileEntity = await PhotoManager.editor.saveImageWithPath(
+  path,
+  title: basename(path),
+); // Saved in the device then create an AssetEntity
+
+final Uint8List data = your_data; // Your `Uint8List` object
+final AssetEntity imageEntity = await PhotoManager.editor.saveImage(
+  file.path,
+  title: 'title_with_extension.jpg',
+); // Saved in the device then create an AssetEntity
 ```
 
-If you don't want to keep the asset in your device,
-just delete it after you complete with your process (upload, editing, etc).
+**Notice: If you don't want to keep the file in your device,
+use `File` for operations as much as possible.**
+A deletion operation might call system popups with some OS:
 
 ```dart
 final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
