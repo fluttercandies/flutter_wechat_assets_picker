@@ -288,12 +288,13 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
 }
 
 class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
-    with WidgetsBindingObserver {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
     AssetPicker.registerObserve(_onLimitedAssetsUpdated);
+    widget.builder.initState(this);
   }
 
   @override

@@ -207,8 +207,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   AssetPickerTextDelegate get textDelegate => Singleton.textDelegate;
 
-  /// Keep a dispose method to sync with [State].
-  /// 保留一个 dispose 方法与 [State] 同步。
+  /// Keep a `initState` method to sync with [State].
+  /// 保留一个 `initState` 方法与 [State] 同步。
+  @mustCallSuper
+  void initState(AssetPickerState<Asset, Path> state) {}
+
+  /// Keep a `dispose` method to sync with [State].
+  /// 保留一个 `dispose` 方法与 [State] 同步。
   @mustCallSuper
   void dispose() {
     Singleton.scrollPosition = null;
