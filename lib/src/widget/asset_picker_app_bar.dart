@@ -151,12 +151,11 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     // Allow custom blur radius using [ui.ImageFilter.blur].
     if (blurRadius > 0.0) {
-      child = ImageFiltered(
-        imageFilter: ui.ImageFilter.blur(
-          sigmaX: blurRadius,
-          sigmaY: blurRadius,
+      child = ClipRect(
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: blurRadius, sigmaY: blurRadius),
+          child: child,
         ),
-        child: child,
       );
     }
 
