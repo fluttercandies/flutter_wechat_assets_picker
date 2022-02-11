@@ -232,7 +232,6 @@ class DefaultAssetPickerProvider
     int maxAssets = 9,
     int pageSize = 80,
     int pathThumbSize = 80,
-    Duration routeDuration = const Duration(milliseconds: 300),
   }) : super(
           maxAssets: maxAssets,
           pageSize: pageSize,
@@ -241,12 +240,10 @@ class DefaultAssetPickerProvider
         ) {
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
     // Call [getAssetList] with route duration when constructing.
-    Future<void>.delayed(routeDuration).then(
-      (dynamic _) async {
-        await getPaths();
-        await getAssetsFromCurrentPath();
-      },
-    );
+    Future<void>(() async {
+      await getPaths();
+      await getAssetsFromCurrentPath();
+    });
   }
 
   /// Request assets type.

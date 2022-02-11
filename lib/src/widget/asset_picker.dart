@@ -56,8 +56,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     bool? shouldRevertGrid,
     bool useRootNavigator = true,
-    Curve routeCurve = Curves.easeIn,
-    Duration routeDuration = const Duration(milliseconds: 300),
+    AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     if (maxAssets < 1) {
       throw ArgumentError(
@@ -99,7 +98,6 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       requestType: requestType,
       sortPathDelegate: sortPathDelegate,
       filterOptions: filterOptions,
-      routeDuration: routeDuration,
     );
     final Widget picker = CNP<DefaultAssetPickerProvider>.value(
       value: provider,
@@ -129,24 +127,20 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       context,
       rootNavigator: useRootNavigator,
     ).push<List<AssetEntity>>(
-      AssetPickerPageRoute<List<AssetEntity>>(
-        builder: picker,
-        transitionCurve: routeCurve,
-        transitionDuration: routeDuration,
-      ),
+      pageRouteBuilder?.call(picker) ??
+          AssetPickerPageRoute<List<AssetEntity>>(builder: (_) => picker),
     );
     return result;
   }
 
-  /// Call the picker with provided [delegate] and [provider].
-  /// 通过指定的 [delegate] 和 [provider] 调用选择器
+  /// Call the picker with provided [delegate].
+  /// 通过指定的 [delegate] 调用选择器
   static Future<List<Asset>?> pickAssetsWithDelegate<Asset, Path,
       PickerProvider extends AssetPickerProvider<Asset, Path>>(
     BuildContext context, {
     required AssetPickerBuilderDelegate<Asset, Path> delegate,
     bool useRootNavigator = true,
-    Curve routeCurve = Curves.easeIn,
-    Duration routeDuration = const Duration(milliseconds: 300),
+    AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
     await permissionCheck();
 
@@ -158,11 +152,8 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       context,
       rootNavigator: useRootNavigator,
     ).push<List<Asset>>(
-      AssetPickerPageRoute<List<Asset>>(
-        builder: picker,
-        transitionCurve: routeCurve,
-        transitionDuration: routeDuration,
-      ),
+      pageRouteBuilder?.call(picker) ??
+          AssetPickerPageRoute<List<Asset>>(builder: (_) => picker),
     );
     return result;
   }
