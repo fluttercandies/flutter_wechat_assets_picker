@@ -4,6 +4,11 @@
 ///
 import 'package:flutter/material.dart';
 
+/// Build [AssetPickerPageRoute] with the given generic type.
+typedef AssetPickerPageRouteBuilder<T> = AssetPickerPageRoute<T> Function(
+  Widget picker,
+);
+
 /// Built a slide page transition for the picker.
 /// 为选择器构造一个上下进出的页面过渡动画
 class AssetPickerPageRoute<T> extends PageRoute<T> {
@@ -11,29 +16,29 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
     required this.builder,
     this.transitionCurve = Curves.easeIn,
     this.transitionDuration = const Duration(milliseconds: 500),
+    this.barrierColor,
+    this.barrierDismissible = false,
+    this.barrierLabel,
+    this.maintainState = true,
+    this.opaque = true,
   });
 
-  final Widget builder;
+  final WidgetBuilder builder;
 
   final Curve transitionCurve;
-
   @override
   final Duration transitionDuration;
 
   @override
-  final bool opaque = true;
-
+  final Color? barrierColor;
   @override
-  final bool barrierDismissible = false;
-
+  final bool barrierDismissible;
   @override
-  final bool maintainState = true;
-
+  final String? barrierLabel;
   @override
-  Color? get barrierColor => null;
-
+  final bool opaque;
   @override
-  String? get barrierLabel => null;
+  final bool maintainState;
 
   @override
   bool canTransitionFrom(TransitionRoute<dynamic> previousRoute) => false;
@@ -44,7 +49,7 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    return builder;
+    return builder(context);
   }
 
   @override
