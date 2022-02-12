@@ -162,30 +162,29 @@ platform :osx, '10.15'
 
 ## Usage 📖
 
-| Name                      | Type                        | Description                                                                                                         | Default                             |
-|---------------------------|-----------------------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------|
-| selectedAssets            | `List<AssetEntity>?`        | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
-| maxAssets                 | `int`                       | Maximum asset that the picker can pick.                                                                             | 9                                   |
-| pageSize                  | `int?`                      | Number of assets per page. **Must be a multiple of `gridCount`**.                                                   | 320 (80 * 4)                        |
-| gridThumbSize             | `int`                       | Thumbnail size for the grid's item.                                                                                 | 200                                 |
-| pathThumbSize             | `int`                       | Thumbnail size for the path selector.                                                                               | 80                                  |
-| previewThumbSize          | `List<int>?`                | Preview thumbnail size in the viewer.                                                                               | `null`                              |
-| gridCount                 | `int`                       | Grid count in picker.                                                                                               | 4                                   |
-| requestType               | `RequestType`               | Request type for picker.                                                                                            | `RequestType.image`                 |
-| specialPickerType         | `SpacialPickerType?`        | Provides the option to integrate a custom picker type.                                                              | `null`                              |
-| themeColor                | `Color?`                    | Main theme color for the picker.                                                                                    | `Color(0xff00bc56)`                 |
-| pickerTheme               | `ThemeData?`                | Theme data provider for the picker and the viewer.                                                                  | `null`                              |
-| sortPathDelegate          | `SortPathDeleage?`          | Path entities sort delegate for the picker, sort paths as you want.                                                 | `CommonSortPathDelegate`            |
-| textDelegate              | `AssetsPickerTextDelegate?` | Text delegate for the picker, for customize the texts.                                                              | `DefaultAssetsPickerTextDelegate()` |
-| filterOptions             | `FilterOptionGroup?`        | Allow users to customize assets filter options.                                                                     | `null`                              |
-| specialItemBuilder        | `WidgetBuilder?`            | The widget builder for the special item.                                                                            | `null`                              |
-| specialItemPosition       | `SpecialItemPosition`       | Allow users set a special item in the picker with several positions.                                                | `SpecialItemPosition.none`          |
-| loadingIndicatorBuilder   | `IndicatorBuilder?`         | Indicates the loading status for the builder.                                                                       | `null`                              |
-| allowSpecialItemWhenEmpty | `bool`                      | Whether the special item will display or not when assets is empty.                                                  | `false`                             |
-| selectPredicate           | `AssetSelectPredicate`      | Predicate whether an asset can be selected or unselected.                                                           | `null`                              |
-| shouldRevertGrid          | `bool?`                     | Whether the assets grid should revert.                                                                              | `null`                              |
-| routeCurve                | `Curve`                     | The curve which the picker use to build page route transition.                                                      | `Curves.easeIn`                     |
-| routeDuration             | `Duration`                  | The duration which the picker use to build page route transition.                                                   | `const Duration(milliseconds: 500)` |
+| Name                      | Type                          | Description                                                                                                         | Default                             |
+|---------------------------|-------------------------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------|
+| selectedAssets            | `List<AssetEntity>?`          | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
+| maxAssets                 | `int`                         | Maximum asset that the picker can pick.                                                                             | 9                                   |
+| pageSize                  | `int?`                        | Number of assets per page. **Must be a multiple of `gridCount`**.                                                   | 320 (80 * 4)                        |
+| gridThumbSize             | `int`                         | Thumbnail size for the grid's item.                                                                                 | 200                                 |
+| pathThumbSize             | `int`                         | Thumbnail size for the path selector.                                                                               | 80                                  |
+| previewThumbSize          | `List<int>?`                  | Preview thumbnail size in the viewer.                                                                               | `null`                              |
+| gridCount                 | `int`                         | Grid count in picker.                                                                                               | 4                                   |
+| requestType               | `RequestType`                 | Request type for picker.                                                                                            | `RequestType.image`                 |
+| specialPickerType         | `SpacialPickerType?`          | Provides the option to integrate a custom picker type.                                                              | `null`                              |
+| themeColor                | `Color?`                      | Main theme color for the picker.                                                                                    | `Color(0xff00bc56)`                 |
+| pickerTheme               | `ThemeData?`                  | Theme data provider for the picker and the viewer.                                                                  | `null`                              |
+| sortPathDelegate          | `SortPathDeleage?`            | Path entities sort delegate for the picker, sort paths as you want.                                                 | `CommonSortPathDelegate`            |
+| textDelegate              | `AssetsPickerTextDelegate?`   | Text delegate for the picker, for customize the texts.                                                              | `DefaultAssetsPickerTextDelegate()` |
+| filterOptions             | `FilterOptionGroup?`          | Allow users to customize assets filter options.                                                                     | `null`                              |
+| specialItemBuilder        | `WidgetBuilder?`              | The widget builder for the special item.                                                                            | `null`                              |
+| specialItemPosition       | `SpecialItemPosition`         | Allow users set a special item in the picker with several positions.                                                | `SpecialItemPosition.none`          |
+| loadingIndicatorBuilder   | `IndicatorBuilder?`           | Indicates the loading status for the builder.                                                                       | `null`                              |
+| allowSpecialItemWhenEmpty | `bool`                        | Whether the special item will display or not when assets is empty.                                                  | `false`                             |
+| selectPredicate           | `AssetSelectPredicate`        | Predicate whether an asset can be selected or unselected.                                                           | `null`                              |
+| shouldRevertGrid          | `bool?`                       | Whether the assets grid should revert.                                                                              | `null`                              |
+| pageRouteBuilder          | `AssetPickerPageRouteBuilder` | Build `AssetPickerPageRoute` with the given generic type.                                                           | `null`                              |
 
 ### Simple usage
 
