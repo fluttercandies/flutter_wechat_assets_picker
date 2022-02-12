@@ -31,6 +31,8 @@ import '../widget/gaps.dart';
 import '../widget/platform_progress_indicator.dart';
 import '../widget/scale_text.dart';
 
+const String _ordinalNamePermissionOverlay = 'permissionOverlay';
+
 typedef IndicatorBuilder = Widget Function(
   BuildContext context,
   bool isAssetsEmpty,
@@ -623,7 +625,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         }
         return Positioned.fill(
           child: Semantics(
-            sortKey: const OrdinalSortKey(0),
+            sortKey: const OrdinalSortKey(
+              0,
+              name: _ordinalNamePermissionOverlay,
+            ),
             child: Container(
               padding: context.mediaQuery.padding,
               color: context.themeData.canvasColor,
@@ -877,6 +882,32 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
+  AssetPickerAppBar appBar(BuildContext context) {
+    return AssetPickerAppBar(
+      backgroundColor: theme.appBarTheme.backgroundColor,
+      centerTitle: isAppleOS,
+      title: Semantics(
+        onTapHint: textDelegate.sActionSwitchPathLabel,
+        child: pathEntitySelector(context),
+      ),
+      leading: backButton(context),
+      // Condition for displaying the confirm button:
+      // - On Android, show if preview is enabled or if multi asset mode.
+      //   If no preview and single asset mode, do not show confirm button,
+      //   because any click on an asset selects it.
+      // - On iOS, show if no preview and multi asset mode. This is because for iOS
+      //   the [bottomActionBar] has the confirm button, but if no preview,
+      //   [bottomActionBar] is not displayed.
+      actions: (!isAppleOS || !isPreviewEnabled) &&
+              (isPreviewEnabled || !isSingleAssetMode)
+          ? <Widget>[confirmButton(context)]
+          : null,
+      actionsPadding: const EdgeInsetsDirectional.only(end: 14),
+      blurRadius: isAppleOS ? appleOSBlurRadius : 0,
+    );
+  }
+
+  @override
   Widget androidLayout(BuildContext context) {
     return AssetPickerAppBarWrapper(
       appBar: appBar(context),
@@ -908,32 +939,6 @@ class DefaultAssetPickerBuilderDelegate
           );
         },
       ),
-    );
-  }
-
-  @override
-  AssetPickerAppBar appBar(BuildContext context) {
-    return AssetPickerAppBar(
-      backgroundColor: theme.appBarTheme.backgroundColor,
-      centerTitle: isAppleOS,
-      title: Semantics(
-        onTapHint: textDelegate.sActionSwitchPathLabel,
-        child: pathEntitySelector(context),
-      ),
-      leading: backButton(context),
-      // Condition for displaying the confirm button:
-      // - On Android, show if preview is enabled or if multi asset mode.
-      //   If no preview and single asset mode, do not show confirm button,
-      //   because any click on an asset selects it.
-      // - On iOS, show if no preview and multi asset mode. This is because for iOS
-      //   the [bottomActionBar] has the confirm button, but if no preview,
-      //   [bottomActionBar] is not displayed.
-      actions: (!isAppleOS || !isPreviewEnabled) &&
-              (isPreviewEnabled || !isSingleAssetMode)
-          ? <Widget>[confirmButton(context)]
-          : null,
-      actionsPadding: const EdgeInsetsDirectional.only(end: 14),
-      blurRadius: isAppleOS ? appleOSBlurRadius : 0,
     );
   }
 
@@ -990,7 +995,7 @@ class DefaultAssetPickerBuilderDelegate
               },
             ),
           ),
-          Semantics(sortKey: const OrdinalSortKey(0), child: appBar(context)),
+          appBar(context),
         ],
       );
     }
@@ -1003,7 +1008,7 @@ class DefaultAssetPickerBuilderDelegate
         }
         return Semantics(
           excludeSemantics: true,
-          sortKey: const OrdinalSortKey(1),
+          sortKey: const OrdinalSortKey(1, name: _ordinalNamePermissionOverlay),
           child: child,
         );
       },
@@ -1263,59 +1268,70 @@ class DefaultAssetPickerBuilderDelegate
     AssetEntity asset,
     Widget child,
   ) {
-    return Consumer<DefaultAssetPickerProvider>(
-      child: child,
-      builder: (_, DefaultAssetPickerProvider p, Widget? child) {
-        final bool isBanned =
-            (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
+    return ValueListenableBuilder<bool>(
+      valueListenable: isSwitchingPath,
+      builder: (_, bool isSwitchingPath, Widget? child) {
+        return Consumer<DefaultAssetPickerProvider>(
+          builder: (_, DefaultAssetPickerProvider p, __) {
+            final bool isBanned = (!p.selectedAssets.contains(asset) &&
+                    p.selectedMaximumAssets) ||
                 (isWeChatMoment &&
                     asset.type == AssetType.video &&
                     p.selectedAssets.isNotEmpty);
-        final bool isSelected = p.selectedDescriptions.contains(
-          asset.toString(),
-        );
-        final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
-        String hint = '';
-        if (asset.type == AssetType.audio || asset.type == AssetType.video) {
-          hint += '${textDelegate.sNameDurationLabel}: ';
-          hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
-        }
-        if (asset.title?.isNotEmpty == true) {
-          hint += ', ${asset.title}';
-        }
-        return Semantics(
-          button: false,
-          enabled: !isBanned,
-          excludeSemantics: true,
-          focusable: !isSwitchingPath.value,
-          label: '${textDelegate.semanticTypeLabel(asset.type)}'
-              '${semanticIndex(index)}, '
-              '${asset.createDateTime.toString().replaceAll('.000', '')}',
-          hidden: isSwitchingPath.value,
-          hint: hint,
-          image: asset.type == AssetType.image || asset.type == AssetType.video,
-          onTap: () => selectAsset(context, asset, isSelected),
-          onTapHint: textDelegate.sActionSelectHint,
-          onLongPress: isPreviewEnabled
-              ? () => _pushAssetToViewer(context, index, asset)
-              : null,
-          onLongPressHint: textDelegate.sActionPreviewHint,
-          selected: isSelected,
-          sortKey: OrdinalSortKey(
-            semanticIndex(index).toDouble(),
-            name: 'GridItem',
-          ),
-          value: selectedIndex > 0 ? '$selectedIndex' : null,
-          child: GestureDetector(
-            // Regression https://github.com/flutter/flutter/issues/35112.
-            onLongPress:
-                isPreviewEnabled && context.mediaQuery.accessibleNavigation
-                    ? () => _pushAssetToViewer(context, index, asset)
-                    : null,
-            child: IndexedSemantics(index: semanticIndex(index), child: child),
-          ),
+            final bool isSelected = p.selectedDescriptions.contains(
+              asset.toString(),
+            );
+            final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
+            String hint = '';
+            if (asset.type == AssetType.audio ||
+                asset.type == AssetType.video) {
+              hint += '${textDelegate.sNameDurationLabel}: ';
+              hint +=
+                  textDelegate.durationIndicatorBuilder(asset.videoDuration);
+            }
+            if (asset.title?.isNotEmpty == true) {
+              hint += ', ${asset.title}';
+            }
+            return Semantics(
+              button: false,
+              enabled: !isBanned,
+              excludeSemantics: true,
+              focusable: !isSwitchingPath,
+              label: '${textDelegate.semanticTypeLabel(asset.type)}'
+                  '${semanticIndex(index)}, '
+                  '${asset.createDateTime.toString().replaceAll('.000', '')}',
+              hidden: isSwitchingPath,
+              hint: hint,
+              image: asset.type == AssetType.image ||
+                  asset.type == AssetType.video,
+              onTap: () => selectAsset(context, asset, isSelected),
+              onTapHint: textDelegate.sActionSelectHint,
+              onLongPress: isPreviewEnabled
+                  ? () => _pushAssetToViewer(context, index, asset)
+                  : null,
+              onLongPressHint: textDelegate.sActionPreviewHint,
+              selected: isSelected,
+              sortKey: OrdinalSortKey(
+                semanticIndex(index).toDouble(),
+                name: 'GridItem',
+              ),
+              value: selectedIndex > 0 ? '$selectedIndex' : null,
+              child: GestureDetector(
+                // Regression https://github.com/flutter/flutter/issues/35112.
+                onLongPress:
+                    isPreviewEnabled && context.mediaQuery.accessibleNavigation
+                        ? () => _pushAssetToViewer(context, index, asset)
+                        : null,
+                child: IndexedSemantics(
+                  index: semanticIndex(index),
+                  child: child,
+                ),
+              ),
+            );
+          },
         );
       },
+      child: child,
     );
   }
 
@@ -1553,9 +1569,8 @@ class DefaultAssetPickerBuilderDelegate
       child: ValueListenableBuilder<bool>(
         valueListenable: isSwitchingPath,
         builder: (_, bool isSwitchingPath, Widget? child) => Semantics(
-          focusable: isSwitchingPath,
-          sortKey: const OrdinalSortKey(1),
-          hidden: !isSwitchingPath,
+          sortKey: isAppleOS ? const OrdinalSortKey(1) : null,
+          hidden: isSwitchingPath ? null : true,
           child: AnimatedAlign(
             duration: switchingPathDuration,
             curve: switchingPathCurve,

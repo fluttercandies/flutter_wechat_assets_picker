@@ -5,6 +5,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 
 /// A custom app bar.
@@ -26,6 +27,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.height,
     this.blurRadius = 0,
     this.iconTheme,
+    this.semanticsBuilder,
   }) : super(key: key);
 
   /// Title widget. Typically a [Text] widget.
@@ -81,6 +83,8 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Brightness? brightness;
 
   final IconThemeData? iconTheme;
+
+  final Semantics Function(Widget appBar)? semanticsBuilder;
 
   bool canPop(BuildContext context) =>
       Navigator.of(context).canPop() && automaticallyImplyLeading;
@@ -180,8 +184,8 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
 
-    // Wrap with a [Material] to ensure the child rendered correctly.
-    return Material(
+    final Widget _result = Material(
+      // Wrap to ensure the child rendered correctly
       color: Color.lerp(
         backgroundColor ?? Theme.of(context).colorScheme.surface,
         Colors.transparent,
@@ -190,6 +194,8 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: elevation,
       child: child,
     );
+    return semanticsBuilder?.call(_result) ??
+        Semantics(sortKey: const OrdinalSortKey(0), child: _result);
   }
 }
 
