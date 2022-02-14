@@ -4,7 +4,9 @@
 ///
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
 import 'locally_available_builder.dart';
@@ -30,42 +32,128 @@ class ImagePageBuilder extends StatefulWidget {
 }
 
 class _ImagePageBuilderState extends State<ImagePageBuilder> {
+  bool _isLocallyAvailable = false;
+  VideoPlayerController? _controller;
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initializeLivePhoto() async {
+    final String? url = await widget.asset.getMediaUrl();
+    if (!mounted || url == null) {
+      return;
+    }
+    final VideoPlayerController c = VideoPlayerController.network(
+      url,
+      videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+    );
+    setState(() => _controller = c);
+    c
+      ..initialize()
+      ..setVolume(0)
+      ..addListener(() {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+  }
+
+  void _play() {
+    HapticFeedback.lightImpact();
+    _controller?.play();
+  }
+
+  Future<void> _stop() async {
+    await _controller?.pause();
+    await _controller?.seekTo(Duration.zero);
+  }
+
+  Widget _imageBuilder(BuildContext context, AssetEntity asset) {
+    return ExtendedImage(
+      image: AssetEntityImageProvider(
+        asset,
+        isOriginal: widget.previewThumbSize == null,
+        thumbSize: widget.previewThumbSize,
+      ),
+      fit: BoxFit.contain,
+      mode: ExtendedImageMode.gesture,
+      onDoubleTap: widget.delegate.updateAnimation,
+      initGestureConfigHandler: (ExtendedImageState state) {
+        return GestureConfig(
+          initialScale: 1.0,
+          minScale: 1.0,
+          maxScale: 3.0,
+          animationMinScale: 0.6,
+          animationMaxScale: 4.0,
+          cacheGesture: false,
+          inPageView: true,
+        );
+      },
+      loadStateChanged: (ExtendedImageState state) {
+        return widget.delegate.previewWidgetLoadStateChanged(
+          context,
+          state,
+          hasLoaded: state.extendedImageLoadState == LoadState.completed,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
       asset: widget.asset,
       isOriginal: widget.previewThumbSize == null,
       builder: (BuildContext context, AssetEntity asset) {
+        // Initialize the video controller when the asset is a Live photo
+        // and available for further use.
+        if (!_isLocallyAvailable && widget.asset.isLivePhoto) {
+          _initializeLivePhoto();
+        }
+        _isLocallyAvailable = true;
+        // TODO(Alex): Wait until `extended_image` support synchronized zooming.
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: widget.delegate.switchDisplayingDetail,
-          child: ExtendedImage(
-            image: AssetEntityImageProvider(
-              asset,
-              isOriginal: widget.previewThumbSize == null,
-              thumbSize: widget.previewThumbSize,
-            ),
-            fit: BoxFit.contain,
-            mode: ExtendedImageMode.gesture,
-            onDoubleTap: widget.delegate.updateAnimation,
-            initGestureConfigHandler: (ExtendedImageState state) {
-              return GestureConfig(
-                initialScale: 1.0,
-                minScale: 1.0,
-                maxScale: 3.0,
-                animationMinScale: 0.6,
-                animationMaxScale: 4.0,
-                cacheGesture: false,
-                inPageView: true,
-              );
-            },
-            loadStateChanged: (ExtendedImageState state) {
-              return widget.delegate.previewWidgetLoadStateChanged(
-                context,
-                state,
-                hasLoaded: state.extendedImageLoadState == LoadState.completed,
-              );
-            },
+          onLongPress: () => _play(),
+          onLongPressEnd: (_) => _stop(),
+          child: Stack(
+            children: <Widget>[
+              if (_controller != null) ...<Widget>[
+                if (_controller!.value.isInitialized)
+                  Center(
+                    child: AspectRatio(
+                      aspectRatio: _controller!.value.aspectRatio,
+                      child: ValueListenableBuilder<VideoPlayerValue>(
+                        valueListenable: _controller!,
+                        builder: (_, VideoPlayerValue value, Widget? child) {
+                          return Opacity(
+                            opacity: value.isPlaying ? 1 : 0,
+                            child: child,
+                          );
+                        },
+                        child: VideoPlayer(_controller!),
+                      ),
+                    ),
+                  ),
+                Positioned.fill(
+                  child: ValueListenableBuilder<VideoPlayerValue>(
+                    valueListenable: _controller!,
+                    builder: (_, VideoPlayerValue value, Widget? child) {
+                      return Opacity(
+                        opacity: value.isPlaying ? 0 : 1,
+                        child: child,
+                      );
+                    },
+                    child: _imageBuilder(context, asset),
+                  ),
+                ),
+              ] else
+                _imageBuilder(context, asset),
+            ],
           ),
         );
       },
