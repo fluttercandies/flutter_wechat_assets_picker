@@ -168,6 +168,23 @@ platform :ios, '9.0'
 
 ## 使用方法 📖
 
+### 简单的使用方法
+
+```dart
+final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
+```
+
+你可以使用 `AssetPickerConfig` 来调整选择时的行为。
+
+```dart
+final AssetEntity? entity = await AssetPicker.pickAssets(
+  context,
+  pickerConfig: const AssetPickerConfig(),
+);
+```
+
+`AssetPickerConfig` 的成员说明：
+
 | 参数名                       | 类型                                 | 描述                                             | 默认值                                 |
 |---------------------------|------------------------------------|------------------------------------------------|-------------------------------------|
 | selectedAssets            | `List<AssetEntity>?`               | 已选的资源。确保不重复选择。如果你允许重复选择，请将其置空。                 | `null`                              |
@@ -192,11 +209,9 @@ platform :ios, '9.0'
 | shouldRevertGrid          | `bool?`                            | 判断资源网格是否需要倒序排列                                 | `null`                              |
 | pageRouteBuilder          | `AssetPickerPageRouteBuilder`      | 构建 `AssetPickerPageRoute`                      | `null`                              |
 
-### 简单的使用方法
+### 更详细的使用方法
 
-```dart
-final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
-```
+我们已将常用的调用方法封装在 [example](example) 中。
 
 ### 使用自定义代理
 
@@ -205,10 +220,6 @@ final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
 
 想要了解更多关于自定义代理实现的内容，
 查阅 [`example/lib/customs`](example/lib/customs)。
-
-### 更详细的使用方法
-
-我们已将常用的调用方法封装在 [example](example) 中。
 
 #### 一般的调用选择情况
 

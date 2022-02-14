@@ -89,7 +89,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// Main color for the picker.
   /// 选择器的主题色
-  final Color themeColor;
+  final Color? themeColor;
 
   /// Theme for the picker.
   /// 选择器的主题

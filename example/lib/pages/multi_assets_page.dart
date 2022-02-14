@@ -42,8 +42,10 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
         method: (BuildContext context, List<AssetEntity> assets) {
           return AssetPicker.pickAssets(
             context,
-            maxAssets: maxAssetsCount,
-            specialPickerType: SpecialPickerType.wechatMoment,
+            pickerConfig: AssetPickerConfig(
+              maxAssets: maxAssetsCount,
+              specialPickerType: SpecialPickerType.wechatMoment,
+            ),
           );
         },
       ),
@@ -77,11 +79,13 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
         method: (BuildContext context, List<AssetEntity> assets) {
           return AssetPicker.pickAssets(
             context,
-            maxAssets: maxAssetsCount,
-            selectedAssets: assets,
-            requestType: RequestType.image,
-            previewThumbSize: const <int>[150, 150],
-            gridThumbSize: 80,
+            pickerConfig: AssetPickerConfig(
+              maxAssets: maxAssetsCount,
+              selectedAssets: assets,
+              requestType: RequestType.image,
+              previewThumbSize: const <int>[150, 150],
+              gridThumbSize: 80,
+            ),
           );
         },
       ),
