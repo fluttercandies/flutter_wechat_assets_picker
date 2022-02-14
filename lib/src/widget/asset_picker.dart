@@ -9,7 +9,6 @@ import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/config.dart';
 import '../constants/constants.dart';
-import '../constants/extensions.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
 import '../internal/methods.dart';
 import '../internal/singleton.dart';
@@ -47,28 +46,25 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       sortPathDelegate: pickerConfig.sortPathDelegate,
       filterOptions: pickerConfig.filterOptions,
     );
-    final Widget picker = CNP<DefaultAssetPickerProvider>.value(
-      value: provider,
-      child: AssetPicker<AssetEntity, AssetPathEntity>(
-        key: Singleton.pickerKey,
-        builder: DefaultAssetPickerBuilderDelegate(
-          provider: provider,
-          initialPermission: _ps,
-          gridCount: pickerConfig.gridCount,
-          pickerTheme: pickerConfig.pickerTheme,
-          gridThumbSize: pickerConfig.gridThumbSize,
-          previewThumbSize: pickerConfig.previewThumbSize,
-          specialPickerType: pickerConfig.specialPickerType,
-          specialItemPosition: pickerConfig.specialItemPosition,
-          specialItemBuilder: pickerConfig.specialItemBuilder,
-          loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
-          allowSpecialItemWhenEmpty: pickerConfig.allowSpecialItemWhenEmpty,
-          selectPredicate: pickerConfig.selectPredicate,
-          shouldRevertGrid: pickerConfig.shouldRevertGrid,
-          textDelegate: pickerConfig.textDelegate,
-          themeColor: pickerConfig.themeColor,
-          locale: Localizations.maybeLocaleOf(context),
-        ),
+    final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
+      key: Singleton.pickerKey,
+      builder: DefaultAssetPickerBuilderDelegate(
+        provider: provider,
+        initialPermission: _ps,
+        gridCount: pickerConfig.gridCount,
+        pickerTheme: pickerConfig.pickerTheme,
+        gridThumbSize: pickerConfig.gridThumbSize,
+        previewThumbSize: pickerConfig.previewThumbSize,
+        specialPickerType: pickerConfig.specialPickerType,
+        specialItemPosition: pickerConfig.specialItemPosition,
+        specialItemBuilder: pickerConfig.specialItemBuilder,
+        loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
+        allowSpecialItemWhenEmpty: pickerConfig.allowSpecialItemWhenEmpty,
+        selectPredicate: pickerConfig.selectPredicate,
+        shouldRevertGrid: pickerConfig.shouldRevertGrid,
+        textDelegate: pickerConfig.textDelegate,
+        themeColor: pickerConfig.themeColor,
+        locale: Localizations.maybeLocaleOf(context),
       ),
     );
     final List<AssetEntity>? result = await Navigator.of(

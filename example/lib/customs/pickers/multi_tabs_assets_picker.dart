@@ -2,9 +2,11 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2022/2/10 09:57
 ///
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -527,6 +529,26 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               : loadingIndicator(context),
         );
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlayStyle,
+      child: Theme(
+        data: theme,
+        child: Material(
+          color: theme.canvasColor,
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              if (isAppleOS) appleOSLayout(context) else androidLayout(context),
+              if (Platform.isIOS) iOSPermissionOverlay(context),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
