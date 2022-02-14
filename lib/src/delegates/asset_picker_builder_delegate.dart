@@ -1569,7 +1569,6 @@ class DefaultAssetPickerBuilderDelegate
       child: ValueListenableBuilder<bool>(
         valueListenable: isSwitchingPath,
         builder: (_, bool isSwitchingPath, Widget? child) => Semantics(
-          sortKey: isAppleOS ? const OrdinalSortKey(1) : null,
           hidden: isSwitchingPath ? null : true,
           child: AnimatedAlign(
             duration: switchingPathDuration,
