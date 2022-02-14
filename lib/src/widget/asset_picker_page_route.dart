@@ -16,7 +16,7 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
   AssetPickerPageRoute({
     required this.builder,
     this.transitionCurve = Curves.easeIn,
-    this.transitionDuration = const Duration(milliseconds: 500),
+    this.transitionDuration = const Duration(milliseconds: 250),
     this.barrierColor,
     this.barrierDismissible = false,
     this.barrierLabel,

@@ -7,12 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../constants/config.dart';
 import '../constants/constants.dart';
-import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
-import '../delegates/asset_picker_text_delegate.dart';
-import '../delegates/sort_path_delegate.dart';
 import '../internal/methods.dart';
 import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
@@ -35,69 +33,19 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
-    List<AssetEntity>? selectedAssets,
-    int maxAssets = 9,
-    int pageSize = 80,
-    int gridThumbSize = defaultAssetGridPreviewSize,
-    int pathThumbSize = 80,
-    int gridCount = 4,
-    RequestType requestType = RequestType.image,
-    List<int>? previewThumbSize,
-    SpecialPickerType? specialPickerType,
-    Color? themeColor,
-    ThemeData? pickerTheme,
-    SortPathDelegate<AssetPathEntity>? sortPathDelegate,
-    AssetPickerTextDelegate? textDelegate,
-    FilterOptionGroup? filterOptions,
-    WidgetBuilder? specialItemBuilder,
-    IndicatorBuilder? loadingIndicatorBuilder,
-    SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
-    bool allowSpecialItemWhenEmpty = false,
-    AssetSelectPredicate<AssetEntity>? selectPredicate,
-    bool? shouldRevertGrid,
+    AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    if (maxAssets < 1) {
-      throw ArgumentError(
-        'maxAssets must be greater than 1.',
-      );
-    }
-    if (pageSize % gridCount != 0) {
-      throw ArgumentError(
-        'pageSize must be a multiple of gridCount.',
-      );
-    }
-    if (pickerTheme != null && themeColor != null) {
-      throw ArgumentError(
-        'Theme and theme color cannot be set at the same time.',
-      );
-    }
-    if (specialPickerType == SpecialPickerType.wechatMoment) {
-      if (requestType != RequestType.image) {
-        throw ArgumentError(
-          'SpecialPickerType.wechatMoment and requestType cannot be set at the same time.',
-        );
-      }
-      requestType = RequestType.common;
-    }
-    if ((specialItemBuilder == null &&
-            specialItemPosition != SpecialItemPosition.none) ||
-        (specialItemBuilder != null &&
-            specialItemPosition == SpecialItemPosition.none)) {
-      throw ArgumentError('Custom item did not set properly.');
-    }
-
     final PermissionState _ps = await permissionCheck();
-
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
-      maxAssets: maxAssets,
-      pageSize: pageSize,
-      pathThumbSize: pathThumbSize,
-      selectedAssets: selectedAssets,
-      requestType: requestType,
-      sortPathDelegate: sortPathDelegate,
-      filterOptions: filterOptions,
+      maxAssets: pickerConfig.maxAssets,
+      pageSize: pickerConfig.pageSize,
+      pathThumbSize: pickerConfig.pathThumbSize,
+      selectedAssets: pickerConfig.selectedAssets,
+      requestType: pickerConfig.requestType,
+      sortPathDelegate: pickerConfig.sortPathDelegate,
+      filterOptions: pickerConfig.filterOptions,
     );
     final Widget picker = CNP<DefaultAssetPickerProvider>.value(
       value: provider,
@@ -106,19 +54,19 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
         builder: DefaultAssetPickerBuilderDelegate(
           provider: provider,
           initialPermission: _ps,
-          gridCount: gridCount,
-          pickerTheme: pickerTheme,
-          gridThumbSize: gridThumbSize,
-          previewThumbSize: previewThumbSize,
-          specialPickerType: specialPickerType,
-          specialItemPosition: specialItemPosition,
-          specialItemBuilder: specialItemBuilder,
-          loadingIndicatorBuilder: loadingIndicatorBuilder,
-          allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
-          selectPredicate: selectPredicate,
-          shouldRevertGrid: shouldRevertGrid,
-          textDelegate: textDelegate,
-          themeColor: themeColor,
+          gridCount: pickerConfig.gridCount,
+          pickerTheme: pickerConfig.pickerTheme,
+          gridThumbSize: pickerConfig.gridThumbSize,
+          previewThumbSize: pickerConfig.previewThumbSize,
+          specialPickerType: pickerConfig.specialPickerType,
+          specialItemPosition: pickerConfig.specialItemPosition,
+          specialItemBuilder: pickerConfig.specialItemBuilder,
+          loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
+          allowSpecialItemWhenEmpty: pickerConfig.allowSpecialItemWhenEmpty,
+          selectPredicate: pickerConfig.selectPredicate,
+          shouldRevertGrid: pickerConfig.shouldRevertGrid,
+          textDelegate: pickerConfig.textDelegate,
+          themeColor: pickerConfig.themeColor,
           locale: Localizations.maybeLocaleOf(context),
         ),
       ),
@@ -188,7 +136,8 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
 
   /// Build a dark theme according to the theme color.
   /// 通过主题色构建一个默认的暗黑主题
-  static ThemeData themeData(Color themeColor, {bool light = false}) {
+  static ThemeData themeData(Color? themeColor, {bool light = false}) {
+    themeColor ??= defaultThemeColorWeChat;
     if (light) {
       return ThemeData.light().copyWith(
         primaryColor: Colors.grey[50],

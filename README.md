@@ -38,6 +38,7 @@ UI designs will be updated following the WeChat update in anytime.
 * [Usage](#usage-)
   * [Simple usage](#simple-usage)
   * [Detailed usage](#detailed-usage)
+  * [Using custom delegate](#using-custom-delegate)
   * [Display selected assets](#display-selected-assets)
   * [Register assets change observe callback](#register-assets-change-observe-callback)
   * [Customize with your own type or UI](#customize-with-your-own-type-or-ui)
@@ -162,6 +163,23 @@ platform :osx, '10.15'
 
 ## Usage 📖
 
+### Simple usage
+
+```dart
+final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
+```
+
+Use `AssetPickerConfig` for more picking behaviors.
+
+```dart
+final AssetEntity? entity = await AssetPicker.pickAssets(
+  context,
+  pickerConfig: const AssetPickerConfig(),
+);
+```
+
+Fields in `AssetPickerConfig`:
+
 | Name                      | Type                          | Description                                                                                                         | Default                             |
 |---------------------------|-------------------------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------|
 | selectedAssets            | `List<AssetEntity>?`          | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
@@ -184,13 +202,10 @@ platform :osx, '10.15'
 | allowSpecialItemWhenEmpty | `bool`                        | Whether the special item will display or not when assets is empty.                                                  | `false`                             |
 | selectPredicate           | `AssetSelectPredicate`        | Predicate whether an asset can be selected or unselected.                                                           | `null`                              |
 | shouldRevertGrid          | `bool?`                       | Whether the assets grid should revert.                                                                              | `null`                              |
-| pageRouteBuilder          | `AssetPickerPageRouteBuilder` | Build `AssetPickerPageRoute` with the given generic type.                                                           | `null`                              |
 
-### Simple usage
+### Detailed usage
 
-```dart
-final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
-```
+TL;DR, we've put multiple common usage with the packages into the [example](example).
 
 ### Using custom delegate
 
@@ -199,10 +214,6 @@ See the `Keep scroll offset` pick method in the example for how to implement it.
 
 For more details about custom delegates,
 head over to [`example/lib/customs`](example/lib/customs).
-
-### Detailed usage
-
-TL;DR, we've put multiple common usage with the packages into the [example](example).
 
 #### Regular picking
 
