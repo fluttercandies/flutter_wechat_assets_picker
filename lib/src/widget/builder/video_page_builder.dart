@@ -196,7 +196,13 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       asset: widget.asset,
       builder: (BuildContext context, AssetEntity asset) {
         if (hasErrorWhenInitializing) {
-          return Center(child: ScaleText(Singleton.textDelegate.loadFailed));
+          return Center(
+            child: ScaleText(
+              Singleton.textDelegate.loadFailed,
+              semanticsLabel:
+                  Singleton.textDelegate.semanticsTextDelegate.loadFailed,
+            ),
+          );
         }
         if (!_isLocallyAvailable && !_isInitializing) {
           initializeVideoPlayerController();
@@ -206,7 +212,8 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
         }
         return Semantics(
           onLongPress: playButtonCallback,
-          onLongPressHint: Singleton.textDelegate.sActionPlayHint,
+          onLongPressHint:
+              Singleton.textDelegate.semanticsTextDelegate.sActionPlayHint,
           child: GestureDetector(
             onLongPress: MediaQuery.of(context).accessibleNavigation
                 ? playButtonCallback

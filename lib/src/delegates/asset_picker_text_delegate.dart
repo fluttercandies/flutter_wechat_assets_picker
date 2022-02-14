@@ -2,6 +2,8 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/4/7 10:25
 ///
+import 'dart:io' show Platform;
+
 import 'package:flutter/rendering.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetType;
 
@@ -112,7 +114,6 @@ class AssetPickerTextDelegate {
   ///
   /// Fields below are only for semantics usage. For customizable these fields,
   /// head over to [EnglishAssetPickerTextDelegate] for fields understanding.
-
   String get sTypeAudioLabel => '音频';
 
   String get sTypeImageLabel => '图片';
@@ -147,6 +148,17 @@ class AssetPickerTextDelegate {
   String get sNameDurationLabel => '时长';
 
   String get sUnitAssetCountLabel => '数量';
+
+  /// Fallback delegate for semantics determined by platform.
+  ///
+  /// The purpose of this field is to provide a fallback delegate references
+  /// when a language does not supported by Talkback or VoiceOver. Set this to
+  /// another text delegate makes screen readers read accordingly.
+  ///
+  /// See also:
+  ///  * Talkback: https://support.google.com/accessibility/android/answer/11101402)
+  ///  * VoiceOver: https://support.apple.com/en-us/HT206175
+  AssetPickerTextDelegate get semanticsTextDelegate => this;
 }
 
 /// [AssetPickerTextDelegate] implements with English.
@@ -302,7 +314,7 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get accessiblePathName => 'קבצים נגישים';
 
-  // Using English for semantics usage, since Hebrew is not supported for TalkBack.
+  // TODO(shakedyaniv): Update fields.
   @override
   String get sTypeAudioLabel => 'Audio';
 
@@ -335,6 +347,14 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get sUnitAssetCountLabel => 'count';
+
+  @override
+  AssetPickerTextDelegate get semanticsTextDelegate {
+    if (Platform.isAndroid) {
+      return EnglishAssetPickerTextDelegate();
+    }
+    return this;
+  }
 }
 
 /// [AssetPickerTextDelegate] implementiert mit der deutschen Übersetzung.
