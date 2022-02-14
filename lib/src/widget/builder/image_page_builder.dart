@@ -35,6 +35,8 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   bool _isLocallyAvailable = false;
   VideoPlayerController? _controller;
 
+  bool get _isLivePhoto => widget.asset.isLivePhoto;
+
   @override
   void dispose() {
     _controller?.dispose();
@@ -62,8 +64,11 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   }
 
   void _play() {
-    HapticFeedback.lightImpact();
-    _controller?.play();
+    if (_controller?.value.isInitialized == true) {
+      // Only impact when initialized.
+      HapticFeedback.lightImpact();
+      _controller?.play();
+    }
   }
 
   Future<void> _stop() async {
@@ -110,7 +115,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
       builder: (BuildContext context, AssetEntity asset) {
         // Initialize the video controller when the asset is a Live photo
         // and available for further use.
-        if (!_isLocallyAvailable && widget.asset.isLivePhoto) {
+        if (!_isLocallyAvailable && _isLivePhoto) {
           _initializeLivePhoto();
         }
         _isLocallyAvailable = true;
@@ -118,42 +123,51 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: widget.delegate.switchDisplayingDetail,
-          onLongPress: () => _play(),
-          onLongPressEnd: (_) => _stop(),
-          child: Stack(
-            children: <Widget>[
-              if (_controller != null) ...<Widget>[
-                if (_controller!.value.isInitialized)
-                  Center(
-                    child: AspectRatio(
-                      aspectRatio: _controller!.value.aspectRatio,
+          onLongPress: _isLivePhoto ? () => _play() : null,
+          onLongPressEnd: _isLivePhoto ? (_) => _stop() : null,
+          child: Builder(
+            builder: (BuildContext context) {
+              if (!_isLivePhoto) {
+                return _imageBuilder(context, asset);
+              }
+              return Stack(
+                children: <Widget>[
+                  if (_controller == null)
+                    _imageBuilder(context, asset)
+                  else ...<Widget>[
+                    if (_controller!.value.isInitialized)
+                      Center(
+                        child: AspectRatio(
+                          aspectRatio: _controller!.value.aspectRatio,
+                          child: ValueListenableBuilder<VideoPlayerValue>(
+                            valueListenable: _controller!,
+                            builder:
+                                (_, VideoPlayerValue value, Widget? child) {
+                              return Opacity(
+                                opacity: value.isPlaying ? 1 : 0,
+                                child: child,
+                              );
+                            },
+                            child: VideoPlayer(_controller!),
+                          ),
+                        ),
+                      ),
+                    Positioned.fill(
                       child: ValueListenableBuilder<VideoPlayerValue>(
                         valueListenable: _controller!,
                         builder: (_, VideoPlayerValue value, Widget? child) {
                           return Opacity(
-                            opacity: value.isPlaying ? 1 : 0,
+                            opacity: value.isPlaying ? 0 : 1,
                             child: child,
                           );
                         },
-                        child: VideoPlayer(_controller!),
+                        child: _imageBuilder(context, asset),
                       ),
                     ),
-                  ),
-                Positioned.fill(
-                  child: ValueListenableBuilder<VideoPlayerValue>(
-                    valueListenable: _controller!,
-                    builder: (_, VideoPlayerValue value, Widget? child) {
-                      return Opacity(
-                        opacity: value.isPlaying ? 0 : 1,
-                        child: child,
-                      );
-                    },
-                    child: _imageBuilder(context, asset),
-                  ),
-                ),
-              ] else
-                _imageBuilder(context, asset),
-            ],
+                  ],
+                ],
+              );
+            },
           ),
         );
       },
