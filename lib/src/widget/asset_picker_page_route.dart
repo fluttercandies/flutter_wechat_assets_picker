@@ -22,6 +22,7 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
     this.barrierLabel,
     this.maintainState = true,
     this.opaque = true,
+    this.canTransitionFromPredicate,
   });
 
   final WidgetBuilder builder;
@@ -41,8 +42,11 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
   @override
   final bool maintainState;
 
+  final bool Function(TransitionRoute<dynamic>)? canTransitionFromPredicate;
+
   @override
-  bool canTransitionFrom(TransitionRoute<dynamic> previousRoute) => false;
+  bool canTransitionFrom(TransitionRoute<dynamic> previousRoute) =>
+      canTransitionFromPredicate?.call(previousRoute) ?? false;
 
   @override
   Widget buildPage(
