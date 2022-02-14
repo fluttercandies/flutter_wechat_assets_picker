@@ -929,6 +929,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 onTapHint: textDelegate.select,
                 excludeSemantics: true,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     if (isAppleOS)
                       _appleOSSelectButton(c, isSelected, asset)
