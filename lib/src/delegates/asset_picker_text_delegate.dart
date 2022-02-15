@@ -730,6 +730,9 @@ class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get select => 'Choisir';
 
   @override
+  String get emptyList => 'Liste vide';
+
+  @override
   String get unSupportedAssetType => 'Type de fichier non supporté';
 
   @override
@@ -760,5 +763,35 @@ class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get accessiblePathName => 'Medias accessible';
 
   @override
-  String get emptyList => 'Liste vide';
+  String get sTypeAudioLabel => "l'audio";
+
+  @override
+  String get sTypeImageLabel => 'image';
+
+  @override
+  String get sTypeVideoLabel => 'vidéo';
+
+  @override
+  String get sTypeOtherLabel => 'Autre';
+
+  @override
+  String get sActionPlayHint => 'jouer';
+
+  @override
+  String get sActionPreviewHint => 'aperçu';
+
+  @override
+  String get sActionSelectHint => 'choisir';
+
+  @override
+  String get sActionSwitchPathLabel => 'changer le dossier';
+
+  @override
+  String get sActionUseCameraHint => 'Utiliser la Caméra';
+
+  @override
+  String get sNameDurationLabel => 'durée';
+
+  @override
+  String get sUnitAssetCountLabel => 'quantité';
 }
