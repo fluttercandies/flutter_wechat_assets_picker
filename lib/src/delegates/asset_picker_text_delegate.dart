@@ -314,39 +314,38 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get accessiblePathName => 'קבצים נגישים';
 
-  // TODO(shakedyaniv): Update fields.
   @override
-  String get sTypeAudioLabel => 'Audio';
+  String get sTypeAudioLabel => 'שמע';
 
   @override
-  String get sTypeImageLabel => 'Image';
+  String get sTypeImageLabel => 'תמונה';
 
   @override
-  String get sTypeVideoLabel => 'Video';
+  String get sTypeVideoLabel => 'סרטון';
 
   @override
-  String get sTypeOtherLabel => 'Other asset';
+  String get sTypeOtherLabel => 'קובץ אחר';
 
   @override
-  String get sActionPlayHint => 'play';
+  String get sActionPlayHint => 'נגן';
 
   @override
-  String get sActionPreviewHint => 'preview';
+  String get sActionPreviewHint => 'תצוגה מקדימה';
 
   @override
-  String get sActionSelectHint => 'select';
+  String get sActionSelectHint => 'בחר';
 
   @override
-  String get sActionSwitchPathLabel => 'switch path';
+  String get sActionSwitchPathLabel => 'החלף תיקייה';
 
   @override
-  String get sActionUseCameraHint => 'use camera';
+  String get sActionUseCameraHint => 'השתמש במצלמה';
 
   @override
-  String get sNameDurationLabel => 'duration';
+  String get sNameDurationLabel => 'משך';
 
   @override
-  String get sUnitAssetCountLabel => 'count';
+  String get sUnitAssetCountLabel => 'כמות';
 
   @override
   AssetPickerTextDelegate get semanticsTextDelegate {
