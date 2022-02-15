@@ -57,6 +57,7 @@ class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
         Singleton.textDelegate.loadFailed,
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 18.0),
+        semanticsLabel: Singleton.textDelegate.semanticsTextDelegate.loadFailed,
       ),
     );
   }
