@@ -825,9 +825,9 @@ class DefaultAssetPickerBuilderDelegate
     if (!isPermissionLimited) {
       return;
     }
-    if (provider.currentPath != null) {
-      final AssetPathEntity? _currentPathEntity = provider.currentPath;
-      await _currentPathEntity?.refreshPathProperties();
+    final AssetPathEntity? _currentPathEntity = provider.currentPath;
+    if (_currentPathEntity != null) {
+      provider.currentPath = await _currentPathEntity.obtainForNewProperties();
       await provider.switchPath(_currentPathEntity);
       isSwitchingPath.value = false;
     }
