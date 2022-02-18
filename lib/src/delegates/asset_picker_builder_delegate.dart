@@ -673,8 +673,8 @@ class DefaultAssetPickerBuilderDelegate
     bool allowSpecialItemWhenEmpty = false,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     bool? shouldRevertGrid,
-    this.gridThumbSize = defaultAssetGridPreviewSize,
-    this.previewThumbSize,
+    this.gridThumbnailSize = defaultAssetGridPreviewSize,
+    this.previewThumbnailSize,
     this.specialPickerType,
     this.keepScrollOffset = false,
     Color? themeColor,
@@ -719,7 +719,7 @@ class DefaultAssetPickerBuilderDelegate
   /// This cannot be `null` or a large value since you shouldn't use the
   /// original data for the grid.
   /// 该值不能为空或者非常大，因为在网格中使用原数据不是一个好的决定。
-  final int gridThumbSize;
+  final ThumbnailSize gridThumbnailSize;
 
   /// Preview thumbnail size in the viewer.
   /// 预览时图片的缩略图大小
@@ -731,7 +731,7 @@ class DefaultAssetPickerBuilderDelegate
   ///
   /// Default is `null`, which will request the origin data.
   /// 默认为空，即读取原图。
-  final List<int>? previewThumbSize;
+  final ThumbnailSize? previewThumbnailSize;
 
   /// The current special picker type for the picker.
   /// 当前特殊选择类型
@@ -880,7 +880,7 @@ class DefaultAssetPickerBuilderDelegate
       currentIndex: _index,
       previewAssets: _current,
       themeData: theme,
-      previewThumbSize: previewThumbSize,
+      previewThumbnailSize: previewThumbnailSize,
       selectedAssets: _selected,
       selectorProvider: provider,
       specialPickerType: specialPickerType,
@@ -1506,7 +1506,7 @@ class DefaultAssetPickerBuilderDelegate
     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
       asset,
       isOriginal: false,
-      thumbSize: <int>[gridThumbSize, gridThumbSize],
+      thumbnailSize: gridThumbnailSize,
     );
     SpecialImageType? type;
     if (imageProvider.imageFileType == ImageFileType.gif) {
@@ -1892,7 +1892,7 @@ class DefaultAssetPickerBuilderDelegate
         context,
         currentIndex: 0,
         previewAssets: _selected,
-        previewThumbSize: previewThumbSize,
+        previewThumbnailSize: previewThumbnailSize,
         selectedAssets: _selected,
         selectorProvider: provider,
         themeData: theme,

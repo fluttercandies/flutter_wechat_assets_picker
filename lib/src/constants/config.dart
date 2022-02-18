@@ -16,11 +16,11 @@ class AssetPickerConfig {
     this.selectedAssets,
     this.maxAssets = 9,
     this.pageSize = 80,
-    this.gridThumbSize = defaultAssetGridPreviewSize,
-    this.previewThumbSize,
+    this.gridThumbnailSize = defaultAssetGridPreviewSize,
+    this.pathThumbnailSize = defaultPathThumbnailSize,
+    this.previewThumbnailSize,
     this.specialPickerType,
     this.keepScrollOffset = false,
-    this.pathThumbSize = 80,
     this.requestType = RequestType.common,
     this.sortPathDelegate,
     this.filterOptions,
@@ -82,7 +82,11 @@ class AssetPickerConfig {
   /// This cannot be `null` or a large value since you shouldn't use the
   /// original data for the grid.
   /// 该值不能为空或者非常大，因为在网格中使用原数据不是一个好的决定。
-  final int gridThumbSize;
+  final ThumbnailSize gridThumbnailSize;
+
+  /// Thumbnail size for path selector.
+  /// 路径选择器中缩略图的大小
+  final ThumbnailSize pathThumbnailSize;
 
   /// Preview thumbnail size in the viewer.
   /// 预览时图片的缩略图大小
@@ -94,7 +98,7 @@ class AssetPickerConfig {
   ///
   /// Default is `null`, which will request the origin data.
   /// 默认为空，即读取原图。
-  final List<int>? previewThumbSize;
+  final ThumbnailSize? previewThumbnailSize;
 
   /// The current special picker type for the picker.
   /// 当前特殊选择类型
@@ -113,10 +117,6 @@ class AssetPickerConfig {
   /// Whether the picker should save the scroll offset between pushes and pops.
   /// 选择器是否可以从同样的位置开始选择
   final bool keepScrollOffset;
-
-  /// Thumb size for path selector.
-  /// 路径选择器中缩略图的大小
-  final int pathThumbSize;
 
   /// Request assets type.
   /// 请求的资源类型

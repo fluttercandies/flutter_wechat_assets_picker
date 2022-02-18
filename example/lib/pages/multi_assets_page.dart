@@ -83,8 +83,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
               maxAssets: maxAssetsCount,
               selectedAssets: assets,
               requestType: RequestType.image,
-              previewThumbSize: const <int>[150, 150],
-              gridThumbSize: 80,
+              gridThumbnailSize: const ThumbnailSize.square(80),
+              previewThumbnailSize: const ThumbnailSize.square(150),
             ),
           );
         },
