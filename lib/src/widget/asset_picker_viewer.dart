@@ -34,7 +34,7 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
     required List<AssetEntity> previewAssets,
     required ThemeData themeData,
     DefaultAssetPickerProvider? selectorProvider,
-    List<int>? previewThumbSize,
+    ThumbnailSize? previewThumbnailSize,
     List<AssetEntity>? selectedAssets,
     SpecialPickerType? specialPickerType,
     int? maxAssets,
@@ -50,7 +50,7 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
             ? AssetPickerViewerProvider<AssetEntity>(selectedAssets)
             : null,
         themeData: themeData,
-        previewThumbSize: previewThumbSize,
+        previewThumbnailSize: previewThumbnailSize,
         specialPickerType: specialPickerType,
         selectedAssets: selectedAssets,
         selectorProvider: selectorProvider,

@@ -16,7 +16,7 @@ class ImagePageBuilder extends StatefulWidget {
     Key? key,
     required this.asset,
     required this.delegate,
-    this.previewThumbSize,
+    this.previewThumbnailSize,
   }) : super(key: key);
 
   /// Asset currently displayed.
@@ -25,7 +25,7 @@ class ImagePageBuilder extends StatefulWidget {
 
   final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> delegate;
 
-  final List<int>? previewThumbSize;
+  final ThumbnailSize? previewThumbnailSize;
 
   @override
   _ImagePageBuilderState createState() => _ImagePageBuilderState();
@@ -80,8 +80,8 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
     return ExtendedImage(
       image: AssetEntityImageProvider(
         asset,
-        isOriginal: widget.previewThumbSize == null,
-        thumbSize: widget.previewThumbSize,
+        isOriginal: widget.previewThumbnailSize == null,
+        thumbnailSize: widget.previewThumbnailSize,
       ),
       fit: BoxFit.contain,
       mode: ExtendedImageMode.gesture,
@@ -111,7 +111,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
       asset: widget.asset,
-      isOriginal: widget.previewThumbSize == null,
+      isOriginal: widget.previewThumbnailSize == null,
       builder: (BuildContext context, AssetEntity asset) {
         // Initialize the video controller when the asset is a Live photo
         // and available for further use.

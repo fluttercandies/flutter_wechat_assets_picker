@@ -49,7 +49,7 @@ class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
     );
   }
 
-  /// Item widgets when the thumb data load failed.
+  /// Item widgets when the thumbnail data load failed.
   /// 资源缩略数据加载失败时使用的部件
   Widget failedItemBuilder(BuildContext context) {
     return Center(

@@ -13,6 +13,6 @@ dependencies:
 
   extended_image: ^6.0.1
   meta: ^1.7.0
-  photo_manager: ^2.0.0-dev.9
+  photo_manager: ^2.0.0-dev.11
   provider: ^6.0.1
   video_player: ^2.2.14

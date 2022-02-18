@@ -8,6 +8,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../constants/constants.dart';
 import '../delegates/sort_path_delegate.dart';
 import '../internal/singleton.dart';
 
@@ -15,12 +16,13 @@ import '../internal/singleton.dart';
 ///
 /// The provider maintain all methods that control assets and paths.
 /// By extending it you can customize how you can get all assets or paths,
-/// how to fetch the next page of assets, how to get the thumb data of a path.
+/// how to fetch the next page of assets,
+/// and how to get the thumbnail data of a path.
 abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   AssetPickerProvider({
     this.maxAssets = 9,
     this.pageSize = 320,
-    this.pathThumbSize = 80,
+    this.pathThumbnailSize = defaultPathThumbnailSize,
     List<Asset>? selectedAssets,
   }) {
     if (selectedAssets?.isNotEmpty == true) {
@@ -38,9 +40,9 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// Use `null` to display all assets into a single grid.
   final int pageSize;
 
-  /// Thumb size for path selector.
+  /// Thumbnail size for path selector.
   /// 路径选择器中缩略图的大小
-  final int pathThumbSize;
+  final ThumbnailSize pathThumbnailSize;
 
   /// Clear all fields when dispose.
   /// 销毁时重置所有内容
@@ -125,8 +127,9 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// Map for all path entity.
   /// 所有包含资源的路径里列表
   ///
-  /// Using [Map] in order to save the thumb data for the first asset under the path.
-  /// 使用[Map]来保存路径下第一个资源的缩略图数据
+  /// Using [Map] in order to save the thumbnail data
+  /// for the first asset under the path.
+  /// 使用 [Map] 来保存路径下第一个资源的缩略图数据
   Map<Path, Uint8List?> get pathsList => _pathsList;
   final Map<Path, Uint8List?> _pathsList = <Path, Uint8List?>{};
 
@@ -231,11 +234,11 @@ class DefaultAssetPickerProvider
     this.filterOptions,
     int maxAssets = 9,
     int pageSize = 80,
-    int pathThumbSize = 80,
+    ThumbnailSize pathThumbnailSize = const ThumbnailSize.square(80),
   }) : super(
           maxAssets: maxAssets,
           pageSize: pageSize,
-          pathThumbSize: pathThumbSize,
+          pathThumbnailSize: pathThumbnailSize,
           selectedAssets: selectedAssets,
         ) {
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
@@ -383,9 +386,8 @@ class DefaultAssetPickerProvider
     );
     final AssetEntity asset =
         (await path.getAssetListRange(start: 0, end: 1)).single;
-    final Uint8List? assetData = await asset.thumbDataWithSize(
-      pathThumbSize,
-      pathThumbSize,
+    final Uint8List? assetData = await asset.thumbnailDataWithSize(
+      pathThumbnailSize,
     );
     return assetData;
   }

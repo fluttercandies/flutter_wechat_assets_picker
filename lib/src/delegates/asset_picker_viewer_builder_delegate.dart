@@ -27,7 +27,6 @@ import '../widget/builder/fade_image_builder.dart';
 import '../widget/builder/image_page_builder.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/builder/video_page_builder.dart';
-import '../widget/custom_checkbox.dart';
 import '../widget/scale_text.dart';
 
 abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
@@ -365,7 +364,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     required ThemeData themeData,
     AssetPickerViewerProvider<AssetEntity>? provider,
     List<AssetEntity>? selectedAssets,
-    this.previewThumbSize,
+    this.previewThumbnailSize,
     this.specialPickerType,
     int? maxAssets,
     bool shouldReversePreview = false,
@@ -384,7 +383,7 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   /// Thumb size for the preview of images in the viewer.
   /// 预览时图片的缩略图大小
-  final List<int>? previewThumbSize;
+  final ThumbnailSize? previewThumbnailSize;
 
   /// The current special picker type for the viewer.
   /// 当前特殊选择类型
@@ -417,7 +416,7 @@ class DefaultAssetPickerViewerBuilderDelegate
         _builder = ImagePageBuilder(
           asset: asset,
           delegate: this,
-          previewThumbSize: previewThumbSize,
+          previewThumbnailSize: previewThumbnailSize,
         );
         break;
       case AssetType.video:
@@ -917,7 +916,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     bool isSelected,
     AssetEntity asset,
   ) {
-    return CustomCheckbox(
+    return Checkbox(
       value: isSelected,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(999999),
