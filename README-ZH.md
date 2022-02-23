@@ -394,4 +394,4 @@ Android 将默认包含 `ACCESS_MEDIA_LOCATION` 权限。
 感谢 [JetBrains](https://www.jetbrains.com/?from=fluttercandies) 为开源项目提供免费的
 [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies) 等 IDE 的授权。
 
-[<img src=".github/jetbrains-variant.png" width="200"/>](https://www.jetbrains.com/?from=fluttercandies)
+[<img src="https://github.com/fluttercandies/flutter_wechat_assets_picker/raw/master/.github/jetbrains-variant.png" width="200"/>](https://www.jetbrains.com/?from=fluttercandies)
