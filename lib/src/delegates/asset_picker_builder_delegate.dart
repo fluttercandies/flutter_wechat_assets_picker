@@ -1965,38 +1965,41 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget selectIndicator(BuildContext context, int index, AssetEntity asset) {
+    final double indicatorSize = context.mediaQuery.size.width / gridCount / 3;
     final Duration duration = switchingPathDuration * 0.75;
     return Selector<DefaultAssetPickerProvider, String>(
       selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
       builder: (BuildContext context, String descriptions, __) {
         final bool selected = descriptions.contains(asset.toString());
-        final double indicatorSize =
-            context.mediaQuery.size.width / gridCount / 3;
         final Widget innerSelector = AnimatedContainer(
           duration: duration,
           width: indicatorSize / (isAppleOS ? 1.25 : 1.5),
           height: indicatorSize / (isAppleOS ? 1.25 : 1.5),
+          padding: EdgeInsets.all(indicatorSize / 10),
           decoration: BoxDecoration(
-            border:
-                !selected ? Border.all(color: Colors.white, width: 2) : null,
+            border: !selected
+                ? Border.all(
+                    color: context.themeData.selectedRowColor,
+                    width: indicatorSize / 25,
+                  )
+                : null,
             color: selected ? themeColor : null,
             shape: BoxShape.circle,
           ),
-          child: AnimatedSwitcher(
-            duration: duration,
-            reverseDuration: duration,
-            child: selected
-                ? const Icon(Icons.check, size: 18)
-                : const SizedBox.shrink(),
+          child: FittedBox(
+            child: AnimatedSwitcher(
+              duration: duration,
+              reverseDuration: duration,
+              child:
+                  selected ? const Icon(Icons.check) : const SizedBox.shrink(),
+            ),
           ),
         );
         final Widget selectorWidget = GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => selectAsset(context, asset, selected),
           child: Container(
-            margin: EdgeInsets.all(
-              context.mediaQuery.size.width / gridCount / 12,
-            ),
+            margin: EdgeInsets.all(indicatorSize / 4),
             width: isPreviewEnabled ? indicatorSize : null,
             height: isPreviewEnabled ? indicatorSize : null,
             alignment: AlignmentDirectional.topEnd,
@@ -2019,6 +2022,7 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget selectedBackdrop(BuildContext context, int index, AssetEntity asset) {
+    final double indicatorSize = context.mediaQuery.size.width / gridCount / 3;
     return Positioned.fill(
       child: GestureDetector(
         onTap: isPreviewEnabled
@@ -2030,22 +2034,28 @@ class DefaultAssetPickerBuilderDelegate
             final bool selected = index != -1;
             return AnimatedContainer(
               duration: switchingPathDuration,
+              padding: EdgeInsets.all(indicatorSize * .35),
               color: selected
                   ? theme.colorScheme.primary.withOpacity(.45)
-                  : Colors.black.withOpacity(.1),
+                  : theme.backgroundColor.withOpacity(.1),
               child: selected && !isSingleAssetMode
-                  ? Container(
+                  ? Align(
                       alignment: AlignmentDirectional.topStart,
-                      padding: const EdgeInsets.all(14),
-                      child: ScaleText(
-                        '${index + 1}',
-                        style: TextStyle(
-                          color: theme.textTheme.bodyText1?.color
-                              ?.withOpacity(.75),
-                          fontWeight: FontWeight.w600,
-                          height: 1,
+                      child: SizedBox(
+                        height: indicatorSize / 2.5,
+                        child: FittedBox(
+                          alignment: AlignmentDirectional.topStart,
+                          fit: BoxFit.cover,
+                          child: Text(
+                            '${index + 1}',
+                            style: TextStyle(
+                              color: theme.textTheme.bodyText1?.color
+                                  ?.withOpacity(.75),
+                              fontWeight: FontWeight.w600,
+                              height: 1,
+                            ),
+                          ),
                         ),
-                        maxScaleFactor: 1.4,
                       ),
                     )
                   : const SizedBox.shrink(),
