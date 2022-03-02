@@ -35,6 +35,8 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   bool _isLocallyAvailable = false;
   VideoPlayerController? _controller;
 
+  bool get _isOriginal => widget.previewThumbnailSize == null;
+
   bool get _isLivePhoto => widget.asset.isLivePhoto;
 
   @override
@@ -44,12 +46,17 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   }
 
   Future<void> _initializeLivePhoto() async {
-    final String? url = await widget.asset.getMediaUrl();
-    if (!mounted || url == null) {
+    final File? file;
+    if (_isOriginal) {
+      file = await widget.asset.originFileWithSubtype;
+    } else {
+      file = await widget.asset.fileWithSubtype;
+    }
+    if (!mounted || file == null) {
       return;
     }
-    final VideoPlayerController c = VideoPlayerController.network(
-      url,
+    final VideoPlayerController c = VideoPlayerController.file(
+      file,
       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
     );
     setState(() => _controller = c);
@@ -80,7 +87,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
     return ExtendedImage(
       image: AssetEntityImageProvider(
         asset,
-        isOriginal: widget.previewThumbnailSize == null,
+        isOriginal: _isOriginal,
         thumbnailSize: widget.previewThumbnailSize,
       ),
       fit: BoxFit.contain,
@@ -107,11 +114,49 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
     );
   }
 
+  Widget _buildLivePhotosWrapper(BuildContext context, AssetEntity asset) {
+    return Stack(
+      children: <Widget>[
+        if (_controller?.value.isInitialized == true)
+          Center(
+            child: AspectRatio(
+              aspectRatio: _controller!.value.aspectRatio,
+              child: ValueListenableBuilder<VideoPlayerValue>(
+                valueListenable: _controller!,
+                builder: (_, VideoPlayerValue value, Widget? child) {
+                  return Opacity(
+                    opacity: value.isPlaying ? 1 : 0,
+                    child: child,
+                  );
+                },
+                child: VideoPlayer(_controller!),
+              ),
+            ),
+          ),
+        if (_controller == null)
+          Positioned.fill(child: _imageBuilder(context, asset))
+        else
+          Positioned.fill(
+            child: ValueListenableBuilder<VideoPlayerValue>(
+              valueListenable: _controller!,
+              builder: (_, VideoPlayerValue value, Widget? child) {
+                return Opacity(
+                  opacity: value.isPlaying ? 0 : 1,
+                  child: child,
+                );
+              },
+              child: _imageBuilder(context, asset),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
       asset: widget.asset,
-      isOriginal: widget.previewThumbnailSize == null,
+      isOriginal: _isOriginal,
       builder: (BuildContext context, AssetEntity asset) {
         // Initialize the video controller when the asset is a Live photo
         // and available for further use.
@@ -130,43 +175,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
               if (!_isLivePhoto) {
                 return _imageBuilder(context, asset);
               }
-              return Stack(
-                children: <Widget>[
-                  if (_controller == null)
-                    _imageBuilder(context, asset)
-                  else ...<Widget>[
-                    if (_controller!.value.isInitialized)
-                      Center(
-                        child: AspectRatio(
-                          aspectRatio: _controller!.value.aspectRatio,
-                          child: ValueListenableBuilder<VideoPlayerValue>(
-                            valueListenable: _controller!,
-                            builder:
-                                (_, VideoPlayerValue value, Widget? child) {
-                              return Opacity(
-                                opacity: value.isPlaying ? 1 : 0,
-                                child: child,
-                              );
-                            },
-                            child: VideoPlayer(_controller!),
-                          ),
-                        ),
-                      ),
-                    Positioned.fill(
-                      child: ValueListenableBuilder<VideoPlayerValue>(
-                        valueListenable: _controller!,
-                        builder: (_, VideoPlayerValue value, Widget? child) {
-                          return Opacity(
-                            opacity: value.isPlaying ? 0 : 1,
-                            child: child,
-                          );
-                        },
-                        child: _imageBuilder(context, asset),
-                      ),
-                    ),
-                  ],
-                ],
-              );
+              return _buildLivePhotosWrapper(context, asset);
             },
           ),
         );

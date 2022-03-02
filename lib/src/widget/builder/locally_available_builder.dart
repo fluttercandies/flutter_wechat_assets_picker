@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../constants/extensions.dart';
+import '../../internal/methods.dart';
 import '../scale_text.dart';
 
 class LocallyAvailableBuilder extends StatefulWidget {
@@ -30,7 +31,6 @@ class LocallyAvailableBuilder extends StatefulWidget {
 class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
   bool _isLocallyAvailable = false;
   PMProgressHandler? _progressHandler;
-  File? file;
 
   @override
   void initState() {
@@ -39,24 +39,34 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
   }
 
   Future<void> _checkLocallyAvailable() async {
-    _isLocallyAvailable = await widget.asset.isLocallyAvailable;
+    _isLocallyAvailable = await widget.asset.isLocallyAvailable(
+      isOrigin: widget.isOriginal,
+    );
     if (!mounted) {
       return;
     }
     setState(() {});
     if (!_isLocallyAvailable) {
       _progressHandler = PMProgressHandler();
-      widget.asset
-          .loadFile(
-            progressHandler: _progressHandler,
-            isOrigin: widget.isOriginal,
-          )
-          .then((File? f) => file = f);
+      Future<void>(() async {
+        final File? file = await widget.asset.loadFile(
+          isOrigin: widget.isOriginal,
+          withSubtype: true,
+          progressHandler: _progressHandler,
+        );
+        realDebugPrint('Produced file: $file.');
+        if (file != null) {
+          _isLocallyAvailable = true;
+          if (mounted) {
+            setState(() {});
+          }
+        }
+      });
     }
     _progressHandler?.stream.listen((PMProgressState s) {
+      realDebugPrint('Handling progress: $s.');
       if (s.state == PMRequestState.success) {
         _isLocallyAvailable = true;
-        file = null;
         if (mounted) {
           setState(() {});
         }
