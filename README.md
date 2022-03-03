@@ -14,9 +14,9 @@
 Language: English | [中文](README-ZH.md)
 
 An **assets picker** which based on the WeChat's UI,
-using `photo_manager` for asset implementation,
-`extended_image` for image preview,
-and `provider` to help control the state of the picker.
+using [`photo_manager`](https://pub.dev/packages/photo_manager) for asset implementation,
+[`extended_image`](https://pub.dev/packages/extended_image) for image preview,
+and [`provider`](https://pub.dev/packages/provider) to help control the state of the picker.
 
 To take a photo or a video for assets, please check the detailed usage in the example, and head over to
 [wechat_camera_picker](https://pub.dev/packages/wechat_camera_picker).
@@ -180,27 +180,28 @@ final AssetEntity? entity = await AssetPicker.pickAssets(
 
 Fields in `AssetPickerConfig`:
 
-| Name                      | Type                        | Description                                                                                                         | Default                             |
-|---------------------------|-----------------------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------|
-| selectedAssets            | `List<AssetEntity>?`        | Selected assets. Prevent duplicate selection. If you don't need to prevent duplicate selection, just don't pass it. | `null`                              |
-| maxAssets                 | `int`                       | Maximum asset that the picker can pick.                                                                             | 9                                   |
-| pageSize                  | `int?`                      | Number of assets per page. **Must be a multiple of `gridCount`**.                                                   | 320 (80 * 4)                        |
-| gridThumbSize             | `int`                       | Thumbnail size for the grid's item.                                                                                 | 200                                 |
-| pathThumbSize             | `int`                       | Thumbnail size for the path selector.                                                                               | 80                                  |
-| previewThumbSize          | `List<int>?`                | Preview thumbnail size in the viewer.                                                                               | `null`                              |
-| gridCount                 | `int`                       | Grid count in picker.                                                                                               | 4                                   |
-| requestType               | `RequestType`               | Request type for picker.                                                                                            | `RequestType.image`                 |
-| specialPickerType         | `SpacialPickerType?`        | Provides the option to integrate a custom picker type.                                                              | `null`                              |
-| themeColor                | `Color?`                    | Main theme color for the picker.                                                                                    | `Color(0xff00bc56)`                 |
-| pickerTheme               | `ThemeData?`                | Theme data provider for the picker and the viewer.                                                                  | `null`                              |
-| sortPathDelegate          | `SortPathDeleage?`          | Path entities sort delegate for the picker, sort paths as you want.                                                 | `CommonSortPathDelegate`            |
-| textDelegate              | `AssetsPickerTextDelegate?` | Text delegate for the picker, for customize the texts.                                                              | `DefaultAssetsPickerTextDelegate()` |
-| filterOptions             | `FilterOptionGroup?`        | Allow users to customize assets filter options.                                                                     | `null`                              |
-| specialItemBuilder        | `SpecialItemBuilder?`       | The widget builder for the special item.                                                                            | `null`                              |
-| specialItemPosition       | `SpecialItemPosition`       | Allow users set a special item in the picker with several positions.                                                | `SpecialItemPosition.none`          |
-| loadingIndicatorBuilder   | `IndicatorBuilder?`         | Indicates the loading status for the builder.                                                                       | `null`                              |
-| selectPredicate           | `AssetSelectPredicate`      | Predicate whether an asset can be selected or unselected.                                                           | `null`                              |
-| shouldRevertGrid          | `bool?`                     | Whether the assets grid should revert.                                                                              | `null`                              |
+| Name                    | Type                                 | Description                                                               | Default                     |
+|-------------------------|--------------------------------------|---------------------------------------------------------------------------|-----------------------------|
+| selectedAssets          | `List<AssetEntity>?`                 | Selected assets. Prevent duplicate selection.                             | `null`                      |
+| maxAssets               | `int`                                | Maximum asset that the picker can pick.                                   | 9                           |
+| pageSize                | `int?`                               | Number of assets per page. **Must be a multiple of `gridCount`**.         | 80                          |
+| gridThumbnailSize       | `ThumbnailSize`                      | Thumbnail size for the grid's item.                                       | `ThumbnailSize.square(200)` |
+| pathThumbnailSize       | `ThumbnailSize`                      | Thumbnail size for the path selector.                                     | `ThumbnailSize.square(80)`  |
+| previewThumbnailSize    | `ThumbnailSize?`                     | Preview thumbnail size in the viewer.                                     | `null`                      |
+| requestType             | `RequestType`                        | Request type for picker.                                                  | `RequestType.common`        |
+| specialPickerType       | `SpacialPickerType?`                 | Provides the option to integrate a custom picker type.                    | `null`                      |
+| keepScrollOffset        | `bool`                               | Whether the picker should save the scroll offset between pushes and pops. | `null`                      |
+| sortPathDelegate        | `SortPathDelegate<AssetPathEntity>?` | Path entities sort delegate for the picker, sort paths as you want.       | `CommonSortPathDelegate`    |
+| filterOptions           | `FilterOptionGroup?`                 | Allow users to customize assets filter options.                           | `null`                      |
+| gridCount               | `int`                                | Grid count in picker.                                                     | 4                           |
+| themeColor              | `Color?`                             | Main theme color for the picker.                                          | `Color(0xff00bc56)`         |
+| pickerTheme             | `ThemeData?`                         | Theme data provider for the picker and the viewer.                        | `null`                      |
+| textDelegate            | `AssetPickerTextDelegate?`           | Text delegate for the picker, for customize the texts.                    | `AssetPickerTextDelegate()` |
+| specialItemPosition     | `SpecialItemPosition`                | Allow users set a special item in the picker with several positions.      | `SpecialItemPosition.none`  |
+| specialItemBuilder      | `SpecialItemBuilder?`                | The widget builder for the special item.                                  | `null`                      |
+| loadingIndicatorBuilder | `IndicatorBuilder?`                  | Indicates the loading status for the builder.                             | `null`                      |
+| selectPredicate         | `AssetSelectPredicate`               | Predicate whether an asset can be selected or unselected.                 | `null`                      |
+| shouldRevertGrid        | `bool?`                              | Whether the assets grid should revert.                                    | `null`                      |
 
 ### Detailed usage
 
