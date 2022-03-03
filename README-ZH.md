@@ -201,10 +201,9 @@ final AssetEntity? entity = await AssetPicker.pickAssets(
 | sortPathDelegate          | `SortPathDeleage?`                 | 资源路径的排序实现，可自定义路径排序方法                           | `CommonSortPathDelegate`            |
 | textDelegate              | `DefaultAssetsPickerTextDelegate?` | 选择器的文本代理构建，用于自定义文本                             | `DefaultAssetsPickerTextDelegate()` |
 | filterOptions             | `FilterOptionGroup?`               | 允许用户自定义资源过滤条件                                  | `null`                              |
-| specialItemBuilder        | `WidgetBuilder?`                   | 自定义item的构造方法                                   | `null`                              |
+| specialItemBuilder        | `SpecialItemBuilder?`              | 自定义item的构造方法                                   | `null`                              |
 | specialItemPosition       | `SpecialItemPosition`              | 允许用户在选择器中添加一个自定义item，并指定位置。                    | `SpecialPosition.none`              |
 | loadingIndicatorBuilder   | `IndicatorBuilder?`                | 加载器的实现                                         | `null`                              |
-| allowSpecialItemWhenEmpty | `bool`                             | 在资源为空时是否允许显示自定义item                            | `false`                             |
 | selectPredicate           | `AssetSelectPredicate`             | 判断资源可否被选择                                      | `null`                              |
 | shouldRevertGrid          | `bool?`                            | 判断资源网格是否需要倒序排列                                 | `null`                              |
 | pageRouteBuilder          | `AssetPickerPageRouteBuilder`      | 构建 `AssetPickerPageRoute`                      | `null`                              |
