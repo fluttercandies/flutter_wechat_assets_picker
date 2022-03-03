@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 import '../constants/custom_scroll_physics.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
-import '../delegates/asset_picker_builder_delegate.dart';
+import '../constants/typedefs.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';

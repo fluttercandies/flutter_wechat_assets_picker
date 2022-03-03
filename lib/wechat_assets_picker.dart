@@ -5,6 +5,7 @@ export 'package:photo_manager/photo_manager.dart';
 export 'src/constants/config.dart';
 export 'src/constants/constants.dart';
 export 'src/constants/enums.dart';
+export 'src/constants/typedefs.dart';
 export 'src/delegates/asset_picker_builder_delegate.dart';
 export 'src/delegates/asset_picker_text_delegate.dart';
 export 'src/delegates/asset_picker_viewer_builder_delegate.dart';

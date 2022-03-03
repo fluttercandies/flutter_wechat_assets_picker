@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
+import '../constants/typedefs.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
@@ -32,21 +33,6 @@ import '../widget/platform_progress_indicator.dart';
 import '../widget/scale_text.dart';
 
 const String _ordinalNamePermissionOverlay = 'permissionOverlay';
-
-typedef IndicatorBuilder = Widget Function(
-  BuildContext context,
-  bool isAssetsEmpty,
-);
-
-/// {@template wechat_assets_picker.AssetSelectPredicate}
-/// Predicate whether an asset can be selected or unselected.
-/// 判断资源可否被选择
-/// {@endtemplate}
-typedef AssetSelectPredicate<Asset> = FutureOr<bool> Function(
-  BuildContext context,
-  Asset asset,
-  bool isSelected,
-);
 
 /// The delegate to build the whole picker's components.
 ///
@@ -62,7 +48,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.specialItemPosition = SpecialItemPosition.none,
     this.specialItemBuilder,
     this.loadingIndicatorBuilder,
-    this.allowSpecialItemWhenEmpty = false,
     this.selectPredicate,
     this.shouldRevertGrid,
     Color? themeColor,
@@ -107,15 +92,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// The widget builder for the the special item.
   /// 自定义item的构造方法
-  final WidgetBuilder? specialItemBuilder;
+  final SpecialItemBuilder<Path>? specialItemBuilder;
 
   /// Indicates the loading status for the builder.
   /// 指示目前加载的状态
-  final IndicatorBuilder? loadingIndicatorBuilder;
-
-  /// Whether the special item will display or not when assets is empty.
-  /// 当没有资源时是否显示自定义item
-  final bool allowSpecialItemWhenEmpty;
+  final LoadingIndicatorBuilder? loadingIndicatorBuilder;
 
   /// {@macro wechat_assets_picker.AssetSelectPredicate}
   final AssetSelectPredicate<Asset>? selectPredicate;
@@ -668,9 +649,8 @@ class DefaultAssetPickerBuilderDelegate
     int gridCount = 4,
     ThemeData? pickerTheme,
     SpecialItemPosition specialItemPosition = SpecialItemPosition.none,
-    WidgetBuilder? specialItemBuilder,
-    IndicatorBuilder? loadingIndicatorBuilder,
-    bool allowSpecialItemWhenEmpty = false,
+    SpecialItemBuilder<AssetPathEntity>? specialItemBuilder,
+    LoadingIndicatorBuilder? loadingIndicatorBuilder,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     bool? shouldRevertGrid,
     this.gridThumbnailSize = defaultAssetGridPreviewSize,
@@ -691,7 +671,6 @@ class DefaultAssetPickerBuilderDelegate
           specialItemPosition: specialItemPosition,
           specialItemBuilder: specialItemBuilder,
           loadingIndicatorBuilder: loadingIndicatorBuilder,
-          allowSpecialItemWhenEmpty: allowSpecialItemWhenEmpty,
           selectPredicate: selectPredicate,
           shouldRevertGrid: shouldRevertGrid,
           themeColor: themeColor,
@@ -922,11 +901,15 @@ class DefaultAssetPickerBuilderDelegate
   Widget androidLayout(BuildContext context) {
     return AssetPickerAppBarWrapper(
       appBar: appBar(context),
-      body: Selector<DefaultAssetPickerProvider, bool>(
-        selector: (_, DefaultAssetPickerProvider p) => p.hasAssetsToDisplay,
-        builder: (_, bool hasAssetsToDisplay, __) {
-          final bool shouldDisplayAssets = hasAssetsToDisplay ||
-              (allowSpecialItemWhenEmpty &&
+      body: Consumer<DefaultAssetPickerProvider>(
+        builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
+          final Widget? _specialItem = specialItemBuilder?.call(
+            context,
+            p.currentPath,
+            p.currentAssets.length,
+          );
+          final bool shouldDisplayAssets = p.hasAssetsToDisplay ||
+              (_specialItem != null &&
                   specialItemPosition != SpecialItemPosition.none);
           return AnimatedSwitcher(
             duration: switchingPathDuration,
@@ -980,13 +963,16 @@ class DefaultAssetPickerBuilderDelegate
       return Stack(
         children: <Widget>[
           Positioned.fill(
-            child: Selector<DefaultAssetPickerProvider, bool>(
-              selector: (_, DefaultAssetPickerProvider p) =>
-                  p.hasAssetsToDisplay,
-              builder: (_, bool hasAssetsToDisplay, __) {
+            child: Consumer<DefaultAssetPickerProvider>(
+              builder: (_, DefaultAssetPickerProvider p, __) {
                 final Widget _child;
-                final bool shouldDisplayAssets = hasAssetsToDisplay ||
-                    (allowSpecialItemWhenEmpty &&
+                final Widget? _specialItem = specialItemBuilder?.call(
+                  context,
+                  p.currentPath,
+                  p.currentAssets.length,
+                );
+                final bool shouldDisplayAssets = p.hasAssetsToDisplay ||
+                    (_specialItem != null &&
                         specialItemPosition != SpecialItemPosition.none);
                 if (shouldDisplayAssets) {
                   _child = Stack(
@@ -1192,43 +1178,50 @@ class DefaultAssetPickerBuilderDelegate
     int index,
     List<AssetEntity> currentAssets,
   ) {
+    final int _length = currentAssets.length;
     final AssetPathEntity? currentPathEntity =
         context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
       (DefaultAssetPickerProvider p) => p.currentPath,
     );
 
-    int currentIndex;
-    switch (specialItemPosition) {
-      case SpecialItemPosition.none:
-      case SpecialItemPosition.append:
-        currentIndex = index;
-        break;
-      case SpecialItemPosition.prepend:
-        currentIndex = index - 1;
-        break;
+    final Widget? specialItem;
+    if (specialItemPosition == SpecialItemPosition.none) {
+      specialItem = null;
+    } else {
+      specialItem = specialItemBuilder?.call(
+        context,
+        currentPathEntity,
+        _length,
+      );
     }
 
-    // Directly return the special item when it's empty.
-    if (currentPathEntity == null) {
-      if (allowSpecialItemWhenEmpty &&
-          specialItemPosition != SpecialItemPosition.none) {
-        return specialItemBuilder!(context);
-      }
-      return const SizedBox.shrink();
-    }
-
-    final int _length = currentAssets.length;
-    if (currentPathEntity.isAll &&
-        specialItemPosition != SpecialItemPosition.none) {
+    if (specialItem != null) {
       if ((index == 0 && specialItemPosition == SpecialItemPosition.prepend) ||
           (index == _length &&
               specialItemPosition == SpecialItemPosition.append)) {
-        return specialItemBuilder!(context);
+        return specialItem;
       }
     }
 
-    if (!currentPathEntity.isAll) {
+    final int currentIndex;
+    if (specialItem != null &&
+        specialItemPosition == SpecialItemPosition.prepend) {
+      currentIndex = index - 1;
+    } else {
       currentIndex = index;
+    }
+
+    if (specialItemPosition != SpecialItemPosition.none) {
+      final Widget? specialItem = specialItemBuilder?.call(
+        context,
+        currentPathEntity,
+        _length,
+      );
+      if (specialItem != null) {}
+    }
+
+    if (currentPathEntity == null) {
+      return const SizedBox.shrink();
     }
 
     if (index == _length - gridCount * 3 &&
