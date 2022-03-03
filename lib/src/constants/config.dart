@@ -19,9 +19,9 @@ class AssetPickerConfig {
     this.gridThumbnailSize = defaultAssetGridPreviewSize,
     this.pathThumbnailSize = defaultPathThumbnailSize,
     this.previewThumbnailSize,
+    this.requestType = RequestType.common,
     this.specialPickerType,
     this.keepScrollOffset = false,
-    this.requestType = RequestType.common,
     this.sortPathDelegate,
     this.filterOptions,
     this.gridCount = 4,
@@ -99,6 +99,10 @@ class AssetPickerConfig {
   /// 默认为空，即读取原图。
   final ThumbnailSize? previewThumbnailSize;
 
+  /// Request assets type.
+  /// 请求的资源类型
+  final RequestType requestType;
+
   /// The current special picker type for the picker.
   /// 当前特殊选择类型
   ///
@@ -116,10 +120,6 @@ class AssetPickerConfig {
   /// Whether the picker should save the scroll offset between pushes and pops.
   /// 选择器是否可以从同样的位置开始选择
   final bool keepScrollOffset;
-
-  /// Request assets type.
-  /// 请求的资源类型
-  final RequestType requestType;
 
   /// Delegate to sort asset path entities.
   /// 资源路径排序的实现
