@@ -384,8 +384,14 @@ class DefaultAssetPickerProvider
         return true;
       }(),
     );
-    final AssetEntity asset =
-        (await path.getAssetListRange(start: 0, end: 1)).single;
+    final List<AssetEntity> assets = await path.getAssetListRange(
+      start: 0,
+      end: 1,
+    );
+    if (assets.isEmpty) {
+      return null;
+    }
+    final AssetEntity asset = assets.single;
     final Uint8List? assetData = await asset.thumbnailDataWithSize(
       pathThumbnailSize,
     );
