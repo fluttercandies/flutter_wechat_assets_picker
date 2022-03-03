@@ -86,7 +86,14 @@ class PickMethod {
             selectedAssets: assets,
             requestType: RequestType.common,
             specialItemPosition: SpecialItemPosition.prepend,
-            specialItemBuilder: (BuildContext context) {
+            specialItemBuilder: (
+              BuildContext context,
+              AssetPathEntity? path,
+              int length,
+            ) {
+              if (path?.isAll != true) {
+                return null;
+              }
               return Semantics(
                 label: AssetPickerTextDelegate().sActionUseCameraHint,
                 button: true,
@@ -130,7 +137,14 @@ class PickMethod {
             selectedAssets: assets,
             requestType: RequestType.common,
             specialItemPosition: SpecialItemPosition.prepend,
-            specialItemBuilder: (BuildContext context) {
+            specialItemBuilder: (
+              BuildContext context,
+              AssetPathEntity? path,
+              int length,
+            ) {
+              if (path?.isAll != true) {
+                return null;
+              }
               return Semantics(
                 label: AssetPickerTextDelegate().sActionUseCameraHint,
                 button: true,
@@ -247,7 +261,11 @@ class PickMethod {
             selectedAssets: assets,
             requestType: RequestType.common,
             specialItemPosition: SpecialItemPosition.prepend,
-            specialItemBuilder: (BuildContext context) {
+            specialItemBuilder: (
+              BuildContext context,
+              AssetPathEntity? path,
+              int length,
+            ) {
               return const Center(
                 child: Text('Custom Widget', textAlign: TextAlign.center),
               );

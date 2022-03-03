@@ -4,9 +4,9 @@
 ///
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:wechat_assets_picker/src/delegates/asset_picker_text_delegate.dart';
 
-import '../delegates/asset_picker_builder_delegate.dart';
+import '../constants/typedefs.dart';
+import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
 import 'constants.dart';
 import 'enums.dart';
@@ -31,7 +31,6 @@ class AssetPickerConfig {
     this.specialItemPosition = SpecialItemPosition.none,
     this.specialItemBuilder,
     this.loadingIndicatorBuilder,
-    this.allowSpecialItemWhenEmpty = false,
     this.selectPredicate,
     this.shouldRevertGrid,
   })  : assert(maxAssets >= 1, 'maxAssets must be greater than 1.'),
@@ -159,15 +158,11 @@ class AssetPickerConfig {
 
   /// The widget builder for the the special item.
   /// 自定义item的构造方法
-  final WidgetBuilder? specialItemBuilder;
+  final SpecialItemBuilder<AssetPathEntity>? specialItemBuilder;
 
   /// Indicates the loading status for the builder.
   /// 指示目前加载的状态
-  final IndicatorBuilder? loadingIndicatorBuilder;
-
-  /// Whether the special item will display or not when assets is empty.
-  /// 当没有资源时是否显示自定义item
-  final bool allowSpecialItemWhenEmpty;
+  final LoadingIndicatorBuilder? loadingIndicatorBuilder;
 
   /// {@macro wechat_assets_picker.AssetSelectPredicate}
   final AssetSelectPredicate<AssetEntity>? selectPredicate;

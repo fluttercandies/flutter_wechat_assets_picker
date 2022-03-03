@@ -59,7 +59,6 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
         specialItemPosition: pickerConfig.specialItemPosition,
         specialItemBuilder: pickerConfig.specialItemBuilder,
         loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
-        allowSpecialItemWhenEmpty: pickerConfig.allowSpecialItemWhenEmpty,
         selectPredicate: pickerConfig.selectPredicate,
         shouldRevertGrid: pickerConfig.shouldRevertGrid,
         textDelegate: pickerConfig.textDelegate,
