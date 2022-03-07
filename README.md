@@ -91,12 +91,10 @@ please run the example or refer to [photo_manager](https://github.com/CaiJingLon
 
 ### Versions compatibility
 
-|        | 2.0.0 | 2.2.0 | 2.5.0 | 2.8.0 |
-|--------|:-----:|:-----:|:-----:|:-----:|
-| 6.3.0+ |   ❌   |   ❌   |   ❌   |   ✅   |
-| 6.2.1+ |   ❌   |   ❌   |   ✅   |   ❌   |
-| 6.2.0  |   ✅   |   ✅   |   ✅   |   ❌   |
-| 5.0.0+ |   ✅   |  N/A  |  N/A  |  N/A  |
+|        | <2.5.0 | 2.8.0 | 2.10.0 |
+|--------|:------:|:-----:|:------:|
+| 7.0.0+ |   ❌    |   ✅   |   ✅    |
+| 6.3.0+ |   ❌    |   ✅   |   ✅    |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
 please use `dependency_overrides` to fix it.

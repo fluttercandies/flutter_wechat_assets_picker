@@ -1,31 +1,22 @@
 # Changelog
 
-## 7.0.0-dev.4
+## 7.0.0
 
-- Improve scaling with select indicators and numbers.
-- Fix `LocallyAvailableBuilder` with more edge conditions. (#263)
-- Fix potentially "No elements" error with thumbnails.
+To know more about breaking changes, see [Migration Guide][].
+
+### New features
 - Support predictable special item display. (#264)
-
-## 7.0.0-dev.3
-
-- Semantics support with multiple text delegates. (#235, #240, #242, #243, #245, #254)
-- Expose `AssetPickerPageRoute` for customization. (#248)
 - Support live photos display. (#251)
+- Expose `AssetPickerPageRoute` for customization. (#248)
+- Add full semantics support. (#232, #235, #240, #242, #243, #245, #254)
 
-### Breaking changes
-
-- Architecture refactor partially for better customization. (#241)
-- Configs are all abstracted as `AssetPickerConfig`. (#250)
-
-## 7.0.0-dev.2
-
-- Add full semantics support. (#232)
+### Improvements
+- Improve scaling with select indicators and numbers.
 - Implement the default light theme. (#234)
 
-## 7.0.0-dev.1
-
-- Migrate to the latest photo_manager.
+### Fixes
+- Fix `LocallyAvailableBuilder` with more edge conditions. (#263)
+- Fix potentially "No elements" error with thumbnails.
 
 ## 6.3.1
 
@@ -132,9 +123,7 @@
 - Improve text scale handling. (#177)
 - Reduce font size for couple texts.
 
-### Breaking changes
-Multiple refactoring happened with delegates,
-see [Migration Guide](guides/migration_guide.md) for more details.
+To know more about breaking changes, see [Migration Guide][].
 
 ## 5.5.8
 
@@ -480,3 +469,5 @@ see [Migration Guide](guides/migration_guide.md) for more details.
 ## 1.0.0
 
 - Initial release.
+
+[Migration Guide]: guides/migration_guide.md
