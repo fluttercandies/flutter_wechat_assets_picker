@@ -2,12 +2,11 @@
     package="com.fluttercandies.wechatAssetsPickerExample">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:label="Wechat Assets Picker Example"
         android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true"
         android:allowBackup="false">
         <activity
             android:name=".MainActivity"
