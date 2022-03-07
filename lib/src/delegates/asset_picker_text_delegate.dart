@@ -550,7 +550,7 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get languageCode => 'ja';
 
   @override
-  String get confirm => '決定';
+  String get confirm => '確認';
 
   @override
   String get cancel => 'キャンセル';
@@ -559,10 +559,10 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get edit => '編集';
 
   @override
-  String get gifIndicator => 'GIF';
+  String get gifIndicator => 'GIF画像';
 
   @override
-  String get loadFailed => '読み込みに失敗しました。';
+  String get loadFailed => '読み込みに失敗しました';
 
   @override
   String get original => '元の画像';
@@ -574,25 +574,23 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get select => '選択';
 
   @override
-  String get emptyList => '空リスト';
+  String get emptyList => 'リストが空です';
 
   @override
-  String get unSupportedAssetType => 'HEIC フォーマットはサポートしていません。';
+  String get unSupportedAssetType => '未対応のフォーマット';
 
   @override
-  String get unableToAccessAll => 'すべてのリソースにアクセスできない';
+  String get unableToAccessAll => 'すべてのリソースへのアクセスができない';
 
   @override
-  String get viewingLimitedAssetsTip => 'このアプリは一部のリソース及'
-      'びアルバムのみにアクセスできる';
+  String get viewingLimitedAssetsTip => 'アプリは一部のリソースと写真にしかアクセスできない';
 
   @override
-  String get changeAccessibleLimitedAssets => 'アクセスできるリソースを設置';
+  String get changeAccessibleLimitedAssets => 'アクセスできるリソースを設定する';
 
   @override
-  String get accessAllTip => 'アプリがデバイスの一部のリソースの'
-      'みにアクセスするように設定され、'
-      '「すべてのリソースへ」にアクセスする権限を許可してください';
+  String get accessAllTip => 'アプリがデバイスのリソースの一部にのみアクセスするように設定されています。'
+      '「すべてのリソース」へのアクセスを許可することを推奨します';
 
   @override
   String get goToSystemSettings => '「システム設定」に移動';
@@ -602,6 +600,39 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get accessiblePathName => 'アクセスできるリソース';
+
+  @override
+  String get sTypeAudioLabel => 'オーディオ';
+
+  @override
+  String get sTypeImageLabel => '画像';
+
+  @override
+  String get sTypeVideoLabel => '動画';
+
+  @override
+  String get sTypeOtherLabel => 'その他のリソース';
+
+  @override
+  String get sActionPlayHint => '再生';
+
+  @override
+  String get sActionPreviewHint => 'プレビュー';
+
+  @override
+  String get sActionSelectHint => '選択';
+
+  @override
+  String get sActionSwitchPathLabel => 'パス切り替え';
+
+  @override
+  String get sActionUseCameraHint => 'カメラを使う';
+
+  @override
+  String get sNameDurationLabel => '動画の時間';
+
+  @override
+  String get sUnitAssetCountLabel => '数';
 }
 
 /// [AssetPickerTextDelegate] implements with Arabic.
