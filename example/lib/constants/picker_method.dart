@@ -6,6 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
+Future<AssetEntity?> _pickFromCamera(BuildContext c) {
+  return CameraPicker.pickFromCamera(
+    c,
+    pickerConfig: const CameraPickerConfig(enableRecording: true),
+  );
+}
+
 /// Define a regular pick method.
 class PickMethod {
   const PickMethod({
@@ -102,11 +109,7 @@ class PickMethod {
                   behavior: HitTestBehavior.opaque,
                   onTap: () async {
                     Feedback.forTap(context);
-                    final AssetEntity? result =
-                        await CameraPicker.pickFromCamera(
-                      context,
-                      enableRecording: true,
-                    );
+                    final AssetEntity? result = await _pickFromCamera(context);
                     if (result != null) {
                       handleResult(context, result);
                     }
@@ -152,11 +155,7 @@ class PickMethod {
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () async {
-                    final AssetEntity? result =
-                        await CameraPicker.pickFromCamera(
-                      context,
-                      enableRecording: true,
-                    );
+                    final AssetEntity? result = await _pickFromCamera(context);
                     if (result == null) {
                       return;
                     }
