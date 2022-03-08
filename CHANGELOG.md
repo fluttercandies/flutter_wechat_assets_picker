@@ -1,5 +1,13 @@
 # Changelog
 
+## 7.0.1
+
+### Improvements
+- Support semantics with Japanese text delegates. (#266).
+
+### Fixes
+- Obtain the path thumbnail only when asset is image or video.
+
 ## 7.0.0
 
 To know more about breaking changes, see [Migration Guide][].
