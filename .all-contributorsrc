@@ -166,6 +166,15 @@
         "a11y",
         "bug"
       ]
+    },
+    {
+      "login": "paigupai",
+      "name": "paigupai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44311361?v=4",
+      "profile": "https://github.com/paigupai",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
