@@ -583,13 +583,15 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unableToAccessAll => 'すべてのリソースへのアクセスができない';
 
   @override
-  String get viewingLimitedAssetsTip => 'アプリは一部のリソースと写真にしかアクセスできない';
+  String get viewingLimitedAssetsTip => 'アプリは一部のリソースと'
+      '写真にしかアクセスできない';
 
   @override
   String get changeAccessibleLimitedAssets => 'アクセスできるリソースを設定する';
 
   @override
-  String get accessAllTip => 'アプリがデバイスのリソースの一部にのみアクセスするように設定されています。'
+  String get accessAllTip => 'アプリがデバイスのリソースの一部にのみ'
+      'アクセスするように設定されています。'
       '「すべてのリソース」へのアクセスを許可することを推奨します';
 
   @override
