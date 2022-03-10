@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.0.2
+
+### Fixes
+- Fix wrong conditions judging when obtaining path thumbnails.
+
 ## 7.0.1
 
 ### Improvements
