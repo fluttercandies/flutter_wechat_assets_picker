@@ -393,7 +393,7 @@ class DefaultAssetPickerProvider
     }
     final AssetEntity asset = assets.single;
     // Obtain the thumbnail only when the asset is image or video.
-    if (asset.type != AssetType.image || asset.type != AssetType.video) {
+    if (asset.type != AssetType.image && asset.type != AssetType.video) {
       return null;
     }
     final Uint8List? assetData = await asset.thumbnailDataWithSize(
