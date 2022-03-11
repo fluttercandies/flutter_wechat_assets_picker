@@ -164,13 +164,13 @@ platform :osx, '10.15'
 ### Simple usage
 
 ```dart
-final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
+final List<AssetEntity>? result = await AssetPicker.pickAssets(context);
 ```
 
 Use `AssetPickerConfig` for more picking behaviors.
 
 ```dart
-final AssetEntity? entity = await AssetPicker.pickAssets(
+final List<AssetEntity>? result = await AssetPicker.pickAssets(
   context,
   pickerConfig: const AssetPickerConfig(),
 );

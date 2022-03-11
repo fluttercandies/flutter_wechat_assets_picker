@@ -172,13 +172,13 @@ platform :ios, '9.0'
 ### 简单的使用方法
 
 ```dart
-final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
+final List<AssetEntity>? result = await AssetPicker.pickAssets(context);
 ```
 
 你可以使用 `AssetPickerConfig` 来调整选择时的行为。
 
 ```dart
-final AssetEntity? entity = await AssetPicker.pickAssets(
+final List<AssetEntity>? result = await AssetPicker.pickAssets(
   context,
   pickerConfig: const AssetPickerConfig(),
 );
