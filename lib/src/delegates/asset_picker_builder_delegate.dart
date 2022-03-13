@@ -32,8 +32,6 @@ import '../widget/gaps.dart';
 import '../widget/platform_progress_indicator.dart';
 import '../widget/scale_text.dart';
 
-const String _ordinalNamePermissionOverlay = 'permissionOverlay';
-
 /// The delegate to build the whole picker's components.
 ///
 /// By extending the delegate, you can customize every components on you own.
@@ -179,8 +177,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       ValueNotifier<PermissionState>(
     initialPermission,
   );
-  final ValueNotifier<bool> permissionOverlayHidden =
-      ValueNotifier<bool>(false);
+  late final ValueNotifier<bool> permissionOverlayHidden =
+      ValueNotifier<bool>(permission.value.isAuth);
 
   /// Whether the permission is limited currently.
   /// 当前的权限是否为受限
@@ -617,10 +615,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         }
         return Positioned.fill(
           child: Semantics(
-            sortKey: const OrdinalSortKey(
-              0,
-              name: _ordinalNamePermissionOverlay,
-            ),
+            sortKey: const OrdinalSortKey(0),
             child: Container(
               padding: context.mediaQuery.padding,
               color: context.themeData.canvasColor,
@@ -1003,11 +998,7 @@ class DefaultAssetPickerBuilderDelegate
         if (value) {
           return child!;
         }
-        return Semantics(
-          excludeSemantics: true,
-          sortKey: const OrdinalSortKey(1, name: _ordinalNamePermissionOverlay),
-          child: child,
-        );
+        return ExcludeSemantics(child: child);
       },
       child: _layout(context),
     );
