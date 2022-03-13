@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.0.3
+
+### Fixes
+- Fix the broken semantics on iOS/macOS. (#272)
+
 ## 7.0.2
 
 ### Fixes
