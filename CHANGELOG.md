@@ -3,19 +3,23 @@
 ## 7.0.3
 
 ### Fixes
+
 - Fix the broken semantics on iOS/macOS. (#272)
 
 ## 7.0.2
 
 ### Fixes
+
 - Fix wrong conditions judging when obtaining path thumbnails.
 
 ## 7.0.1
 
 ### Improvements
+
 - Support semantics with Japanese text delegates. (#266).
 
 ### Fixes
+
 - Obtain the path thumbnail only when asset is image or video.
 
 ## 7.0.0
@@ -23,24 +27,26 @@
 To know more about breaking changes, see [Migration Guide][].
 
 ### New features
+
 - Support predictable special item display. (#264)
 - Support live photos display. (#251)
 - Expose `AssetPickerPageRoute` for customization. (#248)
 - Add full semantics support. (#232, #235, #240, #242, #243, #245, #254)
 
 ### Improvements
+
 - Improve scaling with select indicators and numbers.
 - Implement the default light theme. (#234)
 
 ### Fixes
+
 - Fix `LocallyAvailableBuilder` with more edge conditions. (#263)
 - Fix potentially "No elements" error with thumbnails.
 
 ## 6.3.1
 
-- Improve image type determine when resolving image data.
-  This mostly resolved the occasionally HEIC loading issue
-  when apps are running under the release mode.
+- Improve image type determine when resolving image data.This mostly resolved the occasionally HEIC loading issue when
+  apps are running under the release mode.
 
 ## 6.3.0
 
@@ -69,8 +75,7 @@ To know more about breaking changes, see [Migration Guide][].
 
 ## 6.2.0
 
-- Introduce `shouldRevertGrid` to determine whether the assets grid should revert.
-  It's set with Apple OS accordingly before.
+- Introduce `shouldRevertGrid` to determine whether the assets grid should be reverted.
 - Upgrade `photo_manager` to resolve issues against `AssetEntity`s comparison.
 
 ## 6.1.2
@@ -108,8 +113,7 @@ To know more about breaking changes, see [Migration Guide][].
 
 ## 6.0.2
 
-- Expose `shouldReversePreview` for `AssetPickerViewerBuilderDelegate`,
-  which provides a more precise control for the viewer.
+- Expose `shouldReversePreview` for `AssetPickerViewerBuilderDelegate`.
 
 ## 6.0.1
 
@@ -120,6 +124,7 @@ To know more about breaking changes, see [Migration Guide][].
 ## 6.0.0
 
 ### New features
+
 - Sync all UI details from WeChat 8.x.
 - Integrate iCloud progress overview in previews.
 - Change the permission from the app settings when it's limited.
@@ -127,10 +132,10 @@ To know more about breaking changes, see [Migration Guide][].
 - Fit the assets' grid's layout as the iOS `Photos` app (reverted and started from the bottom).
 - Add Arabic language text delegate.
 - Allow using `AssetPicker` and `AssetPickerViewer` directly with delegates.
-- Add `keepScrollOffset` feature for the `AssetPickerBuilderDelegate`,
-  which allow users to keep the scroll offset between pickings.
+- Add `keepScrollOffset` feature for the `AssetPickerBuilderDelegate`.
 
 ### Improvements
+
 - Items that being banned from select (reached max assets or type conflict)
   will have a stronger color cover to indicate.
 - Video preview in the [SpecialPickerType.wechatMoment] is completely different from other previews.
@@ -288,8 +293,7 @@ To know more about breaking changes, see [Migration Guide][].
 - Migrate to non-nullable by default.
 - `CustomItemBuilder` -> `SpecialItemBuilder`, `CustomItemPosition` -> `SpecialItemPosition` .
 - Abstract `AssetPickerBuilderDelegate<A, P>`, `AssetPickerViewerBuilderDelegate<A, P>`,
-  `AssetPickerProvider<A, P>`, and minify the `AssetPickerViewerProvider<A>`. Support
-  custom types by generic type.
+  `AssetPickerProvider<A, P>`, and minify the `AssetPickerViewerProvider<A>`. Support custom types by generic type.
 - The `assets` param in `AssetPickerViewer.pushToViewer` is now `previewAssets` .
 
 ## 4.2.2
@@ -428,7 +432,7 @@ To know more about breaking changes, see [Migration Guide][].
 ## 1.5.0
 
 - Bumping flutter sdk minimum version to `1.17.0`.
-- Declare API stability and compatibility with 1.0.0 
+- Declare API stability and compatibility with 1.0.0
   ( more details at: https://github.com/flutter/flutter/wiki/Package-migration-to-1.0.0 ).
 
 ## 1.4.1
