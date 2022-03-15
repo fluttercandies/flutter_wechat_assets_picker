@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.0.4
+
+### Improvements
+
+- Make all text delegates const.
+
 ## 7.0.3
 
 ### Fixes
