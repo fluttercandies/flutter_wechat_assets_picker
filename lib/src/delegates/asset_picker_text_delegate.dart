@@ -8,7 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetType;
 
 /// All text delegates.
-final List<AssetPickerTextDelegate> assetPickerTextDelegates =
+const List<AssetPickerTextDelegate> assetPickerTextDelegates =
     <AssetPickerTextDelegate>[
   AssetPickerTextDelegate(),
   EnglishAssetPickerTextDelegate(),
@@ -23,7 +23,7 @@ final List<AssetPickerTextDelegate> assetPickerTextDelegates =
 /// Obtain the text delegate from the given locale.
 AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
   if (locale == null) {
-    return AssetPickerTextDelegate();
+    return const AssetPickerTextDelegate();
   }
   final String languageCode = locale.languageCode.toLowerCase();
   for (final AssetPickerTextDelegate delegate in assetPickerTextDelegates) {
@@ -31,12 +31,14 @@ AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
       return delegate;
     }
   }
-  return AssetPickerTextDelegate();
+  return const AssetPickerTextDelegate();
 }
 
 /// Text delegate that controls text in widgets.
 /// 控制部件中的文字实现
 class AssetPickerTextDelegate {
+  const AssetPickerTextDelegate();
+
   String get languageCode => 'zh';
 
   /// Confirm string for the confirm button.
@@ -164,6 +166,8 @@ class AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implements with English.
 /// English Localization
 class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const EnglishAssetPickerTextDelegate();
+
   @override
   String get languageCode => 'en';
 
@@ -258,6 +262,8 @@ class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implements with Hebrew.
 /// תרגום בשפה העברית
 class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const HebrewAssetPickerTextDelegate();
+
   @override
   String get languageCode => 'he';
 
@@ -350,7 +356,7 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   AssetPickerTextDelegate get semanticsTextDelegate {
     if (Platform.isAndroid) {
-      return EnglishAssetPickerTextDelegate();
+      return const EnglishAssetPickerTextDelegate();
     }
     return this;
   }
@@ -359,6 +365,8 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implementiert mit der deutschen Übersetzung.
 /// Deutsche Textimplementierung.
 class GermanAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const GermanAssetPickerTextDelegate();
+
   @override
   String get languageCode => 'de';
 
@@ -451,6 +459,8 @@ class GermanAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implements with Russian.
 /// Локализация на русский язык.
 class RussianAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const RussianAssetPickerTextDelegate();
+
   @override
   String get languageCode => 'ru';
 
@@ -546,6 +556,8 @@ class RussianAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implements with Japanese.
 /// 日本語の TextDelegate
 class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const JapaneseAssetPickerTextDelegate();
+
   @override
   String get languageCode => 'ja';
 
@@ -640,6 +652,8 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implements with Arabic.
 /// الترجمة العربية
 class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const ArabicAssetPickerTextDelegate();
+
   @override
   String get languageCode => 'ar';
 
@@ -735,6 +749,8 @@ class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
 /// [AssetPickerTextDelegate] implements with French.
 /// Délégué texte français
 class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const FrenchAssetPickerTextDelegate();
+
   @override
   String get languageCode => 'fr';
 

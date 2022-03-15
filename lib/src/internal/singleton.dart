@@ -13,7 +13,7 @@ class Singleton {
 
   static GlobalKey pickerKey = GlobalKey();
 
-  static AssetPickerTextDelegate textDelegate = AssetPickerTextDelegate();
+  static AssetPickerTextDelegate textDelegate = const AssetPickerTextDelegate();
   static SortPathDelegate<dynamic> sortPathDelegate = SortPathDelegate.common;
 
   /// The last scroll position where the picker scrolled.

@@ -86,6 +86,7 @@ class PickMethod {
       name: 'Pick from camera',
       description: 'Allow pick an asset through camera.',
       method: (BuildContext context, List<AssetEntity> assets) {
+        const AssetPickerTextDelegate textDelegate = AssetPickerTextDelegate();
         return AssetPicker.pickAssets(
           context,
           pickerConfig: AssetPickerConfig(
@@ -102,9 +103,9 @@ class PickMethod {
                 return null;
               }
               return Semantics(
-                label: AssetPickerTextDelegate().sActionUseCameraHint,
+                label: textDelegate.sActionUseCameraHint,
                 button: true,
-                onTapHint: AssetPickerTextDelegate().sActionUseCameraHint,
+                onTapHint: textDelegate.sActionUseCameraHint,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () async {
@@ -133,6 +134,7 @@ class PickMethod {
       description: 'Take a photo or video with the camera picker, '
           'select the result and stay in the entities list.',
       method: (BuildContext context, List<AssetEntity> assets) {
+        const AssetPickerTextDelegate textDelegate = AssetPickerTextDelegate();
         return AssetPicker.pickAssets(
           context,
           pickerConfig: AssetPickerConfig(
@@ -149,9 +151,9 @@ class PickMethod {
                 return null;
               }
               return Semantics(
-                label: AssetPickerTextDelegate().sActionUseCameraHint,
+                label: textDelegate.sActionUseCameraHint,
                 button: true,
-                onTapHint: AssetPickerTextDelegate().sActionUseCameraHint,
+                onTapHint: textDelegate.sActionUseCameraHint,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () async {
@@ -332,7 +334,7 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
-            textDelegate: EnglishAssetPickerTextDelegate(),
+            textDelegate: const EnglishAssetPickerTextDelegate(),
           ),
         );
       },
