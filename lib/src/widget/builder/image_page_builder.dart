@@ -2,6 +2,8 @@
 /// [Author] Alex (https://github.com/Alex525)
 /// [Date] 2020/4/6 15:07
 ///
+import 'dart:io';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
