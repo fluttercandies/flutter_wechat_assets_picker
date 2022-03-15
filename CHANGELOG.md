@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.0.5
+
+### Improvements
+
+- Support compile on the Web. (#273)
+
 ## 7.0.4
 
 ### Improvements
