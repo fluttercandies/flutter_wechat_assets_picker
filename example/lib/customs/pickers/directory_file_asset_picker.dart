@@ -6,7 +6,6 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' show basename;
@@ -763,35 +762,7 @@ class FileAssetPickerBuilder
 
   @override
   Widget imageAndVideoItemBuilder(BuildContext context, int index, File asset) {
-    final FileImage imageProvider = FileImage(asset);
-    return RepaintBoundary(
-      child: ExtendedImage(
-        image: imageProvider,
-        fit: BoxFit.cover,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader = const SizedBox.shrink();
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = const ColoredBox(color: Color(0x10ffffff));
-              break;
-            case LoadState.completed:
-              loader = Stack(
-                children: <Widget>[
-                  Positioned.fill(
-                    child: RepaintBoundary(child: state.completedWidget),
-                  ),
-                  selectedBackdrop(context, index, asset),
-                ],
-              );
-              break;
-            case LoadState.failed:
-              loader = failedItemBuilder(context);
-              break;
-          }
-          return loader;
-        },
-      ),
-    );
+    return RepaintBoundary(child: Image.file(asset, fit: BoxFit.cover));
   }
 
   @override
@@ -1241,6 +1212,10 @@ class FileAssetPickerViewerBuilderDelegate
           maxAssets: selectorProvider?.maxAssets,
         );
 
+  late final PageController _pageController = PageController(
+    initialPage: currentIndex,
+  );
+
   bool _isDisplayingDetail = true;
 
   @override
@@ -1258,26 +1233,7 @@ class FileAssetPickerViewerBuilderDelegate
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: switchDisplayingDetail,
-      child: ExtendedImage.file(
-        asset,
-        fit: BoxFit.contain,
-        mode: ExtendedImageMode.gesture,
-        onDoubleTap: updateAnimation,
-        initGestureConfigHandler: (ExtendedImageState state) {
-          return GestureConfig(
-            initialScale: 1.0,
-            minScale: 1.0,
-            maxScale: 3.0,
-            animationMinScale: 0.6,
-            animationMaxScale: 4.0,
-            cacheGesture: false,
-            inPageView: true,
-          );
-        },
-        loadStateChanged: (ExtendedImageState state) {
-          return previewWidgetLoadStateChanged(context, state);
-        },
-      ),
+      child: Image.file(asset, fit: BoxFit.contain),
     );
   }
 
@@ -1367,7 +1323,7 @@ class FileAssetPickerViewerBuilderDelegate
                     children: <Widget>[
                       Positioned.fill(
                         child: RepaintBoundary(
-                          child: ExtendedImage.file(asset, fit: BoxFit.cover),
+                          child: Image.file(asset, fit: BoxFit.cover),
                         ),
                       ),
                       AnimatedContainer(
@@ -1452,9 +1408,9 @@ class FileAssetPickerViewerBuilderDelegate
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
-                  child: ExtendedImageGesturePageView.builder(
+                  child: PageView.builder(
                     physics: const BouncingScrollPhysics(),
-                    controller: pageController,
+                    controller: _pageController,
                     itemCount: previewAssets.length,
                     itemBuilder: assetPageBuilder,
                     onPageChanged: (int index) {
