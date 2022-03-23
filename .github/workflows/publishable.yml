@@ -1,10 +1,6 @@
 name: Publishable
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   dry_run:
