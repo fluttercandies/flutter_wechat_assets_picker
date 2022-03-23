@@ -383,6 +383,41 @@ class PickMethod {
     );
   }
 
+  factory PickMethod.filtered(int maxAssetsCount) {
+    final List<String> mimeTypeWhitelist = <String>[
+      'image/jpg',
+      'image/jpeg',
+      'image/png',
+      'video/mp4',
+    ];
+
+    return PickMethod(
+      icon: '🎯',
+      name: 'Custom Filter Function',
+      description: 'Pick from a filtered list of assets with a function',
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          pickerConfig: AssetPickerConfig(
+            maxAssets: maxAssetsCount,
+            selectedAssets: assets,
+            requestType: RequestType.common,
+            assetFilterFunction: (List<dynamic> assets) async {
+              final List<AssetEntity> filteredAssets = <AssetEntity>[];
+              for (final AssetEntity asset in assets as List<AssetEntity>) {
+                final String? mimeType = await asset.mimeTypeAsync;
+                if (mimeTypeWhitelist.contains(mimeType)) {
+                  filteredAssets.add(asset);
+                }
+              }
+              return filteredAssets;
+            },
+          ),
+        );
+      },
+    );
+  }
+
   final String icon;
   final String name;
   final String description;

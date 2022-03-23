@@ -21,6 +21,12 @@ typedef AssetSelectPredicate<Asset> = FutureOr<bool> Function(
   bool isSelected,
 );
 
+/// {@template wechat_assets_picker.AssetFilterFunction}
+/// Function to filter the list of assets returned
+typedef AssetFilterFunction<Asset> = FutureOr<List<Asset>> Function(
+  List<Asset> assets,
+);
+
 /// {@template wechat_asset_picker.SpecialItemBuilder}
 /// Build the special item according the given path and assets length.
 /// 根据给定的目录和资源数量构建特殊 item

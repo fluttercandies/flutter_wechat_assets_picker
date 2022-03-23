@@ -200,6 +200,7 @@ Fields in `AssetPickerConfig`:
 | loadingIndicatorBuilder | `IndicatorBuilder?`                  | Indicates the loading status for the builder.                             | `null`                      |
 | selectPredicate         | `AssetSelectPredicate`               | Predicate whether an asset can be selected or unselected.                 | `null`                      |
 | shouldRevertGrid        | `bool?`                              | Whether the assets grid should revert.                                    | `null`                      |
+| assetFilterFunction        | `AssetFilterFunction?`                              | A function by which to filter the assets list.                                    | `null`                      |
 
 ### Detailed usage
 

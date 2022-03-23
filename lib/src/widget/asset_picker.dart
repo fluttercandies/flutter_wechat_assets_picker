@@ -45,6 +45,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       requestType: pickerConfig.requestType,
       sortPathDelegate: pickerConfig.sortPathDelegate,
       filterOptions: pickerConfig.filterOptions,
+      assetFilterFunction: pickerConfig.assetFilterFunction,
     );
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
       key: Singleton.pickerKey,

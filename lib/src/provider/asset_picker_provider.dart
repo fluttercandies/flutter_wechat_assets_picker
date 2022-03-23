@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/constants.dart';
+import '../constants/typedefs.dart';
 import '../delegates/sort_path_delegate.dart';
 import '../internal/singleton.dart';
 
@@ -235,6 +236,7 @@ class DefaultAssetPickerProvider
     int maxAssets = 9,
     int pageSize = 80,
     ThumbnailSize pathThumbnailSize = const ThumbnailSize.square(80),
+    this.assetFilterFunction,
   }) : super(
           maxAssets: maxAssets,
           pageSize: pageSize,
@@ -263,6 +265,10 @@ class DefaultAssetPickerProvider
   /// Will be merged into the base configuration.
   /// 将会与基础条件进行合并。
   final FilterOptionGroup? filterOptions;
+
+  /// Custom filter function before displaying the list
+  ///
+  final AssetFilterFunction? assetFilterFunction;
 
   @override
   Future<void> getPaths() async {
@@ -316,7 +322,12 @@ class DefaultAssetPickerProvider
       page: page,
       size: pageSize,
     );
-    _currentAssets = List<AssetEntity>.of(list);
+    if (assetFilterFunction != null) {
+      _currentAssets = await assetFilterFunction!(List<AssetEntity>.of(list))
+          as List<AssetEntity>;
+    } else {
+      _currentAssets = List<AssetEntity>.of(list);
+    }
     _hasAssetsToDisplay = currentAssets.isNotEmpty;
     notifyListeners();
   }
@@ -409,6 +420,7 @@ class DefaultAssetPickerProvider
       _currentPath = _pathsList.keys.elementAt(0);
       totalAssetsCount = currentPath!.assetCount;
       await getAssetsFromPath(0, currentPath!);
+      isAssetsEmpty = currentAssets.isEmpty;
     } else {
       isAssetsEmpty = true;
     }
