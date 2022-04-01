@@ -33,6 +33,7 @@ class AssetPickerConfig {
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
+    this.limitedPermissionOverlayPredicate,
   })  : assert(maxAssets >= 1, 'maxAssets must be greater than 1.'),
         assert(
           pickerTheme == null || themeColor == null,
@@ -173,4 +174,7 @@ class AssetPickerConfig {
   /// [Null] means judging by [isAppleOS].
   /// 使用 [Null] 即使用 [isAppleOS] 进行判断。
   final bool? shouldRevertGrid;
+
+  /// {@macro wechat_assets_picker.LimitedPermissionOverlayPredicate}
+  final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
 }

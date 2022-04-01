@@ -48,6 +48,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
+    this.limitedPermissionOverlayPredicate,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
@@ -117,6 +118,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 使用 [Null] 即使用 [isAppleOS] 进行判断。
   final bool? shouldRevertGrid;
 
+  /// {@macro wechat_assets_picker.LimitedPermissionOverlayPredicate}
+  final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
+
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
   ThemeData get theme => pickerTheme ?? AssetPicker.themeData(themeColor);
@@ -177,8 +181,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       ValueNotifier<PermissionState>(
     initialPermission,
   );
-  late final ValueNotifier<bool> permissionOverlayHidden =
-      ValueNotifier<bool>(permission.value.isAuth);
+  late final ValueNotifier<bool> permissionOverlayDisplay = ValueNotifier<bool>(
+    limitedPermissionOverlayPredicate?.call(permission.value) ??
+        (permission.value == PermissionState.limited),
+  );
 
   /// Whether the permission is limited currently.
   /// 当前的权限是否为受限
@@ -204,7 +210,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     gridScrollController.dispose();
     isSwitchingPath.dispose();
     permission.dispose();
-    permissionOverlayHidden.dispose();
+    permissionOverlayDisplay.dispose();
   }
 
   /// The method to select assets. Delegates can implement this method
@@ -598,7 +604,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     );
 
     final Widget _accessLimitedButton = GestureDetector(
-      onTap: () => permissionOverlayHidden.value = true,
+      onTap: () => permissionOverlayDisplay.value = false,
       child: ScaleText(
         textDelegate.accessLimitedAssets,
         style: TextStyle(color: interactiveTextColor(context)),
@@ -608,9 +614,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
     return ValueListenableBuilder2<PermissionState, bool>(
       firstNotifier: permission,
-      secondNotifier: permissionOverlayHidden,
-      builder: (_, PermissionState ps, bool isHidden, __) {
-        if (ps.isAuth || isHidden) {
+      secondNotifier: permissionOverlayDisplay,
+      builder: (_, PermissionState ps, bool isDisplay, __) {
+        if (ps.isAuth || !isDisplay) {
           return const SizedBox.shrink();
         }
         return Positioned.fill(
@@ -648,6 +654,7 @@ class DefaultAssetPickerBuilderDelegate
     LoadingIndicatorBuilder? loadingIndicatorBuilder,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     bool? shouldRevertGrid,
+    LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate,
     this.gridThumbnailSize = defaultAssetGridPreviewSize,
     this.previewThumbnailSize,
     this.specialPickerType,
@@ -668,6 +675,7 @@ class DefaultAssetPickerBuilderDelegate
           loadingIndicatorBuilder: loadingIndicatorBuilder,
           selectPredicate: selectPredicate,
           shouldRevertGrid: shouldRevertGrid,
+          limitedPermissionOverlayPredicate: limitedPermissionOverlayPredicate,
           themeColor: themeColor,
           textDelegate: textDelegate,
           locale: locale,
@@ -993,12 +1001,12 @@ class DefaultAssetPickerBuilderDelegate
     }
 
     return ValueListenableBuilder<bool>(
-      valueListenable: permissionOverlayHidden,
+      valueListenable: permissionOverlayDisplay,
       builder: (_, bool value, Widget? child) {
         if (value) {
-          return child!;
+          return ExcludeSemantics(child: child);
         }
-        return ExcludeSemantics(child: child);
+        return child!;
       },
       child: _layout(context),
     );
