@@ -61,6 +61,8 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
         loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
         selectPredicate: pickerConfig.selectPredicate,
         shouldRevertGrid: pickerConfig.shouldRevertGrid,
+        limitedPermissionOverlayPredicate:
+            pickerConfig.limitedPermissionOverlayPredicate,
         textDelegate: pickerConfig.textDelegate,
         themeColor: pickerConfig.themeColor,
         locale: Localizations.maybeLocaleOf(context),
