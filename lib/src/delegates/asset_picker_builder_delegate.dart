@@ -49,6 +49,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.selectPredicate,
     this.shouldRevertGrid,
     this.limitedPermissionOverlayPredicate,
+    this.pathNameBuilder,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
@@ -120,6 +121,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// {@macro wechat_assets_picker.LimitedPermissionOverlayPredicate}
   final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
+
+  /// {@macro wechat_assets_picker.PathNameBuilder}
+  final PathNameBuilder<AssetPathEntity>? pathNameBuilder;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -655,6 +659,7 @@ class DefaultAssetPickerBuilderDelegate
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     bool? shouldRevertGrid,
     LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate,
+    PathNameBuilder<AssetPathEntity>? pathNameBuilder,
     this.gridThumbnailSize = defaultAssetGridPreviewSize,
     this.previewThumbnailSize,
     this.specialPickerType,
@@ -676,6 +681,7 @@ class DefaultAssetPickerBuilderDelegate
           selectPredicate: selectPredicate,
           shouldRevertGrid: shouldRevertGrid,
           limitedPermissionOverlayPredicate: limitedPermissionOverlayPredicate,
+          pathNameBuilder: pathNameBuilder,
           themeColor: themeColor,
           textDelegate: textDelegate,
           locale: locale,
@@ -1778,12 +1784,14 @@ class DefaultAssetPickerBuilderDelegate
       return ColoredBox(color: theme.colorScheme.primary.withOpacity(0.12));
     }
 
+    final String pathName =
+        pathNameBuilder?.call(pathEntity) ?? pathEntity.name;
     final String name = isPermissionLimited && pathEntity.isAll
         ? textDelegate.accessiblePathName
-        : pathEntity.name;
+        : pathName;
     final String semanticsName = isPermissionLimited && pathEntity.isAll
         ? semanticsTextDelegate.accessiblePathName
-        : pathEntity.name;
+        : pathName;
     final String semanticsCount = '${pathEntity.assetCount}';
     return Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
