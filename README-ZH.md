@@ -209,6 +209,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | selectPredicate                   | `AssetSelectPredicate`               | 判断资源可否被选择                   | `null`                      |
 | shouldRevertGrid                  | `bool?`                              | 判断资源网格是否需要倒序排列              | `null`                      |
 | limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?` | 判断有限的权限情况下是否展示提示页面          | `null`                      |
+| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 构建自定义路径名称                   | `null`                      |
 
 ### 更详细的使用方法
 
@@ -299,42 +300,6 @@ final File originFile = await entity.originFile; // 原图或者原视频
 final String path = file.path;
 final String originPath = originFile.path;
 ```
-
-### 如何更改 'Recent' 或其他路径的名称或属性？
-
-由 `photo_manager` 传递的 “Recent” 路径，包含了你设备上的所有的 `AssetEntity`。
-大部分的平台都会将这个路径命名为 “Recent”。尽管我们提供了自定义文字构建的能力，
-但是 `AssetPathEntity` 的名字或属性只能通过 `SortPathDelegate` 进行更改。
-这是你能访问到所有 `AssetPathEntity` 的唯一方法，或者说，是现阶段我们暴露出来的唯一方法。
-
-若需要更改某一个路径的名字，继承 `CommonSortPathDelegate` 并实现你自己的构建，
-接着像如下代码一样进行编写：
-
-```dart
-/// 构建你自己的排序
-class CustomSortPathDelegate extends CommonSortPathDelegate {
-  const CustomSortPathDelegate();
-
-  @override
-  void sort(List<AssetPathEntity> list) {
-    ///...///
-
-    // 在这里你可以对每个你认为需要的路径进行判断。
-    // 我们唯一推荐更改的属性是 [name]，
-    // 并且我们不对更改其他属性造成的问题负责。
-    for (final AssetPathEntity entity in list) {
-      // 如果这个路径的 `isAll` 为真，则该路径就是你需要的。
-      if (entity.isAll) {
-        entity.name = '最近';
-      }
-    }
-
-    ///...///
-  }
-}
-```
-
-将你的构建传递至静态调用方法里，而后你就会看到你自定义了名称的路径。
 
 ### 从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法
 
