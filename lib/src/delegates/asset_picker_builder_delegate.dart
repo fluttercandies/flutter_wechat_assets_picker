@@ -667,11 +667,7 @@ class DefaultAssetPickerBuilderDelegate
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
-  })  : assert(
-          pickerTheme == null || themeColor == null,
-          'Theme and theme color cannot be set at the same time.',
-        ),
-        super(
+  }) : super(
           initialPermission: initialPermission,
           gridCount: gridCount,
           pickerTheme: pickerTheme,
