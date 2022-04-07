@@ -43,3 +43,9 @@ typedef AssetSelectPredicate<Asset> = FutureOr<bool> Function(
 typedef LimitedPermissionOverlayPredicate = bool Function(
   PermissionState permissionState,
 );
+
+/// {@template wechat_assets_picker.PathNameBuilder}
+/// Build customized path name.
+/// 构建自定义路径名称。
+/// {@endtemplate}
+typedef PathNameBuilder<Path> = String Function(Path path);
