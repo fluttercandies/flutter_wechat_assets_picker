@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.1.0
+
+### New features
+
+- Add `PathNameBuilder`. (#303)
+- Add `LimitedPermissionOverlayPredicate`. (#287)
+
 ## 7.0.5
 
 ### Improvements
