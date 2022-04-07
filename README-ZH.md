@@ -24,8 +24,9 @@ Language: [English](README.md) | 中文
 当前的界面设计基于的微信版本：**8.x**
 界面更新将在微信版本更新后随时进行跟进。
 
-**注意：** 如果你觉得你的自定义实现会在某些程度上帮助其他人实现他们的需求，你可以通过 PR 提交你的自定义实现。
-更多信息请参考 [贡献自定义实现](example/lib/customs/CONTRIBUTING.md) 。
+**注意：** 如果你觉得你的自定义实现会在某些程度上帮助其他人实现他们的需求，
+你可以通过 PR 提交你的自定义实现。更多信息请参考
+[贡献自定义实现](example/lib/customs/CONTRIBUTING.md) 。
 
 ## 目录 🗂
 
@@ -48,10 +49,8 @@ Language: [English](README.md) | 中文
 * [常见问题](#常见问题-)
   * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photo_managercompiledebugkotlin)
   * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合)
-  * [如何更改 'Recent' 或其他路径的名称或属性？](#如何更改-recent-或其他路径的名称或属性)
   * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
   * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
-  * [禁用媒体位置权限](#禁用媒体位置权限)
 
 ## 迁移指南 ♻️
 
@@ -87,8 +86,9 @@ Language: [English](README.md) | 中文
 ## 开始前的注意事项 ‼️
 
 尽管该库提供了资源的选择，其仍然要求使用者构建自己的方法来处理显示、上传等操作。
-如果你在使用该库的过程对某些方法或API有疑问，
-请运行示例并查看 [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) 对相关方法的使用说明。
+如果你在使用该库的过程对某些方法或API有疑问，请运行示例并查看
+[photo_manager](https://github.com/CaiJingLong/flutter_photo_manager)
+对相关方法的使用说明。
 
 ## 准备工作 🍭
 
@@ -125,15 +125,17 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-依赖要求项目的安卓原生部分整合至 Android embedding v2，
-更多信息请至 [Upgrading pre 1.12 Android projects](https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects)
-查看。
+需要声明的权限：`READ_EXTERNAL_STORAGE`（已声明）.
+可选声明的权限：`WRITE_EXTERNAL_STORAGE`、`ACCESS_MEDIA_LOCATION`.
 
-需要声明的权限：`INTERNET`, `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`。
-如果你不需要 `ACCESS_MEDIA_LOCATION` 权限，请参考 [禁用媒体位置权限](#禁用媒体位置权限) 要进行移除。
+如果你的目标 SDK 版本大于 29，
+你必须声明在 `AndroidManifest.xml` 的 `<application>` 节点中
+声明 `requestLegacyExternalStorage`。
+详情请参考示例。
 
-如果你发现有一些与 `Glide` 有关的警告日志输出，那么主项目就需要实现 `AppGlideModule`。
-请查看 [Generated API](https://muyangmin.github.io/glide-docs-cn/doc/generatedapi.html).
+如果你发现有一些与 `Glide` 有关的警告日志输出，
+那么主项目就需要实现 `AppGlideModule`。详细信息请查看
+[Generated API](https://muyangmin.github.io/glide-docs-cn/doc/generatedapi.html).
 
 ### iOS
 
@@ -155,11 +157,13 @@ platform :ios, '9.0'
 
 ### macOS
 
-目前 Flutter 桌面版仍然在开发阶段，所以请注意，任何与桌面版本有关的问题都不会受到技术支持。
+目前 Flutter 桌面版仍然在开发阶段，所以请注意，
+任何与桌面版本有关的问题都不会受到技术支持。
 
 1. 在 `macos/Podfile` 中指定最低构建版本至 **10.15**。
 
-2. 使用 **Xcode** 打开 `macos/Runner.xcworkspace`。接着根据下面的截图将最低构建版本提升至 **10.15**。
+2. 使用 **Xcode** 打开 `macos/Runner.xcworkspace`。
+   接着根据下面的截图将最低构建版本提升至 **10.15**。
 
 3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
 
@@ -217,7 +221,8 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 
 ### 使用自定义代理
 
-你只能在使用 `pickAssetsWithDelegate` 方法时使用 `keepScrollOffset` 的功能。
+你只能在使用 `pickAssetsWithDelegate` 方法时
+使用 `keepScrollOffset` 的功能。
 更多细节请查看示例内的 `Keep scroll offset` 方法。
 
 想要了解更多关于自定义代理实现的内容，
@@ -226,7 +231,8 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 #### 一般的调用选择情况
 
 你可以在 `example/lib/pages/multi_assets_page.dart` 和
-`example/lib/pages/single_assets_page.dart` 找到 `List<PickMethod> pickMethods`，
+`example/lib/pages/single_assets_page.dart`
+找到 `List<PickMethod> pickMethods`，
 它分别定义了多选和单选可用的选择模式。
 在选择资源后，资源会暂存并展示在页面下方。
 
@@ -234,7 +240,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 
 页面中的最大选择数是 `9`，你可以按需修改。
 
-某些模式只能在多选下使用，例如「WeChat Moment」（朋友圈）模式。
+某些模式只能在多选下使用，例如「朋友圈」(WeChat Moment) 模式。
 
 ##### 单选资源
 
@@ -247,35 +253,41 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 （与 `photo_manager` 完全无关）实现的选择器，
 以及一个多 Tab 页切换的选择器。
 如果你觉得你的实现有价值或能帮助到其他人，欢迎以 PR 的形式进行提交。
-更多细节请阅读 [贡献自定义实现][example/lib/customs/CONTRIBUTING.md]
+更多细节请阅读
+[贡献自定义实现][example/lib/customs/CONTRIBUTING.md]。
 
 ### 展示选中的资源
 
-`AssetEntityImageProvider` 可以为 **图片 & 视频** 展示缩略图，以及展示 **图片的原图**。
-它的使用方法与常见的 `ImageProvider` 一致。
+`AssetEntityImage` 和 `AssetEntityImageProvider`
+可以为 **图片 & 视频** 展示缩略图，以及展示 **图片的原图**。
+它的使用方法与常见的 `Image` 和 `ImageProvider` 一致。
 
 ```dart
-Image(image: AssetEntityImageProvider(asset, isOriginal: false))
-```
+/// AssetEntityImage
+AssetEntityImage(asset, isOriginal: false);
 
-请查看示例以了解它如何进行展示。
+/// AssetEntityImageProvider
+Image(image: AssetEntityImageProvider(asset, isOriginal: false));
+```
 
 ### 注册资源变化回调
 
 ```dart
-AssetPicker.registerObserve(); // 注册回调
-```
+/// 注册回调
+AssetPicker.registerObserve();
 
-```dart
-AssetPicker.unregisterObserve(); // 取消注册回调
+/// 取消注册回调
+AssetPicker.unregisterObserve();
 ```
 
 ### 自定义类型或 UI
 
-`AssetPickerBuilderDelegate`、`AssetPickerViewerBuilderDelegate`、`AssetPickerProvider` 及
-`AssetPickerViewerProvider` 均已暴露且可重载。使用者可以使用自定义的泛型类型 `<A: 资源, P: 路径>`，
-配合继承与重载，实现对应抽象类和类中的方法。更多用法请查看示例中的 `Custom` 页面，该页面包含一个以
-`<File, Directory>` 为类型基础的选择器。
+`AssetPickerBuilderDelegate`、`AssetPickerViewerBuilderDelegate`、
+`AssetPickerProvider` 及 `AssetPickerViewerProvider` 均已暴露且可重载。
+使用者可以使用自定义的泛型类型 `<A: 资源, P: 路径>`，
+配合继承与重载，实现对应抽象类和类中的方法。
+更多用法请查看示例中的 `Custom` 页面，
+该页面包含一个以 `<File, Directory>` 为类型基础的选择器。
 
 ## 常见问题 ❔
 
@@ -292,7 +304,8 @@ AssetPicker.unregisterObserve(); // 取消注册回调
 `File` 对象可以通过 `entity.file` 或 `entity.originFile` 获得，
 如果需要 `Uint8List` 则使用 `entity.originBytes`。
 
-如果再此之后你仍然需要路径，那么可以通过已获得的 `File` 对象获取： `file.path`。
+如果再此之后你仍然需要路径，
+那么可以通过已获得的 `File` 对象获取：
 
 ```dart
 final File file = await entity.file; // 缩略图或编辑后的视频
@@ -303,7 +316,8 @@ final String originPath = originFile.path;
 
 ### 从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法
 
-如果需要使用此库结合一些拍照需求，可通过以下方法将 `File` 或 `Uint8List` 转为 `AssetEntity`。
+如果需要使用此库结合一些拍照需求，
+可通过以下方法将 `File` 或 `Uint8List` 转为 `AssetEntity`。
 
 ```dart
 final File file = your_file; // 你的 File 对象
@@ -327,7 +341,7 @@ final AssetEntity imageEntity = await PhotoManager.editor.saveImage(
 final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
 ```
 
-参考文档： [flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item)
+参考文档：[flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item)
 
 ### 控制台提示 'Failed to find GeneratedAppGlideModule'
 
@@ -336,28 +350,17 @@ W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an
 ```
 
 `Glide` 通过注解来保证单例，防止单例或版本之间的冲突，
-而因为 `photo_manager` 使用了 `Glide` 提供部分图片功能，所以使用它的项目必须实现自己的 `AppGlideModule`。
+而因为 `photo_manager` 使用了 `Glide` 提供部分图片功能，
+所以使用它的项目必须实现自己的 `AppGlideModule`。
 请移步 [Android](#android) 部分了解如何实现。
-
-### 禁用媒体位置权限
-
-Android 将默认包含 `ACCESS_MEDIA_LOCATION` 权限。
-这个权限是在 Android Q 中引入的。
-如果你的应用不需要这个权限，
-你需要在你的应用中的 `AndroidManifest.xml` 中添加以下节点内容：
-
-```xml
-<uses-permission
-  android:name="android.permission.ACCESS_MEDIA_LOCATION"
-  tools:node="remove"
-  />
-```
 
 ## 致谢
 
 > IntelliJ IDEA 的每个方面都旨在最大化开发者生产力。结合智能编码辅助与符合人体工程学的设计，让开发不仅高效，更成为一种享受。
 
-感谢 [JetBrains](https://www.jetbrains.com/?from=fluttercandies) 为开源项目提供免费的
-[IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies) 等 IDE 的授权。
+感谢 [JetBrains](https://www.jetbrains.com/?from=fluttercandies)
+为开源项目提供免费的
+[IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies)
+等 IDE 的授权。
 
 [<img src="https://github.com/fluttercandies/flutter_wechat_assets_picker/raw/master/.github/jetbrains-variant.png" width="200"/>](https://www.jetbrains.com/?from=fluttercandies)

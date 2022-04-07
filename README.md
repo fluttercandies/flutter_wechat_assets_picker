@@ -14,11 +14,16 @@
 Language: English | [中文](README-ZH.md)
 
 An **assets picker** which based on the WeChat's UI,
-using [`photo_manager`](https://pub.dev/packages/photo_manager) for asset implementation,
-[`extended_image`](https://pub.dev/packages/extended_image) for image preview,
-and [`provider`](https://pub.dev/packages/provider) to help control the state of the picker.
+using [`photo_manager`](https://pub.dev/packages/photo_manager)
+for asset implementation,
+[`extended_image`](https://pub.dev/packages/extended_image)
+for image preview,
+and [`provider`](https://pub.dev/packages/provider)
+to help control the state of the picker.
 
-To take a photo or a video for assets, please check the detailed usage in the example, and head over to
+To take a photo or a video for assets,
+please check the detailed usage in the example,
+and head over to
 [wechat_camera_picker](https://pub.dev/packages/wechat_camera_picker).
 
 Current WeChat version that UI based on: **8.x**
@@ -45,10 +50,8 @@ UI designs will be updated following the WeChat update in anytime.
 * [Frequently asked question](#frequently-asked-question-)
   * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photo_managercompiledebugkotlin)
   * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
-  * [How can I change the name of "Recent" or other entities name/properties?](#how-can-i-change-the-name-of-recent-or-other-entities-nameproperties)
   * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
   * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
-  * [Disable `ACCESS_MEDIA_LOCATION` permission](#disable-access_media_location-permission)
 
 ## Migration Guide ♻️
 
@@ -83,9 +86,13 @@ See [Migration Guide](guides/migration_guide.md).
 
 ## READ THIS FIRST ‼️
 
-Although the package provides assets selection, it still requires users to build their own methods
-to handle upload, image compress, etc. If you have any questions about how to build them,
-please run the example or refer to [photo_manager](https://github.com/CaiJingLong/flutter_photo_manager) for API usage.
+Although the package provides assets selection,
+it still requires users to build their own methods
+to handle upload, image compress, etc.
+If you have any questions about how to build them,
+please run the example or refer to
+[photo_manager](https://github.com/CaiJingLong/flutter_photo_manager)
+for API usages.
 
 ## Preparing for use 🍭
 
@@ -107,9 +114,11 @@ dependencies:
   wechat_assets_picker: ^latest_version
 ```
 
-The latest **stable** version is: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+The latest **stable** version is:
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 
-The latest **dev** version is: [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+The latest **dev** version is:
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 
 Then import the package in your code:
 ```dart
@@ -118,9 +127,13 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-Required permissions: `INTERNET`, `READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`.
-If you don't need the `ACCESS_MEDIA_LOCATION` permission,
-see [Disable `ACCESS_MEDIA_LOCATION` permission](#disable-access_media_location-permission).
+Required permissions: `READ_EXTERNAL_STORAGE` (declared already).
+Optional permissions: `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`.
+
+If you're targeting Android SDK 29+,
+you must declare `requestLegacyExternalStorage`
+at the `<application>` node of `AndroidManifest.xml`.
+See the example for the detailed usage.
 
 If you found some warning logs with `Glide` appearing,
 then the main project needs an implementation of `AppGlideModule`.
@@ -128,7 +141,8 @@ See [Generated API](https://sjudd.github.io/glide/doc/generatedapi.html).
 
 ### iOS
 
-1. Platform version has to be at least *9.0*. Modify `ios/Podfile` and update accordingly.
+1. Platform version has to be at least *9.0*.
+   Modify `ios/Podfile` and update accordingly.
 ```ruby
 platform :ios, '9.0'
 ```
@@ -146,12 +160,14 @@ platform :ios, '9.0'
 
 ### macOS
 
-1. Platform version has to be at least *10.15*. Modify `macos/Podfile` and update accordingly.
+1. Platform version has to be at least *10.15*.
+   Modify `macos/Podfile` and update accordingly.
 ```ruby
 platform :osx, '10.15'
 ```
 
-2. Set the minimum deployment target to *10.15*. Use XCode to open `macos/Runner.xcworkspace` .
+2. Set the minimum deployment target to *10.15*.
+   Use XCode to open `macos/Runner.xcworkspace` .
 
 3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
 
@@ -205,12 +221,15 @@ Fields in `AssetPickerConfig`:
 
 ### Detailed usage
 
-TL;DR, we've put multiple common usage with the packages into the [example](example).
+TL;DR, we've put multiple common usage
+with the packages in the [example](example).
 
 ### Using custom delegate
 
-You can use the `keepScrollOffset` feature only with the `pickAssetsWithDelegate` method.
-See the `Keep scroll offset` pick method in the example for how to implement it.
+You can use the `keepScrollOffset` feature
+only with the `pickAssetsWithDelegate` method.
+See the `Keep scroll offset` pick method
+in the example for how to implement it.
 
 For more details about custom delegates,
 head over to [`example/lib/customs`](example/lib/customs).
@@ -218,7 +237,8 @@ head over to [`example/lib/customs`](example/lib/customs).
 #### Regular picking
 
 You can both found `List<PickMethod> pickMethods` in
-`example/lib/pages/multi_assets_page.dart` and `example/lib/pages/single_assets_page.dart`,
+`example/lib/pages/multi_assets_page.dart`
+and `example/lib/pages/single_assets_page.dart`,
 which provide methods in multiple picking and single picking mode.
 Assets will be stored temporary and displayed at the below of the page.
 
@@ -246,30 +266,38 @@ for more details.
 
 ### Display selected assets
 
-The `AssetEntityImageProvider` can display the thumb image of _images & videos_, and the original data of _image_.
-Use it like a common `ImageProvider`.
+The `AssetImage` and `AssetEntityImageProvider` can display the thumb image
+of _images & videos_, and the original data of _image_.
+Use it like a common `Image` and `ImageProvider`.
 
 ```dart
-Image(image: AssetEntityImageProvider(asset, isOriginal: false))
-```
+/// AssetEntityImage
+AssetEntityImage(asset, isOriginal: false);
 
-Check the example for how it displays.
+/// AssetEntityImageProvider
+Image(image: AssetEntityImageProvider(asset, isOriginal: false));
+```
 
 ### Register assets change observe callback
 
 ```dart
-AssetPicker.registerObserve(); // Register callback.
-```
-```dart
-AssetPicker.unregisterObserve(); // Unregister callback.
+/// Register callback.
+AssetPicker.registerObserve();
+
+/// Unregister callback.
+AssetPicker.unregisterObserve();
 ```
 
 ### Customize with your own type or UI
 
-`AssetPickerBuilderDelegate`, `AssetPickerViewerBuilderDelegate`, `AssetPickerProvider` and
-`AssetPickerViewerProvider` are all exposed and overridable. You can extend them and use your own
-type with generic type `<A: Asset, P: Path>`, then implement abstract methods. See the `Custom` page
-in the example which has an implementation based on `<File, Directory>` types.
+`AssetPickerBuilderDelegate`, `AssetPickerViewerBuilderDelegate`,
+`AssetPickerProvider` and `AssetPickerViewerProvider`
+are all exposed and overridable.
+You can extend them and use your own
+type with generic type `<A: Asset, P: Path>`,
+then implement abstract methods. See the `Custom` page
+in the example which has an implementation
+based on `<File, Directory>` types.
 
 ## Frequently asked question ❔
 
@@ -299,7 +327,8 @@ final String originPath = originFile.path;
 ### Create `AssetEntity` from `File` or `Uint8List` (rawData)
 
 In order to combine this package with camera shooting or something related,
-there's a solution about how to create an `AssetEntity` with `File` or `Uint8List` object.
+there's a solution about how to create an `AssetEntity`
+with `File` or `Uint8List` object.
 
 ```dart
 final File file = your_file; // Your `File` object
@@ -332,24 +361,11 @@ ref: [flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flut
 W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an annotationProcessor compile dependency on com.github.bumptech.glide:compiler in you application ana a @GlideModule annotated AppGlideModule implementation or LibraryGlideModules will be silently ignored.
 ```
 
-`Glide` needs annotation to keep singleton, prevent conflict between instances and versions,
+`Glide` needs annotation to keep singleton,
+prevent conflict between instances and versions,
 so while the photo manager uses `Glide` to implement image features,
 the project which import this should define its own `AppGlideModule`.
 See [Android](#android) section for implementation.
-
-### Disable `ACCESS_MEDIA_LOCATION` permission
-
-Android contains `ACCESS_MEDIA_LOCATION` permission by default.
-This permission is introduced in Android Q.
-If your app doesn't need the permission,
-you need to add the following node to the `AndroidManifest.xml` in your app:
-
-```xml
-<uses-permission
-  android:name="android.permission.ACCESS_MEDIA_LOCATION"
-  tools:node="remove"
-  />
-```
 
 ## Contributors ✨
 
@@ -396,7 +412,8 @@ Contributions of any kind welcomed!!
 > Every aspect of IntelliJ IDEA has been designed to maximize developer productivity.
 Together, intelligent coding assistance and ergonomic design make development not only productive but also enjoyable.
 
-Thanks to [JetBrains](https://www.jetbrains.com/?from=fluttercandies) for allocating free open-source licenses for IDEs
+Thanks to [JetBrains](https://www.jetbrains.com/?from=fluttercandies)
+for allocating free open-source licenses for IDEs
 such as [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies).
 
 [<img src="https://github.com/fluttercandies/flutter_wechat_assets_picker/raw/main/.github/jetbrains-variant.png" width="200"/>](https://www.jetbrains.com/?from=fluttercandies)
