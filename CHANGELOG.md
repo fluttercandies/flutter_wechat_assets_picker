@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.1.1
+
+### Fixes
+
+- Fix `selectPredicate` with the viewer. (#307)
+
 ## 7.1.0
 
 ### New features
