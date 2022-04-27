@@ -16,3 +16,7 @@ dependencies:
   photo_manager: ^2.0.7
   provider: ^6.0.1
   video_player: ^2.2.14
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
