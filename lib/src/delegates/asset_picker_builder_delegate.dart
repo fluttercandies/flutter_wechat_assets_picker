@@ -1705,7 +1705,7 @@ class DefaultAssetPickerBuilderDelegate
                     child: ScaleText(
                       isPermissionLimited && p.isAll
                           ? textDelegate.accessiblePathName
-                          : p.name,
+                          : pathNameBuilder?.call(p) ?? p.name,
                       style: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.normal,
@@ -1715,7 +1715,7 @@ class DefaultAssetPickerBuilderDelegate
                       maxScaleFactor: 1.2,
                       semanticsLabel: isPermissionLimited && p.isAll
                           ? semanticsTextDelegate.accessiblePathName
-                          : p.name,
+                          : pathNameBuilder?.call(p) ?? p.name,
                     ),
                   ),
                 w!,
