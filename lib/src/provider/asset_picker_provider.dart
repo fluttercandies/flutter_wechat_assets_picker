@@ -249,6 +249,24 @@ class DefaultAssetPickerProvider
     });
   }
 
+  @visibleForTesting
+  DefaultAssetPickerProvider.forTest({
+    List<AssetEntity>? selectedAssets,
+    this.requestType = RequestType.image,
+    this.sortPathDelegate = SortPathDelegate.common,
+    this.filterOptions,
+    int maxAssets = 9,
+    int pageSize = 80,
+    ThumbnailSize pathThumbnailSize = const ThumbnailSize.square(80),
+  }) : super(
+          maxAssets: maxAssets,
+          pageSize: pageSize,
+          pathThumbnailSize: pathThumbnailSize,
+          selectedAssets: selectedAssets,
+        ) {
+    Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
+  }
+
   /// Request assets type.
   /// 请求的资源类型
   final RequestType requestType;
