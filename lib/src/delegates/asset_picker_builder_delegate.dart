@@ -810,10 +810,33 @@ class DefaultAssetPickerBuilderDelegate
       return;
     }
     final AssetPathEntity? _currentPathEntity = provider.currentPath;
+    if (call.arguments is Map) {
+      final Map<dynamic, dynamic> arguments =
+          call.arguments as Map<dynamic, dynamic>;
+      if (arguments['newCount'] == 0) {
+        provider
+          ..currentAssets = <AssetEntity>[]
+          ..currentPath = null
+          ..hasAssetsToDisplay = false
+          ..isAssetsEmpty = true;
+        return;
+      }
+      if (_currentPathEntity == null) {
+        await provider.getPaths();
+      }
+    }
     if (_currentPathEntity != null) {
-      provider.currentPath = await _currentPathEntity.obtainForNewProperties();
-      await provider.switchPath(_currentPathEntity);
+      final AssetPathEntity newPath =
+          await _currentPathEntity.obtainForNewProperties();
+      provider
+        ..currentPath = newPath
+        ..hasAssetsToDisplay = newPath.assetCount != 0
+        ..isAssetsEmpty = newPath.assetCount == 0
+        ..totalAssetsCount = newPath.assetCount;
       isSwitchingPath.value = false;
+      if (newPath.isAll) {
+        await provider.getAssetsFromCurrentPath();
+      }
     }
   }
 
