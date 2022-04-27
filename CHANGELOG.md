@@ -1,5 +1,17 @@
 # Changelog
 
+## 7.1.2
+
+### Fixes
+
+- Fix context usages for inherited theme data.
+- Fix unlinked path name builder.
+
+### Improvements
+
+- Update how paths get update. (#312)
+- Expose `DefaultAssetPickerProvider.forTest`.
+
 ## 7.1.1
 
 ### Fixes
