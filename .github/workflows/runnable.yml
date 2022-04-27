@@ -21,6 +21,7 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: flutter analyze lib example/lib
+      - run: flutter test
 
   test_iOS:
     needs: analyze
