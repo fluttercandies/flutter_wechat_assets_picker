@@ -810,10 +810,33 @@ class DefaultAssetPickerBuilderDelegate
       return;
     }
     final AssetPathEntity? _currentPathEntity = provider.currentPath;
+    if (call.arguments is Map) {
+      final Map<dynamic, dynamic> arguments =
+          call.arguments as Map<dynamic, dynamic>;
+      if (arguments['newCount'] == 0) {
+        provider
+          ..currentAssets = <AssetEntity>[]
+          ..currentPath = null
+          ..hasAssetsToDisplay = false
+          ..isAssetsEmpty = true;
+        return;
+      }
+      if (_currentPathEntity == null) {
+        await provider.getPaths();
+      }
+    }
     if (_currentPathEntity != null) {
-      provider.currentPath = await _currentPathEntity.obtainForNewProperties();
-      await provider.switchPath(_currentPathEntity);
+      final AssetPathEntity newPath =
+          await _currentPathEntity.obtainForNewProperties();
+      provider
+        ..currentPath = newPath
+        ..hasAssetsToDisplay = newPath.assetCount != 0
+        ..isAssetsEmpty = newPath.assetCount == 0
+        ..totalAssetsCount = newPath.assetCount;
       isSwitchingPath.value = false;
+      if (newPath.isAll) {
+        await provider.getAssetsFromCurrentPath();
+      }
     }
   }
 
@@ -1375,7 +1398,7 @@ class DefaultAssetPickerBuilderDelegate
     /// Return actual length if current path is all.
     /// 如果当前目录是全部内容，则返回实际的内容数量。
     final int _length = assets.length + placeholderCount;
-    if (!currentPathEntity!.isAll) {
+    if (currentPathEntity?.isAll != true) {
       return _length;
     }
     switch (specialItemPosition) {
@@ -1679,10 +1702,34 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget pathEntitySelector(BuildContext context) {
+    Widget _text(
+      BuildContext context,
+      String text,
+      String semanticsText,
+    ) {
+      return Flexible(
+        child: ScaleText(
+          text,
+          style: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.normal,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.fade,
+          maxScaleFactor: 1.2,
+          semanticsLabel: semanticsText,
+        ),
+      );
+    }
+
     return UnconstrainedBox(
       child: GestureDetector(
         onTap: () {
           Feedback.forTap(context);
+          if (isPermissionLimited && provider.isAssetsEmpty) {
+            PhotoManager.presentLimited();
+            return;
+          }
           isSwitchingPath.value = !isSwitchingPath.value;
         },
         child: Container(
@@ -1700,23 +1747,21 @@ class DefaultAssetPickerBuilderDelegate
             builder: (_, AssetPathEntity? p, Widget? w) => Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                if (p == null && isPermissionLimited)
+                  _text(
+                    context,
+                    textDelegate.changeAccessibleLimitedAssets,
+                    semanticsTextDelegate.changeAccessibleLimitedAssets,
+                  ),
                 if (p != null)
-                  Flexible(
-                    child: ScaleText(
-                      isPermissionLimited && p.isAll
-                          ? textDelegate.accessiblePathName
-                          : pathNameBuilder?.call(p) ?? p.name,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.normal,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      maxScaleFactor: 1.2,
-                      semanticsLabel: isPermissionLimited && p.isAll
-                          ? semanticsTextDelegate.accessiblePathName
-                          : pathNameBuilder?.call(p) ?? p.name,
-                    ),
+                  _text(
+                    context,
+                    isPermissionLimited && p.isAll
+                        ? textDelegate.accessiblePathName
+                        : pathNameBuilder?.call(p) ?? p.name,
+                    isPermissionLimited && p.isAll
+                        ? semanticsTextDelegate.accessiblePathName
+                        : pathNameBuilder?.call(p) ?? p.name,
                   ),
                 w!,
               ],

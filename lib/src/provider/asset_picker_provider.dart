@@ -155,7 +155,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   Path? _currentPath;
 
   set currentPath(Path? value) {
-    if (value == null || value == _currentPath) {
+    if (value == _currentPath) {
       return;
     }
     _currentPath = value;
@@ -283,6 +283,30 @@ class DefaultAssetPickerProvider
   final FilterOptionGroup? filterOptions;
 
   @override
+  set currentPath(AssetPathEntity? value) {
+    if (value == _currentPath) {
+      return;
+    }
+    _currentPath = value;
+    if (value != null &&
+        _pathsList.keys.any((AssetPathEntity p) => p.id == value.id)) {
+      final AssetPathEntity previous = _pathsList.keys.singleWhere(
+        (AssetPathEntity p) => p.id == value.id,
+      );
+      final int index = _pathsList.keys.toList().indexOf(previous);
+      final List<MapEntry<AssetPathEntity, Uint8List?>> newEntries =
+          _pathsList.entries.toList()
+            ..removeAt(index)
+            ..insert(index, MapEntry<AssetPathEntity, Uint8List?>(value, null));
+      _pathsList
+        ..clear()
+        ..addEntries(newEntries);
+      getThumbnailFromPath(value);
+    }
+    notifyListeners();
+  }
+
+  @override
   Future<void> getPaths() async {
     // Initial base options.
     // Enable need title for audios and image to get proper display.
@@ -314,12 +338,7 @@ class DefaultAssetPickerProvider
     for (final AssetPathEntity pathEntity in _list) {
       // Use sync method to avoid unnecessary wait.
       _pathsList[pathEntity] = null;
-      if (requestType != RequestType.audio) {
-        getThumbnailFromPath(pathEntity).then((Uint8List? data) {
-          _pathsList[pathEntity] = data;
-          notifyListeners();
-        });
-      }
+      getThumbnailFromPath(pathEntity);
     }
 
     // Set first path entity as current path entity.
@@ -402,6 +421,9 @@ class DefaultAssetPickerProvider
         return true;
       }(),
     );
+    if (requestType == RequestType.audio) {
+      return null;
+    }
     final List<AssetEntity> assets = await path.getAssetListRange(
       start: 0,
       end: 1,
@@ -417,6 +439,8 @@ class DefaultAssetPickerProvider
     final Uint8List? assetData = await asset.thumbnailDataWithSize(
       pathThumbnailSize,
     );
+    _pathsList[path] = assetData;
+    notifyListeners();
     return assetData;
   }
 
@@ -424,7 +448,6 @@ class DefaultAssetPickerProvider
   /// 从当前已选路径获取资源列表
   Future<void> getAssetsFromCurrentPath() async {
     if (_pathsList.isNotEmpty) {
-      _currentPath = _pathsList.keys.elementAt(0);
       totalAssetsCount = currentPath!.assetCount;
       await getAssetsFromPath(0, currentPath!);
     } else {
