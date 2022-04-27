@@ -2175,29 +2175,27 @@ class DefaultAssetPickerBuilderDelegate
         }
       });
     }
-    return CNP<DefaultAssetPickerProvider>.value(
-      value: provider,
-      builder: (BuildContext context, _) {
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: overlayStyle,
-          child: Theme(
-            data: theme,
-            child: Material(
-              color: theme.canvasColor,
-              child: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  if (isAppleOS)
-                    appleOSLayout(context)
-                  else
-                    androidLayout(context),
-                  if (Platform.isIOS) iOSPermissionOverlay(context),
-                ],
-              ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlayStyle,
+      child: Theme(
+        data: theme,
+        child: CNP<DefaultAssetPickerProvider>.value(
+          value: provider,
+          builder: (BuildContext context, _) => Material(
+            color: theme.canvasColor,
+            child: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                if (isAppleOS)
+                  appleOSLayout(context)
+                else
+                  androidLayout(context),
+                if (Platform.isIOS) iOSPermissionOverlay(context),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
