@@ -87,11 +87,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   final ThemeData? pickerTheme;
 
   /// Allow users set a special item in the picker with several positions.
-  /// 允许用户在选择器中添加一个自定义item，并指定位置
+  /// 允许用户在选择器中添加一个自定义 item，并指定位置
   final SpecialItemPosition specialItemPosition;
 
   /// The widget builder for the the special item.
-  /// 自定义item的构造方法
+  /// 自定义 item 的构造方法
   final SpecialItemBuilder<Path>? specialItemBuilder;
 
   /// Indicates the loading status for the builder.
@@ -153,6 +153,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Whether the picker is under the single asset mode.
   /// 选择器是否为单选模式
   bool get isSingleAssetMode;
+
+  /// Whether the delegate should build the special item.
+  /// 是否需要构建自定义 item
+  bool get shouldBuildSpecialItem =>
+      specialItemPosition != SpecialItemPosition.none &&
+      specialItemBuilder != null;
 
   /// Space between assets item widget.
   /// 资源部件之间的间隔
@@ -931,15 +937,9 @@ class DefaultAssetPickerBuilderDelegate
     return AssetPickerAppBarWrapper(
       appBar: appBar(context),
       body: Consumer<DefaultAssetPickerProvider>(
-        builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
-          final Widget? _specialItem = specialItemBuilder?.call(
-            context,
-            p.currentPath,
-            p.currentAssets.length,
-          );
-          final bool shouldDisplayAssets = p.hasAssetsToDisplay ||
-              (_specialItem != null &&
-                  specialItemPosition != SpecialItemPosition.none);
+        builder: (BuildContext context, DefaultAssetPickerProvider p, _) {
+          final bool shouldDisplayAssets =
+              p.hasAssetsToDisplay || shouldBuildSpecialItem;
           return AnimatedSwitcher(
             duration: switchingPathDuration,
             child: shouldDisplayAssets
@@ -995,14 +995,8 @@ class DefaultAssetPickerBuilderDelegate
             child: Consumer<DefaultAssetPickerProvider>(
               builder: (_, DefaultAssetPickerProvider p, __) {
                 final Widget _child;
-                final Widget? _specialItem = specialItemBuilder?.call(
-                  context,
-                  p.currentPath,
-                  p.currentAssets.length,
-                );
-                final bool shouldDisplayAssets = p.hasAssetsToDisplay ||
-                    (_specialItem != null &&
-                        specialItemPosition != SpecialItemPosition.none);
+                final bool shouldDisplayAssets =
+                    p.hasAssetsToDisplay || shouldBuildSpecialItem;
                 if (shouldDisplayAssets) {
                   _child = Stack(
                     children: <Widget>[
