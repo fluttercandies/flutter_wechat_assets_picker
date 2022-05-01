@@ -1053,6 +1053,10 @@ class DefaultAssetPickerBuilderDelegate
         } else {
           _specialItem = null;
         }
+        if (totalCount == 0 && _specialItem == null) {
+          return loadingIndicatorBuilder?.call(context, true) ??
+              Center(child: emptyIndicator(context));
+        }
         // Then we use the [totalCount] to calculate placeholders we need.
         final int placeholderCount;
         if (effectiveShouldRevertGrid && totalCount % gridCount != 0) {
@@ -1537,18 +1541,22 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
+  Widget emptyIndicator(BuildContext context) {
+    return ScaleText(
+      textDelegate.emptyList,
+      maxScaleFactor: 1.5,
+      semanticsLabel: semanticsTextDelegate.emptyList,
+    );
+  }
+
   @override
   Widget loadingIndicator(BuildContext context) {
     return Center(
       child: Selector<DefaultAssetPickerProvider, bool>(
         selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
-        builder: (_, bool isAssetsEmpty, __) {
+        builder: (BuildContext context, bool isAssetsEmpty, __) {
           if (isAssetsEmpty) {
-            return ScaleText(
-              textDelegate.emptyList,
-              maxScaleFactor: 1.5,
-              semanticsLabel: semanticsTextDelegate.emptyList,
-            );
+            return emptyIndicator(context);
           }
           return PlatformProgressIndicator(
             color: theme.iconTheme.color,
