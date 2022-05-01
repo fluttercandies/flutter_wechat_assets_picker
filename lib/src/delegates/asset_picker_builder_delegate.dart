@@ -1036,13 +1036,22 @@ class DefaultAssetPickerBuilderDelegate
   Widget assetsGridBuilder(BuildContext context) {
     return Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
-      builder: (_, AssetPathEntity? path, __) {
+      builder: (BuildContext context, AssetPathEntity? path, __) {
         // First, we need the count of the assets.
         int totalCount = path?.assetCount ?? 0;
+        final Widget? _specialItem;
         // If user chose a special item's position, add 1 count.
-        if (specialItemPosition != SpecialItemPosition.none &&
-            path?.isAll == true) {
-          totalCount += 1;
+        if (specialItemPosition != SpecialItemPosition.none) {
+          _specialItem = specialItemBuilder?.call(
+            context,
+            path,
+            totalCount,
+          );
+          if (_specialItem != null) {
+            totalCount += 1;
+          }
+        } else {
+          _specialItem = null;
         }
         // Then we use the [totalCount] to calculate placeholders we need.
         final int placeholderCount;
@@ -1062,11 +1071,11 @@ class DefaultAssetPickerBuilderDelegate
         final double dividedSpacing = itemSpacing / gridCount;
         final double topPadding = context.topPadding + kToolbarHeight;
 
-        Widget _sliverGrid(BuildContext ctx, List<AssetEntity> assets) {
+        Widget _sliverGrid(BuildContext context, List<AssetEntity> assets) {
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (_, int index) => Builder(
-                builder: (BuildContext c) {
+                builder: (BuildContext context) {
                   if (effectiveShouldRevertGrid) {
                     if (index < placeholderCount) {
                       return const SizedBox.shrink();
@@ -1076,15 +1085,21 @@ class DefaultAssetPickerBuilderDelegate
                   return MergeSemantics(
                     child: Directionality(
                       textDirection: Directionality.of(context),
-                      child: assetGridItemBuilder(c, index, assets),
+                      child: assetGridItemBuilder(
+                        context,
+                        index,
+                        assets,
+                        specialItem: _specialItem,
+                      ),
                     ),
                   );
                 },
               ),
               childCount: assetsGridItemCount(
-                context: ctx,
+                context: context,
                 assets: assets,
                 placeholderCount: placeholderCount,
+                specialItem: _specialItem,
               ),
               findChildIndexCallback: (Key? key) {
                 if (key is ValueKey<String>) {
@@ -1175,8 +1190,6 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   /// There are several conditions within this builder:
-  ///  * Return [specialItemBuilder] while the current path is all and
-  ///    [specialItemPosition] is not equal to [SpecialItemPosition.none].
   ///  * Return item builder according to the asset's type.
   ///    * [AssetType.audio] -> [audioItemBuilder]
   ///    * [AssetType.image], [AssetType.video] -> [imageAndVideoItemBuilder]
@@ -1184,8 +1197,6 @@ class DefaultAssetPickerBuilderDelegate
   ///    backwards.
   ///
   /// 资源构建有几个条件：
-  ///  * 当前路径是全部资源且 [specialItemPosition] 不等于
-  ///    [SpecialItemPosition.none] 时，将会通过 [specialItemBuilder] 构建内容。
   ///  * 根据资源类型返回对应类型的构建：
   ///    * [AssetType.audio] -> [audioItemBuilder] 音频类型
   ///    * [AssetType.image], [AssetType.video] -> [imageAndVideoItemBuilder]
@@ -1195,24 +1206,14 @@ class DefaultAssetPickerBuilderDelegate
   Widget assetGridItemBuilder(
     BuildContext context,
     int index,
-    List<AssetEntity> currentAssets,
-  ) {
+    List<AssetEntity> currentAssets, {
+    Widget? specialItem,
+  }) {
     final int _length = currentAssets.length;
     final AssetPathEntity? currentPathEntity =
         context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
       (DefaultAssetPickerProvider p) => p.currentPath,
     );
-
-    final Widget? specialItem;
-    if (specialItemPosition == SpecialItemPosition.none) {
-      specialItem = null;
-    } else {
-      specialItem = specialItemBuilder?.call(
-        context,
-        currentPathEntity,
-        _length,
-      );
-    }
 
     if (specialItem != null) {
       if ((index == 0 && specialItemPosition == SpecialItemPosition.prepend) ||
@@ -1230,23 +1231,14 @@ class DefaultAssetPickerBuilderDelegate
       currentIndex = index;
     }
 
-    if (specialItemPosition != SpecialItemPosition.none) {
-      final Widget? specialItem = specialItemBuilder?.call(
-        context,
-        currentPathEntity,
-        _length,
-      );
-      if (specialItem != null) {}
-    }
-
     if (currentPathEntity == null) {
       return const SizedBox.shrink();
     }
 
-    if (index == _length - gridCount * 3 &&
-        context.select<DefaultAssetPickerProvider, bool>(
-          (DefaultAssetPickerProvider p) => p.hasMoreToLoad,
-        )) {
+    final bool hasMoreToLoad = context.select<DefaultAssetPickerProvider, bool>(
+      (DefaultAssetPickerProvider p) => p.hasMoreToLoad,
+    );
+    if (index == _length - gridCount * 3 && hasMoreToLoad) {
       context.read<DefaultAssetPickerProvider>().loadMoreAssets();
     }
 
@@ -1378,20 +1370,21 @@ class DefaultAssetPickerBuilderDelegate
     required BuildContext context,
     required List<AssetEntity> assets,
     int placeholderCount = 0,
+    Widget? specialItem,
   }) {
     final AssetPathEntity? currentPathEntity =
         context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
       (DefaultAssetPickerProvider p) => p.currentPath,
     );
+    final int _length = assets.length + placeholderCount;
 
-    if (currentPathEntity == null &&
-        specialItemPosition != SpecialItemPosition.none) {
-      return 1;
+    // Return 1 if the [specialItem] build something.
+    if (currentPathEntity == null && specialItem != null) {
+      return placeholderCount + 1;
     }
 
-    /// Return actual length if current path is all.
-    /// 如果当前目录是全部内容，则返回实际的内容数量。
-    final int _length = assets.length + placeholderCount;
+    // Return actual length if the current path is all.
+    // 如果当前目录是全部内容，则返回实际的内容数量。
     if (currentPathEntity?.isAll != true) {
       return _length;
     }
@@ -1719,6 +1712,9 @@ class DefaultAssetPickerBuilderDelegate
     return UnconstrainedBox(
       child: GestureDetector(
         onTap: () {
+          if (provider.currentPath == null) {
+            return;
+          }
           Feedback.forTap(context);
           if (isPermissionLimited && provider.isAssetsEmpty) {
             PhotoManager.presentLimited();
