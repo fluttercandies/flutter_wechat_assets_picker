@@ -1,12 +1,13 @@
-///
-/// [Author] Alex (https://github.com/Alex525)
-/// [Date] 2020/3/31 15:28
-///
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../delegates/sort_path_delegate.dart';

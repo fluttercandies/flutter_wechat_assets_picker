@@ -1,7 +1,7 @@
-///
-/// [Author] Alex (https://github.com/AlexV525)
-/// [Date] 2022/2/14 13:25
-///
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -173,8 +173,8 @@ class AssetPickerConfig {
   /// Whether the assets grid should revert.
   /// 判断资源网格是否需要倒序排列
   ///
-  /// [Null] means judging by [isAppleOS].
-  /// 使用 [Null] 即使用 [isAppleOS] 进行判断。
+  /// [Null] means judging by Apple OS.
+  /// 使用 [Null] 即使用是否为 Apple 系统进行判断。
   final bool? shouldRevertGrid;
 
   /// {@macro wechat_assets_picker.LimitedPermissionOverlayPredicate}

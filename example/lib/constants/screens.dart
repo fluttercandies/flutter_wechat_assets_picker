@@ -1,5 +1,5 @@
 ///
-/// [Author] Alex (https://github.com/AlexV525)
+/// @Author Alex (https://github.com/AlexV525)
 /// [Date] 2020/8/19 10:29
 ///
 import 'dart:ui' as ui;

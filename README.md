@@ -1,3 +1,7 @@
+<!-- Copyright 2019 The FlutterCandies author. All rights reserved.
+Use of this source code is governed by an Apache license
+that can be found in the LICENSE file. -->
+
 # Flutter WeChat Assets Picker
 
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)

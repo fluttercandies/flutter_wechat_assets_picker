@@ -1,7 +1,7 @@
-///
-/// [Author] Alex (https://github.com/Alex525)
-/// [Date] 2020/4/6 15:07
-///
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';

@@ -1,7 +1,7 @@
-///
-/// [Author] Alex (https://github.com/AlexV525)
-/// [Date] 2020-10-31 00:15
-///
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
@@ -77,9 +77,9 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// 用于更新当前正在浏览的资源页码的流控制器
   ///
   /// The main purpose is to narrow down build parts when index is changing,
-  /// prevent widely [setState] and causing other widgets rebuild.
+  /// prevent widely [State.setState] and causing other widgets rebuild.
   /// 使用 [StreamController] 的主要目的是缩小页码变化时构建组件的范围，
-  /// 防止滥用 [setState] 导致其他部件重新构建。
+  /// 防止滥用 [State.setState] 导致其他部件重新构建。
   final StreamController<int> pageStreamController =
       StreamController<int>.broadcast();
 
@@ -157,8 +157,8 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   AssetPickerTextDelegate get semanticsTextDelegate =>
       Singleton.textDelegate.semanticsTextDelegate;
 
-  /// Call when viewer is calling [initState].
-  /// 当预览器调用 [initState] 时注册 [State] 和 [TickerProvider]。
+  /// Call when viewer is calling [State.initState].
+  /// 当预览器调用 [State.initState] 时注册 [State] 和 [TickerProvider]。
   void initStateAndTicker(
     AssetPickerViewerState<Asset, Path> s,
     TickerProvider v,
@@ -321,7 +321,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     return loader;
   }
 
-  /// The item widget when [AssetEntity.thumbData] load failed.
+  /// The item widget when [AssetEntity.thumbnailData] load failed.
   /// 资源缩略数据加载失败时使用的部件
   Widget failedItemBuilder(BuildContext context) {
     return Center(

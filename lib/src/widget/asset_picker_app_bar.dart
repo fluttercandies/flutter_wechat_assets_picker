@@ -1,7 +1,7 @@
-///
-/// [Author] Alex (https://github.com/Alex525)
-/// [Date] 2019-11-19 10:06
-///
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -54,7 +54,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 是否会自动检测并添加返回按钮至头部
   final bool automaticallyImplyLeading;
 
-  /// Whether the [title] should be at the center of the [FixedAppBar].
+  /// Whether the [title] should be at the center.
   /// [title] 是否会在正中间
   final bool centerTitle;
 

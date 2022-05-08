@@ -1,5 +1,5 @@
 ///
-/// [Author] Alex (https://github.com/AlexV525)
+/// @Author Alex (https://github.com/AlexV525)
 /// [Date] 2021/5/10 16:56
 ///
 import 'package:flutter/widgets.dart';

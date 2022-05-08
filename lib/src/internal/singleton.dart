@@ -1,13 +1,13 @@
-///
-/// [Author] Alex (https://github.com/AlexV525)
-/// [Date] 2022/2/6 14:54
-///
-/// Define an inner static singleton for picker libraries.
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 import 'package:flutter/widgets.dart';
 
 import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
 
+/// Define an inner static singleton for picker libraries.
 class Singleton {
   const Singleton._();
 

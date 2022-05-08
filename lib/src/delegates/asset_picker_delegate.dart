@@ -1,7 +1,7 @@
-///
-/// [Author] Alex (https://github.com/AlexV525)
-/// [Date] 2022/05/05 11:25
-///
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -151,7 +151,7 @@ class AssetPickerDelegate {
   /// {@template wechat_assets_picker.delegates.AssetPickerDelegate.registerObserve}
   /// Register observe callback with assets changes.
   /// 注册资源（图库）变化的监听回调
-  /// @{endtemplate}
+  /// {@endtemplate}
   void registerObserve([ValueChanged<MethodCall>? callback]) {
     if (callback == null) {
       return;
@@ -167,7 +167,7 @@ class AssetPickerDelegate {
   /// {@template wechat_assets_picker.delegates.AssetPickerDelegate.unregisterObserve}
   /// Unregister the observation callback with assets changes.
   /// 取消注册资源（图库）变化的监听回调
-  /// @{endtemplate}
+  /// {@endtemplate}
   void unregisterObserve([ValueChanged<MethodCall>? callback]) {
     if (callback == null) {
       return;

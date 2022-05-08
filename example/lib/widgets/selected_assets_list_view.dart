@@ -1,5 +1,5 @@
 ///
-/// [Author] Alex (https://github.com/AlexV525)
+/// @Author Alex (https://github.com/AlexV525)
 /// [Date] 2021/7/13 10:51
 ///
 import 'package:flutter/material.dart';

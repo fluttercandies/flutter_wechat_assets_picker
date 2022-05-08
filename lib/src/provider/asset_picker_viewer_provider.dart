@@ -1,7 +1,7 @@
-///
-/// [Author] Alex (https://github.com/Alex525)
-/// [Date] 2020/3/31 15:37
-///
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 import 'package:flutter/material.dart';
 
 /// [ChangeNotifier] for assets picker viewer.
