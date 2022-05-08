@@ -14,20 +14,29 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - run: dart --version
-      - run: flutter --version
-      - run: flutter pub get
-      - run: flutter analyze lib example/lib
-      - run: flutter test
+      - name: Log Dart/Flutter versions
+        run: |
+          dart --version
+          flutter --version
+      - name: Prepare dependencies
+        run: flutter pub get
+      - name: Analyse the repo
+        run: flutter analyze lib example/lib
+      - name: Run tests
+        run: flutter test
+      - name: Generate docs
+        run: |
+          dart pub global activate dartdoc
+          dart pub global run dartdoc .
 
   test_iOS:
     needs: analyze
@@ -35,13 +44,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [ macos-latest ]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
       - run: dart --version
@@ -55,13 +64,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
-      - uses: subosito/flutter-action@v1
+      - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
       - run: dart --version

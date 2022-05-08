@@ -14,16 +14,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [ ubuntu-latest ]
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
+      - name: Checkout
+        uses: actions/checkout@v1
+      - uses: k-paxian/dart-package-publisher@v1.3
         with:
-          java-version: '11.x'
-      - uses: subosito/flutter-action@v1
-        with:
-          channel: 'stable'
-      - run: dart --version
-      - run: flutter --version
-      - run: flutter pub get
-      - run: flutter pub publish --dry-run
+          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
+          dryRunOnly: true
+          flutter: true
+          skipTests: true

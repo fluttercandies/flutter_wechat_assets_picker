@@ -2,16 +2,15 @@ name: "Issue Labeler"
 
 on:
   issues:
-    types: [opened]
+    types: [ opened ]
 
 jobs:
   label:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Auto label
-      uses: Renato66/auto-label@v2.1.2
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        ignore-comments: true
-        default-labels: '["await triage"]'
+      - name: Auto label
+        uses: Renato66/auto-label@v2.2.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          ignore-comments: true
+          default-labels: '["await triage"]'
