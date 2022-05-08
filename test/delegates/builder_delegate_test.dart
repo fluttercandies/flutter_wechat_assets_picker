@@ -9,7 +9,10 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 void main() {
   PhotoManager.withPlugin(TestPhotoManagerPlugin());
+  AssetPicker.setPickerDelegate(TestAssetPickerDelegate());
+
   final Finder _defaultButtonFinder = find.byType(TextButton);
+
   Widget _defaultApp({void Function(BuildContext)? onButtonPressed}) {
     return MaterialApp(
       home: Builder(
@@ -26,42 +29,15 @@ void main() {
   }
 
   testWidgets('PathNameBuilder called correctly', (WidgetTester tester) async {
-    final AssetPathEntity pathEntity = AssetPathEntity(
-      id: 'test',
-      name: 'pathEntity',
-    );
-    final PathNameBuilder<AssetPathEntity> pathNameBuilder =
-        (AssetPathEntity p) => 'testPathNameBuilder';
-    final AssetPickerConfig config = AssetPickerConfig(
-      pathNameBuilder: pathNameBuilder,
-    );
-    final DefaultAssetPickerProvider provider =
-        DefaultAssetPickerProvider.forTest(
-      maxAssets: config.maxAssets,
-      pageSize: config.pageSize,
-      pathThumbnailSize: config.pathThumbnailSize,
-      selectedAssets: config.selectedAssets,
-      requestType: config.requestType,
-      sortPathDelegate: config.sortPathDelegate,
-      filterOptions: config.filterOptions,
-    );
-    provider
-      ..currentAssets = <AssetEntity>[
-        const AssetEntity(id: 'test', typeInt: 0, width: 0, height: 0),
-      ]
-      ..currentPath = pathEntity
-      ..hasAssetsToDisplay = true
-      ..setPathThumbnail(pathEntity, null);
-    final DefaultAssetPickerBuilderDelegate delegate =
-        DefaultAssetPickerBuilderDelegate(
-      provider: provider,
-      initialPermission: PermissionState.authorized,
-      pathNameBuilder: pathNameBuilder,
-    );
     await tester.pumpWidget(
       _defaultApp(
         onButtonPressed: (BuildContext context) {
-          AssetPicker.pickAssetsWithDelegate(context, delegate: delegate);
+          AssetPicker.pickAssets(
+            context,
+            pickerConfig: AssetPickerConfig(
+              pathNameBuilder: (AssetPathEntity p) => 'testPathNameBuilder',
+            ),
+          );
         },
       ),
     );
@@ -79,5 +55,73 @@ class TestPhotoManagerPlugin extends PhotoManagerPlugin {
     PermisstionRequestOption requestOption,
   ) {
     return SynchronousFuture<PermissionState>(PermissionState.authorized);
+  }
+}
+
+class TestAssetPickerDelegate extends AssetPickerDelegate {
+  @override
+  Future<PermissionState> permissionCheck() async {
+    return SynchronousFuture<PermissionState>(PermissionState.authorized);
+  }
+
+  @override
+  Future<List<AssetEntity>?> pickAssets(
+    BuildContext context, {
+    AssetPickerConfig pickerConfig = const AssetPickerConfig(),
+    bool useRootNavigator = true,
+    AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
+  }) async {
+    final PermissionState _ps = await permissionCheck();
+    final AssetPathEntity pathEntity = AssetPathEntity(
+      id: 'test',
+      name: 'pathEntity',
+    );
+    final DefaultAssetPickerProvider provider =
+        DefaultAssetPickerProvider.forTest(
+      maxAssets: pickerConfig.maxAssets,
+      pageSize: pickerConfig.pageSize,
+      pathThumbnailSize: pickerConfig.pathThumbnailSize,
+      selectedAssets: pickerConfig.selectedAssets,
+      requestType: pickerConfig.requestType,
+      sortPathDelegate: pickerConfig.sortPathDelegate,
+      filterOptions: pickerConfig.filterOptions,
+    );
+    provider
+      ..currentAssets = <AssetEntity>[
+        const AssetEntity(id: 'test', typeInt: 0, width: 0, height: 0),
+      ]
+      ..currentPath = pathEntity
+      ..hasAssetsToDisplay = true
+      ..setPathThumbnail(pathEntity, null);
+    final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
+      builder: DefaultAssetPickerBuilderDelegate(
+        provider: provider,
+        initialPermission: _ps,
+        gridCount: pickerConfig.gridCount,
+        pickerTheme: pickerConfig.pickerTheme,
+        gridThumbnailSize: pickerConfig.gridThumbnailSize,
+        previewThumbnailSize: pickerConfig.previewThumbnailSize,
+        specialPickerType: pickerConfig.specialPickerType,
+        specialItemPosition: pickerConfig.specialItemPosition,
+        specialItemBuilder: pickerConfig.specialItemBuilder,
+        loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
+        selectPredicate: pickerConfig.selectPredicate,
+        shouldRevertGrid: pickerConfig.shouldRevertGrid,
+        limitedPermissionOverlayPredicate:
+            pickerConfig.limitedPermissionOverlayPredicate,
+        pathNameBuilder: pickerConfig.pathNameBuilder,
+        textDelegate: pickerConfig.textDelegate,
+        themeColor: pickerConfig.themeColor,
+        locale: Localizations.maybeLocaleOf(context),
+      ),
+    );
+    final List<AssetEntity>? result = await Navigator.of(
+      context,
+      rootNavigator: useRootNavigator,
+    ).push<List<AssetEntity>>(
+      pageRouteBuilder?.call(picker) ??
+          AssetPickerPageRoute<List<AssetEntity>>(builder: (_) => picker),
+    );
+    return result;
   }
 }
