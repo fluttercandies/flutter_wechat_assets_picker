@@ -17,18 +17,17 @@ that can be found in the LICENSE file. -->
 
 Language: English | [中文](README-ZH.md)
 
-An **assets picker** which based on the WeChat's UI,
-using [`photo_manager`](https://pub.dev/packages/photo_manager)
-for asset implementation,
-[`extended_image`](https://pub.dev/packages/extended_image)
+An **assets' picker** based on the WeChat's UI,
+using [photo_manager][photo_manager pub] for asset implementation,
+[extended_image][extended_image pub]
 for image preview,
-and [`provider`](https://pub.dev/packages/provider)
+and [provider][provider pub]
 to help control the state of the picker.
 
 To take a photo or a video for assets,
 please check the detailed usage in the example,
 and head over to
-[wechat_camera_picker](https://pub.dev/packages/wechat_camera_picker).
+[wechat_camera_picker][wechat_camera_picker pub].
 
 Current WeChat version that UI based on: **8.x**
 UI designs will be updated following the WeChat update in anytime.
@@ -59,7 +58,7 @@ UI designs will be updated following the WeChat update in anytime.
 
 ## Migration Guide ♻️
 
-See [Migration Guide](guides/migration_guide.md).
+See [Migration Guide][].
 
 ## Features ✨
 
@@ -90,13 +89,14 @@ See [Migration Guide](guides/migration_guide.md).
 
 ## READ THIS FIRST ‼️
 
-Although the package provides assets selection,
-it still requires users to build their own methods
-to handle upload, image compress, etc.
-If you have any questions about how to build them,
-please run the example or refer to
-[photo_manager](https://github.com/CaiJingLong/flutter_photo_manager)
-for API usages.
+The package works closely with the [photo_manager][photo_manager pub] plugin,
+and most behaviors are controlled by the plugin.
+When you have questions about related APIs and behaviors,
+check [photo_manager's API docs][] for more details.
+
+Most usages are detailed covered by the example.
+Please walk through the example carefully
+before you have any questions.
 
 ## Preparing for use 🍭
 
@@ -112,7 +112,8 @@ please use `dependency_overrides` to fix it.
 
 ### Flutter
 
-Add `wechat_assets_picker` to `pubspec.yaml` dependencies.
+Run `flutter pub add wechat_assets_picker`,
+or add `wechat_assets_picker` to `pubspec.yaml` dependencies manually.
 ```yaml
 dependencies:
   wechat_assets_picker: ^latest_version
@@ -141,7 +142,7 @@ See the example for the detailed usage.
 
 If you found some warning logs with `Glide` appearing,
 then the main project needs an implementation of `AppGlideModule`.
-See [Generated API](https://sjudd.github.io/glide/doc/generatedapi.html).
+See [Generated API docs][].
 
 ### iOS
 
@@ -152,7 +153,7 @@ platform :ios, '9.0'
 ```
 
 2. Add the following content to `info.plist`.
-```
+```plist
 <key>NSAppTransportSecurity</key>
 <dict>
 	<key>NSAllowsArbitraryLoads</key>
@@ -169,14 +170,10 @@ platform :ios, '9.0'
 ```ruby
 platform :osx, '10.15'
 ```
-
 2. Set the minimum deployment target to *10.15*.
    Use XCode to open `macos/Runner.xcworkspace` .
-
 3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
-
 4. ![step 2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67vd3f2j30jv04zgm5.jpg)
-
 5. Follow the iOS instructions and modify `info.plist` accordingly.
 
 ## Usage 📖
@@ -265,8 +262,7 @@ We've defined a picker that integrates with `Directory` and `File`
 and a picker with multiple tabs switching.
 You can submit PRs to create your own implementation
 if you found your implementation might be useful for others.
-See [Contribute custom implementations][lib/customs/CONTRIBUTING.md]
-for more details.
+See [Contribute custom implementations][] for more details.
 
 ### Display selected assets
 
@@ -308,8 +304,6 @@ based on `<File, Directory>` types.
 ### Execution failed for task ':photo_manager:compileDebugKotlin'
 
 See [photo_manager#561][] for more details.
-
-[photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
 
 ### How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?
 
@@ -354,10 +348,12 @@ use `File` for operations as much as possible.**
 A deletion operation might call system popups with some OS:
 
 ```dart
-final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+final List<String> result = await PhotoManager.editor.deleteWithIds(
+  <String>[entity.id],
+);
 ```
 
-ref: [flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item)
+ref: [photo_manager#insert-new-item][]
 
 ### Glide warning 'Failed to find GeneratedAppGlideModule'
 
@@ -421,3 +417,15 @@ for allocating free open-source licenses for IDEs
 such as [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies).
 
 [<img src="https://github.com/fluttercandies/flutter_wechat_assets_picker/raw/main/.github/jetbrains-variant.png" width="200"/>](https://www.jetbrains.com/?from=fluttercandies)
+
+
+[photo_manager pub]: https://pub.dev/packages/photo_manager
+[extended_image pub]: https://pub.dev/packages/extended_image
+[provider pub]: https://pub.dev/packages/provider
+[wechat_camera_picker pub]: https://pub.dev/packages/wechat_camera_picker
+[Migration Guide]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/guides/migration_guide.md
+[photo_manager's API docs]: https://pub.dev/documentation/photo_manager/latest/
+[Generated API docs]: https://sjudd.github.io/glide/doc/generatedapi.html
+[Contribute custom implementations]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/example/lib/customs/CONTRIBUTING.md
+[photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
+[photo_manager#insert-new-item]: https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item

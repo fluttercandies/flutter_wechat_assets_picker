@@ -18,12 +18,12 @@ that can be found in the LICENSE file. -->
 Language: [English](README.md) | 中文
 
 基于微信 UI 的 **资源选择器**，
-基于 [`photo_manager`](https://pub.flutter-io.cn/packages/photo_manager) 实现资源相关功能，
-[`extended_image`](https://pub.flutter-io.cn/packages/extended_image) 用于查看图片，
-[`provider`](https://pub.flutter-io.cn/packages/provider) 用于协助管理选择器的状态。
+基于 [photo_manager][photo_manager pub] 实现资源相关功能，
+[extended_image][extended_image pub] 用于查看图片，
+[provider][provider pub] 用于协助管理选择器的状态。
 
 需要拍照及录制视频，请查看示例的详细用法，
-并前往 [wechat_camera_picker](https://pub.flutter-io.cn/packages/wechat_camera_picker) 。
+并前往 [wechat_camera_picker][wechat_camera_picker pub]。
 
 当前的界面设计基于的微信版本：**8.x**
 界面更新将在微信版本更新后随时进行跟进。
@@ -58,7 +58,7 @@ Language: [English](README.md) | 中文
 
 ## 迁移指南 ♻️
 
-查看 [迁移指南](guides/migration_guide.md).
+查看 [迁移指南][]。
 
 ## 特性 ✨
 
@@ -89,10 +89,13 @@ Language: [English](README.md) | 中文
 
 ## 开始前的注意事项 ‼️
 
-尽管该库提供了资源的选择，其仍然要求使用者构建自己的方法来处理显示、上传等操作。
-如果你在使用该库的过程对某些方法或API有疑问，请运行示例并查看
-[photo_manager](https://github.com/CaiJingLong/flutter_photo_manager)
-对相关方法的使用说明。
+该库与 [photo_manager][photo_manager pub] 有强关联性，
+大部分方法的行为是由 photo_manager 进行控制的。
+当你有与相关的 API 和行为的疑问时，你可以查看
+[photo_manager API 文档][] 了解更多细节。
+
+众多使用场景都已包含在示例中。
+在你提出任何问题之前，请仔细并完整地查看和使用示例。
 
 ## 准备工作 🍭
 
@@ -108,7 +111,8 @@ Language: [English](README.md) | 中文
 
 ### Flutter
 
-将 `wechat_assets_picker` 添加至 `pubspec.yaml` 引用。
+执行 `flutter pub add wechat_assets_picker`，
+或者将 `wechat_assets_picker` 手动添加至 `pubspec.yaml` 引用。
 
 ```yaml
 dependencies:
@@ -138,17 +142,17 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 详情请参考示例。
 
 如果你发现有一些与 `Glide` 有关的警告日志输出，
-那么主项目就需要实现 `AppGlideModule`。详细信息请查看
-[Generated API](https://muyangmin.github.io/glide-docs-cn/doc/generatedapi.html).
+那么主项目就需要实现 `AppGlideModule`。
+详细信息请查看 [Generated API 文档][]。
 
 ### iOS
 
-在 `ios/Podfile` 中指定最低构建版本至 **9.0**。
+1. 在 `ios/Podfile` 中指定最低构建版本至 **9.0**。
 ```ruby
 platform :ios, '9.0'
 ```
 
-将以下内容添加至 `info.plist`。
+2. 将以下内容添加至 `info.plist`。
 ```plist
 <key>NSAppTransportSecurity</key>
 <dict>
@@ -161,19 +165,15 @@ platform :ios, '9.0'
 
 ### macOS
 
-目前 Flutter 桌面版仍然在开发阶段，所以请注意，
-任何与桌面版本有关的问题都不会受到技术支持。
-
 1. 在 `macos/Podfile` 中指定最低构建版本至 **10.15**。
-
+```ruby
+platform :osx, '10.15'
+```
 2. 使用 **Xcode** 打开 `macos/Runner.xcworkspace`。
    接着根据下面的截图将最低构建版本提升至 **10.15**。
-
 3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
-
 4. ![step 2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67vd3f2j30jv04zgm5.jpg)
-
-5. 与 iOS 一样，添加相同的东西到 `info.plist` 里。
+5. 与 iOS 一样，添加相同的内容到 `info.plist` 里。
 
 ## 使用方法 📖
 
@@ -257,8 +257,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 （与 `photo_manager` 完全无关）实现的选择器，
 以及一个多 Tab 页切换的选择器。
 如果你觉得你的实现有价值或能帮助到其他人，欢迎以 PR 的形式进行提交。
-更多细节请阅读
-[贡献自定义实现][example/lib/customs/CONTRIBUTING.md]。
+更多细节请阅读 [贡献自定义实现][]。
 
 ### 展示选中的资源
 
@@ -298,8 +297,6 @@ AssetPicker.unregisterObserve();
 ### Execution failed for task ':photo_manager:compileDebugKotlin'
 
 查看 [photo_manager#561][] 了解详细的解决方法。
-
-[photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
 
 ### 如何获取资源的路径以进行上传或编辑等操作的整合？
 
@@ -342,10 +339,12 @@ final AssetEntity imageEntity = await PhotoManager.editor.saveImage(
 否则在调用 `AssetEntity` 的删除时，某些系统下会触发系统弹窗事件：
 
 ```dart
-final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+final List<String> result = await PhotoManager.editor.deleteWithIds(
+    <String>[entity.id],
+);
 ```
 
-参考文档：[flutter_photo_manager#insert-new-item](https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item)
+参考文档：[photo_manager#insert-new-item][]
 
 ### 控制台提示 'Failed to find GeneratedAppGlideModule'
 
@@ -368,3 +367,15 @@ W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an
 等 IDE 的授权。
 
 [<img src="https://github.com/fluttercandies/flutter_wechat_assets_picker/raw/master/.github/jetbrains-variant.png" width="200"/>](https://www.jetbrains.com/?from=fluttercandies)
+
+
+[photo_manager pub]: https://pub.flutter-io.cn/packages/photo_manager
+[extended_image pub]: https://pub.flutter-io.cn/packages/extended_image
+[provider pub]: https://pub.flutter-io.cn/packages/provider
+[wechat_camera_picker pub]: https://pub.flutter-io.cn/packages/wechat_camera_picker
+[迁移指南]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/guides/migration_guide.md
+[photo_manager API 文档]: https://pub.flutter-io.cn/documentation/photo_manager/latest/
+[Generated API 文档]: https://muyangmin.github.io/glide-docs-cn/doc/generatedapi.html
+[贡献自定义实现]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/example/lib/customs/CONTRIBUTING.md
+[photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
+[photo_manager#insert-new-item]: https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item
