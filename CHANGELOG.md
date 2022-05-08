@@ -4,6 +4,17 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 7.2.0
+
+### New features
+
+- Separate `AssetPickerDelegate` (#315),
+  which provides the ability to override methods within the `AssetPicker`.
+
+### Improvements
+
+- Improve `specialItemBuilder`. (#314)
+
 ## 7.1.2
 
 ### Fixes
