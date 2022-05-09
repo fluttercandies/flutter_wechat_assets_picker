@@ -1,7 +1,7 @@
-///
-/// @Author Alex (https://github.com/AlexV525)
-/// [Date] 2020/8/19 14:12
-///
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 import 'package:flutter/material.dart'
     show Color, Colors, HSLColor, MaterialColor;
 
