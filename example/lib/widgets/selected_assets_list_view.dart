@@ -11,12 +11,12 @@ import 'asset_widget_builder.dart';
 
 class SelectedAssetsListView extends StatelessWidget {
   const SelectedAssetsListView({
-    Key? key,
+    super.key,
     required this.assets,
     required this.isDisplayingDetail,
     required this.onResult,
     required this.onRemoveAsset,
-  }) : super(key: key);
+  });
 
   final List<AssetEntity> assets;
   final ValueNotifier<bool> isDisplayingDetail;

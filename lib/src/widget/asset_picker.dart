@@ -15,7 +15,7 @@ import 'asset_picker_page_route.dart';
 AssetPickerDelegate _pickerDelegate = const AssetPickerDelegate();
 
 class AssetPicker<Asset, Path> extends StatefulWidget {
-  const AssetPicker({Key? key, required this.builder}) : super(key: key);
+  const AssetPicker({super.key, required this.builder});
 
   final AssetPickerBuilderDelegate<Asset, Path> builder;
 

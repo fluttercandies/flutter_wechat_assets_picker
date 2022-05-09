@@ -8,10 +8,10 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart'
 
 class AssetWidgetBuilder extends StatelessWidget {
   const AssetWidgetBuilder({
-    Key? key,
+    super.key,
     required this.entity,
     required this.isDisplayingDetail,
-  }) : super(key: key);
+  });
 
   final AssetEntity entity;
   final bool isDisplayingDetail;

@@ -358,28 +358,18 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 class DefaultAssetPickerViewerBuilderDelegate
     extends AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerViewerBuilderDelegate({
-    required int currentIndex,
-    required List<AssetEntity> previewAssets,
-    AssetPickerProvider<AssetEntity, AssetPathEntity>? selectorProvider,
-    required ThemeData themeData,
-    AssetPickerViewerProvider<AssetEntity>? provider,
-    List<AssetEntity>? selectedAssets,
+    required super.currentIndex,
+    required super.previewAssets,
+    required super.themeData,
+    super.selectorProvider,
+    super.provider,
+    super.selectedAssets,
     this.previewThumbnailSize,
     this.specialPickerType,
-    int? maxAssets,
-    bool shouldReversePreview = false,
-    AssetSelectPredicate<AssetEntity>? selectPredicate,
-  }) : super(
-          currentIndex: currentIndex,
-          previewAssets: previewAssets,
-          provider: provider,
-          themeData: themeData,
-          selectedAssets: selectedAssets,
-          selectorProvider: selectorProvider,
-          maxAssets: maxAssets,
-          shouldReversePreview: shouldReversePreview,
-          selectPredicate: selectPredicate,
-        );
+    super.maxAssets,
+    super.shouldReversePreview,
+    super.selectPredicate,
+  });
 
   /// Thumb size for the preview of images in the viewer.
   /// 预览时图片的缩略图大小

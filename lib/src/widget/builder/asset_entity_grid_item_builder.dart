@@ -11,10 +11,10 @@ import '../../widget/scale_text.dart';
 
 class AssetEntityGridItemBuilder extends StatefulWidget {
   const AssetEntityGridItemBuilder({
-    Key? key,
+    super.key,
     required this.image,
     required this.failedItemBuilder,
-  }) : super(key: key);
+  });
 
   final AssetEntityImageProvider image;
   final WidgetBuilder failedItemBuilder;
@@ -63,7 +63,6 @@ class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
   }
 
   @override
-  @mustCallSuper
   Widget build(BuildContext context) {
     child ??= newChild;
     return child!;

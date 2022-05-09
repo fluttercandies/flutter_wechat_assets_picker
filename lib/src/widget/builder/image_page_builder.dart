@@ -15,11 +15,11 @@ import 'locally_available_builder.dart';
 
 class ImagePageBuilder extends StatefulWidget {
   const ImagePageBuilder({
-    Key? key,
+    super.key,
     required this.asset,
     required this.delegate,
     this.previewThumbnailSize,
-  }) : super(key: key);
+  });
 
   /// Asset currently displayed.
   /// 展示的资源

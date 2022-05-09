@@ -229,19 +229,14 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
 class DefaultAssetPickerProvider
     extends AssetPickerProvider<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerProvider({
-    List<AssetEntity>? selectedAssets,
+    super.selectedAssets,
+    super.maxAssets,
+    super.pageSize,
+    super.pathThumbnailSize,
     this.requestType = RequestType.image,
     this.sortPathDelegate = SortPathDelegate.common,
     this.filterOptions,
-    int maxAssets = 9,
-    int pageSize = 80,
-    ThumbnailSize pathThumbnailSize = const ThumbnailSize.square(80),
-  }) : super(
-          maxAssets: maxAssets,
-          pageSize: pageSize,
-          pathThumbnailSize: pathThumbnailSize,
-          selectedAssets: selectedAssets,
-        ) {
+  }) {
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
     // Call [getAssetList] with route duration when constructing.
     Future<void>(() async {

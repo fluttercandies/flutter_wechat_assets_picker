@@ -29,7 +29,7 @@ const List<String> imagesExtensions = <String>[
 ];
 
 class DirectoryFileAssetPicker extends StatefulWidget {
-  const DirectoryFileAssetPicker({Key? key}) : super(key: key);
+  const DirectoryFileAssetPicker({super.key});
 
   @override
   _DirectoryFileAssetPickerState createState() =>

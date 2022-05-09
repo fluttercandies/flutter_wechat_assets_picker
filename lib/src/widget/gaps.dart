@@ -7,21 +7,19 @@ import 'package:flutter/material.dart';
 class Gap extends StatelessWidget {
   const Gap.h(
     double width, {
-    Key? key,
+    super.key,
     double? height,
     this.color,
   })  : _width = width,
-        _height = height,
-        super(key: key);
+        _height = height;
 
   const Gap.v(
     double height, {
-    Key? key,
+    super.key,
     double? width,
     this.color,
   })  : _width = width,
-        _height = height,
-        super(key: key);
+        _height = height;
 
   final double? _width;
   final double? _height;
@@ -40,21 +38,19 @@ class Gap extends StatelessWidget {
 class SliverGap extends StatelessWidget {
   const SliverGap.h(
     double width, {
-    Key? key,
+    super.key,
     double? height,
     this.color,
   })  : _width = width,
-        _height = height,
-        super(key: key);
+        _height = height;
 
   const SliverGap.v(
     double height, {
-    Key? key,
+    super.key,
     double? width,
     this.color,
   })  : _width = width,
-        _height = height,
-        super(key: key);
+        _height = height;
 
   final double? _width;
   final double? _height;

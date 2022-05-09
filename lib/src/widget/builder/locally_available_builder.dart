@@ -13,11 +13,11 @@ import '../scale_text.dart';
 
 class LocallyAvailableBuilder extends StatefulWidget {
   const LocallyAvailableBuilder({
-    Key? key,
+    super.key,
     required this.asset,
     required this.builder,
     this.isOriginal = true,
-  }) : super(key: key);
+  });
 
   final AssetEntity asset;
   final Widget Function(BuildContext context, AssetEntity asset) builder;

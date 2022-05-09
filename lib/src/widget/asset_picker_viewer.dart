@@ -16,9 +16,9 @@ import 'asset_picker.dart';
 
 class AssetPickerViewer<Asset, Path> extends StatefulWidget {
   const AssetPickerViewer({
-    Key? key,
+    super.key,
     required this.builder,
-  }) : super(key: key);
+  });
 
   final AssetPickerViewerBuilderDelegate<Asset, Path> builder;
 

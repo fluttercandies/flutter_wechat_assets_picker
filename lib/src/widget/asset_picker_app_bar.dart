@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 /// 自定义的顶栏
 class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AssetPickerAppBar({
-    Key? key,
+    super.key,
     this.automaticallyImplyLeading = true,
     this.automaticallyImplyActions = true,
     this.brightness,
@@ -28,7 +28,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.blurRadius = 0,
     this.iconTheme,
     this.semanticsBuilder,
-  }) : super(key: key);
+  });
 
   /// Title widget. Typically a [Text] widget.
   /// 标题部件
@@ -203,10 +203,10 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
 /// 顶栏封装。防止内容块层级高于顶栏导致遮挡阴影。
 class AssetPickerAppBarWrapper extends StatelessWidget {
   const AssetPickerAppBarWrapper({
-    Key? key,
+    super.key,
     required this.appBar,
     required this.body,
-  }) : super(key: key);
+  });
 
   final AssetPickerAppBar appBar;
   final Widget body;

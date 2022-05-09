@@ -13,7 +13,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 const Color _themeColor = Color(0xfff2223a);
 
 class MultiTabAssetPicker extends StatefulWidget {
-  const MultiTabAssetPicker({Key? key}) : super(key: key);
+  const MultiTabAssetPicker({super.key});
 
   @override
   _MultiTabAssetPickerState createState() => _MultiTabAssetPickerState();

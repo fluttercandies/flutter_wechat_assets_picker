@@ -16,11 +16,11 @@ import 'locally_available_builder.dart';
 
 class VideoPageBuilder extends StatefulWidget {
   const VideoPageBuilder({
-    Key? key,
+    super.key,
     required this.asset,
     required this.delegate,
     this.hasOnlyOneVideoAndMoment = false,
-  }) : super(key: key);
+  });
 
   /// Asset currently displayed.
   /// 展示的资源
