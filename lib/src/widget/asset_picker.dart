@@ -91,7 +91,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     AssetPicker.registerObserve(_onLimitedAssetsUpdated);
     widget.builder.initState(this);
   }
@@ -108,7 +108,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
     widget.builder.dispose();
     super.dispose();
