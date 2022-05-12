@@ -33,11 +33,11 @@ class AssetPickerDelegate {
   ///  * [PermissionState] which defined all states of required permissions.
   /// {@endtemplate}
   Future<PermissionState> permissionCheck() async {
-    final PermissionState _ps = await PhotoManager.requestPermissionExtend();
-    if (_ps != PermissionState.authorized && _ps != PermissionState.limited) {
-      throw StateError('Permission state error with $_ps.');
+    final PermissionState ps = await PhotoManager.requestPermissionExtend();
+    if (ps != PermissionState.authorized && ps != PermissionState.limited) {
+      throw StateError('Permission state error with $ps.');
     }
-    return _ps;
+    return ps;
   }
 
   /// {@template wechat_assets_picker.delegates.AssetPickerDelegate.pickAssets}
@@ -66,7 +66,7 @@ class AssetPickerDelegate {
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    final PermissionState _ps = await permissionCheck();
+    final PermissionState ps = await permissionCheck();
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       maxAssets: pickerConfig.maxAssets,
       pageSize: pickerConfig.pageSize,
@@ -80,7 +80,7 @@ class AssetPickerDelegate {
       key: Singleton.pickerKey,
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
-        initialPermission: _ps,
+        initialPermission: ps,
         gridCount: pickerConfig.gridCount,
         pickerTheme: pickerConfig.pickerTheme,
         gridThumbnailSize: pickerConfig.gridThumbnailSize,
@@ -221,7 +221,7 @@ class AssetPickerDelegate {
         buttonTheme: ButtonThemeData(buttonColor: themeColor),
         colorScheme: ColorScheme(
           primary: Colors.grey[50]!,
-          primaryVariant: Colors.grey[50]!,
+          primaryVariant: Colors.grey[50],
           secondary: themeColor,
           secondaryVariant: themeColor,
           background: Colors.grey[50]!,
@@ -262,7 +262,7 @@ class AssetPickerDelegate {
       buttonTheme: ButtonThemeData(buttonColor: themeColor),
       colorScheme: ColorScheme(
         primary: Colors.grey[900]!,
-        primaryVariant: Colors.grey[900]!,
+        primaryVariant: Colors.grey[900],
         secondary: themeColor,
         secondaryVariant: themeColor,
         background: Colors.grey[900]!,

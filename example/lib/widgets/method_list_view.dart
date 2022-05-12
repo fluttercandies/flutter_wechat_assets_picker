@@ -17,7 +17,7 @@ class MethodListView extends StatefulWidget {
   final void Function(PickMethod method) onSelectMethod;
 
   @override
-  _MethodListViewState createState() => _MethodListViewState();
+  State<MethodListView> createState() => _MethodListViewState();
 }
 
 class _MethodListViewState extends State<MethodListView> {

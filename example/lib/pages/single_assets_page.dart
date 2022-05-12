@@ -10,8 +10,10 @@ import '../constants/page_mixin.dart';
 import '../constants/picker_method.dart';
 
 class SingleAssetPage extends StatefulWidget {
+  const SingleAssetPage({super.key});
+
   @override
-  _SingleAssetPageState createState() => _SingleAssetPageState();
+  State<SingleAssetPage> createState() => _SingleAssetPageState();
 }
 
 class _SingleAssetPageState extends State<SingleAssetPage>

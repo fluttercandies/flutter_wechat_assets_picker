@@ -33,7 +33,7 @@ class VideoPageBuilder extends StatefulWidget {
   final bool hasOnlyOneVideoAndMoment;
 
   @override
-  _VideoPageBuilderState createState() => _VideoPageBuilderState();
+  State<VideoPageBuilder> createState() => _VideoPageBuilderState();
 }
 
 class _VideoPageBuilderState extends State<VideoPageBuilder> {

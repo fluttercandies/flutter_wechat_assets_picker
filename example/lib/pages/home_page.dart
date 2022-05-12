@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: PageView(
                   controller: controller,
-                  children: <Widget>[
+                  children: const <Widget>[
                     MultiAssetsPage(),
                     SingleAssetPage(),
                     CustomPickersPage(),

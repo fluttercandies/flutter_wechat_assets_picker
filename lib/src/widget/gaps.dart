@@ -27,11 +27,11 @@ class Gap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget _w = SizedBox(width: _width, height: _height);
+    Widget w = SizedBox(width: _width, height: _height);
     if (color != null) {
-      _w = ColoredBox(color: color!, child: _w);
+      w = ColoredBox(color: color!, child: w);
     }
-    return _w;
+    return w;
   }
 }
 

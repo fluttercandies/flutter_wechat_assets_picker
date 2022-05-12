@@ -7,8 +7,8 @@ import 'package:flutter/physics.dart';
 
 class CustomBouncingScrollPhysics extends BouncingScrollPhysics {
   const CustomBouncingScrollPhysics({
-    ScrollPhysics? parent,
-  }) : super(parent: parent);
+    super.parent,
+  });
 
   @override
   CustomBouncingScrollPhysics applyTo(ScrollPhysics? ancestor) {
@@ -27,8 +27,8 @@ class CustomBouncingScrollPhysics extends BouncingScrollPhysics {
 
 class CustomClampingScrollPhysics extends ClampingScrollPhysics {
   const CustomClampingScrollPhysics({
-    ScrollPhysics? parent,
-  }) : super(parent: parent);
+    super.parent,
+  });
 
   @override
   CustomClampingScrollPhysics applyTo(ScrollPhysics? ancestor) {

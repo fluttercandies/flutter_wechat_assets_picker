@@ -26,7 +26,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     this.pathThumbnailSize = defaultPathThumbnailSize,
     List<Asset>? selectedAssets,
   }) {
-    if (selectedAssets?.isNotEmpty == true) {
+    if (selectedAssets?.isNotEmpty ?? false) {
       _selectedAssets = List<Asset>.from(selectedAssets!);
     }
   }
@@ -212,17 +212,17 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     if (selectedAssets.length == maxAssets || selectedAssets.contains(item)) {
       return;
     }
-    final List<Asset> _set = List<Asset>.from(selectedAssets);
-    _set.add(item);
-    selectedAssets = _set;
+    final List<Asset> set = List<Asset>.from(selectedAssets);
+    set.add(item);
+    selectedAssets = set;
   }
 
   /// Un-select asset.
   /// 取消选中资源
   void unSelectAsset(Asset item) {
-    final List<Asset> _set = List<Asset>.from(selectedAssets);
-    _set.remove(item);
-    selectedAssets = _set;
+    final List<Asset> set = List<Asset>.from(selectedAssets);
+    set.remove(item);
+    selectedAssets = set;
   }
 }
 
@@ -247,19 +247,14 @@ class DefaultAssetPickerProvider
 
   @visibleForTesting
   DefaultAssetPickerProvider.forTest({
-    List<AssetEntity>? selectedAssets,
+    super.selectedAssets,
     this.requestType = RequestType.image,
     this.sortPathDelegate = SortPathDelegate.common,
     this.filterOptions,
-    int maxAssets = 9,
-    int pageSize = 80,
-    ThumbnailSize pathThumbnailSize = const ThumbnailSize.square(80),
-  }) : super(
-          maxAssets: maxAssets,
-          pageSize: pageSize,
-          pathThumbnailSize: pathThumbnailSize,
-          selectedAssets: selectedAssets,
-        ) {
+    super.maxAssets,
+    super.pageSize = 80,
+    super.pathThumbnailSize,
+  }) {
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
   }
 
@@ -323,15 +318,15 @@ class DefaultAssetPickerProvider
       options.merge(filterOptions!);
     }
 
-    final List<AssetPathEntity> _list = await PhotoManager.getAssetPathList(
+    final List<AssetPathEntity> list = await PhotoManager.getAssetPathList(
       type: requestType,
       filterOption: options,
     );
 
     // Sort path using sort path delegate.
-    Singleton.sortPathDelegate.sort(_list);
+    Singleton.sortPathDelegate.sort(list);
 
-    for (final AssetPathEntity pathEntity in _list) {
+    for (final AssetPathEntity pathEntity in list) {
       // Use sync method to avoid unnecessary wait.
       _pathsList[pathEntity] = null;
       getThumbnailFromPath(pathEntity);

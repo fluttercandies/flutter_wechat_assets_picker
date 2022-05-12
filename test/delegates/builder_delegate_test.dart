@@ -11,7 +11,7 @@ void main() {
   PhotoManager.withPlugin(TestPhotoManagerPlugin());
   AssetPicker.setPickerDelegate(TestAssetPickerDelegate());
 
-  final Finder _defaultButtonFinder = find.byType(TextButton);
+  final Finder defaultButtonFinder = find.byType(TextButton);
 
   Widget _defaultApp({void Function(BuildContext)? onButtonPressed}) {
     return MaterialApp(
@@ -41,7 +41,7 @@ void main() {
         },
       ),
     );
-    await tester.tap(_defaultButtonFinder);
+    await tester.tap(defaultButtonFinder);
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
     await tester.pumpAndSettle();
@@ -71,7 +71,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    final PermissionState _ps = await permissionCheck();
+    final PermissionState ps = await permissionCheck();
     final AssetPathEntity pathEntity = AssetPathEntity(
       id: 'test',
       name: 'pathEntity',
@@ -96,7 +96,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
-        initialPermission: _ps,
+        initialPermission: ps,
         gridCount: pickerConfig.gridCount,
         pickerTheme: pickerConfig.pickerTheme,
         gridThumbnailSize: pickerConfig.gridThumbnailSize,

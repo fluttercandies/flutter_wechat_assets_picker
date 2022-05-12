@@ -9,8 +9,10 @@ import 'pickers/directory_file_asset_picker.dart';
 import 'pickers/multi_tabs_assets_picker.dart';
 
 class CustomPickersPage extends StatefulWidget {
+  const CustomPickersPage({super.key});
+
   @override
-  _CustomPickerPageState createState() => _CustomPickerPageState();
+  State<CustomPickersPage> createState() => _CustomPickerPageState();
 }
 
 class _CustomPickerPageState extends State<CustomPickersPage>

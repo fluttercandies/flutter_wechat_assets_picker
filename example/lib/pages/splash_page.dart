@@ -9,10 +9,10 @@ import '../main.dart';
 import 'home_page.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage();
+  const SplashPage({super.key});
 
   @override
-  _SplashPageState createState() => _SplashPageState();
+  State<SplashPage> createState() => _SplashPageState();
 }
 
 class _SplashPageState extends State<SplashPage> {

@@ -24,7 +24,7 @@ class LocallyAvailableBuilder extends StatefulWidget {
   final bool isOriginal;
 
   @override
-  _LocallyAvailableBuilderState createState() =>
+  State<LocallyAvailableBuilder> createState() =>
       _LocallyAvailableBuilderState();
 }
 
