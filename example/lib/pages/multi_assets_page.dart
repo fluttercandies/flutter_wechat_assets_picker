@@ -9,8 +9,10 @@ import '../constants/page_mixin.dart';
 import '../constants/picker_method.dart';
 
 class MultiAssetsPage extends StatefulWidget {
+  const MultiAssetsPage({super.key});
+
   @override
-  _MultiAssetsPageState createState() => _MultiAssetsPageState();
+  State<MultiAssetsPage> createState() => _MultiAssetsPageState();
 }
 
 class _MultiAssetsPageState extends State<MultiAssetsPage>

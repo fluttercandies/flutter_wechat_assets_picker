@@ -15,11 +15,11 @@ import 'locally_available_builder.dart';
 
 class ImagePageBuilder extends StatefulWidget {
   const ImagePageBuilder({
-    Key? key,
+    super.key,
     required this.asset,
     required this.delegate,
     this.previewThumbnailSize,
-  }) : super(key: key);
+  });
 
   /// Asset currently displayed.
   /// 展示的资源
@@ -30,7 +30,7 @@ class ImagePageBuilder extends StatefulWidget {
   final ThumbnailSize? previewThumbnailSize;
 
   @override
-  _ImagePageBuilderState createState() => _ImagePageBuilderState();
+  State<ImagePageBuilder> createState() => _ImagePageBuilderState();
 }
 
 class _ImagePageBuilderState extends State<ImagePageBuilder> {
@@ -73,7 +73,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   }
 
   void _play() {
-    if (_controller?.value.isInitialized == true) {
+    if (_controller?.value.isInitialized ?? false) {
       // Only impact when initialized.
       HapticFeedback.lightImpact();
       _controller?.play();
@@ -95,17 +95,13 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
       fit: BoxFit.contain,
       mode: ExtendedImageMode.gesture,
       onDoubleTap: widget.delegate.updateAnimation,
-      initGestureConfigHandler: (ExtendedImageState state) {
-        return GestureConfig(
-          initialScale: 1.0,
-          minScale: 1.0,
-          maxScale: 3.0,
-          animationMinScale: 0.6,
-          animationMaxScale: 4.0,
-          cacheGesture: false,
-          inPageView: true,
-        );
-      },
+      initGestureConfigHandler: (ExtendedImageState state) => GestureConfig(
+        minScale: 1.0,
+        maxScale: 3.0,
+        animationMinScale: 0.6,
+        animationMaxScale: 4.0,
+        inPageView: true,
+      ),
       loadStateChanged: (ExtendedImageState state) {
         return widget.delegate.previewWidgetLoadStateChanged(
           context,
@@ -119,7 +115,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   Widget _buildLivePhotosWrapper(BuildContext context, AssetEntity asset) {
     return Stack(
       children: <Widget>[
-        if (_controller?.value.isInitialized == true)
+        if (_controller?.value.isInitialized ?? false)
           Center(
             child: AspectRatio(
               aspectRatio: _controller!.value.aspectRatio,

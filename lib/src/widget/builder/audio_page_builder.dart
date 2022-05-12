@@ -14,7 +14,7 @@ import '../../internal/singleton.dart';
 import '../scale_text.dart';
 
 class AudioPageBuilder extends StatefulWidget {
-  const AudioPageBuilder({Key? key, required this.asset}) : super(key: key);
+  const AudioPageBuilder({super.key, required this.asset});
 
   /// Asset currently displayed.
   /// 展示的资源

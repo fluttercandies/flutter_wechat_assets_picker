@@ -4,6 +4,10 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 7.3.0
+
+Migrate to Flutter 3, drop supports for previous Flutter versions.
+
 ## 7.2.0
 
 ### New features

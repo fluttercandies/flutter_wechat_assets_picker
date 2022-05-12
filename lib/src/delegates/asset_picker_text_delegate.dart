@@ -786,7 +786,7 @@ class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get unableToAccessAll =>
-      'Impossible d\'accéder aux médias de votre appareil';
+      "Impossible d'accéder aux médias de votre appareil";
 
   @override
   String get viewingLimitedAssetsTip =>

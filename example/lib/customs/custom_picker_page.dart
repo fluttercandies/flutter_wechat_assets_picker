@@ -9,8 +9,10 @@ import 'pickers/directory_file_asset_picker.dart';
 import 'pickers/multi_tabs_assets_picker.dart';
 
 class CustomPickersPage extends StatefulWidget {
+  const CustomPickersPage({super.key});
+
   @override
-  _CustomPickerPageState createState() => _CustomPickerPageState();
+  State<CustomPickersPage> createState() => _CustomPickerPageState();
 }
 
 class _CustomPickerPageState extends State<CustomPickersPage>
@@ -68,10 +70,9 @@ class _CustomPickerPageState extends State<CustomPickersPage>
 }
 
 class _MethodListView extends StatelessWidget {
-  const _MethodListView({
-    Key? key,
-    required this.pickMethods,
-  }) : super(key: key);
+  // TODO(Alex): Tracking if it's a false-positive: https://github.com/dart-lang/linter/issues/3386
+  // ignore: unused_element
+  const _MethodListView({super.key, required this.pickMethods});
 
   final List<CustomPickMethod> pickMethods;
 
@@ -93,7 +94,7 @@ class _MethodListView extends StatelessWidget {
               child: Center(
                 child: Text(
                   model.icon,
-                  style: const TextStyle(fontSize: 24.0),
+                  style: const TextStyle(fontSize: 28.0),
                 ),
               ),
             ),

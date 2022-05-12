@@ -8,16 +8,16 @@ import '../constants/picker_method.dart';
 
 class MethodListView extends StatefulWidget {
   const MethodListView({
-    Key? key,
+    super.key,
     required this.pickMethods,
     required this.onSelectMethod,
-  }) : super(key: key);
+  });
 
   final List<PickMethod> pickMethods;
   final void Function(PickMethod method) onSelectMethod;
 
   @override
-  _MethodListViewState createState() => _MethodListViewState();
+  State<MethodListView> createState() => _MethodListViewState();
 }
 
 class _MethodListViewState extends State<MethodListView> {
@@ -42,7 +42,7 @@ class _MethodListViewState extends State<MethodListView> {
               child: Center(
                 child: Text(
                   model.icon,
-                  style: const TextStyle(fontSize: 24.0),
+                  style: const TextStyle(fontSize: 28.0),
                 ),
               ),
             ),
@@ -84,7 +84,7 @@ class _MethodListViewState extends State<MethodListView> {
       ).copyWith(bottom: 10.0),
       child: Scrollbar(
         controller: _controller,
-        isAlwaysShown: true,
+        thumbVisibility: true,
         radius: const Radius.circular(999),
         child: ListView.builder(
           controller: _controller,

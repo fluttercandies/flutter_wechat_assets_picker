@@ -15,7 +15,7 @@ import 'asset_picker_page_route.dart';
 AssetPickerDelegate _pickerDelegate = const AssetPickerDelegate();
 
 class AssetPicker<Asset, Path> extends StatefulWidget {
-  const AssetPicker({Key? key, required this.builder}) : super(key: key);
+  const AssetPicker({super.key, required this.builder});
 
   final AssetPickerBuilderDelegate<Asset, Path> builder;
 
@@ -91,7 +91,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     AssetPicker.registerObserve(_onLimitedAssetsUpdated);
     widget.builder.initState(this);
   }
@@ -108,7 +108,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
     widget.builder.dispose();
     super.dispose();

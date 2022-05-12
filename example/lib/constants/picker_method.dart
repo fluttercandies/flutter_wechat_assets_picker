@@ -92,7 +92,6 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
-            requestType: RequestType.common,
             specialItemPosition: SpecialItemPosition.prepend,
             specialItemBuilder: (
               BuildContext context,
@@ -140,7 +139,6 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
-            requestType: RequestType.common,
             specialItemPosition: SpecialItemPosition.prepend,
             specialItemBuilder: (
               BuildContext context,
@@ -168,7 +166,7 @@ class PickMethod {
                     final DefaultAssetPickerProvider p = builder.provider;
                     p.currentPath =
                         await p.currentPath!.obtainForNewProperties();
-                    await p.switchPath(p.currentPath!);
+                    await p.switchPath(p.currentPath);
                     p.selectAsset(result);
                   },
                   child: const Center(
@@ -194,7 +192,6 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
-            requestType: RequestType.common,
           ),
         );
       },
@@ -260,7 +257,6 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
-            requestType: RequestType.common,
             specialItemPosition: SpecialItemPosition.prepend,
             specialItemBuilder: (
               BuildContext context,
@@ -288,7 +284,6 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
-            requestType: RequestType.common,
             specialPickerType: SpecialPickerType.noPreview,
           ),
         );
@@ -306,13 +301,11 @@ class PickMethod {
       name: 'Keep scroll offset',
       description: 'Pick assets from same scroll position.',
       method: (BuildContext context, List<AssetEntity> assets) async {
-        final PermissionState _ps =
-            await PhotoManager.requestPermissionExtend();
-        if (_ps != PermissionState.authorized &&
-            _ps != PermissionState.limited) {
-          throw StateError('Permission state error with $_ps.');
+        final PermissionState ps = await PhotoManager.requestPermissionExtend();
+        if (ps != PermissionState.authorized && ps != PermissionState.limited) {
+          throw StateError('Permission state error with $ps.');
         }
-        onPermission(_ps);
+        onPermission(ps);
         return AssetPicker.pickAssetsWithDelegate(
           context,
           delegate: delegate(),
@@ -353,7 +346,7 @@ class PickMethod {
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
             selectPredicate: (BuildContext c, AssetEntity a, bool isSelected) {
-              print('Asset title: ${a.title}');
+              debugPrint('Asset title: ${a.title}');
               return a.title?.endsWith('.gif') != true;
             },
           ),

@@ -13,10 +13,10 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 const Color _themeColor = Color(0xfff2223a);
 
 class MultiTabAssetPicker extends StatefulWidget {
-  const MultiTabAssetPicker({Key? key}) : super(key: key);
+  const MultiTabAssetPicker({super.key});
 
   @override
-  _MultiTabAssetPickerState createState() => _MultiTabAssetPickerState();
+  State<MultiTabAssetPicker> createState() => _MultiTabAssetPickerState();
 }
 
 class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
@@ -28,7 +28,7 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
   bool isDisplayingDetail = true;
 
   Future<void> callPicker(BuildContext context) async {
-    final PermissionState _ps = await AssetPicker.permissionCheck();
+    final PermissionState ps = await AssetPicker.permissionCheck();
 
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       selectedAssets: entities,
@@ -38,7 +38,6 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
         DefaultAssetPickerProvider(
       selectedAssets: entities,
       maxAssets: maxAssets,
-      requestType: RequestType.image,
     );
     final DefaultAssetPickerProvider videosProvider =
         DefaultAssetPickerProvider(
@@ -50,7 +49,7 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
       provider: provider,
       imagesProvider: imagesProvider,
       videosProvider: videosProvider,
-      initialPermission: _ps,
+      initialPermission: ps,
       pickerTheme: theme,
       locale: Localizations.maybeLocaleOf(context),
     );
@@ -261,25 +260,16 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
 
 class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   MultiTabAssetPickerBuilder({
-    required DefaultAssetPickerProvider provider,
+    required super.provider,
     required this.videosProvider,
     required this.imagesProvider,
-    required PermissionState initialPermission,
-    int gridCount = 3,
-    ThemeData? pickerTheme,
-    Color? themeColor,
-    AssetPickerTextDelegate? textDelegate,
-    Locale? locale,
-  }) : super(
-          provider: provider,
-          initialPermission: initialPermission,
-          gridCount: gridCount,
-          pickerTheme: pickerTheme,
-          themeColor: themeColor,
-          textDelegate: textDelegate,
-          locale: locale,
-          shouldRevertGrid: false,
-        );
+    required super.initialPermission,
+    super.gridCount = 3,
+    super.pickerTheme,
+    super.themeColor,
+    super.textDelegate,
+    super.locale,
+  }) : super(shouldRevertGrid: false);
 
   final DefaultAssetPickerProvider videosProvider;
   final DefaultAssetPickerProvider imagesProvider;
@@ -300,7 +290,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
   @override
   Widget pathEntitySelector(BuildContext context) {
-    final WidgetBuilder selector = (BuildContext context) {
+    Widget selector(BuildContext context) {
       return UnconstrainedBox(
         child: GestureDetector(
           onTap: () {
@@ -351,7 +341,6 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                     builder: (_, bool isSwitchingPath, Widget? w) {
                       return Transform.rotate(
                         angle: isSwitchingPath ? math.pi : 0,
-                        alignment: Alignment.center,
                         child: w,
                       );
                     },
@@ -367,25 +356,26 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           ),
         ),
       );
-    };
+    }
+
     return ChangeNotifierProvider<TabController>.value(
       value: _tabController,
       builder: (_, __) => Selector<TabController, int>(
         selector: (_, TabController p) => p.index,
         builder: (_, int index, __) {
-          final DefaultAssetPickerProvider _provider;
+          final DefaultAssetPickerProvider pickerProvider;
           switch (index) {
             case 1:
-              _provider = videosProvider;
+              pickerProvider = videosProvider;
               break;
             case 2:
-              _provider = imagesProvider;
+              pickerProvider = imagesProvider;
               break;
             default:
-              _provider = provider;
+              pickerProvider = provider;
           }
           return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-            value: _provider,
+            value: pickerProvider,
             builder: (BuildContext c, _) => selector(c),
           );
         },
@@ -406,6 +396,10 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(3),
           ),
+          onPressed: p.isSelectedNotEmpty
+              ? () => Navigator.of(context).maybePop(p.selectedAssets)
+              : null,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           child: Text(
             p.isSelectedNotEmpty && !isSingleAssetMode
                 ? '${textDelegate.confirm}'
@@ -419,10 +413,6 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               fontWeight: FontWeight.normal,
             ),
           ),
-          onPressed: p.isSelectedNotEmpty
-              ? () => Navigator.of(context).maybePop(p.selectedAssets)
-              : null,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         );
       },
     );
@@ -431,19 +421,19 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       builder: (_, __) => Selector<TabController, int>(
         selector: (_, TabController p) => p.index,
         builder: (_, int index, __) {
-          final DefaultAssetPickerProvider _provider;
+          final DefaultAssetPickerProvider pickerProvider;
           switch (index) {
             case 1:
-              _provider = videosProvider;
+              pickerProvider = videosProvider;
               break;
             case 2:
-              _provider = imagesProvider;
+              pickerProvider = imagesProvider;
               break;
             default:
-              _provider = provider;
+              pickerProvider = provider;
           }
           return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-            value: _provider,
+            value: pickerProvider,
             builder: (_, __) => button,
           );
         },

@@ -29,10 +29,10 @@ const List<String> imagesExtensions = <String>[
 ];
 
 class DirectoryFileAssetPicker extends StatefulWidget {
-  const DirectoryFileAssetPicker({Key? key}) : super(key: key);
+  const DirectoryFileAssetPicker({super.key});
 
   @override
-  _DirectoryFileAssetPickerState createState() =>
+  State<DirectoryFileAssetPicker> createState() =>
       _DirectoryFileAssetPickerState();
 }
 
@@ -261,7 +261,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
                     'This is a custom picker built for `File`.\n'
                     'By browsing this picker, we want you to know that '
                     'you can build your own picker components using '
-                    'the entity\'s type you desired.',
+                    "the entity's type you desired.",
                   ),
                   paddingText(
                     'In this page, picker will grab files from '
@@ -343,14 +343,14 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
 
   @override
   void unSelectAsset(File item) {
-    final List<File> _set = List<File>.from(selectedAssets);
-    _set.removeWhere((File f) => f.path == item.path);
-    selectedAssets = _set;
+    final List<File> set = List<File>.from(selectedAssets);
+    set.removeWhere((File f) => f.path == item.path);
+    selectedAssets = set;
   }
 
   @override
   Future<void> loadMoreAssets() {
-    return Future<void>.value(null);
+    return Future<void>.value();
   }
 
   @override
@@ -369,8 +369,8 @@ class FileAssetPickerBuilder
     extends AssetPickerBuilderDelegate<File, Directory> {
   FileAssetPickerBuilder({
     required this.provider,
-    Locale? locale,
-  }) : super(initialPermission: PermissionState.authorized, locale: locale);
+    super.locale,
+  }) : super(initialPermission: PermissionState.authorized);
 
   final FileAssetPickerProvider provider;
 
@@ -595,13 +595,13 @@ class FileAssetPickerBuilder
 
     return LayoutBuilder(
       builder: (BuildContext c, BoxConstraints constraints) {
-        final double _itemSize = constraints.maxWidth / gridCount;
+        final double itemSize = constraints.maxWidth / gridCount;
         // Use [ScrollView.anchor] to determine where is the first place of
         // the [SliverGrid]. Each row needs [dividedSpacing] to calculate,
         // then minus one times of [itemSpacing] because spacing's count in the
         // cross axis is always less than the rows.
         final double anchor = math.min(
-          (row * (_itemSize + dividedSpacing) + topPadding - itemSpacing) /
+          (row * (itemSize + dividedSpacing) + topPadding - itemSpacing) /
               constraints.maxHeight,
           1,
         );
@@ -735,6 +735,12 @@ class FileAssetPickerBuilder
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0),
             ),
+            onPressed: () {
+              if (provider.isSelectedNotEmpty) {
+                Navigator.of(context).pop(provider.selectedAssets);
+              }
+            },
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             child: Text(
               provider.isSelectedNotEmpty && !isSingleAssetMode
                   ? '${textDelegate.confirm}'
@@ -748,12 +754,6 @@ class FileAssetPickerBuilder
                 fontWeight: FontWeight.normal,
               ),
             ),
-            onPressed: () {
-              if (provider.isSelectedNotEmpty) {
-                Navigator.of(context).pop(provider.selectedAssets);
-              }
-            },
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           );
         },
       ),
@@ -908,7 +908,6 @@ class FileAssetPickerBuilder
                     builder: (_, bool isSwitchingPath, Widget? w) {
                       return Transform.rotate(
                         angle: isSwitchingPath ? math.pi : 0.0,
-                        alignment: Alignment.center,
                         child: w,
                       );
                     },
@@ -1183,7 +1182,7 @@ class FileAssetPickerBuilder
 }
 
 class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
-  FileAssetPickerViewerProvider(List<File> assets) : super(assets);
+  FileAssetPickerViewerProvider(List<File> super.assets);
 
   @override
   void unSelectAssetEntity(File entity) {
@@ -1196,19 +1195,13 @@ class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
 class FileAssetPickerViewerBuilderDelegate
     extends AssetPickerViewerBuilderDelegate<File, Directory> {
   FileAssetPickerViewerBuilderDelegate({
-    required List<File> previewAssets,
-    required ThemeData themeData,
-    required int currentIndex,
-    List<File>? selectedAssets,
-    AssetPickerProvider<File, Directory>? selectorProvider,
-    AssetPickerViewerProvider<File>? provider,
+    required super.previewAssets,
+    required super.themeData,
+    required super.currentIndex,
+    super.selectedAssets,
+    super.selectorProvider,
+    super.provider,
   }) : super(
-          provider: provider,
-          previewAssets: previewAssets,
-          themeData: themeData,
-          currentIndex: currentIndex,
-          selectedAssets: selectedAssets,
-          selectorProvider: selectorProvider,
           maxAssets: selectorProvider?.maxAssets,
         );
 
@@ -1417,7 +1410,6 @@ class FileAssetPickerViewerBuilderDelegate
                       currentIndex = index;
                       pageStreamController.add(index);
                     },
-                    scrollDirection: Axis.horizontal,
                   ),
                 ),
                 appBar(context),
@@ -1450,6 +1442,12 @@ class FileAssetPickerViewerBuilderDelegate
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0),
             ),
+            onPressed: () {
+              if (provider.isSelectedNotEmpty) {
+                Navigator.of(context).pop(provider.currentlySelectedAssets);
+              }
+            },
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             child: Text(
               () {
                 if (provider.isSelectedNotEmpty) {
@@ -1470,12 +1468,6 @@ class FileAssetPickerViewerBuilderDelegate
                 fontWeight: FontWeight.normal,
               ),
             ),
-            onPressed: () {
-              if (provider.isSelectedNotEmpty) {
-                Navigator.of(context).pop(provider.currentlySelectedAssets);
-              }
-            },
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           );
         },
       ),

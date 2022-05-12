@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 /// 自定义的顶栏
 class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AssetPickerAppBar({
-    Key? key,
+    super.key,
     this.automaticallyImplyLeading = true,
     this.automaticallyImplyActions = true,
     this.brightness,
@@ -28,7 +28,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.blurRadius = 0,
     this.iconTheme,
     this.semanticsBuilder,
-  }) : super(key: key);
+  });
 
   /// Title widget. Typically a [Text] widget.
   /// 标题部件
@@ -99,9 +99,9 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget? _title = title;
+    Widget? titleWidget = title;
     if (centerTitle) {
-      _title = Center(child: _title);
+      titleWidget = Center(child: title);
     }
     Widget child = Container(
       width: double.maxFinite,
@@ -115,7 +115,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
               bottom: 0.0,
               child: leading ?? const BackButton(),
             ),
-          if (_title != null)
+          if (titleWidget != null)
             PositionedDirectional(
               top: 0.0,
               bottom: 0.0,
@@ -126,7 +126,6 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ? Alignment.center
                     : AlignmentDirectional.centerStart,
                 child: DefaultTextStyle(
-                  child: _title,
                   style: Theme.of(context)
                       .textTheme
                       .headline6!
@@ -134,6 +133,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
                   maxLines: 1,
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
+                  child: titleWidget,
                 ),
               ),
             ),
@@ -168,11 +168,11 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
 
     // Set [SystemUiOverlayStyle] according to the brightness.
-    final Brightness _effectiveBrightness = brightness ??
+    final Brightness effectiveBrightness = brightness ??
         Theme.of(context).appBarTheme.systemOverlayStyle?.statusBarBrightness ??
         Theme.of(context).brightness;
     child = AnnotatedRegion<SystemUiOverlayStyle>(
-      value: _effectiveBrightness == Brightness.dark
+      value: effectiveBrightness == Brightness.dark
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark,
       child: Column(
@@ -184,7 +184,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
 
-    final Widget _result = Material(
+    final Widget result = Material(
       // Wrap to ensure the child rendered correctly
       color: Color.lerp(
         backgroundColor ?? Theme.of(context).colorScheme.surface,
@@ -194,8 +194,8 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: elevation,
       child: child,
     );
-    return semanticsBuilder?.call(_result) ??
-        Semantics(sortKey: const OrdinalSortKey(0), child: _result);
+    return semanticsBuilder?.call(result) ??
+        Semantics(sortKey: const OrdinalSortKey(0), child: result);
   }
 }
 
@@ -203,10 +203,10 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
 /// 顶栏封装。防止内容块层级高于顶栏导致遮挡阴影。
 class AssetPickerAppBarWrapper extends StatelessWidget {
   const AssetPickerAppBarWrapper({
-    Key? key,
+    super.key,
     required this.appBar,
     required this.body,
-  }) : super(key: key);
+  });
 
   final AssetPickerAppBar appBar;
   final Widget body;
