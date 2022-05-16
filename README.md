@@ -102,10 +102,11 @@ before you have any questions.
 
 ### Versions compatibility
 
-|        | <2.5.0 | 2.8.0 | 2.10.0 |
-|--------|:------:|:-----:|:------:|
-| 7.0.0+ |   ❌    |   ✅   |   ✅    |
-| 6.3.0+ |   ❌    |   ✅   |   ✅    |
+|        | 2.8.0 | 2.10.0 | 3.0.0 |
+|--------|:-----:|:------:|:-----:|
+| 7.3.0+ |  N/A  |  N/A   |   ✅   |
+| 7.0.0+ |   ✅   |   ✅    |   ❌   |
+| 6.3.0+ |   ✅   |   ✅    |   ❌   |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
 please use `dependency_overrides` to fix it.
