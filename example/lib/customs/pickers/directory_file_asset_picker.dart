@@ -1185,9 +1185,9 @@ class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
   FileAssetPickerViewerProvider(List<File> super.assets);
 
   @override
-  void unSelectAssetEntity(File entity) {
+  void unSelectAsset(File item) {
     final List<File> set = List<File>.from(currentlySelectedAssets);
-    set.removeWhere((File f) => f.path == entity.path);
+    set.removeWhere((File f) => f.path == item.path);
     currentlySelectedAssets = List<File>.from(set);
   }
 }
@@ -1521,9 +1521,9 @@ class FileAssetPickerViewerBuilderDelegate
         behavior: HitTestBehavior.opaque,
         onTap: () {
           if (isSelected) {
-            provider?.unSelectAssetEntity(asset);
+            provider?.unSelectAsset(asset);
           } else {
-            provider?.selectAssetEntity(asset);
+            provider?.selectAsset(asset);
           }
         },
         child: AnimatedContainer(
@@ -1557,9 +1557,11 @@ class FileAssetPickerViewerBuilderDelegate
       value: isSelected,
       onChanged: (bool? value) {
         if (isSelected) {
-          provider?.unSelectAssetEntity(asset);
+          provider?.unSelectAsset(asset);
+          selectorProvider?.unSelectAsset(asset);
         } else {
-          provider?.selectAssetEntity(asset);
+          provider?.selectAsset(asset);
+          selectorProvider?.selectAsset(asset);
         }
       },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

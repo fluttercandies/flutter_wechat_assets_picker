@@ -235,7 +235,8 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
       ValueNotifier<int>(selectedCount);
 
   void unSelectAsset(Asset entity) {
-    provider?.unSelectAssetEntity(entity);
+    provider?.unSelectAsset(entity);
+    selectorProvider?.unSelectAsset(entity);
     if (!isSelectedPreviewing) {
       selectedAssets?.remove(entity);
     }
@@ -248,7 +249,8 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     if (maxAssets != null && selectedCount >= maxAssets!) {
       return;
     }
-    provider?.selectAssetEntity(entity);
+    provider?.selectAsset(entity);
+    selectorProvider?.selectAsset(entity);
     if (!isSelectedPreviewing) {
       selectedAssets?.add(entity);
     }
