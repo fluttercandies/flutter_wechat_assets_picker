@@ -1388,34 +1388,31 @@ class FileAssetPickerViewerBuilderDelegate
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: syncSelectedAssetsWhenPop,
-      child: Theme(
-        data: themeData,
-        child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: themeData.brightness == Brightness.dark
-              ? SystemUiOverlayStyle.light
-              : SystemUiOverlayStyle.dark,
-          child: Material(
-            color: Colors.black,
-            child: Stack(
-              children: <Widget>[
-                Positioned.fill(
-                  child: PageView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    controller: _pageController,
-                    itemCount: previewAssets.length,
-                    itemBuilder: assetPageBuilder,
-                    onPageChanged: (int index) {
-                      currentIndex = index;
-                      pageStreamController.add(index);
-                    },
-                  ),
+    return Theme(
+      data: themeData,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: themeData.brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
+        child: Material(
+          color: Colors.black,
+          child: Stack(
+            children: <Widget>[
+              Positioned.fill(
+                child: PageView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  controller: _pageController,
+                  itemCount: previewAssets.length,
+                  itemBuilder: assetPageBuilder,
+                  onPageChanged: (int index) {
+                    currentIndex = index;
+                    pageStreamController.add(index);
+                  },
                 ),
-                appBar(context),
-                if (selectedAssets != null) bottomDetailBuilder(context),
-              ],
-            ),
+              ),
+              appBar(context),
+              if (selectedAssets != null) bottomDetailBuilder(context),
+            ],
           ),
         ),
       ),
