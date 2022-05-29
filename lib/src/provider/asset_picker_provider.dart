@@ -21,8 +21,8 @@ import '../internal/singleton.dart';
 /// and how to get the thumbnail data of a path.
 abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   AssetPickerProvider({
-    this.maxAssets = 9,
-    this.pageSize = 320,
+    this.maxAssets = defaultMaxAssetsCount,
+    this.pageSize = defaultAssetsPerPage,
     this.pathThumbnailSize = defaultPathThumbnailSize,
     List<Asset>? selectedAssets,
   }) {
