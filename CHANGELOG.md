@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 7.3.1
+
+### Improvements
+
+- Improve selection callers between picker and viewer. (#327)
+
 ## 7.3.0
 
 Migrate to Flutter 3, drop supports for previous Flutter versions.
