@@ -343,7 +343,7 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
 
   @override
   void unSelectAsset(File item) {
-    final List<File> set = List<File>.from(selectedAssets);
+    final List<File> set = selectedAssets.toList();
     set.removeWhere((File f) => f.path == item.path);
     selectedAssets = set;
   }
@@ -1186,9 +1186,9 @@ class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
 
   @override
   void unSelectAsset(File item) {
-    final List<File> set = List<File>.from(currentlySelectedAssets);
-    set.removeWhere((File f) => f.path == item.path);
-    currentlySelectedAssets = List<File>.from(set);
+    final List<File> list = currentlySelectedAssets.toList()
+      ..removeWhere((File f) => f.path == item.path);
+    currentlySelectedAssets = list;
   }
 }
 

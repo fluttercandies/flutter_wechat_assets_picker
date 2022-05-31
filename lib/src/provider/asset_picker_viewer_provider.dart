@@ -15,7 +15,7 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
     List<A>? assets, {
     this.maxAssets = defaultMaxAssetsCount,
   }) {
-    _currentlySelectedAssets = List<A>.from(assets ?? <A>[]);
+    _currentlySelectedAssets = (assets ?? <A>[]).toList();
   }
 
   /// Maximum count for asset selection.
@@ -46,7 +46,8 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
         currentlySelectedAssets.contains(item)) {
       return;
     }
-    currentlySelectedAssets = _currentlySelectedAssets..add(item);
+    final List<A> newList = _currentlySelectedAssets.toList()..add(item);
+    currentlySelectedAssets = newList;
   }
 
   /// Un-select asset.
@@ -56,7 +57,8 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
         !currentlySelectedAssets.contains(item)) {
       return;
     }
-    currentlySelectedAssets = _currentlySelectedAssets..remove(item);
+    final List<A> newList = _currentlySelectedAssets.toList()..remove(item);
+    currentlySelectedAssets = newList;
   }
 
   @Deprecated('Use selectAsset instead')
