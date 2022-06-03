@@ -21,13 +21,13 @@ import '../internal/singleton.dart';
 /// and how to get the thumbnail data of a path.
 abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   AssetPickerProvider({
-    this.maxAssets = 9,
-    this.pageSize = 320,
+    this.maxAssets = defaultMaxAssetsCount,
+    this.pageSize = defaultAssetsPerPage,
     this.pathThumbnailSize = defaultPathThumbnailSize,
     List<Asset>? selectedAssets,
   }) {
-    if (selectedAssets?.isNotEmpty ?? false) {
-      _selectedAssets = List<Asset>.from(selectedAssets!);
+    if (selectedAssets != null && selectedAssets.isNotEmpty) {
+      _selectedAssets = selectedAssets.toList();
     }
   }
 
@@ -172,7 +172,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     if (value == _currentAssets) {
       return;
     }
-    _currentAssets = List<Asset>.from(value);
+    _currentAssets = value.toList();
     notifyListeners();
   }
 
@@ -185,7 +185,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     if (value == _selectedAssets) {
       return;
     }
-    _selectedAssets = List<Asset>.from(value);
+    _selectedAssets = value.toList();
     notifyListeners();
   }
 
@@ -212,7 +212,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     if (selectedAssets.length == maxAssets || selectedAssets.contains(item)) {
       return;
     }
-    final List<Asset> set = List<Asset>.from(selectedAssets);
+    final List<Asset> set = selectedAssets.toList();
     set.add(item);
     selectedAssets = set;
   }
@@ -220,7 +220,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// Un-select asset.
   /// 取消选中资源
   void unSelectAsset(Asset item) {
-    final List<Asset> set = List<Asset>.from(selectedAssets);
+    final List<Asset> set = selectedAssets.toList();
     set.remove(item);
     selectedAssets = set;
   }
@@ -344,7 +344,7 @@ class DefaultAssetPickerProvider
       page: page,
       size: pageSize,
     );
-    _currentAssets = List<AssetEntity>.of(list);
+    _currentAssets = list.toList();
     _hasAssetsToDisplay = currentAssets.isNotEmpty;
     notifyListeners();
   }
@@ -355,7 +355,7 @@ class DefaultAssetPickerProvider
       page: currentAssetsListPage,
       size: pageSize,
     );
-    final List<AssetEntity> assets = List<AssetEntity>.of(list);
+    final List<AssetEntity> assets = list.toList();
     if (assets.isNotEmpty && currentAssets.contains(assets[0])) {
       return;
     }

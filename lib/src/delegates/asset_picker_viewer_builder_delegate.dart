@@ -235,7 +235,8 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
       ValueNotifier<int>(selectedCount);
 
   void unSelectAsset(Asset entity) {
-    provider?.unSelectAssetEntity(entity);
+    provider?.unSelectAsset(entity);
+    selectorProvider?.unSelectAsset(entity);
     if (!isSelectedPreviewing) {
       selectedAssets?.remove(entity);
     }
@@ -248,7 +249,8 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     if (maxAssets != null && selectedCount >= maxAssets!) {
       return;
     }
-    provider?.selectAssetEntity(entity);
+    provider?.selectAsset(entity);
+    selectorProvider?.selectAsset(entity);
     if (!isSelectedPreviewing) {
       selectedAssets?.add(entity);
     }
@@ -285,6 +287,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// Sync selected assets currently with asset picker provider.
   /// 在预览中当前已选的图片同步到选择器的状态
+  @Deprecated('The method is not used by the package anymore')
   Future<bool> syncSelectedAssetsWhenPop() async {
     if (provider?.currentlySelectedAssets != null) {
       selectorProvider?.selectedAssets = provider!.currentlySelectedAssets;
@@ -971,35 +974,32 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: syncSelectedAssetsWhenPop,
-      child: Theme(
-        data: themeData,
-        child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: themeData.appBarTheme.systemOverlayStyle ??
-              (themeData.effectiveBrightness.isDark
-                  ? SystemUiOverlayStyle.light
-                  : SystemUiOverlayStyle.dark),
-          child: Material(
-            color: themeData.colorScheme.onSecondary,
-            child: Stack(
-              children: <Widget>[
-                Positioned.fill(child: _pageViewBuilder(context)),
-                if (isWeChatMoment && hasVideo) ...<Widget>[
-                  momentVideoBackButton(context),
-                  PositionedDirectional(
-                    end: 16,
-                    bottom: context.bottomPadding + 16,
-                    child: confirmButton(context),
-                  ),
-                ] else ...<Widget>[
-                  appBar(context),
-                  if (selectedAssets != null ||
-                      (isWeChatMoment && hasVideo && isAppleOS))
-                    bottomDetailBuilder(context),
-                ],
+    return Theme(
+      data: themeData,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: themeData.appBarTheme.systemOverlayStyle ??
+            (themeData.effectiveBrightness.isDark
+                ? SystemUiOverlayStyle.light
+                : SystemUiOverlayStyle.dark),
+        child: Material(
+          color: themeData.colorScheme.onSecondary,
+          child: Stack(
+            children: <Widget>[
+              Positioned.fill(child: _pageViewBuilder(context)),
+              if (isWeChatMoment && hasVideo) ...<Widget>[
+                momentVideoBackButton(context),
+                PositionedDirectional(
+                  end: 16,
+                  bottom: context.bottomPadding + 16,
+                  child: confirmButton(context),
+                ),
+              ] else ...<Widget>[
+                appBar(context),
+                if (selectedAssets != null ||
+                    (isWeChatMoment && hasVideo && isAppleOS))
+                  bottomDetailBuilder(context),
               ],
-            ),
+            ],
           ),
         ),
       ),

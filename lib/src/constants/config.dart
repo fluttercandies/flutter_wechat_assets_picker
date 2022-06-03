@@ -14,8 +14,8 @@ import 'enums.dart';
 class AssetPickerConfig {
   const AssetPickerConfig({
     this.selectedAssets,
-    this.maxAssets = 9,
-    this.pageSize = 80,
+    this.maxAssets = defaultMaxAssetsCount,
+    this.pageSize = defaultAssetsPerPage,
     this.gridThumbnailSize = defaultAssetGridPreviewSize,
     this.pathThumbnailSize = defaultPathThumbnailSize,
     this.previewThumbnailSize,

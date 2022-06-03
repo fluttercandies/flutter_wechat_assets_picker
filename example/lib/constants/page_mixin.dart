@@ -39,7 +39,7 @@ mixin ExamplePageMixin<T extends StatefulWidget> on State<T> {
   Future<void> selectAssets(PickMethod model) async {
     final List<AssetEntity>? result = await model.method(context, assets);
     if (result != null) {
-      assets = List<AssetEntity>.from(result);
+      assets = result.toList();
       if (mounted) {
         setState(() {});
       }
@@ -56,7 +56,7 @@ mixin ExamplePageMixin<T extends StatefulWidget> on State<T> {
 
   void onResult(List<AssetEntity>? result) {
     if (result != null && result != assets) {
-      assets = List<AssetEntity>.from(result);
+      assets = result.toList();
       if (mounted) {
         setState(() {});
       }

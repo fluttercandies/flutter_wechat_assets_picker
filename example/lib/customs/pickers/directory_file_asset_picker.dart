@@ -343,7 +343,7 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
 
   @override
   void unSelectAsset(File item) {
-    final List<File> set = List<File>.from(selectedAssets);
+    final List<File> set = selectedAssets.toList();
     set.removeWhere((File f) => f.path == item.path);
     selectedAssets = set;
   }
@@ -1185,10 +1185,10 @@ class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
   FileAssetPickerViewerProvider(List<File> super.assets);
 
   @override
-  void unSelectAssetEntity(File entity) {
-    final List<File> set = List<File>.from(currentlySelectedAssets);
-    set.removeWhere((File f) => f.path == entity.path);
-    currentlySelectedAssets = List<File>.from(set);
+  void unSelectAsset(File item) {
+    final List<File> list = currentlySelectedAssets.toList()
+      ..removeWhere((File f) => f.path == item.path);
+    currentlySelectedAssets = list;
   }
 }
 
@@ -1388,34 +1388,31 @@ class FileAssetPickerViewerBuilderDelegate
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: syncSelectedAssetsWhenPop,
-      child: Theme(
-        data: themeData,
-        child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: themeData.brightness == Brightness.dark
-              ? SystemUiOverlayStyle.light
-              : SystemUiOverlayStyle.dark,
-          child: Material(
-            color: Colors.black,
-            child: Stack(
-              children: <Widget>[
-                Positioned.fill(
-                  child: PageView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    controller: _pageController,
-                    itemCount: previewAssets.length,
-                    itemBuilder: assetPageBuilder,
-                    onPageChanged: (int index) {
-                      currentIndex = index;
-                      pageStreamController.add(index);
-                    },
-                  ),
+    return Theme(
+      data: themeData,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: themeData.brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
+        child: Material(
+          color: Colors.black,
+          child: Stack(
+            children: <Widget>[
+              Positioned.fill(
+                child: PageView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  controller: _pageController,
+                  itemCount: previewAssets.length,
+                  itemBuilder: assetPageBuilder,
+                  onPageChanged: (int index) {
+                    currentIndex = index;
+                    pageStreamController.add(index);
+                  },
                 ),
-                appBar(context),
-                if (selectedAssets != null) bottomDetailBuilder(context),
-              ],
-            ),
+              ),
+              appBar(context),
+              if (selectedAssets != null) bottomDetailBuilder(context),
+            ],
           ),
         ),
       ),
@@ -1521,9 +1518,9 @@ class FileAssetPickerViewerBuilderDelegate
         behavior: HitTestBehavior.opaque,
         onTap: () {
           if (isSelected) {
-            provider?.unSelectAssetEntity(asset);
+            provider?.unSelectAsset(asset);
           } else {
-            provider?.selectAssetEntity(asset);
+            provider?.selectAsset(asset);
           }
         },
         child: AnimatedContainer(
@@ -1557,9 +1554,11 @@ class FileAssetPickerViewerBuilderDelegate
       value: isSelected,
       onChanged: (bool? value) {
         if (isSelected) {
-          provider?.unSelectAssetEntity(asset);
+          provider?.unSelectAsset(asset);
+          selectorProvider?.unSelectAsset(asset);
         } else {
-          provider?.selectAssetEntity(asset);
+          provider?.selectAsset(asset);
+          selectorProvider?.selectAsset(asset);
         }
       },
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
