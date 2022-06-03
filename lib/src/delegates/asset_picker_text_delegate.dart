@@ -846,11 +846,8 @@ class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get sUnitAssetCountLabel => 'quantité';
 }
 
+/// [AssetPickerTextDelegate] implements with Turkish
 /// Added Turkish Language Support
-///
-/// @date 20220601
-/// @author Yusuf Gündoğdu
-/// @author Cevheri
 class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   const TurkishAssetPickerTextDelegate();
 
@@ -870,7 +867,7 @@ class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get gifIndicator => 'GIF';
 
   @override
-  String get loadFailed => 'Yükleme başarısız!';
+  String get loadFailed => 'Yükleme başarısız';
 
   @override
   String get original => 'Orijinal';
@@ -885,10 +882,10 @@ class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get emptyList => 'Boş liste';
 
   @override
-  String get unSupportedAssetType => 'Desteklenmeyen HEIC medya tipi!';
+  String get unSupportedAssetType => 'Desteklenmeyen HEIC medya tipi';
 
   @override
-  String get unableToAccessAll => 'Cihazdaki tüm varlıklara erişilemiyor!';
+  String get unableToAccessAll => 'Cihazdaki tüm varlıklara erişilemiyor';
 
   @override
   String get viewingLimitedAssetsTip =>
