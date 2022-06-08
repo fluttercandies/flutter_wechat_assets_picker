@@ -240,9 +240,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     if (!isSelectedPreviewing) {
       selectedAssets?.remove(entity);
     }
-    if (selectedCount != selectedNotifier.value) {
-      selectedNotifier.value = selectedCount;
-    }
+    selectedNotifier.value = selectedCount;
   }
 
   void selectAsset(Asset entity) {
@@ -254,12 +252,10 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     if (!isSelectedPreviewing) {
       selectedAssets?.add(entity);
     }
-    if (selectedCount != selectedNotifier.value) {
-      selectedNotifier.value = selectedCount;
-    }
+    selectedNotifier.value = selectedCount;
   }
 
-  Future<void> onChangingSelected(
+  Future<bool> onChangingSelected(
     BuildContext context,
     Asset asset,
     bool isSelected,
@@ -270,13 +266,14 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
       isSelected,
     );
     if (selectPredicateResult == false) {
-      return;
+      return false;
     }
     if (isSelected) {
       unSelectAsset(asset);
-      return;
+    } else {
+      selectAsset(asset);
     }
-    selectAsset(asset);
+    return true;
   }
 
   /// Method to switch [isDisplayingDetail].
@@ -806,7 +803,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0),
             ),
-            onPressed: () {
+            onPressed: () async {
               if (isWeChatMoment && hasVideo) {
                 Navigator.of(context).pop(<AssetEntity>[currentAsset]);
                 return;
@@ -815,10 +812,11 @@ class DefaultAssetPickerViewerBuilderDelegate
                 Navigator.of(context).pop(provider.currentlySelectedAssets);
                 return;
               }
-              selectAsset(currentAsset);
-              Navigator.of(context).pop(
-                selectedAssets ?? <AssetEntity>[currentAsset],
-              );
+              if (await onChangingSelected(context, currentAsset, false)) {
+                Navigator.of(context).pop(
+                  selectedAssets ?? <AssetEntity>[currentAsset],
+                );
+              }
             },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             child: ScaleText(

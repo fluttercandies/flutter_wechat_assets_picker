@@ -4,6 +4,13 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 7.3.2
+
+### Improvements
+
+- Improve `onChangingSelected` in `AssetPickerViewerBuilderDelegate`. (#332)
+- Fix typo in `README.md`. (#333)
+
 ## 7.3.1
 
 ### Improvements
