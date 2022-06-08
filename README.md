@@ -205,7 +205,7 @@ Fields in `AssetPickerConfig`:
 | pathThumbnailSize                 | `ThumbnailSize`                      | Thumbnail size for the path selector.                                     | `ThumbnailSize.square(80)`  |
 | previewThumbnailSize              | `ThumbnailSize?`                     | Preview thumbnail size in the viewer.                                     | `null`                      |
 | requestType                       | `RequestType`                        | Request type for picker.                                                  | `RequestType.common`        |
-| specialPickerType                 | `SpacialPickerType?`                 | Provides the option to integrate a custom picker type.                    | `null`                      |
+| specialPickerType                 | `SpecialPickerType?`                 | Provides the option to integrate a custom picker type.                    | `null`                      |
 | keepScrollOffset                  | `bool`                               | Whether the picker should save the scroll offset between pushes and pops. | `null`                      |
 | sortPathDelegate                  | `SortPathDelegate<AssetPathEntity>?` | Path entities sort delegate for the picker, sort paths as you want.       | `CommonSortPathDelegate`    |
 | filterOptions                     | `FilterOptionGroup?`                 | Allow users to customize assets filter options.                           | `null`                      |
