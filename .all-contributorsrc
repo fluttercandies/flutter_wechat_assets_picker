@@ -175,6 +175,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "taqiabdulaziz",
+      "name": "Muhammad Taqi Abdul Aziz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30410316?v=4",
+      "profile": "http://taqi.me",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
