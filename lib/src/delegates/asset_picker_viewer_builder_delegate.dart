@@ -790,48 +790,55 @@ class DefaultAssetPickerViewerBuilderDelegate
             'Viewer provider must not be null '
             'when the special type is not WeChat moment.',
           );
+          Future<void> onPressed() async {
+            if (isWeChatMoment && hasVideo) {
+              Navigator.of(context).pop(<AssetEntity>[currentAsset]);
+              return;
+            }
+            if (provider!.isSelectedNotEmpty) {
+              Navigator.of(context).pop(provider.currentlySelectedAssets);
+              return;
+            }
+            if (await onChangingSelected(context, currentAsset, false)) {
+              Navigator.of(context).pop(
+                selectedAssets ?? <AssetEntity>[currentAsset],
+              );
+            }
+          }
+
+          String buildText() {
+            if (isWeChatMoment && hasVideo) {
+              return textDelegate.confirm;
+            }
+            if (provider!.isSelectedNotEmpty) {
+              return '${textDelegate.confirm}'
+                  ' (${provider.currentlySelectedAssets.length}'
+                  '/'
+                  '${selectorProvider!.maxAssets})';
+            }
+            return textDelegate.confirm;
+          }
+
+          final bool isButtonEnabled = provider == null ||
+              provider.currentlySelectedAssets.isNotEmpty ||
+              previewAssets.isEmpty ||
+              selectedNotifier.value == 0;
           return MaterialButton(
-            minWidth: () {
-              if (isWeChatMoment && hasVideo) {
-                return 48.0;
-              }
-              return provider!.isSelectedNotEmpty ? 48.0 : 20.0;
-            }(),
-            height: 32.0,
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            minWidth:
+                (isWeChatMoment && hasVideo) || provider!.isSelectedNotEmpty
+                    ? 48
+                    : 20,
+            height: 32,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             color: themeData.colorScheme.secondary,
+            disabledColor: themeData.dividerColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(3.0),
+              borderRadius: BorderRadius.circular(3),
             ),
-            onPressed: () async {
-              if (isWeChatMoment && hasVideo) {
-                Navigator.of(context).pop(<AssetEntity>[currentAsset]);
-                return;
-              }
-              if (provider!.isSelectedNotEmpty) {
-                Navigator.of(context).pop(provider.currentlySelectedAssets);
-                return;
-              }
-              if (await onChangingSelected(context, currentAsset, false)) {
-                Navigator.of(context).pop(
-                  selectedAssets ?? <AssetEntity>[currentAsset],
-                );
-              }
-            },
+            onPressed: isButtonEnabled ? onPressed : null,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             child: ScaleText(
-              () {
-                if (isWeChatMoment && hasVideo) {
-                  return textDelegate.confirm;
-                }
-                if (provider!.isSelectedNotEmpty) {
-                  return '${textDelegate.confirm}'
-                      ' (${provider.currentlySelectedAssets.length}'
-                      '/'
-                      '${selectorProvider!.maxAssets})';
-                }
-                return textDelegate.confirm;
-              }(),
+              buildText(),
               style: TextStyle(
                 color: themeData.textTheme.bodyText1?.color,
                 fontSize: 17,

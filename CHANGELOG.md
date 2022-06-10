@@ -11,6 +11,10 @@ that can be found in the LICENSE file. -->
 - Improve `onChangingSelected` in `AssetPickerViewerBuilderDelegate`. (#332)
 - Fix typo in `README.md`. (#333)
 
+### Fixes
+
+- Fix behaviors when unselecting all assets in the viewer.
+
 ## 7.3.1
 
 ### Improvements
