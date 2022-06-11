@@ -13,7 +13,7 @@ that can be found in the LICENSE file. -->
 
 ### Fixes
 
-- Fix behaviors when unselecting all assets in the viewer.
+- Fix behaviors when unselecting all assets in the viewer. (#335)
 
 ## 7.3.1
 
