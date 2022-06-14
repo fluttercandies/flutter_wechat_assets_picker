@@ -16,11 +16,9 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - uses: k-paxian/dart-package-publisher@v1.3
+      - uses: actions/checkout@v3
+      - uses: k-paxian/dart-package-publisher@master
         with:
           credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-          dryRunOnly: true
           flutter: true
-          skipTests: true
+          dryRunOnly: true
