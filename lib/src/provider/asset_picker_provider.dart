@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../delegates/sort_path_delegate.dart';
 import '../internal/singleton.dart';
+import '../models/path_wrapper.dart';
 
 /// [ChangeNotifier] for assets picker.
 ///
@@ -50,7 +51,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   @override
   void dispose() {
     _isAssetsEmpty = false;
-    _pathsList.clear();
+    _paths.clear();
     _currentPath = null;
     _currentAssets.clear();
     _selectedAssets.clear();
@@ -63,11 +64,11 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
 
   /// Get the thumbnail from the first asset under the specific path entity.
   /// 获取指定路径下的第一个资源的缩略图数据
-  Future<Uint8List?> getThumbnailFromPath(Path path);
+  Future<Uint8List?> getThumbnailFromPath(PathWrapper<Path> path);
 
   /// Switch between paths.
   /// 切换路径
-  Future<void> switchPath([Path? path]);
+  Future<void> switchPath([PathWrapper<Path>? path]);
 
   /// Get assets under the specific path entity.
   /// 获取指定路径下的资源
@@ -105,7 +106,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
 
   /// Whether more assets are waiting for a load.
   /// 是否还有更多资源可以加载
-  bool get hasMoreToLoad => _currentAssets.length < _totalAssetsCount;
+  bool get hasMoreToLoad => _currentAssets.length < _totalAssetsCount!;
 
   /// The current page for assets list.
   /// 当前加载的资源列表分页数
@@ -114,10 +115,10 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
 
   /// Total count for assets.
   /// 资源总数
-  int get totalAssetsCount => _totalAssetsCount;
-  int _totalAssetsCount = 0;
+  int? get totalAssetsCount => _totalAssetsCount;
+  int? _totalAssetsCount;
 
-  set totalAssetsCount(int value) {
+  set totalAssetsCount(int? value) {
     if (value == _totalAssetsCount) {
       return;
     }
@@ -131,31 +132,30 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// Using [Map] in order to save the thumbnail data
   /// for the first asset under the path.
   /// 使用 [Map] 来保存路径下第一个资源的缩略图数据
-  Map<Path, Uint8List?> get pathsList => _pathsList;
-  final Map<Path, Uint8List?> _pathsList = <Path, Uint8List?>{};
+  List<PathWrapper<Path>> get paths => _paths;
+  final List<PathWrapper<Path>> _paths = <PathWrapper<Path>>[];
 
   /// Set thumbnail [data] for the specific [path].
   /// 为指定的路径设置缩略图数据
   void setPathThumbnail(Path path, Uint8List? data) {
-    _pathsList[path] = data;
-    notifyListeners();
+    final int index = _paths.indexWhere(
+      (PathWrapper<Path> w) => w.path == path,
+    );
+    if (index != -1) {
+      final PathWrapper<Path> newWrapper = _paths[index].copyWith(
+        thumbnailData: data,
+      );
+      _paths[index] = newWrapper;
+      notifyListeners();
+    }
   }
-
-  /// How many path has a valid thumb data.
-  /// 当前有多少目录已经正常载入了缩略图
-  ///
-  /// This getter provides a "Should Rebuild" condition judgement to [Selector]
-  /// with the path entities widget.
-  /// 它为目录部件展示部分的 [Selector] 提供了是否重建的条件。
-  int get validPathThumbnailsCount =>
-      _pathsList.values.where((Uint8List? d) => d != null).length;
 
   /// The path which is currently using.
   /// 正在查看的资源路径
-  Path? get currentPath => _currentPath;
-  Path? _currentPath;
+  PathWrapper<Path>? get currentPath => _currentPath;
+  PathWrapper<Path>? _currentPath;
 
-  set currentPath(Path? value) {
+  set currentPath(PathWrapper<Path>? value) {
     if (value == _currentPath) {
       return;
     }
@@ -274,25 +274,19 @@ class DefaultAssetPickerProvider
   final FilterOptionGroup? filterOptions;
 
   @override
-  set currentPath(AssetPathEntity? value) {
+  set currentPath(PathWrapper<AssetPathEntity>? value) {
     if (value == _currentPath) {
       return;
     }
     _currentPath = value;
-    if (value != null &&
-        _pathsList.keys.any((AssetPathEntity p) => p.id == value.id)) {
-      final AssetPathEntity previous = _pathsList.keys.singleWhere(
-        (AssetPathEntity p) => p.id == value.id,
+    if (value != null) {
+      final int index = _paths.indexWhere(
+        (PathWrapper<AssetPathEntity> p) => p.path.id == value.path.id,
       );
-      final int index = _pathsList.keys.toList().indexOf(previous);
-      final List<MapEntry<AssetPathEntity, Uint8List?>> newEntries =
-          _pathsList.entries.toList()
-            ..removeAt(index)
-            ..insert(index, MapEntry<AssetPathEntity, Uint8List?>(value, null));
-      _pathsList
-        ..clear()
-        ..addEntries(newEntries);
-      getThumbnailFromPath(value);
+      if (index != -1) {
+        _paths[index] = value;
+        getThumbnailFromPath(value);
+      }
     }
     notifyListeners();
   }
@@ -323,18 +317,29 @@ class DefaultAssetPickerProvider
       filterOption: options,
     );
 
-    // Sort path using sort path delegate.
-    Singleton.sortPathDelegate.sort(list);
-
     for (final AssetPathEntity pathEntity in list) {
+      final int index = _paths.indexWhere(
+        (PathWrapper<AssetPathEntity> p) => p.path.id == pathEntity.id,
+      );
+      final PathWrapper<AssetPathEntity> wrapper = PathWrapper<AssetPathEntity>(
+        path: pathEntity,
+      );
+      if (index == -1) {
+        _paths.add(wrapper);
+      } else {
+        _paths[index] = wrapper;
+      }
       // Use sync method to avoid unnecessary wait.
-      _pathsList[pathEntity] = null;
-      getThumbnailFromPath(pathEntity);
+      getAssetCountFromPath(wrapper);
+      getThumbnailFromPath(wrapper);
     }
 
+    // Sort path using sort path delegate.
+    Singleton.sortPathDelegate.sort(_paths);
+
     // Set first path entity as current path entity.
-    if (_pathsList.isNotEmpty) {
-      _currentPath ??= pathsList.keys.elementAt(0);
+    if (_paths.isNotEmpty) {
+      _currentPath ??= _paths.first;
     }
   }
 
@@ -351,7 +356,7 @@ class DefaultAssetPickerProvider
 
   @override
   Future<void> loadMoreAssets() async {
-    final List<AssetEntity> list = await currentPath!.getAssetListPaged(
+    final List<AssetEntity> list = await currentPath!.path.getAssetListPaged(
       page: currentAssetsListPage,
       size: pageSize,
     );
@@ -366,7 +371,7 @@ class DefaultAssetPickerProvider
   }
 
   @override
-  Future<void> switchPath([AssetPathEntity? path]) async {
+  Future<void> switchPath([PathWrapper<AssetPathEntity>? path]) async {
     assert(
       () {
         if (_currentPath == null && path == null) {
@@ -390,32 +395,23 @@ class DefaultAssetPickerProvider
     }
     path ??= _currentPath!;
     _currentPath = path;
-    _totalAssetsCount = path.assetCount;
+    _totalAssetsCount = path.assetCount ?? await path.path.assetCountAsync;
     notifyListeners();
-    await getAssetsFromPath(0, currentPath!);
+    await getAssetsFromPath(0, currentPath!.path);
   }
 
   @override
   Future<Uint8List?> getThumbnailFromPath(
-    AssetPathEntity path,
+    PathWrapper<AssetPathEntity> path,
   ) async {
-    assert(
-      () {
-        if (path.assetCount < 1) {
-          throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary('No assets in the path ${path.id}.'),
-            ErrorDescription(
-              'Thumbnail can only obtained when the path contains assets.',
-            ),
-          ]);
-        }
-        return true;
-      }(),
-    );
     if (requestType == RequestType.audio) {
       return null;
     }
-    final List<AssetEntity> assets = await path.getAssetListRange(
+    final int assetCount = path.assetCount ?? await path.path.assetCountAsync;
+    if (assetCount == 0) {
+      return null;
+    }
+    final List<AssetEntity> assets = await path.path.getAssetListRange(
       start: 0,
       end: 1,
     );
@@ -427,20 +423,40 @@ class DefaultAssetPickerProvider
     if (asset.type != AssetType.image && asset.type != AssetType.video) {
       return null;
     }
-    final Uint8List? assetData = await asset.thumbnailDataWithSize(
+    final Uint8List? data = await asset.thumbnailDataWithSize(
       pathThumbnailSize,
     );
-    _pathsList[path] = assetData;
-    notifyListeners();
-    return assetData;
+    final int index = _paths.indexWhere(
+      (PathWrapper<AssetPathEntity> p) => p.path == path.path,
+    );
+    if (index != -1) {
+      _paths[index] = _paths[index].copyWith(thumbnailData: data);
+      notifyListeners();
+    }
+    return data;
+  }
+
+  Future<void> getAssetCountFromPath(PathWrapper<AssetPathEntity> path) async {
+    final int assetCount = await path.path.assetCountAsync;
+    final int index = _paths.indexWhere(
+      (PathWrapper<AssetPathEntity> p) => p == path,
+    );
+    if (index != -1) {
+      _paths[index] = _paths[index].copyWith(assetCount: assetCount);
+      if (index == 0) {
+        _currentPath = _currentPath?.copyWith(assetCount: assetCount);
+      }
+      notifyListeners();
+    }
   }
 
   /// Get assets list from current path entity.
   /// 从当前已选路径获取资源列表
   Future<void> getAssetsFromCurrentPath() async {
-    if (_pathsList.isNotEmpty) {
-      totalAssetsCount = currentPath!.assetCount;
-      await getAssetsFromPath(0, currentPath!);
+    if (_paths.isNotEmpty) {
+      totalAssetsCount =
+          currentPath!.assetCount ?? await currentPath!.path.assetCountAsync;
+      await getAssetsFromPath(0, currentPath!.path);
     } else {
       isAssetsEmpty = true;
     }

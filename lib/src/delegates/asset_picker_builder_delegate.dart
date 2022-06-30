@@ -21,6 +21,7 @@ import '../constants/extensions.dart';
 import '../constants/typedefs.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../internal/singleton.dart';
+import '../models/path_wrapper.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_app_bar.dart';
@@ -244,7 +245,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 路径单独条目选择组件
   Widget pathEntityWidget({
     required BuildContext context,
-    required Map<Path, Uint8List?> list,
+    required List<PathWrapper<Path>> list,
     required int index,
     bool isAudio = false,
   });
@@ -425,11 +426,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             return loadingIndicatorBuilder!(c, isAssetsEmpty);
           }
           if (isAssetsEmpty) {
-            return ScaleText(
-              textDelegate.emptyList,
-              maxScaleFactor: 1.5,
-              semanticsLabel: semanticsTextDelegate.emptyList,
-            );
+            return emptyIndicator(context);
           }
           return w!;
         },
@@ -438,6 +435,14 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           size: context.mediaQuery.size.width / gridCount / 3,
         ),
       ),
+    );
+  }
+
+  Widget emptyIndicator(BuildContext context) {
+    return ScaleText(
+      textDelegate.emptyList,
+      maxScaleFactor: 1.5,
+      semanticsLabel: semanticsTextDelegate.emptyList,
     );
   }
 
@@ -800,7 +805,7 @@ class DefaultAssetPickerBuilderDelegate
     if (!isPermissionLimited) {
       return;
     }
-    final AssetPathEntity? currentPathEntity = provider.currentPath;
+    final PathWrapper<AssetPathEntity>? currentWrapper = provider.currentPath;
     if (call.arguments is Map) {
       final Map<dynamic, dynamic> arguments =
           call.arguments as Map<dynamic, dynamic>;
@@ -812,18 +817,19 @@ class DefaultAssetPickerBuilderDelegate
           ..isAssetsEmpty = true;
         return;
       }
-      if (currentPathEntity == null) {
+      if (currentWrapper == null) {
         await provider.getPaths();
       }
     }
-    if (currentPathEntity != null) {
+    if (currentWrapper != null) {
       final AssetPathEntity newPath =
-          await currentPathEntity.obtainForNewProperties();
+          await currentWrapper.path.obtainForNewProperties();
+      final int assetCount = await newPath.assetCountAsync;
       provider
-        ..currentPath = newPath
-        ..hasAssetsToDisplay = newPath.assetCount != 0
-        ..isAssetsEmpty = newPath.assetCount == 0
-        ..totalAssetsCount = newPath.assetCount;
+        ..currentPath = PathWrapper<AssetPathEntity>(path: newPath)
+        ..hasAssetsToDisplay = assetCount != 0
+        ..isAssetsEmpty = assetCount == 0
+        ..totalAssetsCount = assetCount;
       isSwitchingPath.value = false;
       if (newPath.isAll) {
         await provider.getAssetsFromCurrentPath();
@@ -1019,17 +1025,21 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget assetsGridBuilder(BuildContext context) {
-    return Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
+    return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
-      builder: (BuildContext context, AssetPathEntity? path, __) {
+      builder: (
+        BuildContext context,
+        PathWrapper<AssetPathEntity>? wrapper,
+        __,
+      ) {
         // First, we need the count of the assets.
-        int totalCount = path?.assetCount ?? 0;
+        int totalCount = wrapper?.assetCount ?? 0;
         final Widget? specialItem;
         // If user chose a special item's position, add 1 count.
         if (specialItemPosition != SpecialItemPosition.none) {
           specialItem = specialItemBuilder?.call(
             context,
-            path,
+            wrapper?.path,
             totalCount,
           );
           if (specialItem != null) {
@@ -1040,7 +1050,7 @@ class DefaultAssetPickerBuilderDelegate
         }
         if (totalCount == 0 && specialItem == null) {
           return loadingIndicatorBuilder?.call(context, true) ??
-              Center(child: emptyIndicator(context));
+              loadingIndicator(context);
         }
         // Then we use the [totalCount] to calculate placeholders we need.
         final int placeholderCount;
@@ -1198,10 +1208,11 @@ class DefaultAssetPickerBuilderDelegate
     Widget? specialItem,
   }) {
     final int length = currentAssets.length;
-    final AssetPathEntity? currentPathEntity =
-        context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
+    final PathWrapper<AssetPathEntity>? currentWrapper = context
+        .select<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       (DefaultAssetPickerProvider p) => p.currentPath,
     );
+    final AssetPathEntity? currentPathEntity = currentWrapper?.path;
 
     if (specialItem != null) {
       if ((index == 0 && specialItemPosition == SpecialItemPosition.prepend) ||
@@ -1360,10 +1371,11 @@ class DefaultAssetPickerBuilderDelegate
     int placeholderCount = 0,
     Widget? specialItem,
   }) {
-    final AssetPathEntity? currentPathEntity =
-        context.select<DefaultAssetPickerProvider, AssetPathEntity?>(
+    final PathWrapper<AssetPathEntity>? currentWrapper = context
+        .select<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       (DefaultAssetPickerProvider p) => p.currentPath,
     );
+    final AssetPathEntity? currentPathEntity = currentWrapper?.path;
     final int length = assets.length + placeholderCount;
 
     // Return 1 if the [specialItem] build something.
@@ -1525,14 +1537,6 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
-  Widget emptyIndicator(BuildContext context) {
-    return ScaleText(
-      textDelegate.emptyList,
-      maxScaleFactor: 1.5,
-      semanticsLabel: semanticsTextDelegate.emptyList,
-    );
-  }
-
   @override
   Widget loadingIndicator(BuildContext context) {
     return Center(
@@ -1657,10 +1661,10 @@ class DefaultAssetPickerBuilderDelegate
                   return ListView.separated(
                     padding: const EdgeInsetsDirectional.only(top: 1),
                     shrinkWrap: true,
-                    itemCount: p.pathsList.length,
+                    itemCount: p.paths.length,
                     itemBuilder: (BuildContext c, int i) => pathEntityWidget(
                       context: c,
-                      list: p.pathsList,
+                      list: p.paths,
                       index: i,
                       isAudio: p.requestType == RequestType.audio,
                     ),
@@ -1724,30 +1728,34 @@ class DefaultAssetPickerBuilderDelegate
             borderRadius: BorderRadius.circular(999),
             color: theme.dividerColor,
           ),
-          child: Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
+          child: Selector<DefaultAssetPickerProvider,
+              PathWrapper<AssetPathEntity>?>(
             selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
-            builder: (_, AssetPathEntity? p, Widget? w) => Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                if (p == null && isPermissionLimited)
-                  _text(
-                    context,
-                    textDelegate.changeAccessibleLimitedAssets,
-                    semanticsTextDelegate.changeAccessibleLimitedAssets,
-                  ),
-                if (p != null)
-                  _text(
-                    context,
-                    isPermissionLimited && p.isAll
-                        ? textDelegate.accessiblePathName
-                        : pathNameBuilder?.call(p) ?? p.name,
-                    isPermissionLimited && p.isAll
-                        ? semanticsTextDelegate.accessiblePathName
-                        : pathNameBuilder?.call(p) ?? p.name,
-                  ),
-                w!,
-              ],
-            ),
+            builder: (_, PathWrapper<AssetPathEntity>? p, Widget? w) {
+              final AssetPathEntity? path = p?.path;
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  if (path == null && isPermissionLimited)
+                    _text(
+                      context,
+                      textDelegate.changeAccessibleLimitedAssets,
+                      semanticsTextDelegate.changeAccessibleLimitedAssets,
+                    ),
+                  if (path != null)
+                    _text(
+                      context,
+                      isPermissionLimited && path.isAll
+                          ? textDelegate.accessiblePathName
+                          : pathNameBuilder?.call(path) ?? path.name,
+                      isPermissionLimited && path.isAll
+                          ? semanticsTextDelegate.accessiblePathName
+                          : pathNameBuilder?.call(path) ?? path.name,
+                    ),
+                  w!,
+                ],
+              );
+            },
             child: Padding(
               padding: const EdgeInsetsDirectional.only(start: 5),
               child: DecoratedBox(
@@ -1780,12 +1788,13 @@ class DefaultAssetPickerBuilderDelegate
   @override
   Widget pathEntityWidget({
     required BuildContext context,
-    required Map<AssetPathEntity, Uint8List?> list,
+    required List<PathWrapper<AssetPathEntity>> list,
     required int index,
     bool isAudio = false,
   }) {
-    final AssetPathEntity pathEntity = list.keys.elementAt(index);
-    final Uint8List? data = list.values.elementAt(index);
+    final PathWrapper<AssetPathEntity> wrapper = list[index];
+    final AssetPathEntity pathEntity = wrapper.path;
+    final Uint8List? data = wrapper.thumbnailData;
 
     Widget builder() {
       if (isAudio) {
@@ -1815,11 +1824,11 @@ class DefaultAssetPickerBuilderDelegate
     final String semanticsName = isPermissionLimited && pathEntity.isAll
         ? semanticsTextDelegate.accessiblePathName
         : pathName;
-    final String semanticsCount = '${pathEntity.assetCount}';
-    return Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
+    final String semanticsCount = '${wrapper.assetCount ?? 0}';
+    return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
-      builder: (_, AssetPathEntity? currentPathEntity, __) {
-        final bool isSelected = currentPathEntity == pathEntity;
+      builder: (_, PathWrapper<AssetPathEntity>? currentWrapper, __) {
+        final bool isSelected = currentWrapper?.path == pathEntity;
         return Semantics(
           label: '$semanticsName, '
               '${semanticsTextDelegate.sUnitAssetCountLabel}: '
@@ -1833,9 +1842,7 @@ class DefaultAssetPickerBuilderDelegate
               splashFactory: InkSplash.splashFactory,
               onTap: () {
                 Feedback.forTap(context);
-                context
-                    .read<DefaultAssetPickerProvider>()
-                    .switchPath(pathEntity);
+                context.read<DefaultAssetPickerProvider>().switchPath(wrapper);
                 isSwitchingPath.value = false;
                 gridScrollController.jumpTo(0);
               },

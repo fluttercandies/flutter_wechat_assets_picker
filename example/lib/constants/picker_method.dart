@@ -164,8 +164,9 @@ class PickMethod {
                     final DefaultAssetPickerBuilderDelegate builder =
                         picker.builder as DefaultAssetPickerBuilderDelegate;
                     final DefaultAssetPickerProvider p = builder.provider;
-                    p.currentPath =
-                        await p.currentPath!.obtainForNewProperties();
+                    p.currentPath = PathWrapper<AssetPathEntity>(
+                      path: await p.currentPath!.path.obtainForNewProperties(),
+                    );
                     await p.switchPath(p.currentPath);
                     p.selectAsset(result);
                   },

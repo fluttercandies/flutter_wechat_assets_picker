@@ -52,7 +52,7 @@ void main() {
 class TestPhotoManagerPlugin extends PhotoManagerPlugin {
   @override
   Future<PermissionState> requestPermissionExtend(
-    PermisstionRequestOption requestOption,
+    PermissionRequestOption requestOption,
   ) {
     return SynchronousFuture<PermissionState>(PermissionState.authorized);
   }
@@ -90,7 +90,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       ..currentAssets = <AssetEntity>[
         const AssetEntity(id: 'test', typeInt: 0, width: 0, height: 0),
       ]
-      ..currentPath = pathEntity
+      ..currentPath = PathWrapper<AssetPathEntity>(path: pathEntity)
       ..hasAssetsToDisplay = true
       ..setPathThumbnail(pathEntity, null);
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
