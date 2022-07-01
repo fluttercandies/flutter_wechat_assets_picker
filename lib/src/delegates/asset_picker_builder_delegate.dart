@@ -247,7 +247,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required BuildContext context,
     required List<PathWrapper<Path>> list,
     required int index,
-    bool isAudio = false,
   });
 
   /// A backdrop widget behind the [pathEntityListWidget].
@@ -1656,17 +1655,23 @@ class DefaultAssetPickerBuilderDelegate
               ),
             ),
             Flexible(
-              child: Consumer<DefaultAssetPickerProvider>(
-                builder: (_, DefaultAssetPickerProvider p, __) {
+              child: Selector<DefaultAssetPickerProvider,
+                  List<PathWrapper<AssetPathEntity>>>(
+                selector: (_, DefaultAssetPickerProvider p) => p.paths,
+                builder: (_, List<PathWrapper<AssetPathEntity>> paths, __) {
+                  final List<PathWrapper<AssetPathEntity>> filtered = paths
+                      .where(
+                        (PathWrapper<AssetPathEntity> p) => p.assetCount != 0,
+                      )
+                      .toList();
                   return ListView.separated(
                     padding: const EdgeInsetsDirectional.only(top: 1),
                     shrinkWrap: true,
-                    itemCount: p.paths.length,
+                    itemCount: filtered.length,
                     itemBuilder: (BuildContext c, int i) => pathEntityWidget(
                       context: c,
-                      list: p.paths,
+                      list: filtered,
                       index: i,
-                      isAudio: p.requestType == RequestType.audio,
                     ),
                     separatorBuilder: (_, __) => Container(
                       margin: const EdgeInsetsDirectional.only(start: 60),
@@ -1790,28 +1795,20 @@ class DefaultAssetPickerBuilderDelegate
     required BuildContext context,
     required List<PathWrapper<AssetPathEntity>> list,
     required int index,
-    bool isAudio = false,
   }) {
     final PathWrapper<AssetPathEntity> wrapper = list[index];
     final AssetPathEntity pathEntity = wrapper.path;
     final Uint8List? data = wrapper.thumbnailData;
 
     Widget builder() {
-      if (isAudio) {
+      if (data != null) {
+        return Image.memory(data, fit: BoxFit.cover);
+      }
+      if (pathEntity.type.containsAudio()) {
         return ColoredBox(
           color: theme.colorScheme.primary.withOpacity(0.12),
           child: const Center(child: Icon(Icons.audiotrack)),
         );
-      }
-
-      // The reason that the `thumbData` should be checked at here to see if it
-      // is null is that even the image file is not exist, the `File` can still
-      // returned as it exist, which will cause the thumb bytes return null.
-      //
-      // 此处需要检查缩略图为空的原因是：尽管文件可能已经被删除，
-      // 但通过 `File` 读取的文件对象仍然存在，使得返回的数据为空。
-      if (data != null) {
-        return Image.memory(data, fit: BoxFit.cover);
       }
       return ColoredBox(color: theme.colorScheme.primary.withOpacity(0.12));
     }
@@ -1824,15 +1821,19 @@ class DefaultAssetPickerBuilderDelegate
     final String semanticsName = isPermissionLimited && pathEntity.isAll
         ? semanticsTextDelegate.accessiblePathName
         : pathName;
-    final String semanticsCount = '${wrapper.assetCount ?? 0}';
+    final String? semanticsCount = wrapper.assetCount?.toString();
+    final StringBuffer labelBuffer = StringBuffer(
+      '$semanticsName, ${semanticsTextDelegate.sUnitAssetCountLabel}',
+    );
+    if (semanticsCount != null) {
+      labelBuffer.write(': $semanticsCount');
+    }
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
       builder: (_, PathWrapper<AssetPathEntity>? currentWrapper, __) {
         final bool isSelected = currentWrapper?.path == pathEntity;
         return Semantics(
-          label: '$semanticsName, '
-              '${semanticsTextDelegate.sUnitAssetCountLabel}: '
-              '$semanticsCount',
+          label: labelBuffer.toString(),
           selected: isSelected,
           onTapHint: semanticsTextDelegate.sActionSwitchPathLabel,
           button: false,
@@ -1875,15 +1876,16 @@ class DefaultAssetPickerBuilderDelegate
                                   ),
                                 ),
                               ),
-                              ScaleText(
-                                '($semanticsCount)',
-                                style: TextStyle(
-                                  color: theme.textTheme.caption?.color,
-                                  fontSize: 17,
+                              if (semanticsCount != null)
+                                ScaleText(
+                                  '($semanticsCount)',
+                                  style: TextStyle(
+                                    color: theme.textTheme.caption?.color,
+                                    fontSize: 17,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
                             ],
                           ),
                         ),

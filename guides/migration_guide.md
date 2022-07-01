@@ -28,19 +28,19 @@ a new concept `PathWrapper` to hold metadata together, but initialize fields sep
 
 #### `AssetPickerProvider`
 
-- `AssetPickerProvider.currentPath` has been changed from `Path?` to `PathWrapper<Path>?`.
-- `AssetPickerProvider.pathsList` has been removed, and added `AssetPickerProvider.paths`.
-- `AssetPickerProvider.totalAssetsCount` is now nullable to indicates initialization.
-- `AssetPickerProvider.getThumbnailFromPath`, `AssetPickerProvider.switchPath`
-  have different signature from `Path` to `PathWrapper<Path>`.
+- `currentPath` has been changed from `Path?` to `PathWrapper<Path>?`.
+- `pathsList` has been removed, and added `AssetPickerProvider.paths`.
+- `totalAssetsCount` is now nullable to indicates initialization.
+- `getThumbnailFromPath` and `switchPath` have different signature from `Path` to `PathWrapper<Path>`.
 
 #### `AssetPickerBuilderDelegate`
 
-`AssetPickerBuilderDelegate.pathEntityWidget` has different signature from `Path` to `PathWrapper<Path>`.
+- `pathEntityWidget` has different signature from `Path` to `PathWrapper<Path>`,
+  and the `isAudio` argument has been removed.
 
 #### `SortPathDelegate`
 
-`SortPathDelegate.sort` has a different signature, which needs `PathWrapper`s to sort. More specifically:
+`sort` has a different signature, which needs `PathWrapper`s to sort. More specifically:
 
 Before:
 
