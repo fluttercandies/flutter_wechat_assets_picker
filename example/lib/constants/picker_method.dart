@@ -164,11 +164,12 @@ class PickMethod {
                     final DefaultAssetPickerBuilderDelegate builder =
                         picker.builder as DefaultAssetPickerBuilderDelegate;
                     final DefaultAssetPickerProvider p = builder.provider;
-                    p.currentPath = PathWrapper<AssetPathEntity>(
-                      path: await p.currentPath!.path.obtainForNewProperties(),
-                    );
-                    await p.switchPath(p.currentPath);
-                    p.selectAsset(result);
+                    p
+                      ..currentAssets.insert(0, result)
+                      ..currentPath = p.currentPath!.copyWith(
+                        assetCount: p.currentPath!.assetCount! + 1,
+                      )
+                      ..selectAsset(result);
                   },
                   child: const Center(
                     child: Icon(Icons.camera_enhance, size: 42.0),
