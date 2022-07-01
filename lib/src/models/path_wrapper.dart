@@ -13,8 +13,6 @@ import 'package:flutter/foundation.dart';
 /// and the thumbnail usually backed by [AssetEntity.thumbnailData].
 /// These methods are asynchronous and called separately for better performance.
 /// After calls, use [copyWith] to update paths to avoid unnecessary waits.
-///
-/// [Path] is typically an [AssetPathEntity].
 @immutable
 class PathWrapper<Path> {
   const PathWrapper({
@@ -23,10 +21,31 @@ class PathWrapper<Path> {
     this.thumbnailData,
   });
 
+  /// Typically an [AssetPathEntity].
   final Path path;
+
+  /// The total asset count of the [path].
+  ///
+  /// Nullability represents whether it's initialized.
+  ///
+  /// See also:
+  ///  * [AssetPathEntity.assetCountAsync] API document:
+  ///    https://pub.dev/documentation/photo_manager/latest/photo_manager/AssetPathEntity/assetCountAsync.html
   final int? assetCount;
+
+  /// The thumbnail (first asset) data of the [path].
+  ///
+  /// Nullability represents whether it's initialized.
+  ///
+  /// See also:
+  ///  * [AssetEntity.thumbnailData] API document:
+  ///    https://pub.dev/documentation/photo_manager/latest/photo_manager/AssetEntity/thumbnailData.html
   final Uint8List? thumbnailData;
 
+  /// Creates a modified copy of the object.
+  ///
+  /// Explicitly specified fields get the specified value, all other fields get
+  /// the same value of the current object.
   PathWrapper<Path> copyWith({
     int? assetCount,
     Uint8List? thumbnailData,
