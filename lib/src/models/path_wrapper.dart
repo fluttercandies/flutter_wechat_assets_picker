@@ -73,4 +73,13 @@ class PathWrapper<Path> {
   @override
   int get hashCode =>
       path.hashCode ^ assetCount.hashCode ^ thumbnailData.hashCode;
+
+  @override
+  String toString() {
+    return '$runtimeType('
+        'path: $path, '
+        'assetCount: $assetCount, '
+        'thumbnailData: ${thumbnailData?.runtimeType}'
+        ')';
+  }
 }
