@@ -344,28 +344,24 @@ class DefaultAssetPickerProvider
   }
 
   @override
-  Future<void> getAssetsFromPath(int page, AssetPathEntity path) async {
+  Future<void> getAssetsFromPath([int? page, AssetPathEntity? path]) async {
+    page ??= currentAssetsListPage;
+    path ??= currentPath!.path;
     final List<AssetEntity> list = await path.getAssetListPaged(
       page: page,
       size: pageSize,
     );
-    _currentAssets = list.toList();
+    if (page == 0) {
+      _currentAssets = list;
+    } else {
+      _currentAssets.addAll(list);
+    }
     _hasAssetsToDisplay = currentAssets.isNotEmpty;
     notifyListeners();
   }
 
   @override
-  Future<void> loadMoreAssets() async {
-    final List<AssetEntity> list = await currentPath!.path.getAssetListPaged(
-      page: currentAssetsListPage,
-      size: pageSize,
-    );
-    if (list.isEmpty || currentAssets.contains(list.first)) {
-      return;
-    }
-    currentAssets.addAll(list);
-    notifyListeners();
-  }
+  Future<void> loadMoreAssets() => getAssetsFromPath();
 
   @override
   Future<void> switchPath([PathWrapper<AssetPathEntity>? path]) async {
@@ -373,14 +369,14 @@ class DefaultAssetPickerProvider
       () {
         if (path == null && _currentPath == null) {
           throw FlutterError.fromParts(<DiagnosticsNode>[
-            ErrorSummary('Empty $AssetPathEntity was switched.'),
+            ErrorSummary('Switching empty path.'),
             ErrorDescription(
               'Neither "path" nor "currentPathEntity" is non-null, '
               'which makes this method useless.',
             ),
             ErrorHint(
-              'You need to pass a non-null $AssetPathEntity '
-              'or call this method when the "currentPath" is not null.',
+              'You need to pass a non-null path or call this method '
+              'when the "currentPath" is not null.',
             ),
           ]);
         }
@@ -452,17 +448,10 @@ class DefaultAssetPickerProvider
       final PathWrapper<AssetPathEntity> wrapper = _currentPath!;
       final int assetCount =
           wrapper.assetCount ?? await wrapper.path.assetCountAsync;
-      _totalAssetsCount = assetCount;
+      totalAssetsCount = assetCount;
       if (wrapper.assetCount == null) {
-        _currentPath = _currentPath!.copyWith(assetCount: assetCount);
-        final int index = _paths.indexWhere(
-          (PathWrapper<AssetPathEntity> p) => p.path == wrapper.path,
-        );
-        if (index != -1) {
-          _paths[index] = wrapper.copyWith(assetCount: assetCount);
-        }
+        currentPath = _currentPath!.copyWith(assetCount: assetCount);
       }
-      notifyListeners();
       await getAssetsFromPath(0, currentPath!.path);
     } else {
       isAssetsEmpty = true;
