@@ -10,7 +10,6 @@ import 'package:photo_manager/photo_manager.dart';
 import '../constants/config.dart';
 import '../constants/constants.dart';
 import '../internal/methods.dart';
-import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_page_route.dart';
@@ -78,7 +77,7 @@ class AssetPickerDelegate {
       filterOptions: pickerConfig.filterOptions,
     );
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
-      key: key ?? Singleton.pickerKey,
+      key: key,
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
         initialPermission: ps,
@@ -137,7 +136,7 @@ class AssetPickerDelegate {
   }) async {
     await permissionCheck();
     final Widget picker = AssetPicker<Asset, Path>(
-      key: key ?? Singleton.pickerKey,
+      key: key,
       builder: delegate,
     );
     final List<Asset>? result = await Navigator.of(
