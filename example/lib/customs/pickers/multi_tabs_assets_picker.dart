@@ -307,17 +307,18 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               borderRadius: BorderRadius.circular(999),
               color: theme.dividerColor,
             ),
-            child: Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
+            child: Selector<DefaultAssetPickerProvider,
+                PathWrapper<AssetPathEntity>?>(
               selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
-              builder: (_, AssetPathEntity? p, Widget? w) => Row(
+              builder: (_, PathWrapper<AssetPathEntity>? p, Widget? w) => Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   if (p != null)
                     Flexible(
                       child: Text(
-                        isPermissionLimited && p.isAll
+                        isPermissionLimited && p.path.isAll
                             ? textDelegate.accessiblePathName
-                            : p.name,
+                            : p.path.name,
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.normal,
