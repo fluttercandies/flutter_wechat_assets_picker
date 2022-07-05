@@ -67,6 +67,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
   @override
   Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
+    Key? key,
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
@@ -97,6 +98,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       ..hasAssetsToDisplay = true
       ..totalAssetsCount = 1;
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
+      key: key,
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
         initialPermission: ps,

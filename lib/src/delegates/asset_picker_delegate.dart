@@ -10,7 +10,6 @@ import 'package:photo_manager/photo_manager.dart';
 import '../constants/config.dart';
 import '../constants/constants.dart';
 import '../internal/methods.dart';
-import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_page_route.dart';
@@ -62,6 +61,7 @@ class AssetPickerDelegate {
   /// {@endtemplate}
   Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
+    Key? key,
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
@@ -77,7 +77,7 @@ class AssetPickerDelegate {
       filterOptions: pickerConfig.filterOptions,
     );
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
-      key: Singleton.pickerKey,
+      key: key,
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
         initialPermission: ps,
@@ -130,12 +130,13 @@ class AssetPickerDelegate {
       PickerProvider extends AssetPickerProvider<Asset, Path>>(
     BuildContext context, {
     required AssetPickerBuilderDelegate<Asset, Path> delegate,
+    Key? key,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
     await permissionCheck();
     final Widget picker = AssetPicker<Asset, Path>(
-      key: Singleton.pickerKey,
+      key: key,
       builder: delegate,
     );
     final List<Asset>? result = await Navigator.of(

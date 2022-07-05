@@ -11,8 +11,6 @@ import '../delegates/sort_path_delegate.dart';
 class Singleton {
   const Singleton._();
 
-  static GlobalKey pickerKey = GlobalKey();
-
   static AssetPickerTextDelegate textDelegate = const AssetPickerTextDelegate();
   static SortPathDelegate<dynamic> sortPathDelegate = SortPathDelegate.common;
 
