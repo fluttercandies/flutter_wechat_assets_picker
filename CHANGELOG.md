@@ -8,9 +8,10 @@ that can be found in the LICENSE file. -->
 
 To know more about breaking changes, see [Migration Guide][].
 
-### Improvements
+### New Features
 
-- Introduce `PathWrapper` to improve the overall loading speed. (#338)
+- Introduce `PathWrapper` in delegates to improve the overall loading speed. (#338)
+- Allow using `Key` during picking. (#339)
 
 ## 7.3.2
 
