@@ -4,6 +4,14 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.0.0-dev.1
+
+To know more about breaking changes, see [Migration Guide][].
+
+### Improvements
+
+- Introduce `PathWrapper` to improve the overall loading speed. (#338)
+
 ## 7.3.2
 
 ### Improvements

@@ -8,9 +8,51 @@ This document gathered all breaking changes and migrations requirement between m
 
 ## Major versions
 
+- [8.0.0](#8.0.0)
 - [7.0.0](#7.0.0)
 - [6.0.0](#6.0.0)
 - [5.0.0](#5.0.0)
+
+## 8.0.0
+
+### Summary
+
+_If you didn't extend `AssetPickerProvider`, `AssetPickerBuilderDelegate` or `SortPathDelegate`, you can stop reading._
+
+`AssetPathEntity.assetCountAsync` was introduced in
+[fluttercandies/flutter_photo_manager#784](https://github.com/fluttercandies/flutter_photo_manager/pull/784)
+to improve the loading performance during paths obtain. By migrating the asynchronous getter, we need to introduce
+a new concept `PathWrapper` to hold metadata together, but initialize fields separately.
+
+### Details
+
+#### `AssetPickerProvider`
+
+- `currentPath` has been changed from `Path?` to `PathWrapper<Path>?`.
+- `pathsList` has been removed, and added `AssetPickerProvider.paths`.
+- `totalAssetsCount` is now nullable to indicates initialization.
+- `getThumbnailFromPath` and `switchPath` have different signature from `Path` to `PathWrapper<Path>`.
+
+#### `AssetPickerBuilderDelegate`
+
+- `pathEntityWidget` has different signature from `Path` to `PathWrapper<Path>`,
+  and the `isAudio` argument has been removed.
+
+#### `SortPathDelegate`
+
+`sort` has a different signature, which needs `PathWrapper`s to sort. More specifically:
+
+Before:
+
+```dart
+void sort(List<Path> list) {}
+```
+
+After:
+
+```dart
+void soft(List<PathWrapper<Path>> list) {}
+```
 
 ## 7.0.0
 

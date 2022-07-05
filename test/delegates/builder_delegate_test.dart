@@ -45,14 +45,14 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
     await tester.pumpAndSettle();
-    expect(find.text('testPathNameBuilder'), findsNWidgets(2));
+    expect(find.text('testPathNameBuilder'), findsOneWidget);
   });
 }
 
 class TestPhotoManagerPlugin extends PhotoManagerPlugin {
   @override
   Future<PermissionState> requestPermissionExtend(
-    PermisstionRequestOption requestOption,
+    PermissionRequestOption requestOption,
   ) {
     return SynchronousFuture<PermissionState>(PermissionState.authorized);
   }
@@ -90,9 +90,12 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       ..currentAssets = <AssetEntity>[
         const AssetEntity(id: 'test', typeInt: 0, width: 0, height: 0),
       ]
-      ..currentPath = pathEntity
+      ..currentPath = PathWrapper<AssetPathEntity>(
+        path: pathEntity,
+        assetCount: 1,
+      )
       ..hasAssetsToDisplay = true
-      ..setPathThumbnail(pathEntity, null);
+      ..totalAssetsCount = 1;
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,

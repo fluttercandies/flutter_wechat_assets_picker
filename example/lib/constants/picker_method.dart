@@ -164,9 +164,12 @@ class PickMethod {
                     final DefaultAssetPickerBuilderDelegate builder =
                         picker.builder as DefaultAssetPickerBuilderDelegate;
                     final DefaultAssetPickerProvider p = builder.provider;
-                    p.currentPath =
-                        await p.currentPath!.obtainForNewProperties();
-                    await p.switchPath(p.currentPath);
+                    await p.switchPath(
+                      PathWrapper<AssetPathEntity>(
+                        path:
+                            await p.currentPath!.path.obtainForNewProperties(),
+                      ),
+                    );
                     p.selectAsset(result);
                   },
                   child: const Center(

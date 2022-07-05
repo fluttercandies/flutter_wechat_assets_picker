@@ -295,19 +295,24 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }) : super(selectedAssets: selectedAssets) {
     Future<void>.delayed(const Duration(milliseconds: 300), () async {
       await getPaths();
-      getAssetsFromPath(0, pathsList.keys.elementAt(0));
+      getAssetsFromPath(0, paths.first.path);
     });
   }
 
   @override
   Future<void> getPaths() async {
     currentAssets = <File>[];
-    pathsList.clear();
+    paths.clear();
     final Directory? directory = await getExternalStorageDirectory();
     if (directory != null) {
-      pathsList[directory] = null;
-      currentPath = directory;
-      pathsList[directory] = await getThumbnailFromPath(directory);
+      final PathWrapper<Directory> wrapper = PathWrapper<Directory>(
+        path: directory,
+        thumbnailData: await getThumbnailFromPath(
+          PathWrapper<Directory>(path: directory),
+        ),
+      );
+      paths.add(wrapper);
+      currentPath = wrapper;
     }
   }
 
@@ -327,9 +332,9 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<Uint8List?> getThumbnailFromPath(Directory path) async {
+  Future<Uint8List?> getThumbnailFromPath(PathWrapper<Directory> path) async {
     final List<FileSystemEntity> entities =
-        path.listSync().whereType<File>().toList();
+        path.path.listSync().whereType<File>().toList();
     currentAssets.clear();
     for (final FileSystemEntity entity in entities) {
       final String extension = basename(entity.path).split('.').last;
@@ -354,14 +359,14 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<void> switchPath([Directory? path]) async {
+  Future<void> switchPath([PathWrapper<Directory>? path]) async {
     if (path == null) {
       return;
     }
     currentPath = path;
     totalAssetsCount = 0;
     notifyListeners();
-    await getAssetsFromPath(0, currentPath!);
+    await getAssetsFromPath(0, currentPath!.path);
   }
 }
 
@@ -839,15 +844,15 @@ class FileAssetPickerBuilder
           ),
         ),
       ),
-      child: Selector<FileAssetPickerProvider, Map<Directory, Uint8List?>>(
-        selector: (_, FileAssetPickerProvider p) => p.pathsList,
-        builder: (_, Map<Directory, Uint8List?> pathEntityList, __) {
+      child: Selector<FileAssetPickerProvider, List<PathWrapper<Directory>>>(
+        selector: (_, FileAssetPickerProvider p) => p.paths,
+        builder: (_, List<PathWrapper<Directory>> paths, __) {
           return ListView.separated(
             padding: const EdgeInsetsDirectional.only(top: 1.0),
-            itemCount: pathEntityList.length,
+            itemCount: paths.length,
             itemBuilder: (_, int index) => pathEntityWidget(
               context: context,
-              list: pathEntityList,
+              list: paths,
               index: index,
             ),
             separatorBuilder: (_, __) => Container(
@@ -877,15 +882,15 @@ class FileAssetPickerBuilder
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Selector<FileAssetPickerProvider, Directory?>(
+              Selector<FileAssetPickerProvider, PathWrapper<Directory>?>(
                 selector: (_, FileAssetPickerProvider p) => p.currentPath,
-                builder: (_, Directory? currentPathEntity, __) {
-                  if (currentPathEntity == null) {
+                builder: (_, PathWrapper<Directory>? currentWrapper, __) {
+                  if (currentWrapper == null) {
                     return const SizedBox.shrink();
                   }
                   return Flexible(
                     child: Text(
-                      provider.currentPath!.path,
+                      currentWrapper.path.path,
                       style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.normal,
@@ -929,12 +934,13 @@ class FileAssetPickerBuilder
   @override
   Widget pathEntityWidget({
     required BuildContext context,
-    required Map<Directory, Uint8List?> list,
+    required List<PathWrapper<Directory>> list,
     required int index,
     bool isAudio = false,
   }) {
-    final Directory path = list.keys.elementAt(index);
-    final Uint8List? data = list.values.elementAt(index);
+    final PathWrapper<Directory> wrapper = list[index];
+    final Directory path = wrapper.path;
+    final Uint8List? data = wrapper.thumbnailData;
 
     Widget builder() {
       if (data != null) {
@@ -951,7 +957,7 @@ class FileAssetPickerBuilder
       child: InkWell(
         splashFactory: InkSplash.splashFactory,
         onTap: () {
-          provider.switchPath(path);
+          provider.switchPath(wrapper);
           isSwitchingPath.value = false;
         },
         child: SizedBox(
@@ -978,17 +984,16 @@ class FileAssetPickerBuilder
                   ),
                 ),
               ),
-              Selector<FileAssetPickerProvider, Directory>(
+              Selector<FileAssetPickerProvider, PathWrapper<Directory>>(
                 selector: (_, FileAssetPickerProvider p) => p.currentPath!,
-                builder: (_, Directory currentPathEntity, __) {
-                  if (currentPathEntity == path) {
+                builder: (_, PathWrapper<Directory> currentPathEntity, __) {
+                  if (currentPathEntity == wrapper) {
                     return const AspectRatio(
                       aspectRatio: 1.0,
                       child: Icon(Icons.check, color: themeColor, size: 26.0),
                     );
-                  } else {
-                    return const SizedBox.shrink();
                   }
+                  return const SizedBox.shrink();
                 },
               ),
             ],
