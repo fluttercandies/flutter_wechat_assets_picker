@@ -304,7 +304,6 @@ class DefaultAssetPickerProvider
         needTitle: true,
         sizeConstraint: SizeConstraint(ignoreSize: true),
       ),
-      containsPathModified: true,
     );
 
     // Merge user's filter option into base options if it's not null.
