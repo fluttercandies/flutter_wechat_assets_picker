@@ -235,6 +235,7 @@ class DefaultAssetPickerProvider
     super.pathThumbnailSize,
     this.requestType = RequestType.image,
     this.sortPathDelegate = SortPathDelegate.common,
+    this.sortPathsByModifiedDate = false,
     this.filterOptions,
   }) {
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
@@ -250,6 +251,7 @@ class DefaultAssetPickerProvider
     super.selectedAssets,
     this.requestType = RequestType.image,
     this.sortPathDelegate = SortPathDelegate.common,
+    this.sortPathsByModifiedDate = false,
     this.filterOptions,
     super.maxAssets,
     super.pageSize = 80,
@@ -262,9 +264,11 @@ class DefaultAssetPickerProvider
   /// 请求的资源类型
   final RequestType requestType;
 
-  /// Delegate to sort asset path entities.
-  /// 资源路径排序的实现
+  /// @{macro wechat_assets_picker.delegates.SortPathDelegate}
   final SortPathDelegate<AssetPathEntity>? sortPathDelegate;
+
+  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.sortPathsByModifiedDate}
+  final bool sortPathsByModifiedDate;
 
   /// Filter options for the picker.
   /// 选择器的筛选条件
@@ -304,6 +308,7 @@ class DefaultAssetPickerProvider
         needTitle: true,
         sizeConstraint: SizeConstraint(ignoreSize: true),
       ),
+      containsPathModified: sortPathsByModifiedDate,
     );
 
     // Merge user's filter option into base options if it's not null.

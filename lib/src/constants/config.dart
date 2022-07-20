@@ -23,6 +23,7 @@ class AssetPickerConfig {
     this.specialPickerType,
     this.keepScrollOffset = false,
     this.sortPathDelegate,
+    this.sortPathsByModifiedDate = false,
     this.filterOptions,
     this.gridCount = 4,
     this.themeColor,
@@ -125,9 +126,15 @@ class AssetPickerConfig {
   /// 选择器是否可以从同样的位置开始选择
   final bool keepScrollOffset;
 
-  /// Delegate to sort asset path entities.
-  /// 资源路径排序的实现
+  /// @{macro wechat_assets_picker.delegates.SortPathDelegate}
   final SortPathDelegate<AssetPathEntity>? sortPathDelegate;
+
+  /// {@template wechat_assets_picker.constants.AssetPickerConfig.sortPathsByModifiedDate}
+  /// Whether to allow sort delegates to sort paths with
+  /// [FilterOptionGroup.containsPathModified].
+  /// 是否结合 [FilterOptionGroup.containsPathModified] 进行路径排序
+  /// {@endtemplate}
+  final bool sortPathsByModifiedDate;
 
   /// Filter options for the picker.
   /// 选择器的筛选条件
