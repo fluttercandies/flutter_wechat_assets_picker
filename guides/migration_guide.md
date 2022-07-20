@@ -17,12 +17,12 @@ This document gathered all breaking changes and migrations requirement between m
 
 ### Summary
 
-_If you didn't extend `AssetPickerProvider`, `AssetPickerBuilderDelegate` or `SortPathDelegate`, you can stop reading._
-
-`AssetPathEntity.assetCountAsync` was introduced in
-[fluttercandies/flutter_photo_manager#784](https://github.com/fluttercandies/flutter_photo_manager/pull/784)
-to improve the loading performance during paths obtain. By migrating the asynchronous getter, we need to introduce
-a new concept `PathWrapper` to hold metadata together, but initialize fields separately.
+- `AssetPathEntity.assetCountAsync` was introduced in
+  [fluttercandies/flutter_photo_manager#784](https://github.com/fluttercandies/flutter_photo_manager/pull/784)
+  to improve the loading performance during paths obtain.
+  By migrating the asynchronous getter, we need to introduce a new concept `PathWrapper` to hold metadata together,
+  but initialize fields separately.
+- `containsPathModified` is now `false` by default (previously `true`), and can be changed accordingly.
 
 ### Details
 
