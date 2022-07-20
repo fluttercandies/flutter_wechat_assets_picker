@@ -4,6 +4,13 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.0.0-dev.2
+
+### New Features
+
+- Add `initializeDelayDuration` for `DefaultAssetPickerProvider`. (#341)
+- Add `sortPathsByModifiedDate`. (#342)
+
 ## 8.0.0-dev.1
 
 To know more about breaking changes, see [Migration Guide][].

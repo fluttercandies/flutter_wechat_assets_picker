@@ -237,10 +237,11 @@ class DefaultAssetPickerProvider
     this.sortPathDelegate = SortPathDelegate.common,
     this.sortPathsByModifiedDate = false,
     this.filterOptions,
+    Duration initializeDelayDuration = const Duration(milliseconds: 250),
   }) {
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
     // Call [getAssetList] with route duration when constructing.
-    Future<void>(() async {
+    Future<void>.delayed(initializeDelayDuration, () async {
       await getPaths();
       await getAssetsFromCurrentPath();
     });
@@ -333,13 +334,13 @@ class DefaultAssetPickerProvider
       } else {
         _paths[index] = wrapper;
       }
-      // Use sync method to avoid unnecessary wait.
-      getAssetCountFromPath(wrapper);
-      getThumbnailFromPath(wrapper);
     }
-
     // Sort path using sort path delegate.
     Singleton.sortPathDelegate.sort(_paths);
+    // Use sync method to avoid unnecessary wait.
+    _paths
+      ..forEach(getAssetCountFromPath)
+      ..forEach(getThumbnailFromPath);
 
     // Set first path entity as current path entity.
     if (_paths.isNotEmpty) {
