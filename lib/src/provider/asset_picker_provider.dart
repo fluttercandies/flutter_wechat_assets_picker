@@ -236,10 +236,11 @@ class DefaultAssetPickerProvider
     this.requestType = RequestType.image,
     this.sortPathDelegate = SortPathDelegate.common,
     this.filterOptions,
+    Duration initializeDelayDuration = const Duration(milliseconds: 250),
   }) {
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
     // Call [getAssetList] with route duration when constructing.
-    Future<void>(() async {
+    Future<void>.delayed(initializeDelayDuration, () async {
       await getPaths();
       await getAssetsFromCurrentPath();
     });
