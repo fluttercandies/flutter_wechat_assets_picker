@@ -9,6 +9,7 @@ that can be found in the LICENSE file. -->
 ### New Features
 
 - Add `initializeDelayDuration` for `DefaultAssetPickerProvider`. (#341)
+- Add `sortPathsByModifiedDate`. (#342)
 
 ## 8.0.0-dev.1
 
