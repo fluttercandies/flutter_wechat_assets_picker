@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 7.3.3
+
+### Fixes
+
+- Unify indicators usage to avoid accidentally indicator switching. (#344)
+
 ## 7.3.2
 
 ### Improvements

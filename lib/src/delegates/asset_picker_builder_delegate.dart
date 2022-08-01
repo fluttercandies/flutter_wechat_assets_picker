@@ -414,29 +414,30 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     );
   }
 
+  /// Indicator when no assets were found from the current path.
+  /// 当前目录下无资源的显示
+  Widget emptyIndicator(BuildContext context) {
+    return ScaleText(
+      textDelegate.emptyList,
+      maxScaleFactor: 1.5,
+      semanticsLabel: semanticsTextDelegate.emptyList,
+    );
+  }
+
   /// Loading indicator.
   /// 加载指示器
   Widget loadingIndicator(BuildContext context) {
-    return Center(
-      child: Selector<AssetPickerProvider<Asset, Path>, bool>(
-        selector: (_, AssetPickerProvider<Asset, Path> p) => p.isAssetsEmpty,
-        builder: (BuildContext c, bool isAssetsEmpty, Widget? w) {
-          if (loadingIndicatorBuilder != null) {
-            return loadingIndicatorBuilder!(c, isAssetsEmpty);
-          }
-          if (isAssetsEmpty) {
-            return ScaleText(
-              textDelegate.emptyList,
-              maxScaleFactor: 1.5,
-              semanticsLabel: semanticsTextDelegate.emptyList,
-            );
-          }
-          return w!;
-        },
-        child: PlatformProgressIndicator(
-          color: theme.iconTheme.color,
-          size: context.mediaQuery.size.width / gridCount / 3,
-        ),
+    return Selector<AssetPickerProvider<Asset, Path>, bool>(
+      selector: (_, AssetPickerProvider<Asset, Path> p) => p.isAssetsEmpty,
+      builder: (BuildContext context, bool isAssetsEmpty, Widget? w) {
+        if (loadingIndicatorBuilder != null) {
+          return loadingIndicatorBuilder!(context, isAssetsEmpty);
+        }
+        return Center(child: isAssetsEmpty ? emptyIndicator(context) : w);
+      },
+      child: PlatformProgressIndicator(
+        color: theme.iconTheme.color,
+        size: context.mediaQuery.size.width / gridCount / 3,
       ),
     );
   }
@@ -1039,8 +1040,7 @@ class DefaultAssetPickerBuilderDelegate
           specialItem = null;
         }
         if (totalCount == 0 && specialItem == null) {
-          return loadingIndicatorBuilder?.call(context, true) ??
-              Center(child: emptyIndicator(context));
+          return loadingIndicator(context);
         }
         // Then we use the [totalCount] to calculate placeholders we need.
         final int placeholderCount;
@@ -1522,32 +1522,6 @@ class DefaultAssetPickerBuilderDelegate
         if (asset.type == AssetType.video) // 如果为视频则显示标识
           videoIndicator(context, asset),
       ],
-    );
-  }
-
-  Widget emptyIndicator(BuildContext context) {
-    return ScaleText(
-      textDelegate.emptyList,
-      maxScaleFactor: 1.5,
-      semanticsLabel: semanticsTextDelegate.emptyList,
-    );
-  }
-
-  @override
-  Widget loadingIndicator(BuildContext context) {
-    return Center(
-      child: Selector<DefaultAssetPickerProvider, bool>(
-        selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
-        builder: (BuildContext context, bool isAssetsEmpty, __) {
-          if (isAssetsEmpty) {
-            return emptyIndicator(context);
-          }
-          return PlatformProgressIndicator(
-            color: theme.iconTheme.color,
-            size: context.mediaQuery.size.width / gridCount / 3,
-          );
-        },
-      ),
     );
   }
 
