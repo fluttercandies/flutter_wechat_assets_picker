@@ -766,31 +766,6 @@ class FileAssetPickerBuilder
   }
 
   @override
-  Widget loadingIndicator(BuildContext context) {
-    return Center(
-      child: Selector<FileAssetPickerProvider, bool>(
-        selector: (_, FileAssetPickerProvider p) => p.isAssetsEmpty,
-        builder: (_, bool isAssetsEmpty, __) {
-          if (isAssetsEmpty) {
-            return Text(textDelegate.emptyList);
-          } else {
-            return Center(
-              child: SizedBox.fromSize(
-                size: Size.square(Screens.width / gridCount / 3),
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    theme.iconTheme.color ?? Colors.grey,
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  @override
   Widget pathEntityListBackdrop(BuildContext context) {
     return ValueListenableBuilder<bool>(
       valueListenable: isSwitchingPath,
