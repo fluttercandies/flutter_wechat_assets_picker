@@ -536,6 +536,29 @@ class FileAssetPickerBuilder
   }
 
   @override
+  Widget loadingIndicator(BuildContext context) {
+    return Selector<FileAssetPickerProvider, bool>(
+      selector: (_, FileAssetPickerProvider p) => p.isAssetsEmpty,
+      builder: (BuildContext context, bool isAssetsEmpty, Widget? w) {
+        if (loadingIndicatorBuilder != null) {
+          return loadingIndicatorBuilder!(context, isAssetsEmpty);
+        }
+        return Center(child: isAssetsEmpty ? emptyIndicator(context) : w);
+      },
+      child: Center(
+        child: SizedBox.fromSize(
+          size: Size.square(Screens.width / gridCount / 3),
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+              theme.iconTheme.color ?? Colors.grey,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget assetsGridBuilder(BuildContext context) {
     int totalCount = provider.currentAssets.length;
     if (specialItemPosition != SpecialItemPosition.none) {

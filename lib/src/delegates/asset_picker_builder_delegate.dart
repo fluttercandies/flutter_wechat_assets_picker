@@ -359,6 +359,16 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Android设备的选择器布局
   Widget androidLayout(BuildContext context);
 
+  /// Loading indicator.
+  /// 加载指示器
+  ///
+  /// Subclasses need to implement this due to the generic type limitation, and
+  /// not all delegates use [AssetPickerProvider].
+  ///
+  /// See also:
+  /// - [DefaultAssetPickerBuilderDelegate.loadingIndicator] as an example.
+  Widget loadingIndicator(BuildContext context);
+
   /// GIF image type indicator.
   /// GIF 类型图片指示
   Widget gifIndicator(BuildContext context, Asset asset) {
@@ -421,24 +431,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       textDelegate.emptyList,
       maxScaleFactor: 1.5,
       semanticsLabel: semanticsTextDelegate.emptyList,
-    );
-  }
-
-  /// Loading indicator.
-  /// 加载指示器
-  Widget loadingIndicator(BuildContext context) {
-    return Selector<AssetPickerProvider<Asset, Path>, bool>(
-      selector: (_, AssetPickerProvider<Asset, Path> p) => p.isAssetsEmpty,
-      builder: (BuildContext context, bool isAssetsEmpty, Widget? w) {
-        if (loadingIndicatorBuilder != null) {
-          return loadingIndicatorBuilder!(context, isAssetsEmpty);
-        }
-        return Center(child: isAssetsEmpty ? emptyIndicator(context) : w);
-      },
-      child: PlatformProgressIndicator(
-        color: theme.iconTheme.color,
-        size: context.mediaQuery.size.width / gridCount / 3,
-      ),
     );
   }
 
@@ -1015,6 +1007,23 @@ class DefaultAssetPickerBuilderDelegate
         return child!;
       },
       child: _layout(context),
+    );
+  }
+
+  @override
+  Widget loadingIndicator(BuildContext context) {
+    return Selector<DefaultAssetPickerProvider, bool>(
+      selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
+      builder: (BuildContext context, bool isAssetsEmpty, Widget? w) {
+        if (loadingIndicatorBuilder != null) {
+          return loadingIndicatorBuilder!(context, isAssetsEmpty);
+        }
+        return Center(child: isAssetsEmpty ? emptyIndicator(context) : w);
+      },
+      child: PlatformProgressIndicator(
+        color: theme.iconTheme.color,
+        size: context.mediaQuery.size.width / gridCount / 3,
+      ),
     );
   }
 
