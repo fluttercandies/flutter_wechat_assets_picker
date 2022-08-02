@@ -10,6 +10,12 @@ that can be found in the LICENSE file. -->
 
 - Unify indicators usage to avoid accidentally indicator switching. (#344)
 
+## 7.3.4
+
+### Fixes
+
+- Unify indicators usage to avoid accidentally indicator switching. (#344)
+
 ## 7.3.2
 
 ### Improvements
