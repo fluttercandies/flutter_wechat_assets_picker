@@ -69,7 +69,7 @@ See [Migration Guide][].
   - 🔬 HEIF Image type support
 - 🎥 Video asset support
 - 🎶 Audio asset support
-  - ⚠️ Due to limitations on iOS/macOS, audio assets cannot be fetched.
+  - ⚠️ Due to limitations on iOS/macOS, audio can only be fetched within the sandbox
 - 1️⃣ Single asset mode
 - 💱 i18n support
   - ⏪ RTL language support
