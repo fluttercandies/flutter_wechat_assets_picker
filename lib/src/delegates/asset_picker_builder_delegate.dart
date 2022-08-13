@@ -359,6 +359,16 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Android设备的选择器布局
   Widget androidLayout(BuildContext context);
 
+  /// Loading indicator.
+  /// 加载指示器
+  ///
+  /// Subclasses need to implement this due to the generic type limitation, and
+  /// not all delegates use [AssetPickerProvider].
+  ///
+  /// See also:
+  /// - [DefaultAssetPickerBuilderDelegate.loadingIndicator] as an example.
+  Widget loadingIndicator(BuildContext context);
+
   /// GIF image type indicator.
   /// GIF 类型图片指示
   Widget gifIndicator(BuildContext context, Asset asset) {
@@ -414,29 +424,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     );
   }
 
-  /// Loading indicator.
-  /// 加载指示器
-  Widget loadingIndicator(BuildContext context) {
-    return Center(
-      child: Selector<AssetPickerProvider<Asset, Path>, bool>(
-        selector: (_, AssetPickerProvider<Asset, Path> p) => p.isAssetsEmpty,
-        builder: (BuildContext c, bool isAssetsEmpty, Widget? w) {
-          if (loadingIndicatorBuilder != null) {
-            return loadingIndicatorBuilder!(c, isAssetsEmpty);
-          }
-          if (isAssetsEmpty) {
-            return emptyIndicator(context);
-          }
-          return w!;
-        },
-        child: PlatformProgressIndicator(
-          color: theme.iconTheme.color,
-          size: context.mediaQuery.size.width / gridCount / 3,
-        ),
-      ),
-    );
-  }
-
+  /// Indicator when no assets were found from the current path.
+  /// 当前目录下无资源的显示
   Widget emptyIndicator(BuildContext context) {
     return ScaleText(
       textDelegate.emptyList,
@@ -1023,6 +1012,23 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
+  Widget loadingIndicator(BuildContext context) {
+    return Selector<DefaultAssetPickerProvider, bool>(
+      selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
+      builder: (BuildContext context, bool isAssetsEmpty, Widget? w) {
+        if (loadingIndicatorBuilder != null) {
+          return loadingIndicatorBuilder!(context, isAssetsEmpty);
+        }
+        return Center(child: isAssetsEmpty ? emptyIndicator(context) : w);
+      },
+      child: PlatformProgressIndicator(
+        color: theme.iconTheme.color,
+        size: context.mediaQuery.size.width / gridCount / 3,
+      ),
+    );
+  }
+
+  @override
   Widget assetsGridBuilder(BuildContext context) {
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
@@ -1048,8 +1054,7 @@ class DefaultAssetPickerBuilderDelegate
           specialItem = null;
         }
         if (totalCount == 0 && specialItem == null) {
-          return loadingIndicatorBuilder?.call(context, true) ??
-              loadingIndicator(context);
+          return loadingIndicator(context);
         }
         // Then we use the [totalCount] to calculate placeholders we need.
         final int placeholderCount;
@@ -1533,24 +1538,6 @@ class DefaultAssetPickerBuilderDelegate
         if (asset.type == AssetType.video) // 如果为视频则显示标识
           videoIndicator(context, asset),
       ],
-    );
-  }
-
-  @override
-  Widget loadingIndicator(BuildContext context) {
-    return Center(
-      child: Selector<DefaultAssetPickerProvider, bool>(
-        selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
-        builder: (BuildContext context, bool isAssetsEmpty, __) {
-          if (isAssetsEmpty) {
-            return emptyIndicator(context);
-          }
-          return PlatformProgressIndicator(
-            color: theme.iconTheme.color,
-            size: context.mediaQuery.size.width / gridCount / 3,
-          );
-        },
-      ),
     );
   }
 

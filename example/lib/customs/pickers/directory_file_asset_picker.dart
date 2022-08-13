@@ -541,6 +541,29 @@ class FileAssetPickerBuilder
   }
 
   @override
+  Widget loadingIndicator(BuildContext context) {
+    return Selector<FileAssetPickerProvider, bool>(
+      selector: (_, FileAssetPickerProvider p) => p.isAssetsEmpty,
+      builder: (BuildContext context, bool isAssetsEmpty, Widget? w) {
+        if (loadingIndicatorBuilder != null) {
+          return loadingIndicatorBuilder!(context, isAssetsEmpty);
+        }
+        return Center(child: isAssetsEmpty ? emptyIndicator(context) : w);
+      },
+      child: Center(
+        child: SizedBox.fromSize(
+          size: Size.square(Screens.width / gridCount / 3),
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+              theme.iconTheme.color ?? Colors.grey,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget assetsGridBuilder(BuildContext context) {
     int totalCount = provider.currentAssets.length;
     if (specialItemPosition != SpecialItemPosition.none) {
@@ -768,31 +791,6 @@ class FileAssetPickerBuilder
   @override
   Widget imageAndVideoItemBuilder(BuildContext context, int index, File asset) {
     return RepaintBoundary(child: Image.file(asset, fit: BoxFit.cover));
-  }
-
-  @override
-  Widget loadingIndicator(BuildContext context) {
-    return Center(
-      child: Selector<FileAssetPickerProvider, bool>(
-        selector: (_, FileAssetPickerProvider p) => p.isAssetsEmpty,
-        builder: (_, bool isAssetsEmpty, __) {
-          if (isAssetsEmpty) {
-            return Text(textDelegate.emptyList);
-          } else {
-            return Center(
-              child: SizedBox.fromSize(
-                size: Size.square(Screens.width / gridCount / 3),
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    theme.iconTheme.color ?? Colors.grey,
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-      ),
-    );
   }
 
   @override
