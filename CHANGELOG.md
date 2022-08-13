@@ -4,15 +4,7 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
-## 8.0.0-dev.2
-
-### New Features
-
-- Add `initializeDelayDuration` for `DefaultAssetPickerProvider`. (#341)
-- Add `sortPathsByModifiedDate`. (#342)
-- Expose `sortPathsByModifiedDate`. (#343)
-
-## 8.0.0-dev.1
+## 8.0.0
 
 To know more about breaking changes, see [Migration Guide][].
 
@@ -20,6 +12,9 @@ To know more about breaking changes, see [Migration Guide][].
 
 - Introduce `PathWrapper` in delegates to improve the overall loading speed. (#338)
 - Allow using `Key` during picking. (#339)
+- Add `initializeDelayDuration` for `DefaultAssetPickerProvider`. (#341)
+- Prevent race condition with paths. (#342)
+- Expose `sortPathsByModifiedDate`. (#343)
 
 ## 7.3.2
 
