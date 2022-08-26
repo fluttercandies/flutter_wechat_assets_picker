@@ -53,6 +53,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
       ),
       PickMethod.noPreview(maxAssetsCount),
       PickMethod.customizableTheme(maxAssetsCount),
+      PickMethod.pathNameBuilder(maxAssetsCount),
       PickMethod.customFilterOptions(maxAssetsCount),
       PickMethod.preventGIFPicked(maxAssetsCount),
       PickMethod.keepScrollOffset(

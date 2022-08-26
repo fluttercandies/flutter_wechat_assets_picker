@@ -381,7 +381,7 @@ class PickMethod {
 
   factory PickMethod.pathNameBuilder(int maxAssetsCount) {
     return PickMethod(
-      icon: '#️⃣',
+      icon: '🈸',
       name: 'Path name builder',
       description: 'Add 🍭 after paths name.',
       method: (BuildContext context, List<AssetEntity> assets) {
