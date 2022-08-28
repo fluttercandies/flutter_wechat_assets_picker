@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.0.1
+
+### Fixes
+
+- Fix not updated empty flag in `DefaultAssetPickerProvider`. (#353)
+
 ## 8.0.0
 
 To know more about breaking changes, see [Migration Guide][].
