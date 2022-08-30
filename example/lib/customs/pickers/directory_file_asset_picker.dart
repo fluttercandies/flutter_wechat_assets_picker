@@ -4,7 +4,7 @@
 
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:typed_data';
+import 'dart:typed_data' as typed_data;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -332,14 +332,14 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<Uint8List?> getThumbnailFromPath(PathWrapper<Directory> path) async {
+  Future<typed_data.Uint8List?> getThumbnailFromPath(PathWrapper<Directory> path) async {
     final List<FileSystemEntity> entities =
         path.path.listSync().whereType<File>().toList();
     currentAssets.clear();
     for (final FileSystemEntity entity in entities) {
       final String extension = basename(entity.path).split('.').last;
       if (entity is File && imagesExtensions.contains(extension)) {
-        final Uint8List data = await entity.readAsBytes();
+        final typed_data.Uint8List data = await entity.readAsBytes();
         return data;
       }
     }
@@ -938,7 +938,7 @@ class FileAssetPickerBuilder
   }) {
     final PathWrapper<Directory> wrapper = list[index];
     final Directory path = wrapper.path;
-    final Uint8List? data = wrapper.thumbnailData;
+    final typed_data.Uint8List? data = wrapper.thumbnailData;
 
     Widget builder() {
       if (data != null) {
