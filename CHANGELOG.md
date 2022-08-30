@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.0.2
+
+### Improvements
+
+- Adapt Flutter 3.3. (#354)
+
 ## 8.0.1
 
 ### Fixes
