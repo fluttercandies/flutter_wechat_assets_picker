@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:munto_assets_picker/wechat_assets_picker.dart';
 
 import 'constants/extensions.dart';
 import 'constants/screens.dart';

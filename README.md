@@ -130,7 +130,7 @@ The latest **dev** version is:
 
 Then import the package in your code:
 ```dart
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:munto_assets_picker/wechat_assets_picker.dart';
 ```
 
 ### Android

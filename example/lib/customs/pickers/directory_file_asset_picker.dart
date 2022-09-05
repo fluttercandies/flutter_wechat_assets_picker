@@ -8,10 +8,10 @@ import 'dart:typed_data' as typed_data;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:munto_assets_picker/wechat_assets_picker.dart';
 import 'package:path/path.dart' show basename;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../constants/screens.dart';
 
@@ -332,7 +332,8 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<typed_data.Uint8List?> getThumbnailFromPath(PathWrapper<Directory> path) async {
+  Future<typed_data.Uint8List?> getThumbnailFromPath(
+      PathWrapper<Directory> path) async {
     final List<FileSystemEntity> entities =
         path.path.listSync().whereType<File>().toList();
     currentAssets.clear();
