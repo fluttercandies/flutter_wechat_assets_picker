@@ -11,6 +11,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
+import 'package:munto_assets_picker/src/widget/confirm_button.dart';
+import 'package:muntorial/muntorial.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -483,11 +485,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             ),
             const SizedBox(width: 15),
             Expanded(
-              child: ScaleText(
+              child: Text(
                 textDelegate.accessAllTip,
-                style: context.themeData.textTheme.caption?.copyWith(
-                  fontSize: 14,
-                ),
+                style: MuntorialTextStyles.size12Regular.white.singleLine,
                 semanticsLabel: semanticsTextDelegate.accessAllTip,
               ),
             ),
@@ -569,16 +569,19 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          ScaleText(
+          Text(
             textDelegate.unableToAccessAll,
-            style: const TextStyle(fontSize: 22),
+            style: MuntorialTextStyles.size18SemiBold.singleLine.white,
             textAlign: TextAlign.center,
             semanticsLabel: semanticsTextDelegate.unableToAccessAll,
           ),
-          SizedBox(height: size.height / 30),
-          ScaleText(
-            textDelegate.accessAllTip,
-            style: const TextStyle(fontSize: 18),
+          const SizedBox(height: 16),
+          Text(
+            '아이폰을 사용하는 멤버라면 시스템 설정에서 '
+            '사진 접근 허용을 [모든 사진]으로 설정해야 '
+            '휴대폰에 저장된 모든 사진을 선택할 수 있어요. '
+            '아래 시스템 설정으로 가기 버튼을 눌러서 직접 설정해 주세요.',
+            style: MuntorialTextStyles.size14Regular.grey400,
             textAlign: TextAlign.center,
             semanticsLabel: semanticsTextDelegate.accessAllTip,
           ),
@@ -586,7 +589,25 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       ),
     );
 
-    final Widget goToSettingsButton = MaterialButton(
+    final Widget goToSettingsButton = GestureDetector(
+      onTap: PhotoManager.openSetting,
+      child: Container(
+        height: 48,
+        alignment: Alignment.center,
+        margin: const EdgeInsets.symmetric(horizontal: kSidePadding),
+        decoration: const ShapeDecoration(
+          color: MuntorialColors.red,
+          shape: StadiumBorder(),
+        ),
+        child: Text(
+          textDelegate.goToSystemSettings,
+          style: MuntorialTextStyles.size16SemiBold.singleLine.white,
+        ),
+      ),
+    );
+
+    //이전 코드 남기기
+    final Widget legacyGoToSettingsButton = MaterialButton(
       elevation: 0,
       minWidth: size.width / 2,
       height: appBarItemHeight * 1.25,
@@ -606,9 +627,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
     final Widget accessLimitedButton = GestureDetector(
       onTap: () => permissionOverlayDisplay.value = false,
-      child: ScaleText(
+      child: Text(
         textDelegate.accessLimitedAssets,
-        style: TextStyle(color: interactiveTextColor(context)),
+        style: MuntorialTextStyles.size14Regular.singleLine.white,
+        textAlign: TextAlign.center,
         semanticsLabel: semanticsTextDelegate.accessLimitedAssets,
       ),
     );
@@ -625,13 +647,14 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             sortKey: const OrdinalSortKey(0),
             child: Container(
               padding: context.mediaQuery.padding,
-              color: context.themeData.canvasColor,
+              color: MuntorialColors.black,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   closeButton,
                   Expanded(child: limitedTips),
                   goToSettingsButton,
-                  SizedBox(height: size.height / 18),
+                  const SizedBox(height: 24),
                   accessLimitedButton,
                 ],
               ),
@@ -1466,10 +1489,24 @@ class DefaultAssetPickerBuilderDelegate
   /// It'll pop with [AssetPickerProvider.selectedAssets]
   /// when there are any assets were chosen.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
+
+  //확인 버튼 커스텀
   @override
   Widget confirmButton(BuildContext context) {
     return Consumer<DefaultAssetPickerProvider>(
       builder: (_, DefaultAssetPickerProvider p, __) {
+        return ConfirmButton(
+          onPressed: p.isSelectedNotEmpty
+              ? () => Navigator.of(context).maybePop(p.selectedAssets)
+              : null,
+          text: p.isSelectedNotEmpty && !isSingleAssetMode
+              ? '${textDelegate.confirm}'
+                  ' (${p.selectedAssets.length}/${p.maxAssets})'
+              : textDelegate.confirm,
+          isActive: p.isSelectedNotEmpty,
+        );
+
+        //기존 코드 남겨둠
         return MaterialButton(
           minWidth: p.isSelectedNotEmpty ? 48 : 20,
           height: appBarItemHeight,
@@ -1682,15 +1719,11 @@ class DefaultAssetPickerBuilderDelegate
       String semanticsText,
     ) {
       return Flexible(
-        child: ScaleText(
+        child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.normal,
-          ),
+          style: MuntorialTextStyles.size14Regular.white.singleLine,
           maxLines: 1,
           overflow: TextOverflow.fade,
-          maxScaleFactor: 1.2,
           semanticsLabel: semanticsText,
         ),
       );
@@ -1942,16 +1975,14 @@ class DefaultAssetPickerBuilderDelegate
                 p.selectedDescriptions,
             builder: (BuildContext c, __, ___) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: ScaleText(
+              child: Text(
                 '${textDelegate.preview}'
                 '${p.isSelectedNotEmpty ? ' (${p.selectedAssets.length})' : ''}',
-                style: TextStyle(
+                style: MuntorialTextStyles.size16Regular.singleLine.copyWith(
                   color: p.isSelectedNotEmpty
-                      ? null
-                      : c.themeData.textTheme.caption?.color,
-                  fontSize: 17,
+                      ? MuntorialColors.grey200
+                      : MuntorialColors.grey700,
                 ),
-                maxScaleFactor: 1.2,
                 semanticsLabel: '${semanticsTextDelegate.preview}'
                     '${p.isSelectedNotEmpty ? ' (${p.selectedAssets.length})' : ''}',
               ),

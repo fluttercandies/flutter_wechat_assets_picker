@@ -103,18 +103,14 @@ class _HomePageState extends State<HomePage> {
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark,
       child: Scaffold(
+        //테스트용 위젯
         floatingActionButton: FloatingActionButton(
           child: Text(
             '문토',
             style: MuntorialTextStyles.size12Bold.singleLine,
           ),
-          onPressed: () async {
-            await AssetPicker.pickAssets(
-              context,
-              pickerConfig: AssetPickerConfig(
-                maxAssets: 1,
-              ),
-            );
+          onPressed: () {
+            MuntoImagePickerHelper.pickImages(context, maxAssets: 2);
           },
         ),
         body: SafeArea(

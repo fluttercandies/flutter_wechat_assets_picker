@@ -55,7 +55,7 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get accessLimitedAssets => '접근 허용한 사진 선택하기';
 
   @override
-  String get accessiblePathName => '접근할 수 있는 파일 리스트';
+  String get accessiblePathName => '접근 허용한 사진 목록';
 
   @override
   String get sTypeAudioLabel => '오디오';
