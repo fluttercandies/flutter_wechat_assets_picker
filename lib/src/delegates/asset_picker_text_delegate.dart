@@ -5,6 +5,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/rendering.dart';
+import 'package:munto_assets_picker/src/delegates/asset_picker_text_delegate_korean.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetType;
 
 /// All text delegates.
@@ -18,6 +19,7 @@ const List<AssetPickerTextDelegate> assetPickerTextDelegates =
   JapaneseAssetPickerTextDelegate(),
   ArabicAssetPickerTextDelegate(),
   FrenchAssetPickerTextDelegate(),
+  KoreanAssetPickerTextDelegate(),
 ];
 
 /// Obtain the text delegate from the given locale.
