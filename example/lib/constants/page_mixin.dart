@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
-import 'package:munto_assets_picker/wechat_assets_picker.dart'
+import 'package:munto_assets_picker/munto_assets_picker.dart'
     show
         AssetEntity,
         DefaultAssetPickerProvider,

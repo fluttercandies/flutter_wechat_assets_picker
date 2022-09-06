@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:munto_assets_picker/wechat_assets_picker.dart';
+import 'package:munto_assets_picker/munto_assets_picker.dart';
 
 import '../constants/page_mixin.dart';
 import '../constants/picker_method.dart';

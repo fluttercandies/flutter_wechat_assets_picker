@@ -7,8 +7,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:munto_assets_picker/munto_assets_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:munto_assets_picker/wechat_assets_picker.dart';
 
 const Color _themeColor = Color(0xfff2223a);
 

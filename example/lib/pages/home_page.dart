@@ -5,6 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
+import 'package:munto_assets_picker/munto_assets_picker.dart';
+import 'package:muntorial/muntorial.dart';
 
 import '../constants/screens.dart';
 import '../customs/custom_picker_page.dart';
@@ -101,6 +103,20 @@ class _HomePageState extends State<HomePage> {
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark,
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Text(
+            '문토',
+            style: MuntorialTextStyles.size12Bold.singleLine,
+          ),
+          onPressed: () async {
+            await AssetPicker.pickAssets(
+              context,
+              pickerConfig: AssetPickerConfig(
+                maxAssets: 1,
+              ),
+            );
+          },
+        ),
         body: SafeArea(
           child: Column(
             children: <Widget>[
