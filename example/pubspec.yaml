@@ -13,9 +13,12 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  wechat_assets_picker:
+  munto_assets_picker:
     path: ../
   wechat_camera_picker: ^3.2.0
+  muntorial :
+    git :
+      url : https://github.com/Munto-dev/muntorial.git
 
   package_info_plus: ^1.4.2
   path: ^1.8.0

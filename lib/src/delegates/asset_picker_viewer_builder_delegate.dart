@@ -27,6 +27,7 @@ import '../widget/builder/fade_image_builder.dart';
 import '../widget/builder/image_page_builder.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/builder/video_page_builder.dart';
+import '../widget/confirm_button.dart';
 import '../widget/scale_text.dart';
 
 abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
@@ -823,6 +824,14 @@ class DefaultAssetPickerViewerBuilderDelegate
               provider.currentlySelectedAssets.isNotEmpty ||
               previewAssets.isEmpty ||
               selectedNotifier.value == 0;
+
+          return ConfirmButton(
+            onPressed: isButtonEnabled ? onPressed : null,
+            text: buildText(),
+            isActive: isButtonEnabled,
+          );
+
+          //기존 코드 남기기
           return MaterialButton(
             minWidth:
                 (isWeChatMoment && hasVideo) || provider!.isSelectedNotEmpty

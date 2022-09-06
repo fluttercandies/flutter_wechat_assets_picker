@@ -131,7 +131,7 @@ dependencies:
 在你的代码中导入：
 
 ```dart
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:munto_assets_picker/wechat_assets_picker.dart';
 ```
 
 ### Android
