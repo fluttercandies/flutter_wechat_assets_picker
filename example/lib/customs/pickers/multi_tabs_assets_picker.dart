@@ -452,9 +452,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         child: pathEntitySelector(context),
       ),
       leading: backButton(context),
-      actions: (isPreviewEnabled || !isSingleAssetMode)
-          ? <Widget>[confirmButton(context)]
-          : null,
+      actions: <Widget>[if (!isAppleOS) confirmButton(context)],
       actionsPadding: const EdgeInsetsDirectional.only(end: 14),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0,
       bottom: TabBar(

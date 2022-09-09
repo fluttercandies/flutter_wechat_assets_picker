@@ -503,38 +503,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// Action bar widget aligned to bottom.
   /// 底部操作栏部件
-  Widget bottomActionBar(BuildContext context) {
-    Widget child = Container(
-      height: bottomActionBarHeight + context.bottomPadding,
-      padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
-        bottom: context.bottomPadding,
-      ),
-      color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1),
-      child: Row(
-        children: <Widget>[
-          if (!isSingleAssetMode || !isAppleOS) previewButton(context),
-          if (isAppleOS) const Spacer(),
-          if (isAppleOS) confirmButton(context),
-        ],
-      ),
-    );
-    if (isPermissionLimited) {
-      child = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[accessLimitedBottomTip(context), child],
-      );
-    }
-    child = ClipRect(
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(
-          sigmaX: appleOSBlurRadius,
-          sigmaY: appleOSBlurRadius,
-        ),
-        child: child,
-      ),
-    );
-    return child;
-  }
+  Widget bottomActionBar(BuildContext context);
 
   /// Back button.
   /// 返回按钮
@@ -2132,6 +2101,40 @@ class DefaultAssetPickerBuilderDelegate
         ),
       ),
     );
+  }
+
+  @override
+  Widget bottomActionBar(BuildContext context) {
+    Widget child = Container(
+      height: bottomActionBarHeight + context.bottomPadding,
+      padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
+        bottom: context.bottomPadding,
+      ),
+      color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1),
+      child: Row(
+        children: <Widget>[
+          if (isPreviewEnabled) previewButton(context),
+          if (isAppleOS) const Spacer(),
+          if (isAppleOS) confirmButton(context),
+        ],
+      ),
+    );
+    if (isPermissionLimited) {
+      child = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[accessLimitedBottomTip(context), child],
+      );
+    }
+    child = ClipRect(
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(
+          sigmaX: appleOSBlurRadius,
+          sigmaY: appleOSBlurRadius,
+        ),
+        child: child,
+      ),
+    );
+    return child;
   }
 
   @override
