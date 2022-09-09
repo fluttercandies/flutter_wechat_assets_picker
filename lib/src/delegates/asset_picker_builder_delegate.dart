@@ -898,11 +898,8 @@ class DefaultAssetPickerBuilderDelegate
       // - On Android, show if preview is enabled or if multi asset mode.
       //   If no preview and single asset mode, do not show confirm button,
       //   because any click on an asset selects it.
-      // - On iOS, show if no preview and multi asset mode. This is because for iOS
-      //   the [bottomActionBar] has the confirm button, but if no preview,
-      //   [bottomActionBar] is not displayed.
-      actions: (!isAppleOS || !isPreviewEnabled) &&
-              (isPreviewEnabled || !isSingleAssetMode)
+      // - On iOS and macOS, show nothing.
+      actions: !isAppleOS && !isSingleAssetMode
           ? <Widget>[confirmButton(context)]
           : null,
       actionsPadding: const EdgeInsetsDirectional.only(end: 14),
@@ -954,7 +951,7 @@ class DefaultAssetPickerBuilderDelegate
             child: Stack(
               children: <Widget>[
                 Positioned.fill(child: assetsGridBuilder(context)),
-                if ((!isSingleAssetMode || isAppleOS) && isPreviewEnabled)
+                if (!isSingleAssetMode || isAppleOS)
                   Positioned.fill(
                     top: null,
                     child: bottomActionBar(context),
