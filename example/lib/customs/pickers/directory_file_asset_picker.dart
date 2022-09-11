@@ -5,7 +5,6 @@
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -463,8 +462,7 @@ class FileAssetPickerBuilder
                               child: Column(
                                 children: <Widget>[
                                   Expanded(child: assetsGridBuilder(context)),
-                                  if (!isSingleAssetMode)
-                                    bottomActionBar(context),
+                                  if (!isAppleOS) bottomActionBar(context),
                                 ],
                               ),
                             ),
@@ -1161,40 +1159,6 @@ class FileAssetPickerBuilder
     int placeholderCount = 0,
   }) {
     return assets.indexWhere((File file) => file.path == id);
-  }
-
-  @override
-  Widget bottomActionBar(BuildContext context) {
-    Widget child = Container(
-      height: bottomActionBarHeight + MediaQuery.of(context).padding.bottom,
-      padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
-        bottom: MediaQuery.of(context).padding.bottom,
-      ),
-      color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1),
-      child: Row(
-        children: <Widget>[
-          previewButton(context),
-          if (isAppleOS) const Spacer(),
-          if (isAppleOS) confirmButton(context),
-        ],
-      ),
-    );
-    if (isPermissionLimited) {
-      child = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[accessLimitedBottomTip(context), child],
-      );
-    }
-    child = ClipRect(
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(
-          sigmaX: appleOSBlurRadius,
-          sigmaY: appleOSBlurRadius,
-        ),
-        child: child,
-      ),
-    );
-    return child;
   }
 
   @override
