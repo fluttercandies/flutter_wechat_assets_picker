@@ -332,7 +332,9 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 
   @override
-  Future<typed_data.Uint8List?> getThumbnailFromPath(PathWrapper<Directory> path) async {
+  Future<typed_data.Uint8List?> getThumbnailFromPath(
+    PathWrapper<Directory> path,
+  ) async {
     final List<FileSystemEntity> entities =
         path.path.listSync().whereType<File>().toList();
     currentAssets.clear();
@@ -460,8 +462,7 @@ class FileAssetPickerBuilder
                               child: Column(
                                 children: <Widget>[
                                   Expanded(child: assetsGridBuilder(context)),
-                                  if (!isSingleAssetMode)
-                                    bottomActionBar(context),
+                                  if (!isAppleOS) bottomActionBar(context),
                                 ],
                               ),
                             ),
