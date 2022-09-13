@@ -18,6 +18,7 @@ class MuntoImagePickerHelper {
       pickerConfig: AssetPickerConfig(
         pickerTheme: _muntoThemeData,
         maxAssets: maxAssets,
+        requestType: RequestType.image,
         textDelegate: const KoreanAssetPickerTextDelegate(),
       ),
     );
