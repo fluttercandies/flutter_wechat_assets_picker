@@ -4,7 +4,11 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
-## 8.0.4
+## 8.1.0
+
+### New features
+
+- Upgrade `photo_manager` for Android 13. (#365)
 
 ### Fixes
 
