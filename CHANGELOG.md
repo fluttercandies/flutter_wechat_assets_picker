@@ -10,18 +10,16 @@ that can be found in the LICENSE file. -->
 
 - Upgrade `photo_manager` for Android 13. (#365)
 
-### Fixes
-
-- Fix invalid path sort. (#364)
-
-## 8.0.3
-
 ### Improvements
 
 - Improve `BuildContext` usages to obtain the correct directionality for the assets grid. (359)
 - Provide a better condition to the confirm button
   to make sure it displays correctly in all cases on iOS/macOS. (359)
 - Improve `bottomActionBar` in `DefaultAssetPickerBuilderDelegate`. (359)
+
+### Fixes
+
+- Fix invalid path sort. (#364)
 
 ## 8.0.2
 
