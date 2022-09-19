@@ -12,10 +12,10 @@ that can be found in the LICENSE file. -->
 
 ### Improvements
 
-- Improve `BuildContext` usages to obtain the correct directionality for the assets grid. (359)
+- Improve `BuildContext` usages to obtain the correct directionality for the assets grid. (#359)
 - Provide a better condition to the confirm button
-  to make sure it displays correctly in all cases on iOS/macOS. (359)
-- Improve `bottomActionBar` in `DefaultAssetPickerBuilderDelegate`. (359)
+  to make sure it displays correctly in all cases on iOS/macOS. (#359)
+- Improve `bottomActionBar` in `DefaultAssetPickerBuilderDelegate`. (#359)
 
 ### Fixes
 
