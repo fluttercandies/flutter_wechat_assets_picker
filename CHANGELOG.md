@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.0.4
+
+### Fixes
+
+- Fix invalid path sort. (#364)
+
 ## 8.0.3
 
 ### Improvements

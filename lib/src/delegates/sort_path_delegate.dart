@@ -54,7 +54,7 @@ class CommonSortPathDelegate extends SortPathDelegate<AssetPathEntity> {
         if (a.path.isAll) {
           return -1;
         }
-        if (a.path.isAll) {
+        if (b.path.isAll) {
           return 1;
         }
         if (_isCamera(a.path)) {
