@@ -8,7 +8,7 @@ that can be found in the LICENSE file. -->
 
 ### New features
 
-- Upgrade `photo_manager` for Android 13.
+- Upgrade `photo_manager` for Android 13. (#365)
 
 ### Fixes
 
