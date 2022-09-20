@@ -899,9 +899,9 @@ class DefaultAssetPickerBuilderDelegate
       //   If no preview and single asset mode, do not show confirm button,
       //   because any click on an asset selects it.
       // - On iOS and macOS, show nothing.
-      actions: !isAppleOS && !isSingleAssetMode
-          ? <Widget>[confirmButton(context)]
-          : null,
+      actions: <Widget>[
+        if (!isAppleOS && isPreviewEnabled) confirmButton(context),
+      ],
       actionsPadding: const EdgeInsetsDirectional.only(end: 14),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0,
     );
