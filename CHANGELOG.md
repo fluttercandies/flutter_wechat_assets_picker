@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.1.1
+
+### Fixes
+
+- Fix conditions with the confirm button. (#367)
+
 ## 8.1.0
 
 ### New features
