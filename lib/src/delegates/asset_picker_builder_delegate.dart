@@ -900,7 +900,8 @@ class DefaultAssetPickerBuilderDelegate
       //   because any click on an asset selects it.
       // - On iOS and macOS, show nothing.
       actions: <Widget>[
-        if (!isAppleOS && isPreviewEnabled) confirmButton(context),
+        if (!isAppleOS && (isPreviewEnabled || !isSingleAssetMode))
+          confirmButton(context),
       ],
       actionsPadding: const EdgeInsetsDirectional.only(end: 14),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0,
