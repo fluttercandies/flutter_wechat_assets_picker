@@ -14,68 +14,82 @@ void main() {
   AssetPicker.setPickerDelegate(TestAssetPickerDelegate());
 
   group('Confirm button', () {
-    group('displays when enabled preview', () {
-      testWidgets(
-        'with multiple assets picking',
-        (WidgetTester tester) async {
-          await tester.pumpWidget(
-            defaultPickerTestApp(
-              onButtonPressed: (BuildContext context) {
-                AssetPicker.pickAssets(
-                  context,
-                  pickerConfig: const AssetPickerConfig(
-                    maxAssets: 10,
-                    // ignore: avoid_redundant_argument_values
-                    specialPickerType: null, // Explicitly null.
-                  ),
-                );
-              },
-            ),
-          );
-          await tester.tap(defaultButtonFinder);
-          await tester.pumpAndSettle();
-          expect(
-            find.text(const AssetPickerTextDelegate().confirm),
-            findsOneWidget,
-          );
-        },
-      );
-      testWidgets(
-        'with single asset picking',
-        (WidgetTester tester) async {
-          await tester.pumpWidget(
-            defaultPickerTestApp(
-              onButtonPressed: (BuildContext context) {
-                AssetPicker.pickAssets(
-                  context,
-                  pickerConfig: const AssetPickerConfig(
-                    maxAssets: 1,
-                    // ignore: avoid_redundant_argument_values
-                    specialPickerType: null, // Explicitly null.
-                  ),
-                );
-              },
-            ),
-          );
-          await tester.tap(defaultButtonFinder);
-          await tester.pumpAndSettle();
-          expect(
-            find.text(const AssetPickerTextDelegate().confirm),
-            findsOneWidget,
-          );
-        },
-      );
+    group('when enabled preview', () {
+      testWidgets('with multiple assets picking', (WidgetTester tester) async {
+        await tester.pumpWidget(
+          defaultPickerTestApp(
+            onButtonPressed: (BuildContext context) {
+              AssetPicker.pickAssets(
+                context,
+                pickerConfig: const AssetPickerConfig(
+                  maxAssets: 10,
+                  // ignore: avoid_redundant_argument_values
+                  specialPickerType: null, // Explicitly null.
+                ),
+              );
+            },
+          ),
+        );
+        await tester.tap(defaultButtonFinder);
+        await tester.pumpAndSettle();
+        expect(
+          find.text(const AssetPickerTextDelegate().confirm),
+          findsOneWidget,
+        );
+      });
+      testWidgets('with single asset picking', (WidgetTester tester) async {
+        await tester.pumpWidget(
+          defaultPickerTestApp(
+            onButtonPressed: (BuildContext context) {
+              AssetPicker.pickAssets(
+                context,
+                pickerConfig: const AssetPickerConfig(
+                  maxAssets: 1,
+                  // ignore: avoid_redundant_argument_values
+                  specialPickerType: null, // Explicitly null.
+                ),
+              );
+            },
+          ),
+        );
+        await tester.tap(defaultButtonFinder);
+        await tester.pumpAndSettle();
+        expect(
+          find.text(const AssetPickerTextDelegate().confirm),
+          findsOneWidget,
+        );
+      });
     });
-
-    testWidgets(
-      'not display when disabled preview',
-      (WidgetTester tester) async {
+    group('when disabled preview', () {
+      testWidgets('with multiple assets picker', (WidgetTester tester) async {
         await tester.pumpWidget(
           defaultPickerTestApp(
             onButtonPressed: (BuildContext context) {
               AssetPicker.pickAssets(
                 context,
                 pickerConfig: AssetPickerConfig(
+                  maxAssets: 2,
+                  specialPickerType: SpecialPickerType.noPreview,
+                ),
+              );
+            },
+          ),
+        );
+        await tester.tap(defaultButtonFinder);
+        await tester.pumpAndSettle();
+        expect(
+          find.text(const AssetPickerTextDelegate().confirm),
+          findsOneWidget,
+        );
+      });
+      testWidgets('with single asset picker', (WidgetTester tester) async {
+        await tester.pumpWidget(
+          defaultPickerTestApp(
+            onButtonPressed: (BuildContext context) {
+              AssetPicker.pickAssets(
+                context,
+                pickerConfig: AssetPickerConfig(
+                  maxAssets: 1,
                   specialPickerType: SpecialPickerType.noPreview,
                 ),
               );
@@ -88,7 +102,7 @@ void main() {
           find.text(const AssetPickerTextDelegate().confirm),
           findsNothing,
         );
-      },
-    );
+      });
+    });
   });
 }
