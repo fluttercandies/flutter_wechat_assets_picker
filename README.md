@@ -17,7 +17,7 @@ that can be found in the LICENSE file. -->
 
 Language: English | [中文](README-ZH.md)
 
-An **assets' picker** based on the WeChat's UI,
+An **assets' picker** (audio/video/image picker) based on the WeChat's UI,
 using [photo_manager][photo_manager pub] for asset implementation,
 [extended_image][extended_image pub]
 for image preview,
@@ -41,6 +41,7 @@ UI designs will be updated following the WeChat update in anytime.
   * [Versions compatibility](#versions-compatibility)
   * [Flutter](#flutter)
   * [Android](#android)
+    * [Permissions](#permissions)
   * [iOS](#ios)
   * [macOS](#macos)
 * [Usage](#usage-)
@@ -135,13 +136,20 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-Required permissions: `READ_EXTERNAL_STORAGE` (declared already).
-Optional permissions: `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`.
+If you found some warning logs with `Glide` appearing,
+then the main project needs an implementation of `AppGlideModule`.
+See [Generated API docs][].
 
-If you're targeting Android SDK 29+,
-you must declare `requestLegacyExternalStorage`
-at the `<application>` node of `AndroidManifest.xml`.
-See the example for the detailed usage.
+#### Permissions
+
+| Name                     | Required | Declared | Max API Level | Others                       |
+|--------------------------|----------|----------|---------------|------------------------------|
+| `READ_EXTERNAL_STORAGE`  | YES      | YES      | 32            |                              |
+| `WRITE_EXTERNAL_STORAGE` | NO       | NO       | 29            |                              |
+| `ACCESS_MEDIA_LOCATION`  | YES*     | NO       | N/A           | Required when reading EXIF   |
+| `READ_MEDIA_IMAGES`      | YES*     | YES      | N/A           | Required when reading images | 
+| `READ_MEDIA_VIDEO`       | YES*     | YES      | N/A           | Required when reading videos | 
+| `READ_MEDIA_AUDIO`       | YES*     | YES      | N/A           | Required when reading audios | 
 
 If you're targeting Android SDK 33+,
 and you don't need to load photos, videos or audios,
@@ -160,18 +168,13 @@ consider removing relevant permission in your apps, more specifically:
 </manifest>
 ```
 
-If you found some warning logs with `Glide` appearing,
-then the main project needs an implementation of `AppGlideModule`.
-See [Generated API docs][].
-
 ### iOS
 
 1. Platform version has to be at least *9.0*.
    Modify `ios/Podfile` and update accordingly.
-```ruby
-platform :ios, '9.0'
-```
-
+   ```ruby
+   platform :ios, '9.0'
+   ```
 2. Add the following content to `info.plist`.
 ```plist
 <key>NSAppTransportSecurity</key>
@@ -187,9 +190,9 @@ platform :ios, '9.0'
 
 1. Platform version has to be at least *10.15*.
    Modify `macos/Podfile` and update accordingly.
-```ruby
-platform :osx, '10.15'
-```
+   ```ruby
+   platform :osx, '10.15'
+   ```
 2. Set the minimum deployment target to *10.15*.
    Use XCode to open `macos/Runner.xcworkspace` .
 3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
