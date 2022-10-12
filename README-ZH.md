@@ -41,6 +41,7 @@ Language: [English](README.md) | 中文
   * [版本兼容](#版本兼容)
   * [Flutter](#flutter)
   * [Android](#android)
+    * [权限](#权限)
   * [iOS](#ios)
   * [macOS](#macos)
 * [使用方法](#使用方法-)
@@ -73,10 +74,10 @@ Language: [English](README.md) | 中文
 - 1️⃣ 单资源模式
 - 💱 国际化支持
   - ⏪ RTL 语言支持
-- ➕ 特殊 widget 构建支持（前置/后置）
+- ➕ 特殊 widget 构建支持
 - 🗂 自定义路径排序支持
 - 📝 自定义文本构建支持
-- ⏳ 自定义筛选规则支持（ `photo_manager` ）
+- ⏳ 自定义筛选规则支持
 - 🎏 完整的自定义主题
 - 💻 支持 MacOS
 
@@ -136,13 +137,20 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-需要声明的权限：`READ_EXTERNAL_STORAGE`（已声明）.
-可选声明的权限：`WRITE_EXTERNAL_STORAGE`、`ACCESS_MEDIA_LOCATION`.
+如果你发现有一些与 `Glide` 有关的警告日志输出，
+那么主项目就需要实现 `AppGlideModule`。
+详细信息请查看 [Generated API 文档][]。
 
-如果你的目标 SDK 版本大于 29，
-你必须声明在 `AndroidManifest.xml` 的 `<application>` 节点中
-声明 `requestLegacyExternalStorage`。
-详情请参考示例。
+#### 权限
+
+| Name                     | 必需  | 已声明 | 最高 API 版本 | 其他          |
+|--------------------------|-----|-----|-----------|-------------|
+| `READ_EXTERNAL_STORAGE`  | 是   | 是   | 32        |             |
+| `WRITE_EXTERNAL_STORAGE` | 否   | 否   | 29        |             |
+| `ACCESS_MEDIA_LOCATION`  | 是*  | 否   | N/A       | 读取 EXIF 时必需 |
+| `READ_MEDIA_IMAGES`      | 是*  | 是   | N/A       | 读取图片时必需     | 
+| `READ_MEDIA_VIDEO`       | 是*  | 是   | N/A       | 读取视频时必需     | 
+| `READ_MEDIA_AUDIO`       | 是*  | 是   | N/A       | 读取音频时必需     |
 
 如果你的目标 SDK 版本大于 33，且你不需要获取图片、视频或者音频，
 你可以考虑将对应权限移除：
@@ -160,23 +168,18 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 </manifest>
 ```
 
-如果你发现有一些与 `Glide` 有关的警告日志输出，
-那么主项目就需要实现 `AppGlideModule`。
-详细信息请查看 [Generated API 文档][]。
-
 ### iOS
 
 1. 在 `ios/Podfile` 中指定最低构建版本至 **9.0**。
-```ruby
-platform :ios, '9.0'
-```
-
+   ```ruby
+   platform :ios, '9.0'
+   ```
 2. 将以下内容添加至 `info.plist`。
 ```plist
 <key>NSAppTransportSecurity</key>
 <dict>
 	<key>NSAllowsArbitraryLoads</key>
-  <true/>
+	<true/>
 </dict>
 <key>NSPhotoLibraryUsageDescription</key>
 <string>你的相册权限描述</string>
@@ -185,9 +188,9 @@ platform :ios, '9.0'
 ### macOS
 
 1. 在 `macos/Podfile` 中指定最低构建版本至 **10.15**。
-```ruby
-platform :osx, '10.15'
-```
+   ```ruby
+   platform :osx, '10.15'
+   ```
 2. 使用 **Xcode** 打开 `macos/Runner.xcworkspace`。
    接着根据下面的截图将最低构建版本提升至 **10.15**。
 3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
