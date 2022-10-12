@@ -74,10 +74,10 @@ See [Migration Guide][].
 - 1️⃣ Single asset mode
 - 💱 i18n support
   - ⏪ RTL language support
-- ➕ Special item builder (prepend/append) support
+- ➕ Special item builder support
 - 🗂 Custom sort path delegate support
 - 📝 Custom text delegate support
-- ⏳ Custom filter options support ( `photo_manager` )
+- ⏳ Custom filter options support
 - 🎏 Fully customizable theme
 - 💻 macOS support
 
