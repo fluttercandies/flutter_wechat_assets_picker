@@ -256,7 +256,7 @@ When you're picking assets, the package will obtain the `Locale?`
 from your `BuildContext`, and return the corresponding text delegate
 of the current language.
 Make sure you have a valid `Locale` in your widget tree that can be accessed
-from the  `BuildContext`. Otherwise, **the default Chinese delegate will be used.**
+from the `BuildContext`. Otherwise, **the default Chinese delegate will be used.**
 
 Embedded text delegates languages are:
 * Chinese (default)
