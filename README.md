@@ -47,6 +47,7 @@ UI designs will be updated following the WeChat update in anytime.
 * [Usage](#usage-)
   * [Simple usage](#simple-usage)
   * [Detailed usage](#detailed-usage)
+  * [Localizations](#localizations)
   * [Using custom delegate](#using-custom-delegate)
   * [Display selected assets](#display-selected-assets)
   * [Register assets change observe callback](#register-assets-change-observe-callback)
@@ -248,6 +249,27 @@ Fields in `AssetPickerConfig`:
 
 TL;DR, we've put multiple common usage
 with the packages in the [example](example).
+
+### Localizations
+
+When you're picking assets, the package will obtain the `Locale?`
+from your `BuildContext`, and return the corresponding text delegate
+of the current language.
+Make sure you have a valid `Locale` in your widget tree that can be accessed
+from the  `BuildContext`. Otherwise, **the default Chinese delegate will be used.**
+
+Embedded text delegates languages are:
+* Chinese (default)
+* English
+* Hebrew (העברית)
+* German (Deutsche)
+* Russian (Локализация)
+* Japanese (日本語)
+* Arabic (مة العربية)
+* French (Délégué)
+
+If you want to use a custom/fixed text delegate, pass it through the
+`AssetPickerConfig.textDelegate`.
 
 ### Using custom delegate
 
