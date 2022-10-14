@@ -46,8 +46,9 @@ Language: [English](README.md) | 中文
   * [macOS](#macos)
 * [使用方法](#使用方法-)
   * [简单的使用方法](#简单的使用方法)
-  * [使用自定义代理](#使用自定义代理)
   * [更详细的使用方法](#更详细的使用方法)
+  * [国际化](#国际化)
+  * [使用自定义代理](#使用自定义代理)
   * [展示选中的资源](#展示选中的资源)
   * [注册资源变化回调](#注册资源变化回调)
   * [自定义类型或 UI](#自定义类型或-ui)
@@ -245,6 +246,25 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 ### 更详细的使用方法
 
 我们已将常用的调用方法封装在 [example](example) 中。
+
+### Localizations
+
+当你在选择资源的时候，package 会通过你的 `BuildContext`
+读取 `Locale?`，返回对应语言的文字代理实现。
+请确保你可以通过 `BuildContext` 获取到 `Locale`，否则将会 **默认展示中文文字**。
+
+内置的语言文字实现有：
+* Chinese (默认)
+* English
+* Hebrew (העברית)
+* German (Deutsche)
+* Russian (Локализация)
+* Japanese (日本語)
+* Arabic (مة العربية)
+* French (Délégué)
+
+如果你想使用自定义或固定的文字实现，请通过
+`AssetPickerConfig.textDelegate` 传递调用。
 
 ### 使用自定义代理
 
