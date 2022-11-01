@@ -952,7 +952,7 @@ class DefaultAssetPickerBuilderDelegate
             child: Stack(
               children: <Widget>[
                 Positioned.fill(child: assetsGridBuilder(context)),
-                if (!isSingleAssetMode || isAppleOS)
+                if (!isSingleAssetMode || isPreviewEnabled)
                   Positioned.fill(
                     top: null,
                     child: bottomActionBar(context),
