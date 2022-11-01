@@ -19,7 +19,6 @@ dependencies:
   muntorial:
     git:
       url: https://github.com/Munto-dev/muntorial.git
-      ref: 1.1.0
 
 dev_dependencies:
   flutter_test:
