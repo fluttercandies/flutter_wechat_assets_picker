@@ -3,7 +3,7 @@ description: |
   An audio/video/image picker in pure Dart which is the same with WeChat,
   support multi picking, custom item and delegates override.
 repository: https://github.com/fluttercandies/flutter_wechat_assets_picker
-version: 8.1.3
+version: 8.1.4
 
 environment:
   sdk: '>=2.17.0 <3.0.0'
