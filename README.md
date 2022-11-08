@@ -445,11 +445,9 @@ Many thanks to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center"><a href="https://github.com/paigupai"><img src="https://avatars.githubusercontent.com/u/44311361?v=4?s=50" width="50px;" alt="paigupai"/><br /><sub><b>paigupai</b></sub></a><br /><a href="#translation-paigupai" title="Translation">🌍</a></td>
       <td align="center"><a href="https://github.com/taqiabdulaziz"><img src="https://avatars.githubusercontent.com/u/30410316?v=4?s=50" width="50px;" alt="Muhammad Taqi Abdul Aziz"/><br /><sub><b>Muhammad Taqi Abdul Aziz</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=taqiabdulaziz" title="Documentation">📖</a></td>
       <td align="center"><a href="http://blog.1qa.link"><img src="https://avatars.githubusercontent.com/u/8766034?v=4?s=50" width="50px;" alt="何锦余"/><br /><sub><b>何锦余</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3Ahellohejinyu" title="Bug reports">🐛</a></td>
+      <td align="center"><a href="https://github.com/leonpesdk"><img src="https://avatars.githubusercontent.com/u/57394644?v=4?s=50" width="50px;" alt="Leon Dudlik"/><br /><sub><b>Leon Dudlik</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3Aleonpesdk" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
-  <tfoot>
-    
-  </tfoot>
 </table>
 
 <!-- markdownlint-restore -->
