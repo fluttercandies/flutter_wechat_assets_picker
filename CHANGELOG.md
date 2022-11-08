@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.1.4
+
+### Fixes
+
+- Fix conditions with the confirm button on iOS. (#376)
+
 ## 8.1.3
 
 ### Improvements
