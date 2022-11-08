@@ -193,6 +193,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "leonpesdk",
+      "name": "Leon Dudlik",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57394644?v=4",
+      "profile": "https://github.com/leonpesdk",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -200,5 +209,6 @@
   "projectOwner": "fluttercandies",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitConvention": "angular"
 }
