@@ -47,6 +47,7 @@ UI designs will be updated following the WeChat update in anytime.
 * [Usage](#usage-)
   * [Simple usage](#simple-usage)
   * [Detailed usage](#detailed-usage)
+  * [Localizations](#localizations)
   * [Using custom delegate](#using-custom-delegate)
   * [Display selected assets](#display-selected-assets)
   * [Register assets change observe callback](#register-assets-change-observe-callback)
@@ -249,6 +250,27 @@ Fields in `AssetPickerConfig`:
 TL;DR, we've put multiple common usage
 with the packages in the [example](example).
 
+### Localizations
+
+When you're picking assets, the package will obtain the `Locale?`
+from your `BuildContext`, and return the corresponding text delegate
+of the current language.
+Make sure you have a valid `Locale` in your widget tree that can be accessed
+from the `BuildContext`. Otherwise, **the default Chinese delegate will be used.**
+
+Embedded text delegates languages are:
+* 简体中文 (default)
+* English
+* העברית
+* Deutsche
+* Локализация
+* 日本語
+* مة العربية
+* Délégué
+
+If you want to use a custom/fixed text delegate, pass it through the
+`AssetPickerConfig.textDelegate`.
+
 ### Using custom delegate
 
 You can use the `keepScrollOffset` feature
@@ -421,7 +443,7 @@ Many thanks to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center"><a href="https://github.com/maxzod"><img src="https://avatars.githubusercontent.com/u/47630729?v=4?s=50" width="50px;" alt="Ahmed Masoud "/><br /><sub><b>Ahmed Masoud </b></sub></a><br /><a href="#translation-maxzod" title="Translation">🌍</a></td>
       <td align="center"><a href="https://github.com/luomo-pro"><img src="https://avatars.githubusercontent.com/u/41097395?v=4?s=50" width="50px;" alt="luomo-pro"/><br /><sub><b>luomo-pro</b></sub></a><br /><a href="#a11y-luomo-pro" title="Accessibility">️️️️♿️</a> <a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3Aluomo-pro" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://github.com/paigupai"><img src="https://avatars.githubusercontent.com/u/44311361?v=4?s=50" width="50px;" alt="paigupai"/><br /><sub><b>paigupai</b></sub></a><br /><a href="#translation-paigupai" title="Translation">🌍</a></td>
-      <td align="center"><a href="http://taqi.me"><img src="https://avatars.githubusercontent.com/u/30410316?v=4?s=50" width="50px;" alt="Muhammad Taqi Abdul Aziz"/><br /><sub><b>Muhammad Taqi Abdul Aziz</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=taqiabdulaziz" title="Documentation">📖</a></td>
+      <td align="center"><a href="https://github.com/taqiabdulaziz"><img src="https://avatars.githubusercontent.com/u/30410316?v=4?s=50" width="50px;" alt="Muhammad Taqi Abdul Aziz"/><br /><sub><b>Muhammad Taqi Abdul Aziz</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=taqiabdulaziz" title="Documentation">📖</a></td>
       <td align="center"><a href="http://blog.1qa.link"><img src="https://avatars.githubusercontent.com/u/8766034?v=4?s=50" width="50px;" alt="何锦余"/><br /><sub><b>何锦余</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3Ahellohejinyu" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
