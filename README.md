@@ -259,14 +259,14 @@ Make sure you have a valid `Locale` in your widget tree that can be accessed
 from the `BuildContext`. Otherwise, **the default Chinese delegate will be used.**
 
 Embedded text delegates languages are:
-* Chinese (default)
+* 简体中文 (default)
 * English
-* Hebrew (העברית)
-* German (Deutsche)
-* Russian (Локализация)
-* Japanese (日本語)
-* Arabic (مة العربية)
-* French (Délégué)
+* העברית
+* Deutsche
+* Локализация
+* 日本語
+* مة العربية
+* Délégué
 
 If you want to use a custom/fixed text delegate, pass it through the
 `AssetPickerConfig.textDelegate`.

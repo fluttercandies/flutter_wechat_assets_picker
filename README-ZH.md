@@ -247,21 +247,21 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 
 我们已将常用的调用方法封装在 [example](example) 中。
 
-### Localizations
+### 国际化
 
 当你在选择资源的时候，package 会通过你的 `BuildContext`
 读取 `Locale?`，返回对应语言的文字代理实现。
 请确保你可以通过 `BuildContext` 获取到 `Locale`，否则将会 **默认展示中文文字**。
 
 内置的语言文字实现有：
-* Chinese (默认)
+* 简体中文 (默认)
 * English
-* Hebrew (העברית)
-* German (Deutsche)
-* Russian (Локализация)
-* Japanese (日本語)
-* Arabic (مة العربية)
-* French (Délégué)
+* העברית
+* Deutsche
+* Локализация
+* 日本語
+* مة العربية
+* Délégué
 
 如果你想使用自定义或固定的文字实现，请通过
 `AssetPickerConfig.textDelegate` 传递调用。
