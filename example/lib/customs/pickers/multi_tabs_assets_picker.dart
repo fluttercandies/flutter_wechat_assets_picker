@@ -494,20 +494,20 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   Widget appleOSLayout(BuildContext context) => androidLayout(context);
 
   Widget _buildGrid(BuildContext context) {
-    return Selector<DefaultAssetPickerProvider, bool>(
-      selector: (_, DefaultAssetPickerProvider p) => p.hasAssetsToDisplay,
-      builder: (_, bool hasAssetsToDisplay, __) {
+    return Consumer<DefaultAssetPickerProvider>(
+      builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
+        final bool shouldDisplayAssets =
+            p.hasAssetsToDisplay || shouldBuildSpecialItem;
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: hasAssetsToDisplay
+          child: shouldDisplayAssets
               ? Stack(
                   children: <Widget>[
                     RepaintBoundary(
                       child: Column(
                         children: <Widget>[
                           Expanded(child: assetsGridBuilder(context)),
-                          if (isPreviewEnabled)
-                            bottomActionBar(context),
+                          if (isPreviewEnabled) bottomActionBar(context),
                         ],
                       ),
                     ),
