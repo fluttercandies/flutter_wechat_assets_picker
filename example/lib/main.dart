@@ -21,6 +21,8 @@ void main() {
     SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent),
   );
   AssetPicker.registerObserve();
+  // Enables logging with the photo_manager.
+  PhotoManager.setLog(true);
 }
 
 class MyApp extends StatelessWidget {
