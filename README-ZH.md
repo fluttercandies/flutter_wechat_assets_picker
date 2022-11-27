@@ -144,6 +144,10 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 #### 权限
 
+在使用这个 package 时，请确保
+`compileSdkVersion` 和 `targetSdkVersion` 升级到 `33`。
+否则，在 Android 13 设备上将有可能无法加载任何资源。
+
 | Name                     | 必需  | 已声明 | 最高 API 版本 | 其他          |
 |--------------------------|-----|-----|-----------|-------------|
 | `READ_EXTERNAL_STORAGE`  | 是   | 是   | 32        |             |

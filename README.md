@@ -143,6 +143,10 @@ See [Generated API docs][].
 
 #### Permissions
 
+When using the package, please upgrade
+`targetSdkVersion` and `compileSdkVersion` to `33`.
+Otherwise, no assets can be fetched on Android 13.
+
 | Name                     | Required | Declared | Max API Level | Others                       |
 |--------------------------|----------|----------|---------------|------------------------------|
 | `READ_EXTERNAL_STORAGE`  | YES      | YES      | 32            |                              |
