@@ -388,6 +388,37 @@ class FileAssetPickerBuilder
   @override
   bool get isSingleAssetMode => provider.maxAssets == 1;
 
+  @override
+  Future<void> viewAsset(
+    BuildContext context,
+    int index,
+    AssetEntity currentAsset,
+  ) async {
+    final List<File>? result = await Navigator.of(context).push<List<File>?>(
+      PageRouteBuilder<List<File>>(
+        pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return AssetPickerViewer<File, Directory>(
+            builder: FileAssetPickerViewerBuilderDelegate(
+              currentIndex: index,
+              previewAssets: provider.selectedAssets,
+              provider: FileAssetPickerViewerProvider(provider.selectedAssets),
+              themeData: AssetPicker.themeData(themeColor),
+              selectedAssets: provider.selectedAssets,
+              selectorProvider: provider,
+            ),
+          );
+        },
+      ),
+    );
+    if (result != null) {
+      Navigator.of(context).maybePop(result);
+    }
+  }
+
   Future<List<File>?> pushToPicker(
     BuildContext context, {
     required int index,
