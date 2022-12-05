@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.2.0
+
+### New features
+
+- Allow overrides `viewAsset` in the `AssetPickerBuilderDelegate`. (#391)
+
 ## 8.1.4
 
 ### Fixes
