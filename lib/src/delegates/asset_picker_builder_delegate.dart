@@ -1697,12 +1697,11 @@ class DefaultAssetPickerBuilderDelegate
     return UnconstrainedBox(
       child: GestureDetector(
         onTap: () {
-          if (provider.currentPath == null) {
-            return;
-          }
-          Feedback.forTap(context);
           if (isPermissionLimited && provider.isAssetsEmpty) {
             PhotoManager.presentLimited();
+            return;
+          }
+          if (provider.currentPath == null) {
             return;
           }
           isSwitchingPath.value = !isSwitchingPath.value;
