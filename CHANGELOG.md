@@ -10,6 +10,10 @@ that can be found in the LICENSE file. -->
 
 - Allow overrides `viewAsset` in the `AssetPickerBuilderDelegate`. (#391)
 
+### Fixes
+
+- Correct behaviors when the access is limited on iOS. (#392)
+
 ## 8.1.4
 
 ### Fixes
