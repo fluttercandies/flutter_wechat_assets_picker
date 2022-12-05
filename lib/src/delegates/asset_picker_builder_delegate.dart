@@ -232,6 +232,14 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 系统发出资源变更的通知时调用的方法
   Future<void> onAssetsChanged(MethodCall call, StateSetter setState) async {}
 
+  /// Determine how to browse assets in the viewer.
+  /// 定义如何在查看器中浏览资源
+  Future<void> viewAsset(
+    BuildContext context,
+    int index,
+    AssetEntity currentAsset,
+  );
+
   /// Yes, the build method.
   /// 没错，是它是它就是它，我们亲爱的 build 方法~
   Widget build(BuildContext context);
@@ -840,19 +848,20 @@ class DefaultAssetPickerBuilderDelegate
     }
   }
 
-  Future<void> _pushAssetToViewer(
+  @override
+  Future<void> viewAsset(
     BuildContext context,
     int index,
-    AssetEntity asset,
+    AssetEntity currentAsset,
   ) async {
     final DefaultAssetPickerProvider provider =
         context.read<DefaultAssetPickerProvider>();
     bool selectedAllAndNotSelected() =>
-        !provider.selectedAssets.contains(asset) &&
+        !provider.selectedAssets.contains(currentAsset) &&
         provider.selectedMaximumAssets;
     bool selectedPhotosAndIsVideo() =>
         isWeChatMoment &&
-        asset.type == AssetType.video &&
+        currentAsset.type == AssetType.video &&
         provider.selectedAssets.isNotEmpty;
     // When we reached the maximum select count and the asset
     // is not selected, do nothing.
@@ -866,8 +875,8 @@ class DefaultAssetPickerBuilderDelegate
     final List<AssetEntity>? selected;
     final int effectiveIndex;
     if (isWeChatMoment) {
-      if (asset.type == AssetType.video) {
-        current = <AssetEntity>[asset];
+      if (currentAsset.type == AssetType.video) {
+        current = <AssetEntity>[currentAsset];
         selected = null;
         effectiveIndex = 0;
       } else {
@@ -875,7 +884,7 @@ class DefaultAssetPickerBuilderDelegate
             .where((AssetEntity e) => e.type == AssetType.image)
             .toList();
         selected = provider.selectedAssets;
-        effectiveIndex = current.indexOf(asset);
+        effectiveIndex = current.indexOf(currentAsset);
       }
     } else {
       current = provider.currentAssets;
@@ -1339,7 +1348,7 @@ class DefaultAssetPickerBuilderDelegate
               onTap: () => selectAsset(context, asset, isSelected),
               onTapHint: semanticsTextDelegate.sActionSelectHint,
               onLongPress: isPreviewEnabled
-                  ? () => _pushAssetToViewer(context, index, asset)
+                  ? () => viewAsset(context, index, asset)
                   : null,
               onLongPressHint: semanticsTextDelegate.sActionPreviewHint,
               selected: isSelected,
@@ -1352,7 +1361,7 @@ class DefaultAssetPickerBuilderDelegate
                 // Regression https://github.com/flutter/flutter/issues/35112.
                 onLongPress:
                     isPreviewEnabled && context.mediaQuery.accessibleNavigation
-                        ? () => _pushAssetToViewer(context, index, asset)
+                        ? () => viewAsset(context, index, asset)
                         : null,
                 child: IndexedSemantics(
                   index: semanticIndex(index),
@@ -2058,9 +2067,7 @@ class DefaultAssetPickerBuilderDelegate
     final double indicatorSize = context.mediaQuery.size.width / gridCount / 3;
     return Positioned.fill(
       child: GestureDetector(
-        onTap: isPreviewEnabled
-            ? () => _pushAssetToViewer(context, index, asset)
-            : null,
+        onTap: isPreviewEnabled ? () => viewAsset(context, index, asset) : null,
         child: Consumer<DefaultAssetPickerProvider>(
           builder: (_, DefaultAssetPickerProvider p, __) {
             final int index = p.selectedAssets.indexOf(asset);
