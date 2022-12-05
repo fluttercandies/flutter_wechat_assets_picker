@@ -792,7 +792,9 @@ class DefaultAssetPickerBuilderDelegate
     if (!isPermissionLimited) {
       return;
     }
-    final PathWrapper<AssetPathEntity>? currentWrapper = provider.currentPath;
+    if (provider.currentPath?.path.isAll ?? false) {
+      isSwitchingPath.value = false;
+    }
     if (call.arguments is Map) {
       final Map<dynamic, dynamic> arguments =
           call.arguments as Map<dynamic, dynamic>;
@@ -800,24 +802,31 @@ class DefaultAssetPickerBuilderDelegate
         provider
           ..currentAssets = <AssetEntity>[]
           ..currentPath = null
+          ..selectedAssets = <AssetEntity>[]
           ..hasAssetsToDisplay = false
-          ..isAssetsEmpty = true;
+          ..isAssetsEmpty = true
+          ..totalAssetsCount = 0
+          ..paths.clear();
         return;
       }
-      if (currentWrapper == null) {
-        await provider.getPaths();
-      }
     }
+    await provider.getPaths();
+    final PathWrapper<AssetPathEntity>? currentWrapper = provider.currentPath;
     if (currentWrapper != null) {
       final AssetPathEntity newPath =
           await currentWrapper.path.obtainForNewProperties();
       final int assetCount = await newPath.assetCountAsync;
+      final PathWrapper<AssetPathEntity> newPathWrapper =
+          PathWrapper<AssetPathEntity>(
+        path: newPath,
+        assetCount: assetCount,
+      );
       provider
-        ..currentPath = PathWrapper<AssetPathEntity>(path: newPath)
+        ..currentPath = newPathWrapper
         ..hasAssetsToDisplay = assetCount != 0
         ..isAssetsEmpty = assetCount == 0
-        ..totalAssetsCount = assetCount;
-      isSwitchingPath.value = false;
+        ..totalAssetsCount = assetCount
+        ..getThumbnailFromPath(newPathWrapper);
       if (newPath.isAll) {
         await provider.getAssetsFromCurrentPath();
       }
