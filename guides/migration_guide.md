@@ -8,10 +8,33 @@ This document gathered all breaking changes and migrations requirement between m
 
 ## Major versions
 
+- [8.2.0](#820)
 - [8.0.0](#800)
 - [7.0.0](#700)
 - [6.0.0](#600)
 - [5.0.0](#500)
+
+## 8.2.0
+
+### Summary
+
+Delegates that extend `AssetPickerBuilderDelegate` should now implement `viewAsset`.
+Delegates that extend `DefaultAssetPickerBuilderDelegate` are not required to do so.
+
+### Details
+
+`viewAsset` is abstracted in the `AssetPickerBuilderDelegate`:
+
+```dart
+Future<void> viewAsset(
+  BuildContext context,
+  int index,
+  AssetEntity currentAsset,
+);
+```
+
+The new method is implemented in the `DefaultAssetPickerBuilderDelegate`.
+It's a private method previously which not allow to modify.
 
 ## 8.0.0
 
