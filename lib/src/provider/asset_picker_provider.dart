@@ -133,7 +133,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// for the first asset under the path.
   /// 使用 [Map] 来保存路径下第一个资源的缩略图数据
   List<PathWrapper<Path>> get paths => _paths;
-  final List<PathWrapper<Path>> _paths = <PathWrapper<Path>>[];
+  List<PathWrapper<Path>> _paths = <PathWrapper<Path>>[];
 
   /// Set thumbnail [data] for the specific [path].
   /// 为指定的路径设置缩略图数据
@@ -322,19 +322,9 @@ class DefaultAssetPickerProvider
       filterOption: options,
     );
 
-    for (final AssetPathEntity pathEntity in list) {
-      final int index = _paths.indexWhere(
-        (PathWrapper<AssetPathEntity> p) => p.path.id == pathEntity.id,
-      );
-      final PathWrapper<AssetPathEntity> wrapper = PathWrapper<AssetPathEntity>(
-        path: pathEntity,
-      );
-      if (index == -1) {
-        _paths.add(wrapper);
-      } else {
-        _paths[index] = wrapper;
-      }
-    }
+    _paths = list
+        .map((AssetPathEntity p) => PathWrapper<AssetPathEntity>(path: p))
+        .toList();
     // Sort path using sort path delegate.
     Singleton.sortPathDelegate.sort(_paths);
     // Use sync method to avoid unnecessary wait.
