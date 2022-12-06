@@ -310,6 +310,8 @@ class DefaultAssetPickerProvider
         sizeConstraint: SizeConstraint(ignoreSize: true),
       ),
       containsPathModified: sortPathsByModifiedDate,
+      createTimeCond: DateTimeCond.def().copyWith(ignore: true),
+      updateTimeCond: DateTimeCond.def().copyWith(ignore: true),
     );
 
     // Merge user's filter option into base options if it's not null.
