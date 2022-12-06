@@ -800,9 +800,7 @@ class DefaultAssetPickerBuilderDelegate
     if (!isPermissionLimited) {
       return;
     }
-    if (provider.currentPath?.path.isAll ?? false) {
-      isSwitchingPath.value = false;
-    }
+    isSwitchingPath.value = false;
     if (call.arguments is Map) {
       final Map<dynamic, dynamic> arguments =
           call.arguments as Map<dynamic, dynamic>;
@@ -819,6 +817,7 @@ class DefaultAssetPickerBuilderDelegate
       }
     }
     await provider.getPaths();
+    provider.currentPath = provider.paths.first;
     final PathWrapper<AssetPathEntity>? currentWrapper = provider.currentPath;
     if (currentWrapper != null) {
       final AssetPathEntity newPath =
