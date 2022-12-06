@@ -349,11 +349,10 @@ class DefaultAssetPickerProvider
       size: pageSize,
     );
     if (page == 0) {
-      _currentAssets = list;
-    } else {
-      _currentAssets.addAll(list);
+      _currentAssets.clear();
     }
-    _hasAssetsToDisplay = currentAssets.isNotEmpty;
+    _currentAssets.addAll(list);
+    _hasAssetsToDisplay = _currentAssets.isNotEmpty;
     notifyListeners();
   }
 
