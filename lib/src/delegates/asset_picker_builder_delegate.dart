@@ -1670,9 +1670,7 @@ class DefaultAssetPickerBuilderDelegate
                 builder: (_, List<PathWrapper<AssetPathEntity>> paths, __) {
                   final List<PathWrapper<AssetPathEntity>> filtered = paths
                       .where(
-                        (PathWrapper<AssetPathEntity> p) =>
-                            (!isPermissionLimited || p.path.isAll) &&
-                            p.assetCount != 0,
+                        (PathWrapper<AssetPathEntity> p) => p.assetCount != 0,
                       )
                       .toList();
                   return ListView.separated(
