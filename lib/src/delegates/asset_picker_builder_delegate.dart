@@ -1410,7 +1410,7 @@ class DefaultAssetPickerBuilderDelegate
 
     // Return actual length if the current path is all.
     // 如果当前目录是全部内容，则返回实际的内容数量。
-    if (currentPathEntity?.isAll != true) {
+    if (currentPathEntity?.isAll != true && specialItem == null) {
       return length;
     }
     switch (specialItemPosition) {
