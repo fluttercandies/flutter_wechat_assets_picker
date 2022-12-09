@@ -800,7 +800,7 @@ class DefaultAssetPickerBuilderDelegate
     if (!isPermissionLimited) {
       return;
     }
-    final PathWrapper<AssetPathEntity>? currentWrapper = provider.currentPath;
+    isSwitchingPath.value = false;
     if (call.arguments is Map) {
       final Map<dynamic, dynamic> arguments =
           call.arguments as Map<dynamic, dynamic>;
@@ -808,26 +808,41 @@ class DefaultAssetPickerBuilderDelegate
         provider
           ..currentAssets = <AssetEntity>[]
           ..currentPath = null
+          ..selectedAssets = <AssetEntity>[]
           ..hasAssetsToDisplay = false
-          ..isAssetsEmpty = true;
+          ..isAssetsEmpty = true
+          ..totalAssetsCount = 0
+          ..paths.clear();
         return;
       }
-      if (currentWrapper == null) {
-        await provider.getPaths();
-      }
     }
+    await provider.getPaths();
+    provider.currentPath = provider.paths.first;
+    final PathWrapper<AssetPathEntity>? currentWrapper = provider.currentPath;
     if (currentWrapper != null) {
       final AssetPathEntity newPath =
           await currentWrapper.path.obtainForNewProperties();
       final int assetCount = await newPath.assetCountAsync;
+      final PathWrapper<AssetPathEntity> newPathWrapper =
+          PathWrapper<AssetPathEntity>(
+        path: newPath,
+        assetCount: assetCount,
+      );
       provider
-        ..currentPath = PathWrapper<AssetPathEntity>(path: newPath)
+        ..currentPath = newPathWrapper
         ..hasAssetsToDisplay = assetCount != 0
         ..isAssetsEmpty = assetCount == 0
-        ..totalAssetsCount = assetCount;
-      isSwitchingPath.value = false;
+        ..totalAssetsCount = assetCount
+        ..getThumbnailFromPath(newPathWrapper);
       if (newPath.isAll) {
         await provider.getAssetsFromCurrentPath();
+        final List<AssetEntity> entitiesShouldBeRemoved = <AssetEntity>[];
+        for (final AssetEntity entity in provider.selectedAssets) {
+          if (!provider.currentAssets.contains(entity)) {
+            entitiesShouldBeRemoved.add(entity);
+          }
+        }
+        entitiesShouldBeRemoved.forEach(provider.selectedAssets.remove);
       }
     }
   }
@@ -1395,7 +1410,7 @@ class DefaultAssetPickerBuilderDelegate
 
     // Return actual length if the current path is all.
     // 如果当前目录是全部内容，则返回实际的内容数量。
-    if (currentPathEntity?.isAll != true) {
+    if (currentPathEntity?.isAll != true && specialItem == null) {
       return length;
     }
     switch (specialItemPosition) {
@@ -1706,12 +1721,11 @@ class DefaultAssetPickerBuilderDelegate
     return UnconstrainedBox(
       child: GestureDetector(
         onTap: () {
-          if (provider.currentPath == null) {
-            return;
-          }
-          Feedback.forTap(context);
           if (isPermissionLimited && provider.isAssetsEmpty) {
             PhotoManager.presentLimited();
+            return;
+          }
+          if (provider.currentPath == null) {
             return;
           }
           isSwitchingPath.value = !isSwitchingPath.value;
