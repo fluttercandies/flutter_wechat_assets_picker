@@ -463,6 +463,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           Tab(text: '图片'),
         ],
       ),
+      systemOverlayStyle: theme.appBarTheme.systemOverlayStyle,
     );
   }
 

@@ -929,6 +929,7 @@ class DefaultAssetPickerBuilderDelegate
       ],
       actionsPadding: const EdgeInsetsDirectional.only(end: 14),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0,
+      systemOverlayStyle: theme.appBarTheme.systemOverlayStyle,
     );
   }
 

@@ -27,6 +27,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.height,
     this.blurRadius = 0,
     this.iconTheme,
+    this.systemOverlayStyle,
     this.semanticsBuilder,
   });
 
@@ -82,6 +83,8 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 设置状态栏亮度层
   final Brightness? brightness;
 
+  final SystemUiOverlayStyle? systemOverlayStyle;
+
   final IconThemeData? iconTheme;
 
   final Semantics Function(Widget appBar)? semanticsBuilder;
@@ -99,6 +102,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    // SystemUiOverlayStyle? overlayStyle
     Widget? titleWidget = title;
     if (centerTitle) {
       titleWidget = Center(child: title);
@@ -171,10 +175,12 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     final Brightness effectiveBrightness = brightness ??
         Theme.of(context).appBarTheme.systemOverlayStyle?.statusBarBrightness ??
         Theme.of(context).brightness;
+    final SystemUiOverlayStyle overlayStyle = systemOverlayStyle ??
+        (effectiveBrightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark);
     child = AnnotatedRegion<SystemUiOverlayStyle>(
-      value: effectiveBrightness == Brightness.dark
-          ? SystemUiOverlayStyle.light
-          : SystemUiOverlayStyle.dark,
+      value: overlayStyle,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
