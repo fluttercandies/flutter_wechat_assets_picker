@@ -4,6 +4,10 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.3.0
+
+- Add `index` argument to `selectAsset` in `AssetPickerBuilderDelegate`. (#399)
+
 ## 8.2.0
 
 ### New features
