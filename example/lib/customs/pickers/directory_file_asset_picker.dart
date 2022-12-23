@@ -459,7 +459,7 @@ class FileAssetPickerBuilder
   }
 
   @override
-  void selectAsset(BuildContext context, File asset, bool selected) {
+  void selectAsset(BuildContext context, File asset, int index, bool selected) {
     if (selected) {
       provider.unSelectAsset(asset);
     } else {
