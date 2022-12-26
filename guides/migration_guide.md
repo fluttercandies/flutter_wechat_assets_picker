@@ -14,6 +14,35 @@ This document gathered all breaking changes and migrations requirement between m
 - [6.0.0](#600)
 - [5.0.0](#500)
 
+## 8.3.0
+
+### Summary
+
+Delegates extending `AssetPickerBuilderDelegate` that implements `selectAsset` should add the `index` argument to its signature.
+
+### Details
+
+Before:
+
+```dart
+void selectAsset(
+  BuildContext context,
+  Asset asset,
+  bool selected,
+);
+```
+
+After:
+
+```dart
+void selectAsset(
+  BuildContext context,
+  Asset asset,
+  int index,
+  bool selected,
+);
+```
+
 ## 8.2.0
 
 ### Summary
