@@ -6,7 +6,9 @@ that can be found in the LICENSE file. -->
 
 ## 8.3.0
 
-- Add `index` argument to `selectAsset` in `AssetPickerBuilderDelegate`. (#399)
+### New features
+
+- Add `index` argument to `selectAsset` in the `AssetPickerBuilderDelegate`. (#399)
 
 ## 8.2.0
 
