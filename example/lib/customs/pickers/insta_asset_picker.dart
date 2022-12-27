@@ -7,6 +7,9 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+// ignore: directives_ordering
+import 'package:extended_image/extended_image.dart';
+
 /// The reduced height of the viewer
 const double _kReducedViewerHeight = kToolbarHeight;
 
@@ -37,6 +40,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       selectedAssets: entities,
       maxAssets: maxAssets,
+      requestType: RequestType.all,
     );
 
     final InstaAssetPickerBuilder builder = InstaAssetPickerBuilder(
@@ -446,9 +450,6 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
             selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
             builder: (_, List<AssetEntity> selected, __) {
-              final int effectiveIndex =
-                  selected.isEmpty ? 0 : selected.indexOf(selected.last);
-
               if (previewAsset == null && selected.isEmpty) {
                 return SizedBox.square(
                   dimension: MediaQuery.of(context).size.width,
@@ -456,6 +457,11 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 );
               }
 
+              int effectiveIndex =
+                  selected.isEmpty ? 0 : selected.indexOf(selected.last);
+              if (previewAsset != null) {
+                effectiveIndex = selected.indexOf(previewAsset);
+              }
               final List<AssetEntity> assets =
                   selected.isEmpty ? <AssetEntity>[previewAsset!] : selected;
 
@@ -467,6 +473,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                   selectorProvider: provider,
                   selectPredicate: selectPredicate,
                   selectedAssets: assets,
+                  onPreviewChanged: (int index) =>
+                      _previewAsset.value = assets[index],
                 ),
               );
             },
@@ -720,11 +728,39 @@ class InstaAssetPickerViewerBuilder
     super.maxAssets,
     super.shouldReversePreview,
     super.selectPredicate,
+    required this.onPreviewChanged,
   });
+
+  final Function(int index) onPreviewChanged;
+
+  Widget _pageViewBuilder(BuildContext context) {
+    // update pageController to display `currentIndex`
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (pageController.hasClients &&
+          !pageController.position.isScrollingNotifier.value) {
+        pageController.jumpToPage(currentIndex);
+      }
+    });
+
+    return Semantics(
+      sortKey: ordinalSortKey(1),
+      child: ExtendedImageGesturePageView.builder(
+        controller: pageController,
+        itemCount: previewAssets.length,
+        itemBuilder: assetPageBuilder,
+        reverse: shouldReversePreview,
+        onPageChanged: (int index) {
+          currentIndex = index;
+          pageStreamController.add(index);
+          onPreviewChanged(index);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) => SizedBox.square(
         dimension: MediaQuery.of(context).size.width,
-        child: assetPageBuilder(context, currentIndex),
+        child: _pageViewBuilder(context),
       );
 }
