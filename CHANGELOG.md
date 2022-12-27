@@ -10,6 +10,10 @@ that can be found in the LICENSE file. -->
 
 - Add `index` argument to `selectAsset` in the `AssetPickerBuilderDelegate`. (#399)
 
+### Improvements
+
+- Improve UI details in the `AssetPickerAppBar`. (#400)
+
 ## 8.2.0
 
 ### New features
