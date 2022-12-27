@@ -23,3 +23,23 @@ dev_dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
+
+screenshots:
+  - description: 'Screenshot 1'
+    path: screenshots/README_1.webp
+  - description: 'Screenshot 2'
+    path: screenshots/README_2.webp
+  - description: 'Screenshot 3'
+    path: screenshots/README_3.webp
+  - description: 'Screenshot 4'
+    path: screenshots/README_4.webp
+  - description: 'Screenshot 5'
+    path: screenshots/README_5.webp
+  - description: 'Screenshot 6'
+    path: screenshots/README_6.webp
+  - description: 'Screenshot 7'
+    path: screenshots/README_7.webp
+  - description: 'Screenshot 8'
+    path: screenshots/README_8.webp
+  - description: 'Screenshot 9'
+    path: screenshots/README_9.webp
