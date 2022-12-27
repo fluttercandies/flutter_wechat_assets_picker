@@ -18,7 +18,8 @@ This document gathered all breaking changes and migrations requirement between m
 
 ### Summary
 
-Delegates extending `AssetPickerBuilderDelegate` that implements `selectAsset` should add the `index` argument to its signature.
+Delegates extending `AssetPickerBuilderDelegate` that implements `selectAsset`
+should add the `index` argument to its signature.
 
 ### Details
 

@@ -4,15 +4,15 @@ that can be found in the LICENSE file. -->
 
 # Flutter WeChat Assets Picker
 
-[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&label=%E7%A8%B3%E5%AE%9A%E7%89%88&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
-[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=%E5%BC%80%E5%8F%91%E7%89%88&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?label=%E7%A8%B3%E5%AE%9A%E7%89%88&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=9d00ff&include_prereleases&label=%E5%BC%80%E5%8F%91%E7%89%88&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
 [![Build status](https://img.shields.io/github/actions/workflow/status/fluttercandies/flutter_wechat_assets_picker/runnable.yml?branch=main&label=CI&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions/workflows/runnable.yml)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_wechat_assets_picker?label=%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F&logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_wechat_assets_picker)
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?label=%E5%8D%8F%E8%AE%AE&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/LICENSE)
 
-[![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://github.com/Solido/awesome-flutter)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
+[![Awesome Flutter](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/Solido/awesome-flutter)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
 Language: [English](README.md) | 中文
@@ -32,35 +32,39 @@ Language: [English](README.md) | 中文
 你可以通过 PR 提交你的自定义实现。更多信息请参考
 [贡献自定义实现](example/lib/customs/CONTRIBUTING.md) 。
 
-## 目录 🗂
+查看 [迁移指南][] 了解如何从破坏性改动中迁移为可用代码。
 
-* [迁移指南](#迁移指南-%EF%B8%8F)
-* [特性](#特性-)
-* [截图](#截图-)
-* [准备工作](#准备工作-)
-  * [版本兼容](#版本兼容)
-  * [Flutter](#flutter)
-  * [Android](#android)
-    * [权限](#权限)
-  * [iOS](#ios)
-  * [macOS](#macos)
-* [使用方法](#使用方法-)
-  * [简单的使用方法](#简单的使用方法)
-  * [更详细的使用方法](#更详细的使用方法)
-  * [国际化](#国际化)
-  * [使用自定义代理](#使用自定义代理)
-  * [展示选中的资源](#展示选中的资源)
-  * [注册资源变化回调](#注册资源变化回调)
-  * [自定义类型或 UI](#自定义类型或-ui)
-* [常见问题](#常见问题-)
-  * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photo_managercompiledebugkotlin)
-  * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合)
-  * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
-  * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
-
-## 迁移指南 ♻️
-
-查看 [迁移指南][]。
+<!-- TOC -->
+* [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
+  * [特性 ✨](#特性-)
+  * [截图 📸](#截图-)
+  * [开始前的注意事项 ‼️](#开始前的注意事项-)
+  * [准备工作 🍭](#准备工作-)
+    * [版本兼容](#版本兼容)
+    * [Flutter](#flutter)
+    * [Android](#android)
+      * [权限](#权限)
+    * [iOS](#ios)
+    * [macOS](#macos)
+  * [使用方法 📖](#使用方法-)
+    * [简单的使用方法](#简单的使用方法)
+    * [更详细的使用方法](#更详细的使用方法)
+    * [国际化](#国际化)
+    * [使用自定义代理](#使用自定义代理)
+      * [一般的调用选择情况](#一般的调用选择情况)
+        * [多选资源](#多选资源)
+        * [单选资源](#单选资源)
+      * [自定义选择器](#自定义选择器)
+    * [展示选中的资源](#展示选中的资源)
+    * [注册资源变化回调](#注册资源变化回调)
+    * [自定义类型或 UI](#自定义类型或-ui)
+  * [常见问题 ❔](#常见问题-)
+    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task---photomanager--compiledebugkotlin)
+    * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合)
+    * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
+    * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示--failed-to-find-generatedappglidemodule)
+  * [致谢](#致谢)
+<!-- TOC -->
 
 ## 特性 ✨
 
@@ -175,12 +179,12 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### iOS
 
-1. 在 `ios/Podfile` 中指定最低构建版本至 **9.0**。
+1. 在 `ios/Podfile` 中指定最低构建版本至 **1.0**。
    ```ruby
-   platform :ios, '9.0'
+   platform :ios, '11.0'
    ```
-2. 将以下内容添加至 `info.plist`。
-```plist
+2. 将以下内容添加至 `Info.plist`。
+```
 <key>NSAppTransportSecurity</key>
 <dict>
 	<key>NSAllowsArbitraryLoads</key>
@@ -200,7 +204,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
    接着根据下面的截图将最低构建版本提升至 **10.15**。
 3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
 4. ![step 2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67vd3f2j30jv04zgm5.jpg)
-5. 与 iOS 一样，添加相同的内容到 `info.plist` 里。
+5. 与 iOS 一样，添加相同的内容到 `Info.plist` 里。
 
 ## 使用方法 📖
 

@@ -481,7 +481,7 @@ To know more about breaking changes, see [Migration Guide][].
 
 - Make widgets constant.
 - Remove system ui overlays update.
-- Migrate files to compatible with Flutter `1.20.0` .
+- Migrate files to compatible with Flutter `1.20.0`.
 - Sync analysis options.
 
 ## 4.1.0+2
@@ -506,7 +506,7 @@ To know more about breaking changes, see [Migration Guide][].
 
 ### Breaking changes
 
-- `TextDelegate` -> `AssetsPickerTextDelegate` .
+- `TextDelegate` -> `AssetsPickerTextDelegate`.
 
 ## 3.0.0+1
 
@@ -514,15 +514,15 @@ To know more about breaking changes, see [Migration Guide][].
 
 ## 3.0.0
 
-- Add `FilterOptionGroup`. Fix #41 .
-- Add `SpecialPickerType`. Fix #37 .
-- Add custom item build mode. Fix #39 .
+- Add `FilterOptionGroup`. (#41)
+- Add `SpecialPickerType`. (#37)
+- Add custom item build mode. (#39)
 
 ## 2.2.1
 
-- Introduce `ColorScheme` for theme details. Fixed #32 .
+- Introduce `ColorScheme` for theme details. (#32)
 - Enhance RTL compatibility.
-- Enlarge select indicator's size. Related to #33 .
+- Enlarge select indicator's size. (#33)
 
 ## 2.2.0+2
 
@@ -534,7 +534,7 @@ To know more about breaking changes, see [Migration Guide][].
 
 ## 2.2.0
 
-- A brand new example.
+- A brand-new example.
 - Add `SortPathDelegate`.
 - Using zoom page transition for viewer.
 - Slightly add padding to viewer's assets list view.
@@ -547,14 +547,14 @@ To know more about breaking changes, see [Migration Guide][].
 ## 2.1.0
 
 - Add present english text delegate.
-- Refactored theme constructor and getter with theme capability #22 .
-- Update color scheme usage for assets grid #23 .
-- Update picker viewer style for apple OS.
-- Fix bottom bar disappearing on apple os when it's single asset mode.
+- Refactored theme constructor and getter with theme capability. (#22)
+- Update color scheme usage for assets grid. (#23)
+- Update picker viewer style for Apple OS.
+- Fix bottom bar disappearing on Apple OS when it's single asset mode.
 
 ## 2.0.2
 
-- Fix audio paused accidentally when the app is launching on Android #18 .
+- Fix audio paused accidentally when the app is launching on Android. (#18)
 
 ## 2.0.1
 
@@ -574,11 +574,11 @@ To know more about breaking changes, see [Migration Guide][].
 ## 1.7.0
 
 - Hide detail display when video start to play.
-- Switch to `ExtendedImageGesturePageView`. Fix #16 .
+- Switch to `ExtendedImageGesturePageView`. (#16)
 - Add fully theme support.
-- Add MacOS support.
-- Add delay for the first init method to prevent stuck in page routing. Fix #13 .
-- Update widgets style on iOS. Fix #14 .
+- Add macOS support.
+- Add delay for the first init method to prevent stuck in page routing. (#13)
+- Update widgets style on iOS. (#14)
 - Fix state of the example not updated after the result was returned without input method activated.
 
 ## 1.6.0

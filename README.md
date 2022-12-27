@@ -5,14 +5,14 @@ that can be found in the LICENSE file. -->
 # Flutter WeChat Assets Picker
 
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
-[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=9d00ff&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![Build status](https://img.shields.io/github/actions/workflow/status/fluttercandies/flutter_wechat_assets_picker/runnable.yml?branch=main&label=CI&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions/workflows/runnable.yml)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_wechat_assets_picker?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_wechat_assets_picker)
 [![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/LICENSE)
 
-[![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square)](https://github.com/Solido/awesome-flutter)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
+[![Awesome Flutter](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/Solido/awesome-flutter)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
 Language: English | [中文](README-ZH.md)
@@ -32,35 +32,40 @@ and head over to
 Current WeChat version that UI based on: **8.x**
 UI designs will be updated following the WeChat update in anytime.
 
-## Category 🗂
+See the [Migration Guide][] to learn how to migrate between breaking changes.
 
-* [Migration Guide](#migration-guide-)
-* [Features](#features-)
-* [Screenshots](#screenshots-)
-* [Preparing for use](#preparing-for-use-)
-  * [Versions compatibility](#versions-compatibility)
-  * [Flutter](#flutter)
-  * [Android](#android)
-    * [Permissions](#permissions)
-  * [iOS](#ios)
-  * [macOS](#macos)
-* [Usage](#usage-)
-  * [Simple usage](#simple-usage)
-  * [Detailed usage](#detailed-usage)
-  * [Localizations](#localizations)
-  * [Using custom delegate](#using-custom-delegate)
-  * [Display selected assets](#display-selected-assets)
-  * [Register assets change observe callback](#register-assets-change-observe-callback)
-  * [Customize with your own type or UI](#customize-with-your-own-type-or-ui)
-* [Frequently asked question](#frequently-asked-question-)
-  * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photo_managercompiledebugkotlin)
-  * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
-  * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
-  * [Console warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
-
-## Migration Guide ♻️
-
-See [Migration Guide][].
+<!-- TOC -->
+* [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
+  * [Features ✨](#features-)
+  * [Screenshots 📸](#screenshots-)
+  * [READ THIS FIRST ‼️](#read-this-first-)
+  * [Preparing for use 🍭](#preparing-for-use-)
+    * [Versions compatibility](#versions-compatibility)
+    * [Flutter](#flutter)
+    * [Android](#android)
+      * [Permissions](#permissions)
+    * [iOS](#ios)
+    * [macOS](#macos)
+  * [Usage 📖](#usage-)
+    * [Simple usage](#simple-usage)
+    * [Detailed usage](#detailed-usage)
+    * [Localizations](#localizations)
+    * [Using custom delegate](#using-custom-delegate)
+      * [Regular picking](#regular-picking)
+        * [Multiple assets picking](#multiple-assets-picking)
+        * [Single asset picking](#single-asset-picking)
+      * [Custom pickers](#custom-pickers)
+    * [Display selected assets](#display-selected-assets)
+    * [Register assets change observe callback](#register-assets-change-observe-callback)
+    * [Customize with your own type or UI](#customize-with-your-own-type-or-ui)
+  * [Frequently asked question ❔](#frequently-asked-question-)
+    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task---photomanager--compiledebugkotlin)
+    * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
+    * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list--rawdata-)
+    * [Glide warning 'Failed to find GeneratedAppGlideModule'](#glide-warning--failed-to-find-generatedappglidemodule)
+  * [Contributors ✨](#contributors-)
+  * [Credits](#credits)
+<!-- TOC -->
 
 ## Features ✨
 
@@ -175,13 +180,13 @@ consider removing relevant permission in your apps, more specifically:
 
 ### iOS
 
-1. Platform version has to be at least *9.0*.
+1. Platform version has to be at least *11.0*.
    Modify `ios/Podfile` and update accordingly.
    ```ruby
-   platform :ios, '9.0'
+   platform :ios, '11.0'
    ```
-2. Add the following content to `info.plist`.
-```plist
+2. Add the following content to `Info.plist`.
+```
 <key>NSAppTransportSecurity</key>
 <dict>
 	<key>NSAllowsArbitraryLoads</key>
@@ -202,7 +207,7 @@ consider removing relevant permission in your apps, more specifically:
    Use XCode to open `macos/Runner.xcworkspace` .
 3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
 4. ![step 2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67vd3f2j30jv04zgm5.jpg)
-5. Follow the iOS instructions and modify `info.plist` accordingly.
+5. Follow the iOS instructions and modify `Info.plist` accordingly.
 
 ## Usage 📖
 
@@ -463,7 +468,7 @@ This project follows the
 [all-contributors](https://github.com/all-contributors/all-contributors) specification.
 Contributions of any kind welcomed!!
 
-## Acknowledgement
+## Credits
 
 > Every aspect of IntelliJ IDEA has been designed to maximize developer productivity.
 Together, intelligent coding assistance and ergonomic design make development not only productive but also enjoyable.
