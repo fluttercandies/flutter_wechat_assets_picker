@@ -15,6 +15,10 @@ const double _kReducedViewerHeight = kToolbarHeight;
 
 /// The position of the viewer when extended
 const double _kExtendedViewerPosition = 0.0;
+
+/// Scroll offset multiplier to start viewer position animation
+const double _kScrollMultiplier = 1.3;
+
 const double _kIndicatorSize = 20.0;
 const double _kPathSelectorRowHeight = 50.0;
 
@@ -32,21 +36,28 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
   late final ThemeData theme = AssetPicker.themeData(_themeColor);
   List<AssetEntity> entities = <AssetEntity>[];
 
+  // use always same provider for `keepScrollOffset`
+  late final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
+    maxAssets: maxAssets,
+    requestType: RequestType.all,
+  );
+
   bool isDisplayingDetail = true;
+
+  @override
+  void dispose() {
+    provider.dispose();
+    super.dispose();
+  }
 
   Future<void> callPicker(BuildContext context) async {
     final PermissionState ps = await AssetPicker.permissionCheck();
-
-    final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
-      selectedAssets: entities,
-      maxAssets: maxAssets,
-      requestType: RequestType.all,
-    );
 
     final InstaAssetPickerBuilder builder = InstaAssetPickerBuilder(
       provider: provider,
       initialPermission: ps,
       pickerTheme: theme,
+      keepScrollOffset: true,
       locale: Localizations.maybeLocaleOf(context),
     );
     final List<AssetEntity>? result = await AssetPicker.pickAssetsWithDelegate(
@@ -164,6 +175,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
         previewAssets: entities,
         selectedAssets: entities,
         themeData: theme,
+        selectorProvider: provider,
         maxAssets: maxAssets,
       );
       if (result != null) {
@@ -263,6 +275,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     super.pickerTheme,
     super.textDelegate,
     super.locale,
+    super.keepScrollOffset,
   }) : super(
           shouldRevertGrid: false,
           specialItemPosition: SpecialItemPosition.none,
@@ -420,12 +433,14 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         _expandViewer();
       }
     } else if (isScrollUp &&
-        (gridScrollController.offset - _lastEndScrollOffset) * 1.4 >
+        (gridScrollController.offset - _lastEndScrollOffset) *
+                _kScrollMultiplier >
             MediaQuery.of(context).size.width - position &&
         position > reducedPosition) {
       // reduce viewer
       _viewerPosition.value = MediaQuery.of(context).size.width -
-          (gridScrollController.offset - _lastEndScrollOffset) * 1.4;
+          (gridScrollController.offset - _lastEndScrollOffset) *
+              _kScrollMultiplier;
     }
 
     _lastScrollOffset = gridScrollController.offset;
