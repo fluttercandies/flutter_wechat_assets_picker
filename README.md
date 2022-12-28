@@ -6,37 +6,39 @@ that can be found in the LICENSE file. -->
 
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=9d00ff&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
-[![Build status](https://img.shields.io/github/actions/workflow/status/fluttercandies/flutter_wechat_assets_picker/runnable.yml?branch=main&label=CI&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions/workflows/runnable.yml)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_wechat_assets_picker?logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_wechat_assets_picker)
-[![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/LICENSE)
 
+[![Build status](https://img.shields.io/github/actions/workflow/status/fluttercandies/flutter_wechat_assets_picker/runnable.yml?branch=main&label=CI&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions/workflows/runnable.yml)
+[![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
+
 [![Awesome Flutter](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/Solido/awesome-flutter)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
 Language: English | [中文](README-ZH.md)
 
-An **assets' picker** (audio/video/image picker) based on the WeChat's UI,
-using [photo_manager][photo_manager pub] for asset implementation,
-[extended_image][extended_image pub]
-for image preview,
-and [provider][provider pub]
-to help control the state of the picker.
-
-To take a photo or a video for assets,
-please check the detailed usage in the example,
-and head over to
-[wechat_camera_picker][wechat_camera_picker pub].
+An image picker (also with videos and audios)
+for Flutter projects based on the WeChat's UI.
+The package is using
+[photo_manager][photo_manager pub] for asset implementation,
+[extended_image][extended_image pub] for image preview,
+and [provider][provider pub] to help manage the state of the picker.
 
 Current WeChat version that UI based on: **8.x**
 UI designs will be updated following the WeChat update in anytime.
+
+To take a photo or a video for assets,
+please check the detailed usage in the example,
+and head over to [wechat_camera_picker][wechat_camera_picker pub].
+The package is a standalone extension that need to be used with combination.
 
 See the [Migration Guide][] to learn how to migrate between breaking changes.
 
 <!-- TOC -->
 * [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
   * [Features ✨](#features-)
+    * [Notes 📝](#notes-)
   * [Screenshots 📸](#screenshots-)
   * [READ THIS FIRST ‼️](#read-this-first-)
   * [Preparing for use 🍭](#preparing-for-use-)
@@ -47,20 +49,17 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
     * [iOS](#ios)
     * [macOS](#macos)
   * [Usage 📖](#usage-)
+    * [Localizations](#localizations)
     * [Simple usage](#simple-usage)
     * [Detailed usage](#detailed-usage)
-    * [Localizations](#localizations)
-    * [Using custom delegate](#using-custom-delegate)
-      * [Regular picking](#regular-picking)
-        * [Multiple assets picking](#multiple-assets-picking)
-        * [Single asset picking](#single-asset-picking)
-      * [Custom pickers](#custom-pickers)
-    * [Display selected assets](#display-selected-assets)
-    * [Register assets change observe callback](#register-assets-change-observe-callback)
-    * [Customize with your own type or UI](#customize-with-your-own-type-or-ui)
+      * [Display selected assets](#display-selected-assets)
+      * [Register assets change observe callback](#register-assets-change-observe-callback)
+      * [Upload an `AssetEntity` with a form data](#upload-an-assetentity-with-a-form-data)
+        * [With `http`](#with-http)
+        * [With `diox`](#with-diox)
+    * [Custom pickers](#custom-pickers)
   * [Frequently asked question ❔](#frequently-asked-question-)
     * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task---photomanager--compiledebugkotlin)
-    * [How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?](#how-can-i-get-path-from-the-assetentity-to-integrate-with-file-object-upload-or-edit)
     * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list--rawdata-)
     * [Glide warning 'Failed to find GeneratedAppGlideModule'](#glide-warning--failed-to-find-generatedappglidemodule)
   * [Contributors ✨](#contributors-)
@@ -69,23 +68,30 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
 
 ## Features ✨
 
-- ♻️ Fully implementable with delegates override
-- 💚 99% similar to WeChat style
-- ⚡️ Adjustable performance according to parameters
-- 📷 Image asset support
-  - 🔬 HEIF Image type support
-- 🎥 Video asset support
-- 🎶 Audio asset support
-  - ⚠️ Due to limitations on iOS/macOS, audio can only be fetched within the sandbox
-- 1️⃣ Single asset mode
-- 💱 i18n support
+- ♻️ Fully customizable with delegates override
+- 🎏 Fully customizable theme based on `ThemeData`
+- 💚 Completely WeChat style (even more)
+- ⚡️ Adjustable performance with different configurations
+- 📷 Image support
+  - 🔬 HEIF Image type support <a href="#notes-"><sup>(1)</sup></a>
+- 🎥 Video support
+- 🎶 Audio support <a href="#notes-"><sup>(2)</sup></a>
+- 1️⃣ Single picking mode
+- 💱 Internationalization (i18n) support
   - ⏪ RTL language support
 - ➕ Special item builder support
 - 🗂 Custom sort path delegate support
 - 📝 Custom text delegate support
 - ⏳ Custom filter options support
-- 🎏 Fully customizable theme
 - 💻 macOS support
+
+### Notes 📝
+
+1. HEIF (HEIC) images are support to obtain and conversion,
+   but the display with them are based on Flutter's image decoder.
+   See [flutter/flutter#20522](https://github.com/flutter/flutter/issues/20522).
+   Use `entity.file` or `AssetEntityImage` for them when displays.
+2. Due to limitations on iOS and macOS, audio can only be fetched within the sandbox.
 
 ## Screenshots 📸
 
@@ -99,11 +105,16 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
 
 The package works closely with the [photo_manager][photo_manager pub] plugin,
 and most behaviors are controlled by the plugin.
+
+在选择器中最常使用的 API 是：
+- [`AssetEntity`](https://pub.dev/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
+- [`AssetPathEntity`](https://pub.dev/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
+
 When you have questions about related APIs and behaviors,
 check [photo_manager's API docs][] for more details.
 
-Most usages are detailed covered by the example.
-Please walk through the example carefully
+Most usages are detailed covered by the [example](example).
+Please walk through the [example](example) carefully
 before you have any questions.
 
 ## Preparing for use 🍭
@@ -133,7 +144,7 @@ The latest **stable** version is:
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 
 The latest **dev** version is:
-[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=9d00ff&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.dev/packages/wechat_assets_picker)
 
 Then import the package in your code:
 ```dart
@@ -142,15 +153,11 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-If you found some warning logs with `Glide` appearing,
-then the main project needs an implementation of `AppGlideModule`.
-See [Generated API docs][].
-
-#### Permissions
-
 When using the package, please upgrade
 `targetSdkVersion` and `compileSdkVersion` to `33`.
 Otherwise, no assets can be fetched on Android 13.
+
+#### Permissions
 
 | Name                     | Required | Declared | Max API Level | Others                       |
 |--------------------------|----------|----------|---------------|------------------------------|
@@ -163,18 +170,17 @@ Otherwise, no assets can be fetched on Android 13.
 
 If you're targeting Android SDK 33+,
 and you don't need to load photos, videos or audios,
-consider removing relevant permission in your apps, more specifically:
+consider declare only relevant permission in your apps, more specifically:
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.your.app">
-    <!-- Remove READ_MEDIA_IMAGES if you don't need to load photos. -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove" />
-    <!-- Remove READ_MEDIA_VIDEO if you don't need to load videos. -->
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove" />
-    <!-- Remove READ_MEDIA_AUDIO if you don't need to load audios. -->
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" tools:node="remove" />
+    <!--Requesting access to images and videos.-->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <!--When your app has no need to access audio, remove it or comment it out.-->
+    <!--<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />-->
 </manifest>
 ```
 
@@ -210,6 +216,27 @@ consider removing relevant permission in your apps, more specifically:
 5. Follow the iOS instructions and modify `Info.plist` accordingly.
 
 ## Usage 📖
+
+### Localizations
+
+When you're picking assets, the package will obtain the `Locale?`
+from your `BuildContext`, and return the corresponding text delegate
+of the current language.
+Make sure you have a valid `Locale` in your widget tree that can be accessed
+from the `BuildContext`. **Otherwise, the default Chinese delegate will be used.**
+
+Embedded text delegates languages are:
+* 简体中文 (default)
+* English
+* העברית
+* Deutsche
+* Локализация
+* 日本語
+* مة العربية
+* Délégué
+
+If you want to use a custom/fixed text delegate, pass it through the
+`AssetPickerConfig.textDelegate`.
 
 ### Simple usage
 
@@ -256,126 +283,153 @@ Fields in `AssetPickerConfig`:
 
 ### Detailed usage
 
-TL;DR, we've put multiple common usage
+We've put multiple common usage
 with the packages in the [example](example).
-
-### Localizations
-
-When you're picking assets, the package will obtain the `Locale?`
-from your `BuildContext`, and return the corresponding text delegate
-of the current language.
-Make sure you have a valid `Locale` in your widget tree that can be accessed
-from the `BuildContext`. Otherwise, **the default Chinese delegate will be used.**
-
-Embedded text delegates languages are:
-* 简体中文 (default)
-* English
-* העברית
-* Deutsche
-* Локализация
-* 日本語
-* مة العربية
-* Délégué
-
-If you want to use a custom/fixed text delegate, pass it through the
-`AssetPickerConfig.textDelegate`.
-
-### Using custom delegate
-
-You can use the `keepScrollOffset` feature
-only with the `pickAssetsWithDelegate` method.
-See the `Keep scroll offset` pick method
-in the example for how to implement it.
-
-For more details about custom delegates,
-head over to [`example/lib/customs`](example/lib/customs).
-
-#### Regular picking
-
 You can both found `List<PickMethod> pickMethods` in
-`example/lib/pages/multi_assets_page.dart`
-and `example/lib/pages/single_assets_page.dart`,
+[here](example/lib/pages/multi_assets_page.dart)
+and [here](example/lib/pages/single_assets_page.dart),
 which provide methods in multiple picking and single picking mode.
 Assets will be stored temporary and displayed at the below of the page.
 
-##### Multiple assets picking
+#### Display selected assets
 
-The maximum assets limit is `9` in the multiple picking page,
-and you can modify it as you wish.
-
-Some methods can only work with multiple mode, such as "WeChat Moment".
-
-##### Single asset picking
-
-Only one and maximum to one asset can be picked at once.
-
-#### Custom pickers
-
-You can try custom pickers with the "Custom" page.
-We've defined a picker that integrates with `Directory` and `File`
-(completely out of the `photo_manager` scope),
-and a picker with multiple tabs switching.
-You can submit PRs to create your own implementation
-if you found your implementation might be useful for others.
-See [Contribute custom implementations][] for more details.
-
-### Display selected assets
-
-The `AssetImage` and `AssetEntityImageProvider` can display the thumb image
-of _images & videos_, and the original data of _image_.
+The `AssetEntityImage` and `AssetEntityImageProvider`
+can display the thumb image of _images & videos_,
+and the original data of _image_.
 Use it like a common `Image` and `ImageProvider`.
 
 ```dart
-/// AssetEntityImage
 AssetEntityImage(asset, isOriginal: false);
+```
 
-/// AssetEntityImageProvider
+Or:
+
+```dart
 Image(image: AssetEntityImageProvider(asset, isOriginal: false));
 ```
 
-### Register assets change observe callback
+#### Register assets change observe callback
 
 ```dart
-/// Register callback.
+// Register callback.
 AssetPicker.registerObserve();
 
-/// Unregister callback.
+// Unregister callback.
 AssetPicker.unregisterObserve();
 ```
 
-### Customize with your own type or UI
+#### Upload an `AssetEntity` with a form data
+
+There are multiple ways to upload an `AssetEntity` with I/O related methods.
+**Be aware, I/O related methods will consume performance
+(typically time and memory), they should not be called frequently.**
+
+##### With `http`
+
+`http` package: https://pub.dev/packages/http
+
+The `http` package uses
+[`MultipartFile`](https://pub.dev/documentation/http/latest/http/MultipartFile-class.html)
+to handle files in requests.
+
+Pseudo code:
+```dart
+import 'package:http/http.dart' as http;
+
+Future<void> upload() async {
+  final entity = await obtainYourEntity();
+  final uri = Uri.https('example.com', 'create');
+  final request = http.MultipartRequest('POST', uri)
+    ..fields['test_field'] = 'test_value'
+    ..files.add(await multipartFileFromAssetEntity(entity));
+  final response = await request.send();
+  if (response.statusCode == 200) {
+    print('Uploaded!');
+  }
+}
+
+Future<http.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
+  http.MultipartFile mf;
+  // Using the file path.
+  final file = await entity.file;
+  if (file == null) {
+    throw StateError('Unable to obtain file of the entity ${entity.id}.');
+  }
+  mf = await http.MultipartFile.fromPath('test_file', file.path);
+  // Using the bytes.
+  final bytes = await entity.originBytes;
+  if (bytes == null) {
+    throw StateError('Unable to obtain bytes of the entity ${entity.id}.');
+  }
+  mf = http.MultipartFile.fromBytes('test_file', bytes);
+  return mf;
+}
+```
+
+##### With `diox`
+
+`diox` package: https://pub.dev/packages/diox
+
+The `diox` package also uses
+[`MultipartFile`](https://pub.dev/documentation/diox/5.0.0-dev.2/diox/MultipartFile-class.html)
+to handle files in requests.
+
+Pseudo code:
+```dart
+import 'package:diox/diox.dart' as diox;
+
+Future<void> upload() async {
+  final entity = await obtainYourEntity();
+  final uri = Uri.https('example.com', 'create');
+  final response = diox.Dio().requestUri(
+    uri,
+    data: diox.FormData.fromMap({
+      'test_field': 'test_value',
+      'test_file': await multipartFileFromAssetEntity(entity),
+    }),
+  );
+  print('Uploaded!');
+}
+
+Future<diox.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
+  diox.MultipartFile mf;
+  // Using the file path.
+  final file = await entity.file;
+  if (file == null) {
+    throw StateError('Unable to obtain file of the entity ${entity.id}.');
+  }
+  mf = await diox.MultipartFile.fromFile(file.path);
+  // Using the bytes.
+  final bytes = await entity.originBytes;
+  if (bytes == null) {
+    throw StateError('Unable to obtain bytes of the entity ${entity.id}.');
+  }
+  mf = diox.MultipartFile.fromBytes(bytes);
+  return mf;
+}
+```
+
+### Custom pickers
 
 `AssetPickerBuilderDelegate`, `AssetPickerViewerBuilderDelegate`,
 `AssetPickerProvider` and `AssetPickerViewerProvider`
 are all exposed and overridable.
 You can extend them and use your own
 type with generic type `<A: Asset, P: Path>`,
-then implement abstract methods. See the `Custom` page
-in the example which has an implementation
-based on `<File, Directory>` types.
+then implement abstract methods.
+
+We've defined a picker that integrates with `Directory` and `File`
+(completely out of the `photo_manager` scope),
+and a picker with multiple tabs switching in the "Custom" page.
+You can submit PRs to create your own implementation
+if you found your implementation might be useful for others.
+See [Contribute custom implementations][] for more details.
 
 ## Frequently asked question ❔
 
 ### Execution failed for task ':photo_manager:compileDebugKotlin'
 
 See [photo_manager#561][] for more details.
-
-### How can I get path from the `AssetEntity` to integrate with `File` object, upload or edit?
-
-You don't need it (might be).
-
-You can always request the `File` object with
-`entity.file` or `entity.originFile`,
-and `entity.originBytes` for `Uint8List`.
-
-If you still need path after requested the `File`, get it through `file.path`.
-
-```dart
-final File file = await entity.file; // Thumbnails or edited files.
-final File originFile = await entity.originFile; // Original files.
-final String path = file.path;
-final String originPath = originFile.path;
-```
 
 ### Create `AssetEntity` from `File` or `Uint8List` (rawData)
 
@@ -400,7 +454,7 @@ final AssetEntity imageEntity = await PhotoManager.editor.saveImage(
 
 **Notice: If you don't want to keep the file in your device,
 use `File` for operations as much as possible.**
-A deletion operation might call system popups with some OS:
+Deleting an `AssetEntity` might cause system popups show:
 
 ```dart
 final List<String> result = await PhotoManager.editor.deleteWithIds(
@@ -413,14 +467,17 @@ ref: [photo_manager#insert-new-item][]
 ### Glide warning 'Failed to find GeneratedAppGlideModule'
 
 ```
-W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an annotationProcessor compile dependency on com.github.bumptech.glide:compiler in you application ana a @GlideModule annotated AppGlideModule implementation or LibraryGlideModules will be silently ignored.
+W/Glide   (21133): Failed to find GeneratedAppGlideModule. 
+                   You should include an annotationProcessor compile dependency on com.github.bumptech.glide:compiler
+                   in you application ana a @GlideModule annotated AppGlideModule implementation
+                   or LibraryGlideModules will be silently ignored.
 ```
 
 `Glide` needs annotation to keep singleton,
 prevent conflict between instances and versions,
 so while the photo manager uses `Glide` to implement image features,
 the project which import this should define its own `AppGlideModule`.
-See [Android](#android) section for implementation.
+See [Glide Generated API docs][] for implementation.
 
 ## Contributors ✨
 
@@ -453,7 +510,7 @@ Many thanks to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center"><a href="https://github.com/luomo-pro"><img src="https://avatars.githubusercontent.com/u/41097395?v=4?s=50" width="50px;" alt="luomo-pro"/><br /><sub><b>luomo-pro</b></sub></a><br /><a href="#a11y-luomo-pro" title="Accessibility">️️️️♿️</a> <a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3Aluomo-pro" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://github.com/paigupai"><img src="https://avatars.githubusercontent.com/u/44311361?v=4?s=50" width="50px;" alt="paigupai"/><br /><sub><b>paigupai</b></sub></a><br /><a href="#translation-paigupai" title="Translation">🌍</a></td>
       <td align="center"><a href="https://github.com/taqiabdulaziz"><img src="https://avatars.githubusercontent.com/u/30410316?v=4?s=50" width="50px;" alt="Muhammad Taqi Abdul Aziz"/><br /><sub><b>Muhammad Taqi Abdul Aziz</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=taqiabdulaziz" title="Documentation">📖</a></td>
-      <td align="center"><a href="http://blog.1qa.link"><img src="https://avatars.githubusercontent.com/u/8766034?v=4?s=50" width="50px;" alt="何锦余"/><br /><sub><b>何锦余</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3Ahellohejinyu" title="Bug reports">🐛</a></td>
+      <td align="center"><a href="https://github.com/hellohejinyu"><img src="https://avatars.githubusercontent.com/u/8766034?v=4?s=50" width="50px;" alt="何锦余"/><br /><sub><b>何锦余</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3Ahellohejinyu" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://github.com/leonpesdk"><img src="https://avatars.githubusercontent.com/u/57394644?v=4?s=50" width="50px;" alt="Leon Dudlik"/><br /><sub><b>Leon Dudlik</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3Aleonpesdk" title="Bug reports">🐛</a></td>
       <td align="center"><a href="https://www.legoffmael.fr"><img src="https://avatars.githubusercontent.com/u/22376981?v=4?s=50" width="50px;" alt="Maël"/><br /><sub><b>Maël</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=LeGoffMael" title="Code">💻</a></td>
     </tr>
@@ -486,7 +543,7 @@ such as [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies).
 [wechat_camera_picker pub]: https://pub.dev/packages/wechat_camera_picker
 [Migration Guide]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/guides/migration_guide.md
 [photo_manager's API docs]: https://pub.dev/documentation/photo_manager/latest/
-[Generated API docs]: https://sjudd.github.io/glide/doc/generatedapi.html
+[Glide Generated API docs]: https://sjudd.github.io/glide/doc/generatedapi.html
 [Contribute custom implementations]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/example/lib/customs/CONTRIBUTING.md
 [photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
 [photo_manager#insert-new-item]: https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item
