@@ -35,6 +35,9 @@ The package is a standalone extension that need to be used with combination.
 
 See the [Migration Guide][] to learn how to migrate between breaking changes.
 
+<details>
+  <summary>Table of content</summary>
+
 <!-- TOC -->
 * [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
   * [Features ✨](#features-)
@@ -65,6 +68,7 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
   * [Contributors ✨](#contributors-)
   * [Credits](#credits)
 <!-- TOC -->
+</details>
 
 ## Features ✨
 

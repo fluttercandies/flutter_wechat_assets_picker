@@ -32,6 +32,9 @@ Language: [English](README.md) | 中文
 
 查看 [迁移指南][] 了解如何从破坏性改动中迁移为可用代码。
 
+<details>
+  <summary>目录列表</summary>
+
 <!-- TOC -->
 * [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
   * [特性 ✨](#特性-)
@@ -61,6 +64,7 @@ Language: [English](README.md) | 中文
     * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示--failed-to-find-generatedappglidemodule)
   * [致谢](#致谢)
 <!-- TOC -->
+</details>
 
 ## 特性 ✨
 
