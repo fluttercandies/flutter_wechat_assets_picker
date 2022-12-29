@@ -276,6 +276,14 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?` | 判断有限的权限情况下是否展示提示页面                                   | `null`                      |
 | pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 构建自定义路径名称                                            | `null`                      |
 
+- 当 `maxAssets` 等于 `1`（即单选模式），搭配
+  `SpecialPickerType.noPreview` 使用会在用户点选资源换时立刻选中并返回。
+- 当 `requestType` 为 `RequestType.video` 时，
+  iOS 获取的资源会包括 **实况图片 (Live Photos)**。
+  你可以设置 `FilterOptionGroup.containsLivePhotos` 为 `false` 来禁用。
+- `limitedPermissionOverlayPredicate` 不是持久化的，
+  如果你需要在应用下次启动时不再显示权限受限的页面，请自主实现持久化的控制。
+
 ### 更详细的使用方法
 
 我们已将常用的调用方法封装在 [example](example) 中。
