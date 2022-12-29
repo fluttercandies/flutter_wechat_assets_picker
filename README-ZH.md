@@ -105,7 +105,7 @@ Language: [English](README.md) | 中文
 该库与 [photo_manager][photo_manager pub] 有强关联性，
 大部分方法的行为是由 photo_manager 进行控制的。
 
-The most frequent APIs that used in the picker are:
+在选择器中最常使用的 API 是：
 - [`AssetEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
 - [`AssetPathEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
 

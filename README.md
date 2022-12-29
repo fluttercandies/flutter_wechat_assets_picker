@@ -110,7 +110,7 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
 The package works closely with the [photo_manager][photo_manager pub] plugin,
 and most behaviors are controlled by the plugin.
 
-在选择器中最常使用的 API 是：
+The most frequent APIs that used in the picker are:
 - [`AssetEntity`](https://pub.dev/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
 - [`AssetPathEntity`](https://pub.dev/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
 
