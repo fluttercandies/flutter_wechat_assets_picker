@@ -2,6 +2,8 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +19,7 @@ const double _kReducedViewerHeight = kToolbarHeight;
 const double _kExtendedViewerPosition = 0.0;
 
 /// Scroll offset multiplier to start viewer position animation
-const double _kScrollMultiplier = 1.3;
+const double _kScrollMultiplier = 1.5;
 
 const double _kIndicatorSize = 20.0;
 const double _kPathSelectorRowHeight = 50.0;
@@ -306,6 +308,13 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     super.dispose();
   }
 
+  /// The responsive height of the preview widget
+  /// setup to not be bigger than half the screen height
+  double previewHeight(BuildContext context) => min(
+        MediaQuery.of(context).size.width,
+        MediaQuery.of(context).size.height * 0.5,
+      );
+
   /// Returns thumbnail [index] position in scroll view
   double indexPosition(BuildContext context, int index) {
     final int row = (index / gridCount).floor();
@@ -435,10 +444,10 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     } else if (isScrollUp &&
         (gridScrollController.offset - _lastEndScrollOffset) *
                 _kScrollMultiplier >
-            MediaQuery.of(context).size.width - position &&
+            previewHeight(context) - position &&
         position > reducedPosition) {
       // reduce viewer
-      _viewerPosition.value = MediaQuery.of(context).size.width -
+      _viewerPosition.value = previewHeight(context) -
           (gridScrollController.offset - _lastEndScrollOffset) *
               _kScrollMultiplier;
     }
@@ -448,7 +457,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     return true;
   }
 
-  Widget _buildEntityViewer(BuildContext context, double opacity) {
+  Widget get buildEntityViewer {
     return Listener(
       onPointerDown: (_) {
         _expandViewer();
@@ -457,19 +466,17 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           gridScrollController.jumpTo(gridScrollController.offset);
         }
       },
-      child: Opacity(
-        opacity: opacity,
-        child: ValueListenableBuilder<AssetEntity?>(
-          valueListenable: _previewAsset,
-          builder: (_, AssetEntity? previewAsset, __) =>
-              Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
+      child: ValueListenableBuilder<AssetEntity?>(
+        valueListenable: _previewAsset,
+        builder: (BuildContext context, AssetEntity? previewAsset, __) =>
+            SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: previewHeight(context),
+          child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
             selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
             builder: (_, List<AssetEntity> selected, __) {
               if (previewAsset == null && selected.isEmpty) {
-                return SizedBox.square(
-                  dimension: MediaQuery.of(context).size.width,
-                  child: loadingIndicator(context),
-                );
+                return loadingIndicator(context);
               }
 
               int effectiveIndex =
@@ -482,7 +489,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
               return AssetPickerViewer<AssetEntity, AssetPathEntity>(
                 builder: InstaAssetPickerViewerBuilder(
-                  currentIndex: effectiveIndex,
+                  currentIndex: effectiveIndex == -1 ? 0 : effectiveIndex,
                   previewAssets: assets,
                   themeData: theme,
                   selectorProvider: provider,
@@ -502,7 +509,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   @override
   Widget androidLayout(BuildContext context) {
     // height of appbar + viewer + path selector row
-    final double topWidgetHeight = MediaQuery.of(context).size.width +
+    final double topWidgetHeight = previewHeight(context) +
         kToolbarHeight +
         _kPathSelectorRowHeight +
         MediaQuery.of(context).padding.top;
@@ -513,10 +520,9 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         valueListenable: _viewerPosition,
         builder: (BuildContext context, double position, _) {
           // the top position when the viewer is reduced
-          final double topReducedPosition =
-              -(MediaQuery.of(context).size.width -
-                  _kReducedViewerHeight +
-                  kToolbarHeight);
+          final double topReducedPosition = -(previewHeight(context) -
+              _kReducedViewerHeight +
+              kToolbarHeight);
           position =
               position.clamp(topReducedPosition, _kExtendedViewerPosition);
           // opacity is calculated based on the position of the viewer
@@ -532,8 +538,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               _kReducedViewerHeight;
           // when not assets are displayed, compute the exact height to show the loader
           if (!provider.hasAssetsToDisplay) {
-            gridHeight -=
-                MediaQuery.of(context).size.width - -_viewerPosition.value;
+            gridHeight -= previewHeight(context) - -_viewerPosition.value;
           }
           final double topPadding = topWidgetHeight + position;
           if (gridScrollController.hasClients && _scrollTargetOffset != null) {
@@ -578,7 +583,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                       ),
                       child: Column(
                         children: <Widget>[
-                          _buildEntityViewer(context, opacity),
+                          Opacity(opacity: opacity, child: buildEntityViewer),
                           SizedBox(
                             height: _kPathSelectorRowHeight,
                             width: MediaQuery.of(context).size.width,
@@ -774,8 +779,5 @@ class InstaAssetPickerViewerBuilder
   }
 
   @override
-  Widget build(BuildContext context) => SizedBox.square(
-        dimension: MediaQuery.of(context).size.width,
-        child: _pageViewBuilder(context),
-      );
+  Widget build(BuildContext context) => _pageViewBuilder(context);
 }
