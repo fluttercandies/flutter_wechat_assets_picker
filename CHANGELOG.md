@@ -4,6 +4,13 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.3.1
+
+### New features
+
+- Add `didUpdateViewer` and `initAnimations` in the `AssetPickerViewerBuilderDelegate`. (#403)
+- Add insta_assets_picker as an custom delegate example. (#403)
+
 ## 8.3.0
 
 ### New features

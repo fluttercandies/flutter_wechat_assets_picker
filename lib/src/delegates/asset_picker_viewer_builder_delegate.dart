@@ -93,19 +93,15 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// The [State] for a viewer.
   /// 预览器的状态实例
-  late final AssetPickerViewerState<Asset, Path> viewerState;
-
-  /// The [TickerProvider] for animations.
-  /// 用于动画的 [TickerProvider]
-  late final TickerProvider vsync;
+  late AssetPickerViewerState<Asset, Path> viewerState;
 
   /// [AnimationController] for double tap animation.
   /// 双击缩放的动画控制器
-  late final AnimationController doubleTapAnimationController;
+  late AnimationController doubleTapAnimationController;
 
   /// [CurvedAnimation] for double tap.
   /// 双击缩放的动画曲线
-  late final Animation<double> doubleTapCurveAnimation;
+  late Animation<double> doubleTapCurveAnimation;
 
   /// [Animation] for double tap.
   /// 双击缩放的动画
@@ -158,25 +154,35 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
       Singleton.textDelegate.semanticsTextDelegate;
 
   /// Call when viewer is calling [State.initState].
-  /// 当预览器调用 [State.initState] 时注册 [State] 和 [TickerProvider]。
+  /// 当预览器调用 [State.initState] 时注册 [State]。
+  @mustCallSuper
   void initStateAndTicker(
-    AssetPickerViewerState<Asset, Path> s,
-    TickerProvider v,
+    covariant AssetPickerViewerState<Asset, Path> state,
+    TickerProvider v, // TODO(Alex): Remove this in the next major version.
   ) {
-    viewerState = s;
-    vsync = v;
-    doubleTapAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: v,
-    );
-    doubleTapCurveAnimation = CurvedAnimation(
-      parent: doubleTapAnimationController,
-      curve: Curves.easeInOut,
-    );
+    initAnimations(state);
+  }
+
+  /// Call when the viewer is calling [State.didUpdateWidget].
+  /// 当预览器调用 [State.didUpdateWidget] 时操作 [State]。
+  ///
+  /// Since delegates are relatively "Stateless" compare to the
+  /// [AssetPickerViewerState], the widget that holds the delegate might changed
+  /// when using the viewer as a nested widget, which will construct
+  /// a new delegate and only calling [State.didUpdateWidget] at the moment.
+  @mustCallSuper
+  void didUpdateViewer(
+    covariant AssetPickerViewerState<Asset, Path> state,
+    covariant AssetPickerViewer<Asset, Path> oldWidget,
+    covariant AssetPickerViewer<Asset, Path> newWidget,
+  ) {
+    // Widgets are useless in the default delegate.
+    initAnimations(state);
   }
 
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
+  @mustCallSuper
   void dispose() {
     provider?.dispose();
     pageController.dispose();
@@ -188,6 +194,20 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
       ..stop()
       ..reset()
       ..dispose();
+  }
+
+  /// Initialize animations related to the zooming preview.
+  /// 为缩放预览初始化动画
+  void initAnimations(covariant AssetPickerViewerState<Asset, Path> state) {
+    viewerState = state;
+    doubleTapAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: state,
+    );
+    doubleTapCurveAnimation = CurvedAnimation(
+      parent: doubleTapAnimationController,
+      curve: Curves.easeInOut,
+    );
   }
 
   /// Produce [OrdinalSortKey] with the fixed name.
