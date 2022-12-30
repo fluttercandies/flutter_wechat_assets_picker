@@ -110,6 +110,12 @@ class AssetPickerViewerState<Asset, Path>
   }
 
   @override
+  void didUpdateWidget(covariant AssetPickerViewer<Asset, Path> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    builder.didUpdateViewer(this, oldWidget, widget);
+  }
+
+  @override
   void dispose() {
     builder.dispose();
     super.dispose();
