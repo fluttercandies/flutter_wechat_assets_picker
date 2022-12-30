@@ -159,6 +159,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// Call when viewer is calling [State.initState].
   /// 当预览器调用 [State.initState] 时注册 [State] 和 [TickerProvider]。
+  @mustCallSuper
   void initStateAndTicker(
     AssetPickerViewerState<Asset, Path> s,
     TickerProvider v,
@@ -177,6 +178,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// Call when the viewer is calling [State.didUpdateWidget].
   /// 当预览器调用 [State.didUpdateWidget] 时操作 [State] 和 [TickerProvider]。
+  @mustCallSuper
   void didUpdateViewer(
     covariant AssetPickerViewerState<Asset, Path> state,
     covariant AssetPickerViewer<Asset, Path> oldWidget,
@@ -189,6 +191,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
+  @mustCallSuper
   void dispose() {
     provider?.dispose();
     pageController.dispose();
