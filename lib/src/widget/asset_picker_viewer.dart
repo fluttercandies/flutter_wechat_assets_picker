@@ -111,8 +111,8 @@ class AssetPickerViewerState<Asset, Path>
 
   @override
   void didUpdateWidget(covariant AssetPickerViewer<Asset, Path> oldWidget) {
-    builder.initStateAndTicker(this, this);
     super.didUpdateWidget(oldWidget);
+    builder.didUpdateViewer(this, oldWidget, widget);
   }
 
   @override

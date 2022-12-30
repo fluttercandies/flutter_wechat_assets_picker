@@ -175,6 +175,18 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     );
   }
 
+  /// Call when the viewer is calling [State.didUpdateWidget].
+  /// 当预览器调用 [State.didUpdateWidget] 时操作 [State] 和 [TickerProvider]。
+  void didUpdateViewer(
+    covariant AssetPickerViewerState<Asset, Path> state,
+    covariant AssetPickerViewer<Asset, Path> oldWidget,
+    covariant AssetPickerViewer<Asset, Path> newWidget,
+  ) {
+    doubleTapAnimationController =
+        oldWidget.builder.doubleTapAnimationController;
+    doubleTapCurveAnimation = oldWidget.builder.doubleTapCurveAnimation;
+  }
+
   /// Keep a dispose method to sync with [State].
   /// 保留一个 dispose 方法与 [State] 同步。
   void dispose() {
