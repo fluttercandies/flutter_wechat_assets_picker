@@ -2,15 +2,18 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
+/// Author: Maël (https://github.com/LeGoffMael)
+///
+/// See the package https://github.com/LeGoffMael/insta_assets_picker
+/// for the complete implementations.
+
 import 'dart:math';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
-// ignore: directives_ordering
-import 'package:extended_image/extended_image.dart';
 
 /// The reduced height of the viewer
 const double _kReducedViewerHeight = kToolbarHeight;

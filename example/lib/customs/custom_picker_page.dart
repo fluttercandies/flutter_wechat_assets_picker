@@ -3,10 +3,10 @@
 // in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:wechat_assets_picker_demo/customs/pickers/insta_asset_picker.dart';
 
 import '../constants/custom_pick_method.dart';
 import 'pickers/directory_file_asset_picker.dart';
+import 'pickers/insta_asset_picker.dart';
 import 'pickers/multi_tabs_assets_picker.dart';
 
 class CustomPickersPage extends StatefulWidget {
@@ -55,8 +55,8 @@ class _CustomPickerPageState extends State<CustomPickersPage>
       CustomPickMethod(
         icon: '📷',
         name: 'Instagram layout picker',
-        description: 'The picker reproduces instagram layout with preview and '
-            'scroll animations.',
+        description: 'The picker reproduces Instagram layout with preview and '
+            "scroll animations. It's also published as the package insta_assets_picker.",
         method: (BuildContext context) => Navigator.of(context).push<void>(
           MaterialPageRoute<void>(builder: (_) => const InstaAssetPicker()),
         ),
