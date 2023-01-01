@@ -45,7 +45,8 @@ class PickMethod {
     return PickMethod(
       icon: '🎞',
       name: 'Video picker',
-      description: 'Only pick video from device.',
+      description: 'Only pick video from device. '
+          '(Live Photos will be obtained on iOS.)',
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,

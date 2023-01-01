@@ -6,37 +6,39 @@ that can be found in the LICENSE file. -->
 
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?label=%E7%A8%B3%E5%AE%9A%E7%89%88&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=9d00ff&include_prereleases&label=%E5%BC%80%E5%8F%91%E7%89%88&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
-[![Build status](https://img.shields.io/github/actions/workflow/status/fluttercandies/flutter_wechat_assets_picker/runnable.yml?branch=main&label=CI&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions/workflows/runnable.yml)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/fluttercandies/flutter_wechat_assets_picker?label=%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F&logo=codefactor&logoColor=%23ffffff&style=flat-square)](https://www.codefactor.io/repository/github/fluttercandies/flutter_wechat_assets_picker)
-[![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?label=%E5%8D%8F%E8%AE%AE&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/LICENSE)
 
+[![Build status](https://img.shields.io/github/actions/workflow/status/fluttercandies/flutter_wechat_assets_picker/runnable.yml?branch=main&label=CI&logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/actions/workflows/runnable.yml)
+[![GitHub license](https://img.shields.io/github/license/fluttercandies/flutter_wechat_assets_picker?label=%E5%8D%8F%E8%AE%AE&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
+
 [![Awesome Flutter](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/Solido/awesome-flutter)
 <a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
 
 Language: [English](README.md) | 中文
 
-基于微信 UI 的 **资源选择器**，
-基于 [photo_manager][photo_manager pub] 实现资源相关功能，
+基于 **微信 UI** 的 Flutter 图片选择器（同时支持视频和音频）。
+该插件基于 [photo_manager][photo_manager pub] 实现资源相关功能，
 [extended_image][extended_image pub] 用于查看图片，
 [provider][provider pub] 用于协助管理选择器的状态。
-
-需要拍照及录制视频，请查看示例的详细用法，
-并前往 [wechat_camera_picker][wechat_camera_picker pub]。
 
 当前的界面设计基于的微信版本：**8.x**
 界面更新将在微信版本更新后随时进行跟进。
 
-**注意：** 如果你觉得你的自定义实现会在某些程度上帮助其他人实现他们的需求，
-你可以通过 PR 提交你的自定义实现。更多信息请参考
-[贡献自定义实现](example/lib/customs/CONTRIBUTING.md) 。
+如果你需要拍照及录制视频，请先查看示例的详细用法，
+并前往 [wechat_camera_picker][wechat_camera_picker pub]。
+该插件是独立扩展，需要结合使用。
 
 查看 [迁移指南][] 了解如何从破坏性改动中迁移为可用代码。
+
+<details>
+  <summary>目录列表</summary>
 
 <!-- TOC -->
 * [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
   * [特性 ✨](#特性-)
+    * [特别提醒 📝](#特别提醒-)
   * [截图 📸](#截图-)
   * [开始前的注意事项 ‼️](#开始前的注意事项-)
   * [准备工作 🍭](#准备工作-)
@@ -47,44 +49,48 @@ Language: [English](README.md) | 中文
     * [iOS](#ios)
     * [macOS](#macos)
   * [使用方法 📖](#使用方法-)
+    * [国际化](#国际化)
     * [简单的使用方法](#简单的使用方法)
     * [更详细的使用方法](#更详细的使用方法)
-    * [国际化](#国际化)
-    * [使用自定义代理](#使用自定义代理)
-      * [一般的调用选择情况](#一般的调用选择情况)
-        * [多选资源](#多选资源)
-        * [单选资源](#单选资源)
-      * [自定义选择器](#自定义选择器)
-    * [展示选中的资源](#展示选中的资源)
-    * [注册资源变化回调](#注册资源变化回调)
-    * [自定义类型或 UI](#自定义类型或-ui)
+      * [展示选中的资源](#展示选中的资源)
+      * [注册资源变化回调](#注册资源变化回调)
+      * [在表单数据中上传 `AssetEntity`](#在表单数据中上传-assetentity)
+        * [使用 `http`](#使用-http)
+        * [使用 `diox`](#使用-diox)
+    * [自定义选择器](#自定义选择器)
   * [常见问题 ❔](#常见问题-)
     * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task---photomanager--compiledebugkotlin)
-    * [如何获取资源的路径以进行上传或编辑等操作的整合？](#如何获取资源的路径以进行上传或编辑等操作的整合)
     * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
     * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示--failed-to-find-generatedappglidemodule)
   * [致谢](#致谢)
 <!-- TOC -->
+</details>
 
 ## 特性 ✨
 
 - ♻️ 支持基于代理重载的全量自定义
-- 💚 99% 的微信风格
-- ⚡️ 根据参数可调的性能优化
+- 🎏 完全可自定义的基于 `ThemeData` 的主题
+- 💚 复刻微信风格（甚至优化了更多的细节）
+- ⚡️ 根据配置调节的性能优化
 - 📷 图片资源支持
-  - 🔬 HEIF 格式图片支持
+  - 🔬 HEIF 格式图片支持 <a href="#特别提醒-"><sup>(1)</sup></a>
 - 🎥 视频资源支持
-- 🎶 音频资源支持
-  - ⚠️ 由于 iOS/macOS 系统限制，仅支持应用沙盒内获取音频资源
-- 1️⃣ 单资源模式
-- 💱 国际化支持
+- 🎶 音频资源支持 <a href="#notes-"><sup>(2)</sup></a>
+- 1️⃣ 单选模式模式
+- 💱 国际化 (i18n) 支持
   - ⏪ RTL 语言支持
 - ➕ 特殊 widget 构建支持
 - 🗂 自定义路径排序支持
 - 📝 自定义文本构建支持
 - ⏳ 自定义筛选规则支持
-- 🎏 完整的自定义主题
 - 💻 支持 MacOS
+
+### 特别提醒 📝
+
+1. HEIF (HEIC) 图片支持获取和转换，但是它们的显示依托于 Flutter 的图片解析。
+   在此 issue 中 [flutter/flutter#20522](https://github.com/flutter/flutter/issues/20522) 有所说明。
+   若要用于显示，请使用 `entity.file` 或 `AssetEntityImage` 进行处理。
+2. 由于 iOS 和 macOS 的系统限制，在获取音频时只能获取应用沙盒环境内的音频
 
 ## 截图 📸
 
@@ -98,6 +104,11 @@ Language: [English](README.md) | 中文
 
 该库与 [photo_manager][photo_manager pub] 有强关联性，
 大部分方法的行为是由 photo_manager 进行控制的。
+
+在选择器中最常使用的 API 是：
+- [`AssetEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
+- [`AssetPathEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
+
 当你有与相关的 API 和行为的疑问时，你可以查看
 [photo_manager API 文档][] 了解更多细节。
 
@@ -128,11 +139,11 @@ dependencies:
   wechat_assets_picker: ^latest_version
 ```
 
-最新的 **稳定** 版本是: 
+最新的 **稳定** 版本是:
 [![pub package](https://img.shields.io/pub/v/wechat_assets_picker?logo=dart&label=stable&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
 
-最新的 **开发** 版本是: 
-[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=42a012&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
+最新的 **开发** 版本是:
+[![pub package](https://img.shields.io/pub/v/wechat_assets_picker?color=9d00ff&include_prereleases&label=dev&logo=dart&style=flat-square)](https://pub.flutter-io.cn/packages/wechat_assets_picker)
 
 在你的代码中导入：
 
@@ -142,15 +153,11 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 ### Android
 
-如果你发现有一些与 `Glide` 有关的警告日志输出，
-那么主项目就需要实现 `AppGlideModule`。
-详细信息请查看 [Generated API 文档][]。
-
-#### 权限
-
 在使用这个 package 时，请确保
 `compileSdkVersion` 和 `targetSdkVersion` 升级到 `33`。
 否则，在 Android 13 设备上将有可能无法加载任何资源。
+
+#### 权限
 
 | Name                     | 必需  | 已声明 | 最高 API 版本 | 其他          |
 |--------------------------|-----|-----|-----------|-------------|
@@ -162,24 +169,23 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 | `READ_MEDIA_AUDIO`       | 是*  | 是   | N/A       | 读取音频时必需     |
 
 如果你的目标 SDK 版本大于 33，且你不需要获取图片、视频或者音频，
-你可以考虑将对应权限移除：
+你可以考虑只声明需要的权限，具体如下：
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.your.app">
-    <!-- 如果不需要获取图片，移除 READ_MEDIA_IMAGES -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove" />
-    <!-- 如果不需要获取视频，移除 READ_MEDIA_VIDEO -->
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove" />
-    <!-- 如果不需要获取音频，移除 READ_MEDIA_AUDIO -->
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" tools:node="remove" />
+    <!--请求图片和视频权限-->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <!--如果不需要获取音频，移除或者注释 READ_MEDIA_AUDIO-->
+    <!--<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />-->
 </manifest>
 ```
 
 ### iOS
 
-1. 在 `ios/Podfile` 中指定最低构建版本至 **1.0**。
+1. 在 `ios/Podfile` 中指定最低构建版本至 **11.0**。
    ```ruby
    platform :ios, '11.0'
    ```
@@ -207,6 +213,25 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 5. 与 iOS 一样，添加相同的内容到 `Info.plist` 里。
 
 ## 使用方法 📖
+
+### 国际化
+
+当你在选择资源的时候，package 会通过你的 `BuildContext`
+读取 `Locale?`，返回对应语言的文字代理实现。
+请确保你可以通过 `BuildContext` 获取到 `Locale`，否则将会 **默认展示中文文字**。
+
+内置的语言文字实现有：
+* 简体中文 (默认)
+* English
+* העברית
+* Deutsche
+* Локализация
+* 日本語
+* مة العربية
+* Délégué
+
+如果你想使用自定义或固定的文字实现，请通过
+`AssetPickerConfig.textDelegate` 传递调用。
 
 ### 简单的使用方法
 
@@ -251,80 +276,41 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?` | 判断有限的权限情况下是否展示提示页面                                   | `null`                      |
 | pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 构建自定义路径名称                                            | `null`                      |
 
+- 当 `maxAssets` 等于 `1`（即单选模式），搭配
+  `SpecialPickerType.noPreview` 使用会在用户点选资源换时立刻选中并返回。
+- 当 `requestType` 为 `RequestType.video` 时，
+  iOS 获取的资源会包括 **实况图片 (Live Photos)**。
+  你可以设置 `FilterOptionGroup.containsLivePhotos` 为 `false` 来禁用。
+- `limitedPermissionOverlayPredicate` 不是持久化的，
+  如果你需要在应用下次启动时不再显示权限受限的页面，请自主实现持久化的控制。
+
 ### 更详细的使用方法
 
 我们已将常用的调用方法封装在 [example](example) 中。
-
-### 国际化
-
-当你在选择资源的时候，package 会通过你的 `BuildContext`
-读取 `Locale?`，返回对应语言的文字代理实现。
-请确保你可以通过 `BuildContext` 获取到 `Locale`，否则将会 **默认展示中文文字**。
-
-内置的语言文字实现有：
-* 简体中文 (默认)
-* English
-* העברית
-* Deutsche
-* Локализация
-* 日本語
-* مة العربية
-* Délégué
-
-如果你想使用自定义或固定的文字实现，请通过
-`AssetPickerConfig.textDelegate` 传递调用。
-
-### 使用自定义代理
-
-你只能在使用 `pickAssetsWithDelegate` 方法时
-使用 `keepScrollOffset` 的功能。
-更多细节请查看示例内的 `Keep scroll offset` 方法。
-
-想要了解更多关于自定义代理实现的内容，
-查阅 [`example/lib/customs`](example/lib/customs)。
-
-#### 一般的调用选择情况
-
 你可以在 `example/lib/pages/multi_assets_page.dart` 和
 `example/lib/pages/single_assets_page.dart`
 找到 `List<PickMethod> pickMethods`，
 它分别定义了多选和单选可用的选择模式。
 在选择资源后，资源会暂存并展示在页面下方。
 
-##### 多选资源
-
-页面中的最大选择数是 `9`，你可以按需修改。
-
-某些模式只能在多选下使用，例如「朋友圈」(WeChat Moment) 模式。
-
-##### 单选资源
-
-一次只能且最多能选择一个资源。
-
-#### 自定义选择器
-
-你可以在「Custom」页面尝试自定义的选择器。
-目前我们提供了一个基于 `Directory` 和 `File`
-（与 `photo_manager` 完全无关）实现的选择器，
-以及一个多 Tab 页切换的选择器。
-如果你觉得你的实现有价值或能帮助到其他人，欢迎以 PR 的形式进行提交。
-更多细节请阅读 [贡献自定义实现][]。
-
-### 展示选中的资源
+#### 展示选中的资源
 
 `AssetEntityImage` 和 `AssetEntityImageProvider`
 可以为 **图片 & 视频** 展示缩略图，以及展示 **图片的原图**。
 它的使用方法与常见的 `Image` 和 `ImageProvider` 一致。
 
 ```dart
-/// AssetEntityImage
 AssetEntityImage(asset, isOriginal: false);
+```
 
+或：
+
+```dart
 /// AssetEntityImageProvider
 Image(image: AssetEntityImageProvider(asset, isOriginal: false));
 ```
 
-### 注册资源变化回调
+#### 注册资源变化回调
 
 ```dart
 /// 注册回调
@@ -334,7 +320,97 @@ AssetPicker.registerObserve();
 AssetPicker.unregisterObserve();
 ```
 
-### 自定义类型或 UI
+#### 在表单数据中上传 `AssetEntity`
+
+`AssetEntity` 包含有多种 I/O 相关的方法可以用于上传。
+**请注意，I/O 相关的方法会消耗性能（通常是时间和内存），它们不应该被频繁调用。**
+
+##### 使用 `http`
+
+`http` package: https://pub.flutter-io.cn/packages/http
+
+`http` package 使用v
+[`MultipartFile`](https://pub.dev/documentation/http/latest/http/MultipartFile-class.html)
+来在请求中处理文件。
+
+示例代码如下：
+```dart
+import 'package:http/http.dart' as http;
+
+Future<void> upload() async {
+  final entity = await obtainYourEntity();
+  final uri = Uri.https('example.com', 'create');
+  final request = http.MultipartRequest('POST', uri)
+    ..fields['test_field'] = 'test_value'
+    ..files.add(await multipartFileFromAssetEntity(entity));
+  final response = await request.send();
+  if (response.statusCode == 200) {
+    print('Uploaded!');
+  }
+}
+
+Future<http.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
+  http.MultipartFile mf;
+  // Using the file path.
+  final file = await entity.file;
+  if (file == null) {
+    throw StateError('Unable to obtain file of the entity ${entity.id}.');
+  }
+  mf = await http.MultipartFile.fromPath('test_file', file.path);
+  // Using the bytes.
+  final bytes = await entity.originBytes;
+  if (bytes == null) {
+    throw StateError('Unable to obtain bytes of the entity ${entity.id}.');
+  }
+  mf = http.MultipartFile.fromBytes('test_file', bytes);
+  return mf;
+}
+```
+
+##### 使用 `diox`
+
+`diox` package: https://pub.flutter-io.cn/packages/diox
+
+`diox` package 同样使用了
+[`MultipartFile`](https://pub.flutter-io.cn/documentation/diox/5.0.0-dev.2/diox/MultipartFile-class.html)
+来在请求中处理文件。
+
+示例代码：
+```dart
+import 'package:diox/diox.dart' as diox;
+
+Future<void> upload() async {
+  final entity = await obtainYourEntity();
+  final uri = Uri.https('example.com', 'create');
+  final response = diox.Dio().requestUri(
+    uri,
+    data: diox.FormData.fromMap({
+      'test_field': 'test_value',
+      'test_file': await multipartFileFromAssetEntity(entity),
+    }),
+  );
+  print('Uploaded!');
+}
+
+Future<diox.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
+  diox.MultipartFile mf;
+  // Using the file path.
+  final file = await entity.file;
+  if (file == null) {
+    throw StateError('Unable to obtain file of the entity ${entity.id}.');
+  }
+  mf = await diox.MultipartFile.fromFile(file.path);
+  // Using the bytes.
+  final bytes = await entity.originBytes;
+  if (bytes == null) {
+    throw StateError('Unable to obtain bytes of the entity ${entity.id}.');
+  }
+  mf = diox.MultipartFile.fromBytes(bytes);
+  return mf;
+}
+```
+
+### 自定义选择器
 
 `AssetPickerBuilderDelegate`、`AssetPickerViewerBuilderDelegate`、
 `AssetPickerProvider` 及 `AssetPickerViewerProvider` 均已暴露且可重载。
@@ -343,28 +419,18 @@ AssetPicker.unregisterObserve();
 更多用法请查看示例中的 `Custom` 页面，
 该页面包含一个以 `<File, Directory>` 为类型基础的选择器。
 
+你可以在「Custom」页面尝试自定义的选择器。
+目前我们提供了一个基于 `Directory` 和 `File`
+（与 `photo_manager` 完全无关）实现的选择器，
+以及一个多 Tab 页切换的选择器。
+如果你觉得你的实现有价值或能帮助到其他人，欢迎以 PR 的形式进行提交。
+更多细节请阅读 [贡献自定义实现][]。
+
 ## 常见问题 ❔
 
 ### Execution failed for task ':photo_manager:compileDebugKotlin'
 
 查看 [photo_manager#561][] 了解详细的解决方法。
-
-### 如何获取资源的路径以进行上传或编辑等操作的整合？
-
-你不需要获得路径（也许）。
-
-`File` 对象可以通过 `entity.file` 或 `entity.originFile` 获得，
-如果需要 `Uint8List` 则使用 `entity.originBytes`。
-
-如果再此之后你仍然需要路径，
-那么可以通过已获得的 `File` 对象获取：
-
-```dart
-final File file = await entity.file; // 缩略图或编辑后的视频
-final File originFile = await entity.originFile; // 原图或者原视频
-final String path = file.path;
-final String originPath = originFile.path;
-```
 
 ### 从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法
 
@@ -387,11 +453,11 @@ final AssetEntity imageEntity = await PhotoManager.editor.saveImage(
 ```
 
 **注意：如果不想保留文件，请尽量用 `File` 承载中间操作，**
-否则在调用 `AssetEntity` 的删除时，某些系统下会触发系统弹窗事件：
+否则在调用 `AssetEntity` 的删除时，系统可能会触发弹窗：
 
 ```dart
 final List<String> result = await PhotoManager.editor.deleteWithIds(
-    <String>[entity.id],
+  <String>[entity.id],
 );
 ```
 
@@ -400,13 +466,16 @@ final List<String> result = await PhotoManager.editor.deleteWithIds(
 ### 控制台提示 'Failed to find GeneratedAppGlideModule'
 
 ```
-W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an annotationProcessor complie dependency on com.github.bumptech.glide:compiler in you application ana a @GlideModule annotated AppGlideModule implementation or LibraryGlideModules will be silently ignored.
+W/Glide   (21133): Failed to find GeneratedAppGlideModule. 
+                   You should include an annotationProcessor compile dependency on com.github.bumptech.glide:compiler
+                   in you application ana a @GlideModule annotated AppGlideModule implementation
+                   or LibraryGlideModules will be silently ignored.
 ```
 
 `Glide` 通过注解来保证单例，防止单例或版本之间的冲突，
 而因为 `photo_manager` 使用了 `Glide` 提供部分图片功能，
 所以使用它的项目必须实现自己的 `AppGlideModule`。
-请移步 [Android](#android) 部分了解如何实现。
+请移步 [Glide Generated API 文档][] 了解如何实现。
 
 ## 致谢
 
@@ -426,7 +495,7 @@ W/Glide   (21133): Failed to find GeneratedAppGlideModule. You should include an
 [wechat_camera_picker pub]: https://pub.flutter-io.cn/packages/wechat_camera_picker
 [迁移指南]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/guides/migration_guide.md
 [photo_manager API 文档]: https://pub.flutter-io.cn/documentation/photo_manager/latest/
-[Generated API 文档]: https://muyangmin.github.io/glide-docs-cn/doc/generatedapi.html
+[Glide Generated API 文档]: https://muyangmin.github.io/glide-docs-cn/doc/generatedapi.html
 [贡献自定义实现]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/example/lib/customs/CONTRIBUTING.md
 [photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
 [photo_manager#insert-new-item]: https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item
