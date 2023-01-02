@@ -94,10 +94,10 @@ Language: [English](README.md) | 中文
 
 ## 截图 📸
 
-| ![1](screenshots/README_1.webp)                          | ![2](screenshots/README_2.webp)                          | ![3](screenshots/README_3.webp)                          |
+| ![1](https://pic.alexv525.com/2021-07-05-picker_1.jpg)   | ![2](https://pic.alexv525.com/2021-07-05-picker_2.jpg)   | ![3](https://pic.alexv525.com/2021-07-05-picker_3.jpg)   |
 |----------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
-| ![4](screenshots/README_4.webp)                          | ![5](screenshots/README_5.webp)                          | ![6](screenshots/README_6.webp)                          |
-| ![7](screenshots/README_7.webp)                          | ![8](screenshots/README_8.webp)                          | ![9](screenshots/README_9.webp)                          |
+| ![4](https://pic.alexv525.com/2021-07-05-picker_4.jpg)   | ![5](https://pic.alexv525.com/2021-07-05-picker_5.jpg)   | ![6](https://pic.alexv525.com/2021-07-05-picker_6.jpg)   |
+| ![7](https://pic.alexv525.com/2021-07-06-picker_7.jpg)   | ![8](https://pic.alexv525.com/2021-07-05-picker_8.jpg)   | ![9](https://pic.alexv525.com/2021-07-05-picker_9-1.jpg) |
 | ![10](https://pic.alexv525.com/2021-07-05-picker_10.png) | ![10](https://pic.alexv525.com/2021-07-05-picker_11.png) | ![12](https://pic.alexv525.com/2021-07-05-picker_12.png) |
 
 ## 开始前的注意事项 ‼️
@@ -207,10 +207,8 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
    platform :osx, '10.15'
    ```
 2. 使用 **Xcode** 打开 `macos/Runner.xcworkspace`。
-   接着根据下面的截图将最低构建版本提升至 **10.15**。
-3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
-4. ![step 2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67vd3f2j30jv04zgm5.jpg)
-5. 与 iOS 一样，添加相同的内容到 `Info.plist` 里。
+   接着将 macOS 的最低构建版本提升至 **10.15**。
+3. 与 [iOS](#iOS) 一样，添加相同的内容到 `Info.plist` 里。
 
 ## 使用方法 📖
 
@@ -330,7 +328,7 @@ AssetPicker.unregisterObserve();
 `http` package: https://pub.flutter-io.cn/packages/http
 
 `http` package 使用v
-[`MultipartFile`](https://pub.dev/documentation/http/latest/http/MultipartFile-class.html)
+[`MultipartFile`](https://pub.flutter-io.cn/documentation/http/latest/http/MultipartFile-class.html)
 来在请求中处理文件。
 
 示例代码如下：
@@ -461,7 +459,9 @@ final List<String> result = await PhotoManager.editor.deleteWithIds(
 );
 ```
 
-参考文档：[photo_manager#insert-new-item][]
+你可以阅读 [photo_manager#from-raw-data][]
+和 [photo_manager#delete-entities][]
+了解更多细节。
 
 ### 控制台提示 'Failed to find GeneratedAppGlideModule'
 
@@ -497,5 +497,6 @@ W/Glide   (21133): Failed to find GeneratedAppGlideModule.
 [photo_manager API 文档]: https://pub.flutter-io.cn/documentation/photo_manager/latest/
 [Glide Generated API 文档]: https://muyangmin.github.io/glide-docs-cn/doc/generatedapi.html
 [贡献自定义实现]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/example/lib/customs/CONTRIBUTING.md
-[photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
-[photo_manager#insert-new-item]: https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item
+[photo_manager#561]: https://github.com/fluttercandies/flutter_photo_manager/issues/561
+[photo_manager#from-raw-data]: https://github.com/fluttercandies/flutter_photo_manager#from-raw-data
+[photo_manager#delete-entities]: https://github.com/fluttercandies/flutter_photo_manager#delete-entities

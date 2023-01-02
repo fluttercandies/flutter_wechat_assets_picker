@@ -99,10 +99,10 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
 
 ## Screenshots 📸
 
-| ![1](screenshots/README_1.webp)                          | ![2](screenshots/README_2.webp)                          | ![3](screenshots/README_3.webp)                          |
+| ![1](https://pic.alexv525.com/2021-07-05-picker_1.jpg)   | ![2](https://pic.alexv525.com/2021-07-05-picker_2.jpg)   | ![3](https://pic.alexv525.com/2021-07-05-picker_3.jpg)   |
 |----------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
-| ![4](screenshots/README_4.webp)                          | ![5](screenshots/README_5.webp)                          | ![6](screenshots/README_6.webp)                          |
-| ![7](screenshots/README_7.webp)                          | ![8](screenshots/README_8.webp)                          | ![9](screenshots/README_9.webp)                          |
+| ![4](https://pic.alexv525.com/2021-07-05-picker_4.jpg)   | ![5](https://pic.alexv525.com/2021-07-05-picker_5.jpg)   | ![6](https://pic.alexv525.com/2021-07-05-picker_6.jpg)   |
+| ![7](https://pic.alexv525.com/2021-07-06-picker_7.jpg)   | ![8](https://pic.alexv525.com/2021-07-05-picker_8.jpg)   | ![9](https://pic.alexv525.com/2021-07-05-picker_9-1.jpg) |
 | ![10](https://pic.alexv525.com/2021-07-05-picker_10.png) | ![10](https://pic.alexv525.com/2021-07-05-picker_11.png) | ![12](https://pic.alexv525.com/2021-07-05-picker_12.png) |
 
 ## READ THIS FIRST ‼️
@@ -213,11 +213,9 @@ consider declare only relevant permission in your apps, more specifically:
    ```ruby
    platform :osx, '10.15'
    ```
-2. Set the minimum deployment target to *10.15*.
+2. Set the minimum deployment target of the macOS to *10.15*.
    Use XCode to open `macos/Runner.xcworkspace` .
-3. ![step 1](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67v4yk4j30qy0b50u0.jpg)
-4. ![step 2](https://tva1.sinaimg.cn/large/007S8ZIlgy1ghw67vd3f2j30jv04zgm5.jpg)
-5. Follow the iOS instructions and modify `Info.plist` accordingly.
+3. Follow the [iOS](#iOS) instructions and modify `Info.plist` accordingly.
 
 ## Usage 📖
 
@@ -477,7 +475,9 @@ final List<String> result = await PhotoManager.editor.deleteWithIds(
 );
 ```
 
-ref: [photo_manager#insert-new-item][]
+See [photo_manager#from-raw-data][]
+and [photo_manager#delete-entities][]
+for more details.
 
 ### Glide warning 'Failed to find GeneratedAppGlideModule'
 
@@ -560,5 +560,6 @@ such as [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies).
 [photo_manager's API docs]: https://pub.dev/documentation/photo_manager/latest/
 [Glide Generated API docs]: https://sjudd.github.io/glide/doc/generatedapi.html
 [Contribute custom implementations]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/example/lib/customs/CONTRIBUTING.md
-[photo_manager#561]: https://github.com/CaiJingLong/flutter_photo_manager/issues/561
-[photo_manager#insert-new-item]: https://github.com/CaiJingLong/flutter_photo_manager#insert-new-item
+[photo_manager#561]: https://github.com/fluttercandies/flutter_photo_manager/issues/561
+[photo_manager#from-raw-data]: https://github.com/fluttercandies/flutter_photo_manager#from-raw-data
+[photo_manager#delete-entities]: https://github.com/fluttercandies/flutter_photo_manager#delete-entities
