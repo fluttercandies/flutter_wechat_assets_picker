@@ -39,6 +39,7 @@ Language: [English](README.md) | 中文
 * [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
   * [特性 ✨](#特性-)
     * [特别提醒 📝](#特别提醒-)
+  * [项目展柜 🖼️](#项目展柜-)
   * [截图 📸](#截图-)
   * [开始前的注意事项 ‼️](#开始前的注意事项-)
   * [准备工作 🍭](#准备工作-)
@@ -91,6 +92,12 @@ Language: [English](README.md) | 中文
    在此 issue 中 [flutter/flutter#20522](https://github.com/flutter/flutter/issues/20522) 有所说明。
    若要用于显示，请使用 `entity.file` 或 `AssetEntityImage` 进行处理。
 2. 由于 iOS 和 macOS 的系统限制，在获取音频时只能获取应用沙盒环境内的音频
+
+## 项目展柜 🖼️
+
+| name                | pub                                                                                                                        | github                                                                                                                                        |
+|:--------------------|:---------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
+| insta_assets_picker | [![pub package](https://img.shields.io/pub/v/insta_assets_picker)](https://pub.flutter-io.cn/packages/insta_assets_picker) | [![star](https://img.shields.io/github/stars/LeGoffMael/insta_assets_picker?style=social)](https://github.com/LeGoffMael/insta_assets_picker) |
 
 ## 截图 📸
 

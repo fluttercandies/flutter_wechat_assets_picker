@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.3.1+1
+
+### Improvements
+
+- Fix images and descriptions in `README`s.
+
 ## 8.3.1
 
 ### New features

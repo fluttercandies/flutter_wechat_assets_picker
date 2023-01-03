@@ -42,6 +42,7 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
 * [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
   * [Features ✨](#features-)
     * [Notes 📝](#notes-)
+  * [Projects using this plugin 🖼️](#projects-using-this-plugin-)
   * [Screenshots 📸](#screenshots-)
   * [READ THIS FIRST ‼️](#read-this-first-)
   * [Preparing for use 🍭](#preparing-for-use-)
@@ -96,6 +97,12 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
    See [flutter/flutter#20522](https://github.com/flutter/flutter/issues/20522).
    Use `entity.file` or `AssetEntityImage` for them when displays.
 2. Due to limitations on iOS and macOS, audio can only be fetched within the sandbox.
+
+## Projects using this plugin 🖼️
+
+| name                | pub                                                                                                              | github                                                                                                                                        |
+|:--------------------|:-----------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|
+| insta_assets_picker | [![pub package](https://img.shields.io/pub/v/insta_assets_picker)](https://pub.dev/packages/insta_assets_picker) | [![star](https://img.shields.io/github/stars/LeGoffMael/insta_assets_picker?style=social)](https://github.com/LeGoffMael/insta_assets_picker) |
 
 ## Screenshots 📸
 
