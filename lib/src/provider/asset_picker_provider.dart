@@ -2,6 +2,7 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
@@ -340,20 +341,35 @@ class DefaultAssetPickerProvider
     }
   }
 
+  Completer<void>? _getAssetsFromPathCompleter;
+
   @override
   Future<void> getAssetsFromPath([int? page, AssetPathEntity? path]) async {
-    page ??= currentAssetsListPage;
-    path ??= currentPath!.path;
-    final List<AssetEntity> list = await path.getAssetListPaged(
-      page: page,
-      size: pageSize,
-    );
-    if (page == 0) {
-      _currentAssets.clear();
+    Future<void> run() async {
+      final int currentPage = page ?? currentAssetsListPage;
+      final AssetPathEntity currentPath = path ?? this.currentPath!.path;
+      final List<AssetEntity> list = await currentPath.getAssetListPaged(
+        page: currentPage,
+        size: pageSize,
+      );
+      if (currentPage == 0) {
+        _currentAssets.clear();
+      }
+      _currentAssets.addAll(list);
+      _hasAssetsToDisplay = _currentAssets.isNotEmpty;
+      notifyListeners();
     }
-    _currentAssets.addAll(list);
-    _hasAssetsToDisplay = _currentAssets.isNotEmpty;
-    notifyListeners();
+    if (_getAssetsFromPathCompleter == null) {
+      _getAssetsFromPathCompleter = Completer<void>();
+      run().then((_) {
+        _getAssetsFromPathCompleter!.complete();
+      }).catchError((Object e, StackTrace s) {
+        _getAssetsFromPathCompleter!.completeError(e, s);
+      }).whenComplete(() {
+        _getAssetsFromPathCompleter = null;
+      });
+    }
+    return _getAssetsFromPathCompleter!.future;
   }
 
   @override
