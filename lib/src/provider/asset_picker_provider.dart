@@ -344,7 +344,7 @@ class DefaultAssetPickerProvider
   Completer<void>? _getAssetsFromPathCompleter;
 
   @override
-  Future<void> getAssetsFromPath([int? page, AssetPathEntity? path]) async {
+  Future<void> getAssetsFromPath([int? page, AssetPathEntity? path]) {
     Future<void> run() async {
       final int currentPage = page ?? currentAssetsListPage;
       final AssetPathEntity currentPath = path ?? this.currentPath!.path;
