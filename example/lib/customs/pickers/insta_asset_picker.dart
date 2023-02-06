@@ -298,11 +298,6 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       ValueNotifier<AssetEntity?>(null);
 
   @override
-  void initState(AssetPickerState<AssetEntity, AssetPathEntity> state) {
-    super.initState(state);
-  }
-
-  @override
   void dispose() {
     if (!keepScrollOffset) {
       _viewerPosition.dispose();
