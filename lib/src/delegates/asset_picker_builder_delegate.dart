@@ -403,7 +403,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             textDelegate.gifIndicator,
             style: TextStyle(
               color: isAppleOS
-                  ? theme.textTheme.bodyText2?.color
+                  ? theme.textTheme.bodyMedium?.color
                   : theme.primaryColor,
               fontSize: 13,
               fontWeight: FontWeight.w500,
@@ -493,7 +493,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             Expanded(
               child: ScaleText(
                 textDelegate.accessAllTip,
-                style: context.themeData.textTheme.caption?.copyWith(
+                style: context.themeData.textTheme.bodySmall?.copyWith(
                   fontSize: 14,
                 ),
                 semanticsLabel: semanticsTextDelegate.accessAllTip,
@@ -1513,8 +1513,8 @@ class DefaultAssetPickerBuilderDelegate
                 : textDelegate.confirm,
             style: TextStyle(
               color: p.isSelectedNotEmpty
-                  ? theme.textTheme.bodyText1?.color
-                  : theme.textTheme.caption?.color,
+                  ? theme.textTheme.bodyLarge?.color
+                  : theme.textTheme.bodySmall?.color,
               fontSize: 17,
               fontWeight: FontWeight.normal,
             ),
@@ -1657,7 +1657,7 @@ class DefaultAssetPickerBuilderDelegate
                       ),
                     ],
                   ),
-                  style: context.themeData.textTheme.caption?.copyWith(
+                  style: context.themeData.textTheme.bodySmall?.copyWith(
                     fontSize: 14,
                   ),
                 ),
@@ -1888,7 +1888,7 @@ class DefaultAssetPickerBuilderDelegate
                                 ScaleText(
                                   '($semanticsCount)',
                                   style: TextStyle(
-                                    color: theme.textTheme.caption?.color,
+                                    color: theme.textTheme.bodySmall?.color,
                                     fontSize: 17,
                                   ),
                                   maxLines: 1,
@@ -1970,7 +1970,7 @@ class DefaultAssetPickerBuilderDelegate
                 style: TextStyle(
                   color: p.isSelectedNotEmpty
                       ? null
-                      : c.themeData.textTheme.caption?.color,
+                      : c.themeData.textTheme.bodySmall?.color,
                   fontSize: 17,
                 ),
                 maxScaleFactor: 1.2,
@@ -2075,7 +2075,7 @@ class DefaultAssetPickerBuilderDelegate
               padding: EdgeInsets.all(indicatorSize * .35),
               color: selected
                   ? theme.colorScheme.primary.withOpacity(.45)
-                  : theme.backgroundColor.withOpacity(.1),
+                  : theme.colorScheme.background.withOpacity(.1),
               child: selected && !isSingleAssetMode
                   ? Align(
                       alignment: AlignmentDirectional.topStart,
@@ -2087,7 +2087,7 @@ class DefaultAssetPickerBuilderDelegate
                           child: Text(
                             '${index + 1}',
                             style: TextStyle(
-                              color: theme.textTheme.bodyText1?.color
+                              color: theme.textTheme.bodyLarge?.color
                                   ?.withOpacity(.75),
                               fontWeight: FontWeight.w600,
                               height: 1,

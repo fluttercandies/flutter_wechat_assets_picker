@@ -408,8 +408,8 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 : textDelegate.confirm,
             style: TextStyle(
               color: p.isSelectedNotEmpty
-                  ? theme.textTheme.bodyText1?.color
-                  : theme.textTheme.caption?.color,
+                  ? theme.textTheme.bodyLarge?.color
+                  : theme.textTheme.bodySmall?.color,
               fontSize: 17,
               fontWeight: FontWeight.normal,
             ),

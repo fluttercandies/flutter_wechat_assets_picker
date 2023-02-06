@@ -715,7 +715,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               padding: const EdgeInsets.all(4),
               color: isPreview
                   ? theme.selectedRowColor.withOpacity(.5)
-                  : theme.backgroundColor.withOpacity(.1),
+                  : theme.colorScheme.background.withOpacity(.1),
               child: Align(
                 alignment: AlignmentDirectional.topEnd,
                 child: isSelected && !isSingleAssetMode
