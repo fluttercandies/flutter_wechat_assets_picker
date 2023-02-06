@@ -4,6 +4,13 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.3.2
+
+### Fixes
+
+- Use `Completer` and more accurate conditions to avoid duplicate load assets
+  when `AssetPickerConfig.pageSize` is smaller than a complete page.
+
 ## 8.3.1+1
 
 ### Improvements
