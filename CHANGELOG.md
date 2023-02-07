@@ -10,6 +10,19 @@ that can be found in the LICENSE file. -->
 
 - Migrate to Flutter 3.7, drop supports for previous Flutter versions.
 
+## 8.3.2+1
+
+### Improvements
+
+- Add more assertions. (#411)
+
+## 8.3.2
+
+### Fixes
+
+- Use `Completer` and more accurate conditions to avoid duplicate load assets
+  when `AssetPickerConfig.pageSize` is smaller than a complete page. (#407)
+
 ## 8.3.1+1
 
 ### Improvements

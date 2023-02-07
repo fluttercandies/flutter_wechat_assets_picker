@@ -36,11 +36,13 @@ class AssetPickerConfig {
     this.shouldRevertGrid,
     this.limitedPermissionOverlayPredicate,
     this.pathNameBuilder,
-  })  : assert(maxAssets >= 1, 'maxAssets must be greater than 1.'),
-        assert(
+  })  : assert(
           pickerTheme == null || themeColor == null,
           'pickerTheme and themeColor cannot be set at the same time.',
         ),
+        assert(maxAssets > 0, 'maxAssets must be greater than 0.'),
+        assert(pageSize > 0, 'pageSize must be greater than 0.'),
+        assert(gridCount > 0, 'gridCount must be greater than 0.'),
         assert(
           pageSize % gridCount == 0,
           'pageSize must be a multiple of gridCount.',

@@ -14,7 +14,7 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
   AssetPickerViewerProvider(
     List<A>? assets, {
     this.maxAssets = defaultMaxAssetsCount,
-  }) {
+  }) : assert(maxAssets > 0, 'maxAssets must be greater than 0.') {
     _currentlySelectedAssets = (assets ?? <A>[]).toList();
   }
 
