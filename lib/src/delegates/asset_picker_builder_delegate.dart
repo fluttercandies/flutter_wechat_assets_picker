@@ -2019,7 +2019,7 @@ class DefaultAssetPickerBuilderDelegate
           decoration: BoxDecoration(
             border: !selected
                 ? Border.all(
-                    color: context.themeData.selectedRowColor,
+                    color: context.themeData.unselectedWidgetColor,
                     width: indicatorSize / 25,
                   )
                 : null,
