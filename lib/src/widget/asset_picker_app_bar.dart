@@ -131,7 +131,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ? Alignment.center
                     : AlignmentDirectional.centerStart,
                 child: DefaultTextStyle(
-                  style: theme.textTheme.headline6!.copyWith(fontSize: 23.0),
+                  style: theme.textTheme.titleLarge!.copyWith(fontSize: 23.0),
                   maxLines: 1,
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,

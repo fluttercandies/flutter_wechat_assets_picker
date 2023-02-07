@@ -2,7 +2,6 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -208,10 +207,8 @@ class AssetPickerDelegate {
         primaryColorDark: Colors.grey[50],
         canvasColor: Colors.grey[100],
         scaffoldBackgroundColor: Colors.grey[50],
-        bottomAppBarColor: Colors.grey[50],
         cardColor: Colors.grey[50],
         highlightColor: Colors.transparent,
-        toggleableActiveColor: themeColor,
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: themeColor,
           selectionColor: themeColor.withAlpha(100),
@@ -228,9 +225,7 @@ class AssetPickerDelegate {
         buttonTheme: ButtonThemeData(buttonColor: themeColor),
         colorScheme: ColorScheme(
           primary: Colors.grey[50]!,
-          primaryVariant: Colors.grey[50],
           secondary: themeColor,
-          secondaryVariant: themeColor,
           background: Colors.grey[50]!,
           surface: Colors.grey[50]!,
           brightness: Brightness.light,
@@ -249,10 +244,8 @@ class AssetPickerDelegate {
       primaryColorDark: Colors.grey[900],
       canvasColor: Colors.grey[850],
       scaffoldBackgroundColor: Colors.grey[900],
-      bottomAppBarColor: Colors.grey[900],
       cardColor: Colors.grey[900],
       highlightColor: Colors.transparent,
-      toggleableActiveColor: themeColor,
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: themeColor,
         selectionColor: themeColor.withAlpha(100),
@@ -269,9 +262,7 @@ class AssetPickerDelegate {
       buttonTheme: ButtonThemeData(buttonColor: themeColor),
       colorScheme: ColorScheme(
         primary: Colors.grey[900]!,
-        primaryVariant: Colors.grey[900],
         secondary: themeColor,
-        secondaryVariant: themeColor,
         background: Colors.grey[900]!,
         surface: Colors.grey[900]!,
         brightness: Brightness.dark,

@@ -97,7 +97,7 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
                 ScaleText(
                   '  iCloud ${(progress * 100).toInt()}%',
                   style: TextStyle(
-                    color: context.themeData.textTheme.bodyText2?.color
+                    color: context.themeData.textTheme.bodyMedium?.color
                         ?.withOpacity(.4),
                   ),
                 ),

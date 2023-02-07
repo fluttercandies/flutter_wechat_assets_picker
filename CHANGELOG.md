@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.4.0
+
+### Breaking changes
+
+- Migrate to Flutter 3.7, drop supports for previous Flutter versions.
+
 ## 8.3.2+1
 
 ### Improvements
@@ -138,7 +144,9 @@ To know more about breaking changes, see [Migration Guide][].
 
 ## 7.3.0
 
-Migrate to Flutter 3, drop supports for previous Flutter versions.
+### Breaking changes
+
+- Migrate to Flutter 3, drop supports for previous Flutter versions.
 
 ## 7.2.0
 

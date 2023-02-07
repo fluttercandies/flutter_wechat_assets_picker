@@ -132,12 +132,12 @@ before you have any questions.
 
 ### Versions compatibility
 
-|        | 2.8.0 | 2.10.0 | 3.0.0 | 3.3.0 |
-|--------|:-----:|:------:|:-----:|:-----:|
-| 8.0.0+ |  N/A  |  N/A   |   ✅   |   ✅   |
-| 7.3.0+ |  N/A  |  N/A   |   ✅   |   ✅   |
-| 7.0.0+ |   ✅   |   ✅    |   ❌   |   ❌   |
-| 6.3.0+ |   ✅   |   ✅    |   ❌   |   ❌   |
+|        | 2.10.0 | 3.0.0 | 3.3.0 | 3.7.0 |
+|--------|:------:|:-----:|:-----:|:-----:|
+| 8.4.0+ |   ❌    |   ❌   |   ❌   |   ✅   |
+| 8.0.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
+| 7.3.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
+| 7.0.0+ |   ✅    |   ❌   |   ❌   |   ❌   |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
 please use `dependency_overrides` to fix it.

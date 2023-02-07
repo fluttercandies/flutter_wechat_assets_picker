@@ -124,7 +124,7 @@ class _MethodListView extends StatelessWidget {
                   const SizedBox(height: 5),
                   Text(
                     model.description,
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                     overflow: TextOverflow.fade,
                   ),
                 ],
