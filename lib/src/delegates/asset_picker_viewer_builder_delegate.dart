@@ -40,7 +40,8 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     this.maxAssets,
     this.shouldReversePreview = false,
     this.selectPredicate,
-  });
+  })  : assert(maxAssets == null || maxAssets > 0),
+        assert(currentIndex >= 0);
 
   /// [ChangeNotifier] for photo selector viewer.
   /// 资源预览器的状态保持

@@ -27,7 +27,8 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     this.pageSize = defaultAssetsPerPage,
     this.pathThumbnailSize = defaultPathThumbnailSize,
     List<Asset>? selectedAssets,
-  }) {
+  })  : assert(maxAssets > 0, 'maxAssets must be greater than 0.'),
+        assert(pageSize > 0, 'pageSize must be greater than 0.') {
     if (selectedAssets != null && selectedAssets.isNotEmpty) {
       _selectedAssets = selectedAssets.toList();
     }
@@ -359,6 +360,7 @@ class DefaultAssetPickerProvider
       _hasAssetsToDisplay = _currentAssets.isNotEmpty;
       notifyListeners();
     }
+
     if (_getAssetsFromPathCompleter == null) {
       _getAssetsFromPathCompleter = Completer<void>();
       run().then((_) {
