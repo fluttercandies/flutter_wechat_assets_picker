@@ -680,7 +680,9 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         border: Border.all(color: theme.unselectedWidgetColor),
-        color: isSelected ? themeColor : Colors.white.withOpacity(.2),
+        color: isSelected
+            ? themeColor
+            : theme.unselectedWidgetColor.withOpacity(.2),
         shape: BoxShape.circle,
       ),
       child: FittedBox(
