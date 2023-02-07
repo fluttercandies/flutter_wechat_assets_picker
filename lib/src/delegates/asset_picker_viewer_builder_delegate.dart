@@ -864,6 +864,8 @@ class DefaultAssetPickerViewerBuilderDelegate
                 fontSize: 17,
                 fontWeight: FontWeight.normal,
               ),
+              overflow: TextOverflow.fade,
+              softWrap: false,
               semanticsLabel: () {
                 if (isWeChatMoment && hasVideo) {
                   return semanticsTextDelegate.confirm;

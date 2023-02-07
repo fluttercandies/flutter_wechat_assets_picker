@@ -15,6 +15,7 @@ class ScaleText extends StatelessWidget {
     this.textAlign,
     this.textDirection,
     this.semanticsLabel,
+    this.softWrap,
     this.minScaleFactor = 0.7,
     this.maxScaleFactor = 1.3,
   });
@@ -27,6 +28,7 @@ class ScaleText extends StatelessWidget {
   final TextAlign? textAlign;
   final TextDirection? textDirection;
   final String? semanticsLabel;
+  final bool? softWrap;
 
   final double minScaleFactor;
   final double maxScaleFactor;
@@ -49,6 +51,7 @@ class ScaleText extends StatelessWidget {
         overflow: overflow,
         textDirection: textDirection,
         semanticsLabel: semanticsLabel,
+        softWrap: softWrap,
       ),
     );
   }
