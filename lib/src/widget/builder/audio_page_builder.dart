@@ -32,7 +32,8 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
 
   /// Create a [VideoPlayerController] instance for the page builder state.
   /// 创建一个 [VideoPlayerController] 的实例
-  late final VideoPlayerController _controller;
+  VideoPlayerController get controller => _controller!;
+  VideoPlayerController? _controller;
 
   /// Whether the audio loaded.
   /// 音频是否已经加载完成
@@ -44,11 +45,11 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
 
   /// Whether the controller is playing.
   /// 播放控制器是否在播放
-  bool get isControllerPlaying => _controller.value.isPlaying;
+  bool get isControllerPlaying => _controller?.value.isPlaying == true;
 
   /// Duration of the audio.
   /// 音频的时长
-  late final Duration assetDuration;
+  Duration assetDuration = Duration.zero;
 
   @override
   void initState() {
@@ -57,13 +58,28 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   }
 
   @override
+  void didUpdateWidget(AudioPageBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.asset != oldWidget.asset) {
+      _controller
+        ?..removeListener(audioPlayerListener)
+        ..pause()
+        ..dispose();
+      isLoaded = false;
+      isPlaying = false;
+      assetDuration = Duration.zero;
+    }
+  }
+
+  @override
   void dispose() {
     /// Stop and dispose player instance to stop playing
     /// when dispose (e.g. page switched).
     /// 状态销毁时停止并销毁实例（例如页面切换时）
-    _controller.pause();
-    _controller.removeListener(audioPlayerListener);
-    _controller.dispose();
+    _controller
+      ?..removeListener(audioPlayerListener)
+      ..pause()
+      ..dispose();
     super.dispose();
   }
 
@@ -74,8 +90,8 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       final String? url = await widget.asset.getMediaUrl();
       assetDuration = Duration(seconds: widget.asset.duration);
       _controller = VideoPlayerController.network(url!);
-      await _controller.initialize();
-      _controller.addListener(audioPlayerListener);
+      await controller.initialize();
+      controller.addListener(audioPlayerListener);
     } catch (e) {
       realDebugPrint('Error when opening audio file: $e');
     } finally {
@@ -97,14 +113,14 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
     }
 
     /// Add the current position into the stream.
-    durationStreamController.add(_controller.value.position);
+    durationStreamController.add(controller.value.position);
   }
 
   void playButtonCallback() {
     if (isPlaying) {
-      _controller.pause();
+      controller.pause();
     } else {
-      _controller.play();
+      controller.play();
     }
   }
 
