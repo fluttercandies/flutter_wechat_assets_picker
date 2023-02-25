@@ -193,6 +193,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
+      key: ValueKey<String>(widget.asset.id),
       asset: widget.asset,
       builder: (BuildContext context, AssetEntity asset) {
         if (hasErrorWhenInitializing) {

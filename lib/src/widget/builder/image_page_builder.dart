@@ -153,6 +153,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
+      key: ValueKey<String>(widget.asset.id),
       asset: widget.asset,
       isOriginal: _isOriginal,
       builder: (BuildContext context, AssetEntity asset) {
