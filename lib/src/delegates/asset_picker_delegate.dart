@@ -206,7 +206,9 @@ class AssetPickerDelegate {
         primaryColorLight: Colors.grey[50],
         primaryColorDark: Colors.grey[50],
         canvasColor: Colors.grey[100],
+        bottomAppBarColor: Colors.grey[50],
         scaffoldBackgroundColor: Colors.grey[50],
+        toggleableActiveColor: themeColor,
         cardColor: Colors.grey[50],
         highlightColor: Colors.transparent,
         textSelectionTheme: TextSelectionThemeData(
@@ -245,7 +247,9 @@ class AssetPickerDelegate {
       canvasColor: Colors.grey[850],
       scaffoldBackgroundColor: Colors.grey[900],
       cardColor: Colors.grey[900],
+      bottomAppBarColor: Colors.grey[900],
       highlightColor: Colors.transparent,
+      toggleableActiveColor: themeColor,
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: themeColor,
         selectionColor: themeColor.withAlpha(100),
