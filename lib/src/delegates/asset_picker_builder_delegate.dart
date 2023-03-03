@@ -673,6 +673,7 @@ class DefaultAssetPickerBuilderDelegate
     this.previewThumbnailSize,
     this.specialPickerType,
     this.keepScrollOffset = false,
+    this.cancelWidget,
   }) {
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
@@ -743,6 +744,8 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the preview of assets is enabled.
   /// 资源的预览是否启用
   bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
+
+  final Widget? cancelWidget;
 
   @override
   bool get isSingleAssetMode => provider.maxAssets == 1;
@@ -919,7 +922,7 @@ class DefaultAssetPickerBuilderDelegate
         onTapHint: semanticsTextDelegate.sActionSwitchPathLabel,
         child: pathEntitySelector(context),
       ),
-      leading: backButton(context),
+      leading: cancelWidget ?? backButton(context),
       // Condition for displaying the confirm button:
       // - On Android, show if preview is enabled or if multi asset mode.
       //   If no preview and single asset mode, do not show confirm button,
