@@ -109,12 +109,15 @@ Language: [English](README.md) | 中文
 
 ## 开始前的注意事项 ‼️
 
-该库与 [photo_manager][photo_manager pub] 有强关联性，
-大部分方法的行为是由 photo_manager 进行控制的。
-
-在选择器中最常使用的 API 是：
-- [`AssetEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
-- [`AssetPathEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
+在开始一切之前，请明确以下两点：
+- 由于理解差异和篇幅限制，并不是所有的内容都会明确地在文档中指出。
+  当你遇到没有找到需求和无法理解的概念时，请先运行项目的示例 example，
+  它可以解决 90% 的常见需求。
+- 该库与 [photo_manager][photo_manager pub] 有强关联性，
+  大部分方法的行为是由 photo_manager 进行控制的，
+  所以请尽可能地确保你了解以下两个类的概念：
+  - 资源（图片/视频/音频） [`AssetEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
+  - 资源合集（相册或集合概念） [`AssetPathEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
 
 当你有与相关的 API 和行为的疑问时，你可以查看
 [photo_manager API 文档][] 了解更多细节。
@@ -210,7 +213,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 ### macOS
 
 1. 在 `macos/Podfile` 中指定最低构建版本至 **10.15**。
-   ```ruby
+   ```Podfile
    platform :osx, '10.15'
    ```
 2. 使用 **Xcode** 打开 `macos/Runner.xcworkspace`。
@@ -279,7 +282,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | selectPredicate                   | `AssetSelectPredicate`               | 判断资源可否被选择                                            | `null`                      |
 | shouldRevertGrid                  | `bool?`                              | 判断资源网格是否需要倒序排列                                       | `null`                      |
 | limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?` | 判断有限的权限情况下是否展示提示页面                                   | `null`                      |
-| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 构建自定义路径名称                                            | `null`                      |
+| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 基于路径（相册）构建自定义名称的方法                                   | `null`                      |
 
 - 当 `maxAssets` 等于 `1`（即单选模式），搭配
   `SpecialPickerType.noPreview` 使用会在用户点选资源换时立刻选中并返回。
