@@ -101,7 +101,8 @@ class AssetPickerDelegate {
         pathNameBuilder: pickerConfig.pathNameBuilder,
         textDelegate: pickerConfig.textDelegate,
         themeColor: pickerConfig.themeColor,
-        cancelWidget: pickerConfig.cancelWidget,
+        leading: pickerConfig.leading,
+        trailing: pickerConfig.trailing,
         locale: Localizations.maybeLocaleOf(context),
       ),
     );
