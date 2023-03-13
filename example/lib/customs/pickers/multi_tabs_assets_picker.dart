@@ -533,7 +533,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
             fit: StackFit.expand,
             children: <Widget>[
               if (isAppleOS) appleOSLayout(context) else androidLayout(context),
-              if (Platform.isIOS) iOSPermissionOverlay(context),
+              // if (Platform.isIOS) iOSPermissionOverlay(context),
             ],
           ),
         ),
