@@ -26,7 +26,6 @@ import '../widget/asset_picker.dart';
 import '../widget/asset_picker_app_bar.dart';
 import '../widget/asset_picker_viewer.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
-import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/gaps.dart';
 import '../widget/platform_progress_indicator.dart';
 import '../widget/scale_text.dart';
@@ -555,99 +554,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         icon: const Icon(Icons.close),
       ),
-    );
-  }
-
-  /// The overlay when the permission is limited on iOS.
-  Widget iOSPermissionOverlay(BuildContext context) {
-    final Size size = context.mediaQuery.size;
-    final Widget closeButton = Container(
-      margin: const EdgeInsetsDirectional.only(start: 16, top: 4),
-      alignment: AlignmentDirectional.centerStart,
-      child: IconButton(
-        onPressed: Navigator.of(context).maybePop,
-        icon: const Icon(Icons.close),
-        padding: EdgeInsets.zero,
-        constraints: BoxConstraints.tight(const Size.square(32)),
-        tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-      ),
-    );
-
-    final Widget limitedTips = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          ScaleText(
-            textDelegate.unableToAccessAll,
-            style: const TextStyle(fontSize: 22),
-            textAlign: TextAlign.center,
-            semanticsLabel: semanticsTextDelegate.unableToAccessAll,
-          ),
-          SizedBox(height: size.height / 30),
-          ScaleText(
-            textDelegate.accessAllTip,
-            style: const TextStyle(fontSize: 18),
-            textAlign: TextAlign.center,
-            semanticsLabel: semanticsTextDelegate.accessAllTip,
-          ),
-        ],
-      ),
-    );
-
-    final Widget goToSettingsButton = MaterialButton(
-      elevation: 0,
-      minWidth: size.width / 2,
-      height: appBarItemHeight * 1.25,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      color: themeColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      onPressed: PhotoManager.openSetting,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: ScaleText(
-        textDelegate.goToSystemSettings,
-        style: const TextStyle(fontSize: 17),
-        semanticsLabel: semanticsTextDelegate.goToSystemSettings,
-      ),
-    );
-
-    final Widget accessLimitedButton = GestureDetector(
-      onTap: () => permissionOverlayDisplay.value = false,
-      child: ScaleText(
-        textDelegate.accessLimitedAssets,
-        style: TextStyle(color: interactiveTextColor(context)),
-        semanticsLabel: semanticsTextDelegate.accessLimitedAssets,
-      ),
-    );
-
-    return ValueListenableBuilder2<PermissionState, bool>(
-      firstNotifier: permission,
-      secondNotifier: permissionOverlayDisplay,
-      builder: (_, PermissionState ps, bool isDisplay, __) {
-        if (ps.isAuth || !isDisplay) {
-          return const SizedBox.shrink();
-        }
-        return Positioned.fill(
-          child: Semantics(
-            sortKey: const OrdinalSortKey(0),
-            child: Container(
-              padding: context.mediaQuery.padding,
-              color: context.themeData.canvasColor,
-              child: Column(
-                children: <Widget>[
-                  closeButton,
-                  Expanded(child: limitedTips),
-                  goToSettingsButton,
-                  SizedBox(height: size.height / 18),
-                  accessLimitedButton,
-                ],
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }
@@ -2192,7 +2098,6 @@ class DefaultAssetPickerBuilderDelegate
                   appleOSLayout(context)
                 else
                   androidLayout(context),
-                if (Platform.isIOS) iOSPermissionOverlay(context),
               ],
             ),
           ),

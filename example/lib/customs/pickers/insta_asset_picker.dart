@@ -56,11 +56,11 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
   }
 
   Future<void> callPicker(BuildContext context) async {
-    final PermissionState ps = await AssetPicker.permissionCheck();
+    // final PermissionState ps = await AssetPicker.permissionCheck();
 
     final InstaAssetPickerBuilder builder = InstaAssetPickerBuilder(
       provider: provider,
-      initialPermission: ps,
+      initialPermission: PermissionState.authorized,
       pickerTheme: theme,
       keepScrollOffset: true,
       locale: Localizations.maybeLocaleOf(context),

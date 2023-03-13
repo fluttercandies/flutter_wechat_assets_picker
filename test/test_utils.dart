@@ -82,7 +82,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    final PermissionState ps = await permissionCheck();
+    // final PermissionState ps = await permissionCheck();
     final AssetPathEntity pathEntity = AssetPathEntity(
       id: 'test',
       name: 'pathEntity',
@@ -111,7 +111,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       key: key,
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
-        initialPermission: ps,
+        initialPermission: PermissionState.authorized,
         gridCount: pickerConfig.gridCount,
         pickerTheme: pickerConfig.pickerTheme,
         gridThumbnailSize: pickerConfig.gridThumbnailSize,
