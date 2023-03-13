@@ -527,12 +527,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         ],
       ),
     );
-    if (isPermissionLimited) {
-      child = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[accessLimitedBottomTip(context), child],
-      );
-    }
+    // if (isPermissionLimited) {
+    //   child = Column(
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: <Widget>[accessLimitedBottomTip(context), child],
+    //   );
+    // }
     child = ClipRect(
       child: BackdropFilter(
         filter: ui.ImageFilter.blur(
