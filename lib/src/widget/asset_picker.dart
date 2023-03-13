@@ -101,16 +101,6 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      PhotoManager.requestPermissionExtend().then(
-        (PermissionState ps) => widget.builder.permission.value = ps,
-      );
-    }
-  }
-
-  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
