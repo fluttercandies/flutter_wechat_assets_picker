@@ -13,7 +13,6 @@ import '../constants/typedefs.dart';
 import '../delegates/asset_picker_viewer_builder_delegate.dart';
 import '../provider/asset_picker_provider.dart';
 import '../provider/asset_picker_viewer_provider.dart';
-import 'asset_picker.dart';
 
 class AssetPickerViewer<Asset, Path> extends StatefulWidget {
   const AssetPickerViewer({
@@ -42,7 +41,7 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
     bool shouldReversePreview = false,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
   }) async {
-    await AssetPicker.permissionCheck();
+    // await AssetPicker.permissionCheck();
     final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
       builder: DefaultAssetPickerViewerBuilderDelegate(
         currentIndex: currentIndex,
@@ -83,7 +82,7 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
     BuildContext context, {
     required AssetPickerViewerBuilderDelegate<A, P> delegate,
   }) async {
-    await AssetPicker.permissionCheck();
+    // await AssetPicker.permissionCheck();
     final Widget viewer = AssetPickerViewer<A, P>(builder: delegate);
     final PageRouteBuilder<List<A>> pageRoute = PageRouteBuilder<List<A>>(
       pageBuilder: (_, __, ___) => viewer,

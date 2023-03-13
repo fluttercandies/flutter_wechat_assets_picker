@@ -65,7 +65,7 @@ class AssetPickerDelegate {
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    final PermissionState ps = await permissionCheck();
+    // final PermissionState ps = await permissionCheck();
     final AssetPickerPageRoute<List<AssetEntity>> route =
         pageRouteBuilder?.call(const SizedBox.shrink()) ??
             AssetPickerPageRoute<List<AssetEntity>>(
@@ -85,7 +85,7 @@ class AssetPickerDelegate {
       key: key,
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
-        initialPermission: ps,
+        initialPermission: PermissionState.authorized,
         gridCount: pickerConfig.gridCount,
         pickerTheme: pickerConfig.pickerTheme,
         gridThumbnailSize: pickerConfig.gridThumbnailSize,
@@ -141,7 +141,7 @@ class AssetPickerDelegate {
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
-    await permissionCheck();
+    // await permissionCheck();
     final Widget picker = AssetPicker<Asset, Path>(
       key: key,
       builder: delegate,
