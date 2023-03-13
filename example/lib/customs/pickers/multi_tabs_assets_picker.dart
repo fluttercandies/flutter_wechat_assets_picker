@@ -2,6 +2,7 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
   bool isDisplayingDetail = true;
 
   Future<void> callPicker(BuildContext context) async {
-    // final PermissionState ps = await AssetPicker.permissionCheck();
+    final PermissionState ps = await AssetPicker.permissionCheck();
 
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       selectedAssets: entities,
@@ -48,7 +49,7 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
       provider: provider,
       imagesProvider: imagesProvider,
       videosProvider: videosProvider,
-      initialPermission: PermissionState.authorized,
+      initialPermission: ps,
       pickerTheme: theme,
       locale: Localizations.maybeLocaleOf(context),
     );
@@ -532,6 +533,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
             fit: StackFit.expand,
             children: <Widget>[
               if (isAppleOS) appleOSLayout(context) else androidLayout(context),
+              if (Platform.isIOS) iOSPermissionOverlay(context),
             ],
           ),
         ),
