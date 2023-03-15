@@ -183,15 +183,12 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
           statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
           statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
         );
-    child = AnnotatedRegion<SystemUiOverlayStyle>(
-      value: overlayStyle,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          child,
-          if (bottom != null) bottom!,
-        ],
-      ),
+    child = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        child,
+        if (bottom != null) bottom!,
+      ],
     );
 
     final Widget result = Material(
