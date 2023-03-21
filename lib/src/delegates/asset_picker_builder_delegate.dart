@@ -1792,7 +1792,10 @@ class DefaultAssetPickerBuilderDelegate
                                   ),
                                   child: ScaleText(
                                     name,
-                                    style: const TextStyle(fontSize: 17),
+                                    style: const TextStyle(
+                                      fontSize: 17,
+                                      color: Colors.white,
+                                    ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -1801,8 +1804,8 @@ class DefaultAssetPickerBuilderDelegate
                               if (semanticsCount != null)
                                 ScaleText(
                                   '($semanticsCount)',
-                                  style: TextStyle(
-                                    color: theme.textTheme.bodySmall?.color,
+                                  style: const TextStyle(
+                                    color: Colors.white,
                                     fontSize: 17,
                                   ),
                                   maxLines: 1,

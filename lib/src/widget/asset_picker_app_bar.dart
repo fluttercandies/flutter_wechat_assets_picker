@@ -6,7 +6,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
 
 /// A custom app bar.
 /// 自定义的顶栏
@@ -100,7 +99,6 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final AppBarTheme appBarTheme = theme.appBarTheme;
     final IconThemeData iconTheme = this.iconTheme ?? theme.iconTheme;
     final Widget? titleWidget;
     if (centerTitle) {
@@ -171,18 +169,6 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     final Color effectiveBackgroundColor =
         backgroundColor ?? theme.colorScheme.surface;
 
-    // Set [SystemUiOverlayStyle] according to the brightness.
-    final Brightness effectiveBrightness = brightness ??
-        appBarTheme.systemOverlayStyle?.statusBarBrightness ??
-        theme.brightness;
-    final bool isDark = effectiveBrightness == Brightness.dark;
-    final SystemUiOverlayStyle overlayStyle = appBarTheme.systemOverlayStyle ??
-        SystemUiOverlayStyle(
-          statusBarColor: effectiveBackgroundColor,
-          systemNavigationBarIconBrightness: Brightness.light,
-          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-        );
     child = Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
