@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.4.1
+
+### Fixes
+
+- Call `AssetPickerProvider.dispose` when disposing the builder delegate. (#421)
+
 ## 8.4.0
 
 ### Breaking changes
