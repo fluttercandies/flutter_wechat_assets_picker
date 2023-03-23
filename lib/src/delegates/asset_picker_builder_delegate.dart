@@ -764,6 +764,7 @@ class DefaultAssetPickerBuilderDelegate
     if (keepScrollOffset) {
       return;
     }
+    provider.dispose();
     super.dispose();
   }
 
