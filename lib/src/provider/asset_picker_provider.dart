@@ -56,7 +56,6 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     _paths.clear();
     _currentPath = null;
     _currentAssets.clear();
-    _selectedAssets.clear();
     super.dispose();
   }
 

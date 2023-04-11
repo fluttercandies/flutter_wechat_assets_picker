@@ -36,5 +36,28 @@ void main() async {
       await tester.pumpAndSettle();
       expect(() => provider.addListener(() {}), throwsA(isA<AssertionError>()));
     });
+
+    /// Regression: https://github.com/fluttercandies/flutter_wechat_assets_picker/issues/427
+    testWidgets(
+      'does not clear selected assets',
+      (WidgetTester tester) async {
+        final List<AssetEntity> selectedAssets = <AssetEntity>[testAssetEntity];
+        await tester.pumpWidget(
+          defaultPickerTestApp(
+            onButtonPressed: (BuildContext context) {
+              AssetPicker.pickAssets(
+                context,
+                pickerConfig: AssetPickerConfig(selectedAssets: selectedAssets),
+              );
+            },
+          ),
+        );
+        await tester.tap(defaultButtonFinder);
+        await tester.pumpAndSettle();
+        await tester.tap(find.widgetWithIcon(IconButton, Icons.close));
+        await tester.pumpAndSettle();
+        expect(selectedAssets, contains(testAssetEntity));
+      },
+    );
   });
 }
