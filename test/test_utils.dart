@@ -98,9 +98,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       filterOptions: pickerConfig.filterOptions,
     );
     provider
-      ..currentAssets = <AssetEntity>[
-        const AssetEntity(id: 'test', typeInt: 0, width: 0, height: 0),
-      ]
+      ..currentAssets = <AssetEntity>[testAssetEntity]
       ..currentPath = PathWrapper<AssetPathEntity>(
         path: pathEntity,
         assetCount: 1,
