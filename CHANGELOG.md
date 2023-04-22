@@ -4,11 +4,17 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
-## 8.4.1+1
+## 8.4.2+1
 
 ### Improvements
 
 - Support semantics with Vietnamese text delegates. (#424).
+
+## 8.4.2
+
+### Fixes
+
+- Avoid clearing selected assets when disposing the provider. (#428)
 
 ## 8.4.1
 
