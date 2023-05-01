@@ -237,6 +237,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 * 日本語
 * مة العربية
 * Délégué
+* Tiếng Việt
 
 如果你想使用自定义或固定的文字实现，请通过
 `AssetPickerConfig.textDelegate` 传递调用。
