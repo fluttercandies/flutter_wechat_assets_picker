@@ -271,7 +271,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | keepScrollOffset                  | `bool`                               | 选择器是否可以从同样的位置开始选择                                    | `null`                      |
 | sortPathDelegate                  | `SortPathDelegate<AssetPathEntity>?` | 资源路径的排序实现，可自定义路径排序方法                                 | `CommonSortPathDelegate`    |
 | sortPathsByModifiedDate           | `bool`                               | 是否结合 `FilterOptionGroup.containsPathModified` 进行路径排序 | `false`                     |
-| filterOptions                     | `FilterOptionGroup?`                 | 允许用户自定义资源过滤条件                                        | `null`                      |
+| filterOptions                     | `PMFilter?`                          | 允许用户自定义资源过滤条件                                        | `null`                      |
 | gridCount                         | `int`                                | 选择器网格数量                                              | 4                           |
 | themeColor                        | `Color?`                             | 选择器的主题色                                              | `Color(0xff00bc56)`         |
 | pickerTheme                       | `ThemeData?`                         | 选择器的主题提供，包括查看器                                       | `null`                      |
