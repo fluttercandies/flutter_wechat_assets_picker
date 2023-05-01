@@ -4,11 +4,15 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
-## 8.4.2+1
+## 8.4.3
+
+### New features
+
+- Add Vietnamese language text delegate. (#424).
 
 ### Improvements
 
-- Support semantics with Vietnamese text delegates. (#424).
+- Expand `FilterOptionGroup` to `PMFilter`. (#436)
 
 ## 8.4.2
 
