@@ -247,6 +247,7 @@ Embedded text delegates languages are:
 * 日本語
 * مة العربية
 * Délégué
+* Tiếng Việt
 
 If you want to use a custom/fixed text delegate, pass it through the
 `AssetPickerConfig.textDelegate`.
