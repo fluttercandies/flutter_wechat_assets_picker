@@ -143,7 +143,7 @@ class AssetPickerConfig {
   ///
   /// Will be merged into the base configuration.
   /// 将会与基础条件进行合并。
-  final FilterOptionGroup? filterOptions;
+  final PMFilter? filterOptions;
 
   /// Assets count for the picker.
   /// 资源网格数

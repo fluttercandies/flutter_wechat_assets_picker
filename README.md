@@ -282,7 +282,7 @@ Fields in `AssetPickerConfig`:
 | keepScrollOffset                  | `bool`                               | Whether the picker should save the scroll offset between pushes and pops.                    | `null`                      |
 | sortPathDelegate                  | `SortPathDelegate<AssetPathEntity>?` | Path entities sort delegate for the picker, sort paths as you want.                          | `CommonSortPathDelegate`    |
 | sortPathsByModifiedDate           | `bool`                               | Whether to allow sort delegates to sort paths with `FilterOptionGroup.containsPathModified`. | `false`                     |
-| filterOptions                     | `FilterOptionGroup?`                 | Allow users to customize assets filter options.                                              | `null`                      |
+| filterOptions                     | `PMFilter?`                          | Allow users to customize assets filter options.                                              | `null`                      |
 | gridCount                         | `int`                                | Grid count in picker.                                                                        | 4                           |
 | themeColor                        | `Color?`                             | Main theme color for the picker.                                                             | `Color(0xff00bc56)`         |
 | pickerTheme                       | `ThemeData?`                         | Theme data provider for the picker and the viewer.                                           | `null`                      |

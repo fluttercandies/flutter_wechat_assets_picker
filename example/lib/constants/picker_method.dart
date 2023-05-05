@@ -235,15 +235,13 @@ class PickMethod {
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
             requestType: RequestType.video,
-            filterOptions: FilterOptionGroup()
-              ..setOption(
-                AssetType.video,
-                const FilterOption(
-                  durationConstraint: DurationConstraint(
-                    max: Duration(minutes: 1),
-                  ),
+            filterOptions: FilterOptionGroup(
+              videoOption: const FilterOption(
+                durationConstraint: DurationConstraint(
+                  max: Duration(minutes: 1),
                 ),
               ),
+            ),
           ),
         );
       },

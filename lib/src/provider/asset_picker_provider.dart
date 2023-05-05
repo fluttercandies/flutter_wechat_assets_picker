@@ -277,7 +277,7 @@ class DefaultAssetPickerProvider
   ///
   /// Will be merged into the base configuration.
   /// 将会与基础条件进行合并。
-  final FilterOptionGroup? filterOptions;
+  final PMFilter? filterOptions;
 
   @override
   set currentPath(PathWrapper<AssetPathEntity>? value) {
@@ -316,8 +316,8 @@ class DefaultAssetPickerProvider
     );
 
     // Merge user's filter option into base options if it's not null.
-    if (filterOptions != null) {
-      options.merge(filterOptions!);
+    if (filterOptions is FilterOptionGroup) {
+      options.merge(filterOptions as FilterOptionGroup);
     }
 
     final List<AssetPathEntity> list = await PhotoManager.getAssetPathList(
