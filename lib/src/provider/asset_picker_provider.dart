@@ -301,23 +301,27 @@ class DefaultAssetPickerProvider
   Future<void> getPaths() async {
     // Initial base options.
     // Enable need title for audios and image to get proper display.
-    final FilterOptionGroup options = FilterOptionGroup(
-      imageOption: const FilterOption(
-        needTitle: true,
-        sizeConstraint: SizeConstraint(ignoreSize: true),
-      ),
-      audioOption: const FilterOption(
-        needTitle: true,
-        sizeConstraint: SizeConstraint(ignoreSize: true),
-      ),
-      containsPathModified: sortPathsByModifiedDate,
-      createTimeCond: DateTimeCond.def().copyWith(ignore: true),
-      updateTimeCond: DateTimeCond.def().copyWith(ignore: true),
-    );
-
-    // Merge user's filter option into base options if it's not null.
-    if (filterOptions is FilterOptionGroup) {
-      options.merge(filterOptions as FilterOptionGroup);
+    final PMFilter options;
+    if (filterOptions is FilterOptionGroup?) {
+      options = FilterOptionGroup(
+        imageOption: const FilterOption(
+          needTitle: true,
+          sizeConstraint: SizeConstraint(ignoreSize: true),
+        ),
+        audioOption: const FilterOption(
+          needTitle: true,
+          sizeConstraint: SizeConstraint(ignoreSize: true),
+        ),
+        containsPathModified: sortPathsByModifiedDate,
+        createTimeCond: DateTimeCond.def().copyWith(ignore: true),
+        updateTimeCond: DateTimeCond.def().copyWith(ignore: true),
+      );
+      // Merge user's filter options into base options if it's not null.
+      if (filterOptions != null) {
+        options.merge(filterOptions);
+      }
+    } else {
+      options = filterOptions;
     }
 
     final List<AssetPathEntity> list = await PhotoManager.getAssetPathList(
