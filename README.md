@@ -63,9 +63,9 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
         * [With `diox`](#with-diox)
     * [Custom pickers](#custom-pickers)
   * [Frequently asked question ❔](#frequently-asked-question-)
-    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task---photomanager--compiledebugkotlin)
-    * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list--rawdata-)
-    * [Glide warning 'Failed to find GeneratedAppGlideModule'](#glide-warning--failed-to-find-generatedappglidemodule)
+    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photomanagercompiledebugkotlin)
+    * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
+    * [Glide warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
   * [Contributors ✨](#contributors-)
   * [Credits](#credits)
 <!-- TOC -->
@@ -136,12 +136,12 @@ before you have any questions.
 
 ### Versions compatibility
 
-|        | 2.10.0 | 3.0.0 | 3.3.0 | 3.7.0 |
-|--------|:------:|:-----:|:-----:|:-----:|
-| 8.4.0+ |   ❌    |   ❌   |   ❌   |   ✅   |
-| 8.0.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
-| 7.3.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
-| 7.0.0+ |   ✅    |   ❌   |   ❌   |   ❌   |
+|        | 3.0.0 | 3.3.0 | 3.7.0 | 3.10.0 |
+|--------|:-----:|:-----:|:-----:|:------:|
+| 8.5.0+ |   ❌   |   ❌   |   ❌   |   ✅    |
+| 8.4.0+ |   ❌   |   ❌   |   ✅   |   ❌    |
+| 8.0.0+ |   ✅   |   ✅   |   ❌   |   ❌    |
+| 7.3.0+ |   ✅   |   ✅   |   ❌   |   ❌    |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
 please use `dependency_overrides` to fix it.
