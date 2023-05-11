@@ -4,6 +4,12 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.5.0
+
+### Breaking changes
+
+- Migrate to Flutter 3.10, drop supports for previous Flutter versions.
+
 ## 8.4.3
 
 ### New features

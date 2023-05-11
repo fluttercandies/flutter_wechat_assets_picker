@@ -60,9 +60,9 @@ Language: [English](README.md) | 中文
         * [使用 `diox`](#使用-diox)
     * [自定义选择器](#自定义选择器)
   * [常见问题 ❔](#常见问题-)
-    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task---photomanager--compiledebugkotlin)
+    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photomanagercompiledebugkotlin)
     * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
-    * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示--failed-to-find-generatedappglidemodule)
+    * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
   * [致谢](#致谢)
 <!-- TOC -->
 </details>
@@ -129,12 +129,12 @@ Language: [English](README.md) | 中文
 
 ### 版本兼容
 
-|        | 2.10.0 | 3.0.0 | 3.3.0 | 3.7.0 |
-|--------|:------:|:-----:|:-----:|:-----:|
-| 8.4.0+ |   ❌    |   ❌   |   ❌   |   ✅   |
-| 8.0.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
-| 7.3.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
-| 7.0.0+ |   ✅    |   ❌   |   ❌   |   ❌   |
+|        | 3.0.0 | 3.3.0 | 3.7.0 | 3.10.0 |
+|--------|:-----:|:-----:|:-----:|:------:|
+| 8.5.0+ |   ❌   |   ❌   |   ❌   |   ✅    |
+| 8.4.0+ |   ❌   |   ❌   |   ✅   |   ❌    |
+| 8.0.0+ |   ✅   |   ✅   |   ❌   |   ❌    |
+| 7.3.0+ |   ✅   |   ✅   |   ❌   |   ❌    |
 
 如果在 `flutter pub get` 时遇到了 `resolve conflict` 失败问题，
 请使用 `dependency_overrides` 解决。
