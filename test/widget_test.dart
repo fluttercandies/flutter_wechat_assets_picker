@@ -67,7 +67,7 @@ void main() {
             onButtonPressed: (BuildContext context) {
               AssetPicker.pickAssets(
                 context,
-                pickerConfig: AssetPickerConfig(
+                pickerConfig: const AssetPickerConfig(
                   maxAssets: 2,
                   specialPickerType: SpecialPickerType.noPreview,
                 ),
@@ -88,7 +88,7 @@ void main() {
             onButtonPressed: (BuildContext context) {
               AssetPicker.pickAssets(
                 context,
-                pickerConfig: AssetPickerConfig(
+                pickerConfig: const AssetPickerConfig(
                   maxAssets: 1,
                   specialPickerType: SpecialPickerType.noPreview,
                 ),
