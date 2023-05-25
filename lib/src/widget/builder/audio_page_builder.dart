@@ -168,7 +168,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       onLongPressHint:
           Singleton.textDelegate.semanticsTextDelegate.sActionPlayHint,
       child: ColoredBox(
-        color: context.themeData.backgroundColor,
+        color: context.themeData.colorScheme.background,
         child: isLoaded
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,

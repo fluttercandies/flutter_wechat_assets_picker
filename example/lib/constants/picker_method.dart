@@ -45,7 +45,8 @@ class PickMethod {
     return PickMethod(
       icon: '🎞',
       name: 'Video picker',
-      description: 'Only pick video from device.',
+      description: 'Only pick video from device. '
+          '(Live Photos will be obtained on iOS.)',
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -164,9 +165,12 @@ class PickMethod {
                     final DefaultAssetPickerBuilderDelegate builder =
                         picker.builder as DefaultAssetPickerBuilderDelegate;
                     final DefaultAssetPickerProvider p = builder.provider;
-                    p.currentPath =
-                        await p.currentPath!.obtainForNewProperties();
-                    await p.switchPath(p.currentPath);
+                    await p.switchPath(
+                      PathWrapper<AssetPathEntity>(
+                        path:
+                            await p.currentPath!.path.obtainForNewProperties(),
+                      ),
+                    );
                     p.selectAsset(result);
                   },
                   child: const Center(
@@ -231,15 +235,13 @@ class PickMethod {
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
             requestType: RequestType.video,
-            filterOptions: FilterOptionGroup()
-              ..setOption(
-                AssetType.video,
-                const FilterOption(
-                  durationConstraint: DurationConstraint(
-                    max: Duration(minutes: 1),
-                  ),
+            filterOptions: FilterOptionGroup(
+              videoOption: const FilterOption(
+                durationConstraint: DurationConstraint(
+                  max: Duration(minutes: 1),
                 ),
               ),
+            ),
           ),
         );
       },
@@ -370,6 +372,24 @@ class PickMethod {
               Colors.lightBlueAccent,
               light: true,
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  factory PickMethod.pathNameBuilder(int maxAssetsCount) {
+    return PickMethod(
+      icon: '🈸',
+      name: 'Path name builder',
+      description: 'Add 🍭 after paths name.',
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          pickerConfig: AssetPickerConfig(
+            maxAssets: maxAssetsCount,
+            selectedAssets: assets,
+            pathNameBuilder: (AssetPathEntity path) => '${path.name}🍭',
           ),
         );
       },

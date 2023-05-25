@@ -23,9 +23,10 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> init() async {
-    await PackageInfo.fromPlatform()
-        .then((PackageInfo p) => packageVersion = p.version)
-        .catchError((Object _) {});
+    try {
+      final PackageInfo info = await PackageInfo.fromPlatform();
+      packageVersion = info.version;
+    } catch (_) {}
     await Future<void>.delayed(const Duration(seconds: 1));
     if (mounted) {
       Navigator.of(context).pushReplacement(

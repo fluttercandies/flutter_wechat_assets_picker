@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/custom_pick_method.dart';
 import 'pickers/directory_file_asset_picker.dart';
+import 'pickers/insta_asset_picker.dart';
 import 'pickers/multi_tabs_assets_picker.dart';
 
 class CustomPickersPage extends StatefulWidget {
@@ -49,6 +50,15 @@ class _CustomPickerPageState extends State<CustomPickersPage>
             'assets for the picking at the same time.',
         method: (BuildContext context) => Navigator.of(context).push<void>(
           MaterialPageRoute<void>(builder: (_) => const MultiTabAssetPicker()),
+        ),
+      ),
+      CustomPickMethod(
+        icon: '📷',
+        name: 'Instagram layout picker',
+        description: 'The picker reproduces Instagram layout with preview and '
+            "scroll animations. It's also published as the package insta_assets_picker.",
+        method: (BuildContext context) => Navigator.of(context).push<void>(
+          MaterialPageRoute<void>(builder: (_) => const InstaAssetPicker()),
         ),
       ),
     ];
@@ -114,7 +124,7 @@ class _MethodListView extends StatelessWidget {
                   const SizedBox(height: 5),
                   Text(
                     model.description,
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                     overflow: TextOverflow.fade,
                   ),
                 ],

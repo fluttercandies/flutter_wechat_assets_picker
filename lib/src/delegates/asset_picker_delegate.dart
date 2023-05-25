@@ -2,7 +2,6 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -10,7 +9,6 @@ import 'package:photo_manager/photo_manager.dart';
 import '../constants/config.dart';
 import '../constants/constants.dart';
 import '../internal/methods.dart';
-import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_page_route.dart';
@@ -62,11 +60,17 @@ class AssetPickerDelegate {
   /// {@endtemplate}
   Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
+    Key? key,
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     final PermissionState ps = await permissionCheck();
+    final AssetPickerPageRoute<List<AssetEntity>> route =
+        pageRouteBuilder?.call(const SizedBox.shrink()) ??
+            AssetPickerPageRoute<List<AssetEntity>>(
+              builder: (_) => const SizedBox.shrink(),
+            );
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       maxAssets: pickerConfig.maxAssets,
       pageSize: pickerConfig.pageSize,
@@ -75,9 +79,10 @@ class AssetPickerDelegate {
       requestType: pickerConfig.requestType,
       sortPathDelegate: pickerConfig.sortPathDelegate,
       filterOptions: pickerConfig.filterOptions,
+      initializeDelayDuration: route.transitionDuration,
     );
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
-      key: Singleton.pickerKey,
+      key: key,
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
         initialPermission: ps,
@@ -130,12 +135,13 @@ class AssetPickerDelegate {
       PickerProvider extends AssetPickerProvider<Asset, Path>>(
     BuildContext context, {
     required AssetPickerBuilderDelegate<Asset, Path> delegate,
+    Key? key,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
     await permissionCheck();
     final Widget picker = AssetPicker<Asset, Path>(
-      key: Singleton.pickerKey,
+      key: key,
       builder: delegate,
     );
     final List<Asset>? result = await Navigator.of(
@@ -201,10 +207,8 @@ class AssetPickerDelegate {
         primaryColorDark: Colors.grey[50],
         canvasColor: Colors.grey[100],
         scaffoldBackgroundColor: Colors.grey[50],
-        bottomAppBarColor: Colors.grey[50],
         cardColor: Colors.grey[50],
         highlightColor: Colors.transparent,
-        toggleableActiveColor: themeColor,
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: themeColor,
           selectionColor: themeColor.withAlpha(100),
@@ -221,9 +225,7 @@ class AssetPickerDelegate {
         buttonTheme: ButtonThemeData(buttonColor: themeColor),
         colorScheme: ColorScheme(
           primary: Colors.grey[50]!,
-          primaryVariant: Colors.grey[50],
           secondary: themeColor,
-          secondaryVariant: themeColor,
           background: Colors.grey[50]!,
           surface: Colors.grey[50]!,
           brightness: Brightness.light,
@@ -242,10 +244,8 @@ class AssetPickerDelegate {
       primaryColorDark: Colors.grey[900],
       canvasColor: Colors.grey[850],
       scaffoldBackgroundColor: Colors.grey[900],
-      bottomAppBarColor: Colors.grey[900],
       cardColor: Colors.grey[900],
       highlightColor: Colors.transparent,
-      toggleableActiveColor: themeColor,
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: themeColor,
         selectionColor: themeColor.withAlpha(100),
@@ -262,9 +262,7 @@ class AssetPickerDelegate {
       buttonTheme: ButtonThemeData(buttonColor: themeColor),
       colorScheme: ColorScheme(
         primary: Colors.grey[900]!,
-        primaryVariant: Colors.grey[900],
         secondary: themeColor,
-        secondaryVariant: themeColor,
         background: Colors.grey[900]!,
         surface: Colors.grey[900]!,
         brightness: Brightness.dark,

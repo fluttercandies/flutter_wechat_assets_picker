@@ -8,9 +8,104 @@ This document gathered all breaking changes and migrations requirement between m
 
 ## Major versions
 
-- [7.0.0](#7.0.0)
-- [6.0.0](#6.0.0)
-- [5.0.0](#5.0.0)
+- [8.2.0](#820)
+- [8.0.0](#800)
+- [7.0.0](#700)
+- [6.0.0](#600)
+- [5.0.0](#500)
+
+## 8.3.0
+
+### Summary
+
+Delegates extending `AssetPickerBuilderDelegate` that implements `selectAsset`
+should add the `index` argument to its signature.
+
+### Details
+
+Before:
+
+```dart
+void selectAsset(
+  BuildContext context,
+  Asset asset,
+  bool selected,
+);
+```
+
+After:
+
+```dart
+void selectAsset(
+  BuildContext context,
+  Asset asset,
+  int index,
+  bool selected,
+);
+```
+
+## 8.2.0
+
+### Summary
+
+Delegates that extend `AssetPickerBuilderDelegate` should now implement `viewAsset`.
+Delegates that extend `DefaultAssetPickerBuilderDelegate` are not required to do so.
+
+### Details
+
+`viewAsset` is abstracted in the `AssetPickerBuilderDelegate`:
+
+```dart
+Future<void> viewAsset(
+  BuildContext context,
+  int index,
+  AssetEntity currentAsset,
+);
+```
+
+The new method is implemented in the `DefaultAssetPickerBuilderDelegate`.
+It's a private method previously which not allow to modify.
+
+## 8.0.0
+
+### Summary
+
+- `AssetPathEntity.assetCountAsync` was introduced in
+  [fluttercandies/flutter_photo_manager#784](https://github.com/fluttercandies/flutter_photo_manager/pull/784)
+  to improve the loading performance during paths obtain.
+  By migrating the asynchronous getter, we need to introduce a new concept `PathWrapper` to hold metadata together,
+  but initialize fields separately.
+- `containsPathModified` is now `false` by default (previously `true`), and can be changed accordingly.
+
+### Details
+
+#### `AssetPickerProvider`
+
+- `currentPath` has been changed from `Path?` to `PathWrapper<Path>?`.
+- `pathsList` has been removed, and added `AssetPickerProvider.paths`.
+- `totalAssetsCount` is now nullable to indicates initialization.
+- `getThumbnailFromPath` and `switchPath` have different signature from `Path` to `PathWrapper<Path>`.
+
+#### `AssetPickerBuilderDelegate`
+
+- `pathEntityWidget` has different signature from `Path` to `PathWrapper<Path>`,
+  and the `isAudio` argument has been removed.
+
+#### `SortPathDelegate`
+
+`sort` has a different signature, which needs `PathWrapper`s to sort. More specifically:
+
+Before:
+
+```dart
+void sort(List<Path> list) {}
+```
+
+After:
+
+```dart
+void soft(List<PathWrapper<Path>> list) {}
+```
 
 ## 7.0.0
 

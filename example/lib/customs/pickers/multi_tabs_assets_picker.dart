@@ -307,17 +307,18 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               borderRadius: BorderRadius.circular(999),
               color: theme.dividerColor,
             ),
-            child: Selector<DefaultAssetPickerProvider, AssetPathEntity?>(
+            child: Selector<DefaultAssetPickerProvider,
+                PathWrapper<AssetPathEntity>?>(
               selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
-              builder: (_, AssetPathEntity? p, Widget? w) => Row(
+              builder: (_, PathWrapper<AssetPathEntity>? p, Widget? w) => Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   if (p != null)
                     Flexible(
                       child: Text(
-                        isPermissionLimited && p.isAll
+                        isPermissionLimited && p.path.isAll
                             ? textDelegate.accessiblePathName
-                            : p.name,
+                            : p.path.name,
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.normal,
@@ -407,8 +408,8 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 : textDelegate.confirm,
             style: TextStyle(
               color: p.isSelectedNotEmpty
-                  ? theme.textTheme.bodyText1?.color
-                  : theme.textTheme.caption?.color,
+                  ? theme.textTheme.bodyLarge?.color
+                  : theme.textTheme.bodySmall?.color,
               fontSize: 17,
               fontWeight: FontWeight.normal,
             ),
@@ -451,9 +452,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         child: pathEntitySelector(context),
       ),
       leading: backButton(context),
-      actions: (isPreviewEnabled || !isSingleAssetMode)
-          ? <Widget>[confirmButton(context)]
-          : null,
+      actions: <Widget>[if (!isAppleOS) confirmButton(context)],
       actionsPadding: const EdgeInsetsDirectional.only(end: 14),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0,
       bottom: TabBar(
@@ -495,20 +494,20 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   Widget appleOSLayout(BuildContext context) => androidLayout(context);
 
   Widget _buildGrid(BuildContext context) {
-    return Selector<DefaultAssetPickerProvider, bool>(
-      selector: (_, DefaultAssetPickerProvider p) => p.hasAssetsToDisplay,
-      builder: (_, bool hasAssetsToDisplay, __) {
+    return Consumer<DefaultAssetPickerProvider>(
+      builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
+        final bool shouldDisplayAssets =
+            p.hasAssetsToDisplay || shouldBuildSpecialItem;
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: hasAssetsToDisplay
+          child: shouldDisplayAssets
               ? Stack(
                   children: <Widget>[
                     RepaintBoundary(
                       child: Column(
                         children: <Widget>[
                           Expanded(child: assetsGridBuilder(context)),
-                          if (!isSingleAssetMode && isPreviewEnabled)
-                            bottomActionBar(context),
+                          if (isPreviewEnabled) bottomActionBar(context),
                         ],
                       ),
                     ),

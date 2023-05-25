@@ -1,58 +1,69 @@
-// Copyright 2019 The FlutterCandies author. All rights reserved.
-// Use of this source code is governed by an Apache license that can be found
-// in the LICENSE file.
+//
+// [Author] Alex (https://github.com/AlexV525)
+// [Date] 2022/09/20 16:35
+//
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-void main() {
-  PhotoManager.withPlugin(TestPhotoManagerPlugin());
-  AssetPicker.setPickerDelegate(TestAssetPickerDelegate());
+const String _testButtonText = 'Picker test press';
 
-  final Finder defaultButtonFinder = find.byType(TextButton);
+final Finder defaultButtonFinder = find.widgetWithText(
+  TextButton,
+  _testButtonText,
+);
 
-  Widget _defaultApp({void Function(BuildContext)? onButtonPressed}) {
-    return MaterialApp(
-      home: Builder(
-        builder: (BuildContext context) => Scaffold(
-          body: Center(
-            child: TextButton(
-              onPressed: () => onButtonPressed?.call(context),
-              child: const Text('Press'),
-            ),
-          ),
+Widget defaultPickerTestApp({
+  void Function(BuildContext)? onButtonPressed,
+  Locale locale = const Locale('zh'),
+}) {
+  return MaterialApp(
+    home: _DefaultHomePage(onButtonPressed),
+    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+      GlobalWidgetsLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: const <Locale>[
+      Locale('zh'),
+      Locale('en'),
+      Locale('he'),
+      Locale('de'),
+      Locale('ru'),
+      Locale('ja'),
+      Locale('ar'),
+      Locale('fr'),
+      Locale('vi'),
+    ],
+    locale: locale,
+  );
+}
+
+class _DefaultHomePage extends StatelessWidget {
+  const _DefaultHomePage(this.onButtonPressed, {Key? key}) : super(key: key);
+
+  final void Function(BuildContext)? onButtonPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: TextButton(
+          onPressed: () => onButtonPressed?.call(context),
+          child: const Text(_testButtonText),
         ),
       ),
     );
   }
-
-  testWidgets('PathNameBuilder called correctly', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      _defaultApp(
-        onButtonPressed: (BuildContext context) {
-          AssetPicker.pickAssets(
-            context,
-            pickerConfig: AssetPickerConfig(
-              pathNameBuilder: (AssetPathEntity p) => 'testPathNameBuilder',
-            ),
-          );
-        },
-      ),
-    );
-    await tester.tap(defaultButtonFinder);
-    await tester.pumpAndSettle();
-    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
-    await tester.pumpAndSettle();
-    expect(find.text('testPathNameBuilder'), findsNWidgets(2));
-  });
 }
 
 class TestPhotoManagerPlugin extends PhotoManagerPlugin {
   @override
   Future<PermissionState> requestPermissionExtend(
-    PermisstionRequestOption requestOption,
+    PermissionRequestOption requestOption,
   ) {
     return SynchronousFuture<PermissionState>(PermissionState.authorized);
   }
@@ -67,6 +78,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
   @override
   Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
+    Key? key,
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
@@ -87,13 +99,15 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       filterOptions: pickerConfig.filterOptions,
     );
     provider
-      ..currentAssets = <AssetEntity>[
-        const AssetEntity(id: 'test', typeInt: 0, width: 0, height: 0),
-      ]
-      ..currentPath = pathEntity
+      ..currentAssets = <AssetEntity>[testAssetEntity]
+      ..currentPath = PathWrapper<AssetPathEntity>(
+        path: pathEntity,
+        assetCount: 1,
+      )
       ..hasAssetsToDisplay = true
-      ..setPathThumbnail(pathEntity, null);
+      ..totalAssetsCount = 1;
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
+      key: key,
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
         initialPermission: ps,
@@ -125,3 +139,10 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
     return result;
   }
 }
+
+const AssetEntity testAssetEntity = AssetEntity(
+  id: 'test',
+  typeInt: 0,
+  width: 0,
+  height: 0,
+);

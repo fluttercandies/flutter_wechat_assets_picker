@@ -99,9 +99,14 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget? titleWidget = title;
+    final ThemeData theme = Theme.of(context);
+    final AppBarTheme appBarTheme = theme.appBarTheme;
+    final IconThemeData iconTheme = this.iconTheme ?? theme.iconTheme;
+    final Widget? titleWidget;
     if (centerTitle) {
       titleWidget = Center(child: title);
+    } else {
+      titleWidget = title;
     }
     Widget child = Container(
       width: double.maxFinite,
@@ -126,10 +131,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ? Alignment.center
                     : AlignmentDirectional.centerStart,
                 child: DefaultTextStyle(
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(fontSize: 23.0),
+                  style: theme.textTheme.titleLarge!.copyWith(fontSize: 23.0),
                   maxLines: 1,
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
@@ -163,18 +165,26 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-    if (iconTheme != null) {
-      child = IconTheme.merge(data: iconTheme!, child: child);
-    }
+    /// Apply the icon theme data.
+    child = IconTheme.merge(data: iconTheme, child: child);
+
+    final Color effectiveBackgroundColor =
+        backgroundColor ?? theme.colorScheme.surface;
 
     // Set [SystemUiOverlayStyle] according to the brightness.
     final Brightness effectiveBrightness = brightness ??
-        Theme.of(context).appBarTheme.systemOverlayStyle?.statusBarBrightness ??
-        Theme.of(context).brightness;
+        appBarTheme.systemOverlayStyle?.statusBarBrightness ??
+        theme.brightness;
+    final bool isDark = effectiveBrightness == Brightness.dark;
+    final SystemUiOverlayStyle overlayStyle = appBarTheme.systemOverlayStyle ??
+        SystemUiOverlayStyle(
+          statusBarColor: effectiveBackgroundColor,
+          systemNavigationBarIconBrightness: Brightness.light,
+          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+        );
     child = AnnotatedRegion<SystemUiOverlayStyle>(
-      value: effectiveBrightness == Brightness.dark
-          ? SystemUiOverlayStyle.light
-          : SystemUiOverlayStyle.dark,
+      value: overlayStyle,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -187,7 +197,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     final Widget result = Material(
       // Wrap to ensure the child rendered correctly
       color: Color.lerp(
-        backgroundColor ?? Theme.of(context).colorScheme.surface,
+        effectiveBackgroundColor,
         Colors.transparent,
         blurRadius > 0.0 ? 0.1 : 0.0,
       ),

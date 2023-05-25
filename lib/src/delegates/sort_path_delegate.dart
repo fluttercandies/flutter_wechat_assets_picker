@@ -4,8 +4,12 @@
 
 import 'package:photo_manager/photo_manager.dart';
 
+import '../models/path_wrapper.dart';
+
+/// @{template wechat_assets_picker.delegates.SortPathDelegate}
 /// Delegate to sort asset path entities.
 /// 用于资源路径排序的实现
+/// @{endtemplate}
 ///
 /// Define [sort] to sort the asset path list.
 /// Usually integrate with [List.sort].
@@ -13,7 +17,7 @@ import 'package:photo_manager/photo_manager.dart';
 abstract class SortPathDelegate<Path> {
   const SortPathDelegate();
 
-  void sort(List<Path> list);
+  void sort(List<PathWrapper<Path>> list);
 
   static const SortPathDelegate<AssetPathEntity> common =
       CommonSortPathDelegate();
@@ -29,39 +33,45 @@ class CommonSortPathDelegate extends SortPathDelegate<AssetPathEntity> {
   const CommonSortPathDelegate();
 
   @override
-  void sort(List<AssetPathEntity> list) {
-    if (list.any((AssetPathEntity e) => e.lastModified != null)) {
-      list.sort((AssetPathEntity path1, AssetPathEntity path2) {
-        if (path1.lastModified == null || path2.lastModified == null) {
-          return 0;
+  void sort(List<PathWrapper<AssetPathEntity>> list) {
+    if (list.any(
+      (PathWrapper<AssetPathEntity> e) => e.path.lastModified != null,
+    )) {
+      list.sort(
+        (PathWrapper<AssetPathEntity> a, PathWrapper<AssetPathEntity> b) {
+          if (a.path.lastModified == null || b.path.lastModified == null) {
+            return 0;
+          }
+          if (b.path.lastModified!.isAfter(a.path.lastModified!)) {
+            return 1;
+          }
+          return -1;
+        },
+      );
+    }
+    list.sort(
+      (PathWrapper<AssetPathEntity> a, PathWrapper<AssetPathEntity> b) {
+        if (a.path.isAll) {
+          return -1;
         }
-        if (path2.lastModified!.isAfter(path1.lastModified!)) {
+        if (b.path.isAll) {
           return 1;
         }
-        return -1;
-      });
-    }
-    list.sort((AssetPathEntity path1, AssetPathEntity path2) {
-      if (path1.isAll) {
-        return -1;
-      }
-      if (path2.isAll) {
-        return 1;
-      }
-      if (_isCamera(path1)) {
-        return -1;
-      }
-      if (_isCamera(path2)) {
-        return 1;
-      }
-      if (_isScreenShot(path1)) {
-        return -1;
-      }
-      if (_isScreenShot(path2)) {
-        return 1;
-      }
-      return 0;
-    });
+        if (_isCamera(a.path)) {
+          return -1;
+        }
+        if (_isCamera(b.path)) {
+          return 1;
+        }
+        if (_isScreenShot(a.path)) {
+          return -1;
+        }
+        if (_isScreenShot(b.path)) {
+          return 1;
+        }
+        return 0;
+      },
+    );
   }
 
   int otherSort(AssetPathEntity path1, AssetPathEntity path2) {

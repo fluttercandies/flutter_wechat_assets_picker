@@ -14,8 +14,8 @@ import 'enums.dart';
 class AssetPickerConfig {
   const AssetPickerConfig({
     this.selectedAssets,
-    this.maxAssets = 9,
-    this.pageSize = 80,
+    this.maxAssets = defaultMaxAssetsCount,
+    this.pageSize = defaultAssetsPerPage,
     this.gridThumbnailSize = defaultAssetGridPreviewSize,
     this.pathThumbnailSize = defaultPathThumbnailSize,
     this.previewThumbnailSize,
@@ -23,6 +23,7 @@ class AssetPickerConfig {
     this.specialPickerType,
     this.keepScrollOffset = false,
     this.sortPathDelegate,
+    this.sortPathsByModifiedDate = false,
     this.filterOptions,
     this.gridCount = 4,
     this.themeColor,
@@ -35,11 +36,13 @@ class AssetPickerConfig {
     this.shouldRevertGrid,
     this.limitedPermissionOverlayPredicate,
     this.pathNameBuilder,
-  })  : assert(maxAssets >= 1, 'maxAssets must be greater than 1.'),
-        assert(
+  })  : assert(
           pickerTheme == null || themeColor == null,
           'pickerTheme and themeColor cannot be set at the same time.',
         ),
+        assert(maxAssets > 0, 'maxAssets must be greater than 0.'),
+        assert(pageSize > 0, 'pageSize must be greater than 0.'),
+        assert(gridCount > 0, 'gridCount must be greater than 0.'),
         assert(
           pageSize % gridCount == 0,
           'pageSize must be a multiple of gridCount.',
@@ -125,16 +128,22 @@ class AssetPickerConfig {
   /// 选择器是否可以从同样的位置开始选择
   final bool keepScrollOffset;
 
-  /// Delegate to sort asset path entities.
-  /// 资源路径排序的实现
+  /// @{macro wechat_assets_picker.delegates.SortPathDelegate}
   final SortPathDelegate<AssetPathEntity>? sortPathDelegate;
+
+  /// {@template wechat_assets_picker.constants.AssetPickerConfig.sortPathsByModifiedDate}
+  /// Whether to allow sort delegates to sort paths with
+  /// [FilterOptionGroup.containsPathModified].
+  /// 是否结合 [FilterOptionGroup.containsPathModified] 进行路径排序
+  /// {@endtemplate}
+  final bool sortPathsByModifiedDate;
 
   /// Filter options for the picker.
   /// 选择器的筛选条件
   ///
   /// Will be merged into the base configuration.
   /// 将会与基础条件进行合并。
-  final FilterOptionGroup? filterOptions;
+  final PMFilter? filterOptions;
 
   /// Assets count for the picker.
   /// 资源网格数

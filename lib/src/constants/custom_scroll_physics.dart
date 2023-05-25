@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/physics.dart';
+import 'package:flutter/physics.dart' as physics show SpringDescription;
 
 class CustomBouncingScrollPhysics extends BouncingScrollPhysics {
   const CustomBouncingScrollPhysics({
@@ -16,8 +16,8 @@ class CustomBouncingScrollPhysics extends BouncingScrollPhysics {
   }
 
   @override
-  SpringDescription get spring {
-    return SpringDescription.withDampingRatio(
+  physics.SpringDescription get spring {
+    return physics.SpringDescription.withDampingRatio(
       mass: 0.5,
       stiffness: 400.0,
       ratio: 1.1,
@@ -36,8 +36,8 @@ class CustomClampingScrollPhysics extends ClampingScrollPhysics {
   }
 
   @override
-  SpringDescription get spring {
-    return SpringDescription.withDampingRatio(
+  physics.SpringDescription get spring {
+    return physics.SpringDescription.withDampingRatio(
       mass: 0.5,
       stiffness: 400.0,
       ratio: 1.1,

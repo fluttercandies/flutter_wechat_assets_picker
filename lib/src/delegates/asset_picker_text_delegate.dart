@@ -19,6 +19,7 @@ const List<AssetPickerTextDelegate> assetPickerTextDelegates =
   ArabicAssetPickerTextDelegate(),
   FrenchAssetPickerTextDelegate(),
   TurkishAssetPickerTextDelegate(),
+  VietnameseAssetPickerTextDelegate(),
 ];
 
 /// Obtain the text delegate from the given locale.
@@ -107,7 +108,7 @@ class AssetPickerTextDelegate {
     const String separator = ':';
     final String minute = duration.inMinutes.toString().padLeft(2, '0');
     final String second =
-        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
+        (duration - Duration(minutes: duration.inMinutes)).inSeconds
             .toString()
             .padLeft(2, '0');
     return '$minute$separator$second';
@@ -938,4 +939,100 @@ class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get sUnitAssetCountLabel => 'Sayı';
+}
+
+/// [AssetPickerTextDelegate] implements with Vietnamese.
+/// Dịch tiếng Việt
+class VietnameseAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const VietnameseAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'vi';
+
+  @override
+  String get confirm => 'Xác nhận';
+
+  @override
+  String get cancel => 'Hủy';
+
+  @override
+  String get edit => 'Chỉnh sửa';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get loadFailed => 'Tải thất bại';
+
+  @override
+  String get original => 'Gốc';
+
+  @override
+  String get preview => 'Xem trước';
+
+  @override
+  String get select => 'Chọn';
+
+  @override
+  String get emptyList => 'Danh sách trống';
+
+  @override
+  String get unSupportedAssetType => 'Loại tệp không được hỗ trợ';
+
+  @override
+  String get unableToAccessAll =>
+      'Không thể truy cập vào các tệp trên thiết bị của bạn';
+
+  @override
+  String get viewingLimitedAssetsTip => 'Đang xem các tệp và thư mục hạn chế';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'Thay đổi quyền truy cập tệp hạn chế';
+
+  @override
+  String get accessAllTip => 'Ứng dụng chỉ có thể truy cập một số tệp. '
+      'Hãy vào cài đặt hệ thống và cho phép ứng dụng truy cập tất cả các tệp trên thiết bị';
+
+  @override
+  String get goToSystemSettings => 'Đi đến cài đặt hệ thống';
+
+  @override
+  String get accessLimitedAssets => 'Tiếp tục với quyền truy cập hạn chế';
+
+  @override
+  String get accessiblePathName => 'Tệp truy cập';
+
+  @override
+  String get sTypeAudioLabel => 'Âm thanh';
+
+  @override
+  String get sTypeImageLabel => 'Hình ảnh';
+
+  @override
+  String get sTypeVideoLabel => 'Video';
+
+  @override
+  String get sTypeOtherLabel => 'Khác';
+
+  @override
+  String get sActionPlayHint => 'phát';
+
+  @override
+  String get sActionPreviewHint => 'xem trước';
+
+  @override
+  String get sActionSelectHint => 'chọn';
+
+  @override
+  String get sActionSwitchPathLabel => 'chuyển đổi đường dẫn';
+
+  @override
+  String get sActionUseCameraHint => 'Sử dụng máy ảnh';
+
+  @override
+  String get sNameDurationLabel => 'thời lượng';
+
+  @override
+  String get sUnitAssetCountLabel => 'số lượng';
 }

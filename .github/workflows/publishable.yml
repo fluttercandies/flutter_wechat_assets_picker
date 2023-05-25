@@ -7,20 +7,20 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "**.md"
+      - "**.yaml"
+      - "**.yml"
 
 jobs:
-  dry_run:
-    name: Dry run publish on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
+  publish-dry-run:
+    name: Publish dry-run with packages
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - uses: k-paxian/dart-package-publisher@v1.3
+      - uses: actions/checkout@v3
+      - uses: k-paxian/dart-package-publisher@master
         with:
-          credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-          dryRunOnly: true
+          credentialJson: 'MockCredentialJson'
           flutter: true
+          dryRunOnly: true
           skipTests: true
