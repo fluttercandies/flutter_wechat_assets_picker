@@ -60,7 +60,7 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
       * [Register assets change observe callback](#register-assets-change-observe-callback)
       * [Upload an `AssetEntity` with a form data](#upload-an-assetentity-with-a-form-data)
         * [With `http`](#with-http)
-        * [With `diox`](#with-diox)
+        * [With `dio`](#with-dio)
     * [Custom pickers](#custom-pickers)
   * [Frequently asked question ❔](#frequently-asked-question-)
     * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photomanagercompiledebugkotlin)
