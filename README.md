@@ -416,7 +416,7 @@ Future<void> upload() async {
   print('Uploaded!');
 }
 
-Future<diox.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
+Future<dio.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
   dio.MultipartFile mf;
   // Using the file path.
   final file = await entity.file;
