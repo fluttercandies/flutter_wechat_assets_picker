@@ -136,6 +136,9 @@ before you have any questions.
 
 ### Versions compatibility
 
+The package only guarantees to be working on **the stable version of Flutter**.
+We won't update it in real-time to align with other channels of Flutter.
+
 |        | 3.0.0 | 3.3.0 | 3.7.0 | 3.10.0 |
 |--------|:-----:|:-----:|:-----:|:------:|
 | 8.5.0+ |   ❌   |   ❌   |   ❌   |   ✅    |
