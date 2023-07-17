@@ -4,6 +4,7 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../constants/typedefs.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
 
@@ -11,12 +12,13 @@ import '../delegates/sort_path_delegate.dart';
 class Singleton {
   const Singleton._();
 
+  static ExceptionHandler? internalExceptionHandler;
   static AssetPickerTextDelegate textDelegate = const AssetPickerTextDelegate();
   static SortPathDelegate<dynamic> sortPathDelegate = SortPathDelegate.common;
 
   /// The last scroll position where the picker scrolled.
   ///
   /// See also:
-  ///  * [AssetPickerBuilderDelegate.keepScrollOffset]
+  ///  * [DefaultAssetPickerBuilderDelegate.keepScrollOffset]
   static ScrollPosition? scrollPosition;
 }

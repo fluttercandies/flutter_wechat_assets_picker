@@ -35,7 +35,7 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
   @override
   void initState() {
     super.initState();
-    _checkLocallyAvailable();
+    _checkLocallyAvailable().catchError(handleException);
   }
 
   Future<void> _checkLocallyAvailable() async {
@@ -61,7 +61,7 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
             setState(() {});
           }
         }
-      });
+      }).catchError(handleException);
     }
     _progressHandler?.stream.listen((PMProgressState s) {
       realDebugPrint('Handling progress: $s.');
@@ -70,6 +70,8 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
         if (mounted) {
           setState(() {});
         }
+      } else if (s.state == PMRequestState.failed) {
+        handleException(s, StackTrace.current);
       }
     });
   }

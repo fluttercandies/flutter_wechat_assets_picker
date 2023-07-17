@@ -99,9 +99,6 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       if (widget.hasOnlyOneVideoAndMoment) {
         controller.play();
       }
-    } catch (e) {
-      realDebugPrint('Error when initialize video controller: $e');
-      hasErrorWhenInitializing = true;
     } finally {
       if (mounted) {
         setState(() {});
@@ -205,7 +202,12 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           );
         }
         if (!_isLocallyAvailable && !_isInitializing) {
-          initializeVideoPlayerController();
+          initializeVideoPlayerController().catchError(
+            (Object e, StackTrace s) {
+              handleException(e, s);
+              hasErrorWhenInitializing = true;
+            },
+          );
         }
         if (!hasLoaded) {
           return const SizedBox.shrink();

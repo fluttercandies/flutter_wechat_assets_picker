@@ -7,8 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/config.dart';
+import '../constants/typedefs.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
 import '../delegates/asset_picker_delegate.dart';
+import '../internal/methods.dart';
+import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import 'asset_picker_page_route.dart';
 
@@ -18,6 +21,11 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
   const AssetPicker({super.key, required this.builder});
 
   final AssetPickerBuilderDelegate<Asset, Path> builder;
+
+  /// Update the internal exception handler to the given [exceptionHandler].
+  static void setInternalExceptionHandler(ExceptionHandler? exceptionHandler) {
+    Singleton.internalExceptionHandler = exceptionHandler;
+  }
 
   /// Provide another [AssetPickerDelegate] which override with
   /// custom methods during handling the picking,
@@ -124,7 +132,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
       if (mounted) {
         setState(() {});
       }
-    });
+    }).catchError(handleException);
   }
 
   @override

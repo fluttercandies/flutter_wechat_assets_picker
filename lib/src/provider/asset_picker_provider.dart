@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../delegates/sort_path_delegate.dart';
+import '../internal/methods.dart';
 import '../internal/singleton.dart';
 import '../models/path_wrapper.dart';
 
@@ -245,7 +246,7 @@ class DefaultAssetPickerProvider
     Future<void>.delayed(initializeDelayDuration, () async {
       await getPaths();
       await getAssetsFromCurrentPath();
-    });
+    }).catchError(handleException);
   }
 
   @visibleForTesting
@@ -414,40 +415,50 @@ class DefaultAssetPickerProvider
   Future<Uint8List?> getThumbnailFromPath(
     PathWrapper<AssetPathEntity> path,
   ) async {
-    if (requestType == RequestType.audio) {
+    try {
+      if (requestType == RequestType.audio) {
+        return null;
+      }
+      final int assetCount = path.assetCount ?? await path.path.assetCountAsync;
+      if (assetCount == 0) {
+        return null;
+      }
+      final List<AssetEntity> assets = await path.path.getAssetListRange(
+        start: 0,
+        end: 1,
+      );
+      if (assets.isEmpty) {
+        return null;
+      }
+      final AssetEntity asset = assets.single;
+      // Obtain the thumbnail only when the asset is image or video.
+      if (asset.type != AssetType.image && asset.type != AssetType.video) {
+        return null;
+      }
+      final Uint8List? data = await asset.thumbnailDataWithSize(
+        pathThumbnailSize,
+      );
+      final int index = _paths.indexWhere(
+        (PathWrapper<AssetPathEntity> p) => p.path == path.path,
+      );
+      if (index != -1) {
+        _paths[index] = _paths[index].copyWith(thumbnailData: data);
+        notifyListeners();
+      }
+      return data;
+    } catch (e, s) {
+      handleException(e, s);
       return null;
     }
-    final int assetCount = path.assetCount ?? await path.path.assetCountAsync;
-    if (assetCount == 0) {
-      return null;
-    }
-    final List<AssetEntity> assets = await path.path.getAssetListRange(
-      start: 0,
-      end: 1,
-    );
-    if (assets.isEmpty) {
-      return null;
-    }
-    final AssetEntity asset = assets.single;
-    // Obtain the thumbnail only when the asset is image or video.
-    if (asset.type != AssetType.image && asset.type != AssetType.video) {
-      return null;
-    }
-    final Uint8List? data = await asset.thumbnailDataWithSize(
-      pathThumbnailSize,
-    );
-    final int index = _paths.indexWhere(
-      (PathWrapper<AssetPathEntity> p) => p.path == path.path,
-    );
-    if (index != -1) {
-      _paths[index] = _paths[index].copyWith(thumbnailData: data);
-      notifyListeners();
-    }
-    return data;
   }
 
   Future<void> getAssetCountFromPath(PathWrapper<AssetPathEntity> path) async {
-    final int assetCount = await path.path.assetCountAsync;
+    final int assetCount = await path.path.assetCountAsync.catchError(
+      (Object e, StackTrace s) {
+        handleException(e, s);
+        return 0;
+      },
+    );
     final int index = _paths.indexWhere(
       (PathWrapper<AssetPathEntity> p) => p == path,
     );

@@ -19,6 +19,7 @@ import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../constants/typedefs.dart';
 import '../delegates/asset_picker_text_delegate.dart';
+import '../internal/methods.dart';
 import '../internal/singleton.dart';
 import '../models/path_wrapper.dart';
 import '../provider/asset_picker_provider.dart';
@@ -1264,7 +1265,7 @@ class DefaultAssetPickerBuilderDelegate
     if (p.hasMoreToLoad) {
       if ((p.pageSize <= gridCount * 3 && index == length - 1) ||
           index == length - gridCount * 3) {
-        p.loadMoreAssets();
+        p.loadMoreAssets().catchError(handleException);
       }
     }
 

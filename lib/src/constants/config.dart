@@ -13,6 +13,7 @@ import 'enums.dart';
 
 class AssetPickerConfig {
   const AssetPickerConfig({
+    this.internalExceptionHandler,
     this.selectedAssets,
     this.maxAssets = defaultMaxAssetsCount,
     this.pageSize = defaultAssetsPerPage,
@@ -60,6 +61,9 @@ class AssetPickerConfig {
                   !identical(specialItemPosition, SpecialItemPosition.none)),
           'Custom item did not set properly.',
         );
+
+  /// {@macro wechat_assets_picker.ExceptionHandler}
+  final ExceptionHandler? internalExceptionHandler;
 
   /// Selected assets.
   /// 已选中的资源

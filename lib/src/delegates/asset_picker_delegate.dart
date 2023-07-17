@@ -8,6 +8,7 @@ import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/config.dart';
 import '../constants/constants.dart';
+import '../constants/typedefs.dart';
 import '../internal/methods.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
@@ -104,6 +105,9 @@ class AssetPickerDelegate {
         locale: Localizations.maybeLocaleOf(context),
       ),
     );
+    AssetPicker.setInternalExceptionHandler(
+      pickerConfig.internalExceptionHandler,
+    );
     final List<AssetEntity>? result = await Navigator.of(
       context,
       rootNavigator: useRootNavigator,
@@ -111,6 +115,7 @@ class AssetPickerDelegate {
       pageRouteBuilder?.call(picker) ??
           AssetPickerPageRoute<List<AssetEntity>>(builder: (_) => picker),
     );
+    AssetPicker.setInternalExceptionHandler(null);
     return result;
   }
 
@@ -138,12 +143,14 @@ class AssetPickerDelegate {
     Key? key,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
+    ExceptionHandler? internalExceptionHandler,
   }) async {
     await permissionCheck();
     final Widget picker = AssetPicker<Asset, Path>(
       key: key,
       builder: delegate,
     );
+    AssetPicker.setInternalExceptionHandler(internalExceptionHandler);
     final List<Asset>? result = await Navigator.of(
       context,
       rootNavigator: useRootNavigator,
@@ -151,6 +158,7 @@ class AssetPickerDelegate {
       pageRouteBuilder?.call(picker) ??
           AssetPickerPageRoute<List<Asset>>(builder: (_) => picker),
     );
+    AssetPicker.setInternalExceptionHandler(null);
     return result;
   }
 
@@ -165,8 +173,8 @@ class AssetPickerDelegate {
     try {
       PhotoManager.addChangeCallback(callback);
       PhotoManager.startChangeNotify();
-    } catch (e) {
-      realDebugPrint('Error when registering assets callback: $e');
+    } catch (e, s) {
+      handleException(e, s);
     }
   }
 
@@ -181,8 +189,8 @@ class AssetPickerDelegate {
     try {
       PhotoManager.removeChangeCallback(callback);
       PhotoManager.stopChangeNotify();
-    } catch (e) {
-      realDebugPrint('Error when unregistering assets callback: $e');
+    } catch (e, s) {
+      handleException(e, s);
     }
   }
 

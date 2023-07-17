@@ -11,6 +11,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
+import '../../internal/methods.dart';
 import 'locally_available_builder.dart';
 
 class ImagePageBuilder extends StatefulWidget {
@@ -57,12 +58,12 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
     if (!mounted || file == null) {
       return;
     }
-    final VideoPlayerController c = VideoPlayerController.file(
+    final VideoPlayerController controller = VideoPlayerController.file(
       file,
       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
     );
-    setState(() => _controller = c);
-    c
+    setState(() => _controller = controller);
+    controller
       ..initialize()
       ..setVolume(0)
       ..addListener(() {
@@ -159,7 +160,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
         // Initialize the video controller when the asset is a Live photo
         // and available for further use.
         if (!_isLocallyAvailable && _isLivePhoto) {
-          _initializeLivePhoto();
+          _initializeLivePhoto().catchError(handleException);
         }
         _isLocallyAvailable = true;
         // TODO(Alex): Wait until `extended_image` support synchronized zooming.

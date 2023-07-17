@@ -53,7 +53,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   @override
   void initState() {
     super.initState();
-    openAudioFile();
+    openAudioFile().catchError(handleException);
   }
 
   @override
@@ -76,8 +76,6 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       _controller = VideoPlayerController.network(url!);
       await _controller.initialize();
       _controller.addListener(audioPlayerListener);
-    } catch (e) {
-      realDebugPrint('Error when opening audio file: $e');
     } finally {
       isLoaded = true;
       if (mounted) {

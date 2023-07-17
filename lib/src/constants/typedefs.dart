@@ -7,6 +7,12 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:photo_manager/photo_manager.dart' show PermissionState;
 
+/// {@template wechat_assets_picker.ExceptionHandler}
+/// Handles exceptions during internal calls.
+/// 处理内部方法调用时的异常。
+/// {@endtemplate}
+typedef ExceptionHandler = void Function(Object e, StackTrace s);
+
 /// {@template wechat_assets_picker.LoadingIndicatorBuilder}
 /// Build the loading indicator with the given [isAssetsEmpty].
 /// 根据给定的 [isAssetsEmpty] 构建加载指示器。
