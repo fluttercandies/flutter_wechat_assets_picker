@@ -592,13 +592,10 @@ class DefaultAssetPickerViewerBuilderDelegate
                 color: backgroundColor,
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  const Spacer(),
-                  if (isAppleOS && (provider != null || isWeChatMoment))
-                    confirmButton(context)
-                  else
-                    selectButton(context),
+                  if (provider != null || isWeChatMoment)
+                    confirmButton(context),
                 ],
               ),
             ),
@@ -763,32 +760,18 @@ class DefaultAssetPickerViewerBuilderDelegate
                   ),
                 ),
               ),
-            if (isAppleOS && provider != null)
+            if (provider != null)
               Expanded(
-                child: Align(
+                child: Container(
                   alignment: AlignmentDirectional.centerEnd,
+                  padding: const EdgeInsetsDirectional.only(end: 14),
                   child: Semantics(
                     sortKey: ordinalSortKey(0.2),
                     child: selectButton(context),
                   ),
                 ),
               )
-            else if (isAppleOS)
-              const Spacer(),
-            if (!isAppleOS && (provider != null || isWeChatMoment))
-              Expanded(
-                child: Align(
-                  alignment: AlignmentDirectional.centerEnd,
-                  child: Semantics(
-                    sortKey: ordinalSortKey(0.3),
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.only(end: 14),
-                      child: confirmButton(context),
-                    ),
-                  ),
-                ),
-              )
-            else if (!isAppleOS)
+            else
               const Spacer(),
           ],
         ),
@@ -968,7 +951,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                     if (!isAppleOS)
                       ScaleText(
                         textDelegate.select,
-                        style: const TextStyle(fontSize: 17, height: 1),
+                        style: const TextStyle(fontSize: 17, height: 1.2),
                         semanticsLabel: semanticsTextDelegate.select,
                       ),
                   ],
