@@ -51,6 +51,9 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      supportedLocales: assetPickerTextDelegates.map(
+        (AssetPickerTextDelegate e) => Locale(e.languageCode),
+      ),
     );
   }
 }
