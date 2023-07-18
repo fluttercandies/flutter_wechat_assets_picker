@@ -47,6 +47,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
+    this.hidePreviewButton = false,
     this.limitedPermissionOverlayPredicate,
     this.pathNameBuilder,
     Color? themeColor,
@@ -118,6 +119,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// [Null] means judging by [isAppleOS].
   /// 使用 [Null] 即使用 [isAppleOS] 进行判断。
   final bool? shouldRevertGrid;
+
+  /// default value is false;
+  /// 默认显示
+  final bool hidePreviewButton;
 
   /// {@macro wechat_assets_picker.LimitedPermissionOverlayPredicate}
   final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
@@ -521,7 +526,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1),
       child: Row(
         children: <Widget>[
-          if (!isAppleOS) previewButton(context),
+          if (!hidePreviewButton) previewButton(context),
           if (isAppleOS) const Spacer(),
           if (isAppleOS) confirmButton(context),
         ],
@@ -664,6 +669,7 @@ class DefaultAssetPickerBuilderDelegate
     super.loadingIndicatorBuilder,
     super.selectPredicate,
     super.shouldRevertGrid,
+    super.hidePreviewButton,
     super.limitedPermissionOverlayPredicate,
     super.pathNameBuilder,
     super.themeColor,

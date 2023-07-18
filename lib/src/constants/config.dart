@@ -34,6 +34,7 @@ class AssetPickerConfig {
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
+    this.hidePreviewButton = false,
     this.limitedPermissionOverlayPredicate,
     this.pathNameBuilder,
   })  : assert(
@@ -185,6 +186,10 @@ class AssetPickerConfig {
   /// [Null] means judging by Apple OS.
   /// 使用 [Null] 即使用是否为 Apple 系统进行判断。
   final bool? shouldRevertGrid;
+
+  /// default value is false;
+  /// 默认显示
+  final bool hidePreviewButton;
 
   /// {@macro wechat_assets_picker.LimitedPermissionOverlayPredicate}
   final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
