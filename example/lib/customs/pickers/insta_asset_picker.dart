@@ -173,7 +173,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
   Widget _selectedAssetWidget(int index) {
     final AssetEntity asset = entities.elementAt(index);
 
-    Future<void> _onTap() async {
+    Future<void> onTap() async {
       final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
         context,
         currentIndex: index,
@@ -192,7 +192,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
     }
 
     return GestureDetector(
-      onTap: isDisplayingDetail ? _onTap : null,
+      onTap: isDisplayingDetail ? onTap : null,
       child: RepaintBoundary(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),

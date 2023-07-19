@@ -612,7 +612,7 @@ class FileAssetPickerBuilder
     final double topPadding =
         MediaQuery.of(context).padding.top + kToolbarHeight;
 
-    Widget _sliverGrid(BuildContext ctx, List<File> assets) {
+    Widget sliverGrid(BuildContext ctx, List<File> assets) {
       return SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (_, int index) => Builder(
@@ -686,7 +686,7 @@ class FileAssetPickerBuilder
                             MediaQuery.of(context).padding.top + kToolbarHeight,
                       ),
                     ),
-                  _sliverGrid(_, assets),
+                  sliverGrid(_, assets),
                   // Ignore the gap when the [anchor] is not equal to 1.
                   if (isAppleOS && anchor == 1)
                     SliverToBoxAdapter(
