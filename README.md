@@ -25,7 +25,7 @@ The package is using
 [extended_image][extended_image pub] for image preview,
 and [provider][provider pub] to help manage the state of the picker.
 
-Current WeChat version that UI based on: **8.x**
+Current WeChat version that UI based on: **8.3.x**
 UI designs will be updated following the WeChat update in anytime.
 
 To take a photo or a video for assets,

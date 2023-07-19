@@ -23,7 +23,7 @@ Language: [English](README.md) | 中文
 [extended_image][extended_image pub] 用于查看图片，
 [provider][provider pub] 用于协助管理选择器的状态。
 
-当前的界面设计基于的微信版本：**8.x**
+当前的界面设计基于的微信版本：**8.3.x**
 界面更新将在微信版本更新后随时进行跟进。
 
 如果你需要拍照及录制视频，请先查看示例的详细用法，
