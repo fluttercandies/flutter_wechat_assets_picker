@@ -85,10 +85,11 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       }
       return;
     }
+    final Uri uri = Uri.parse(url);
     if (Platform.isAndroid) {
-      _controller = VideoPlayerController.contentUri(Uri.parse(url));
+      _controller = VideoPlayerController.contentUri(uri);
     } else {
-      _controller = VideoPlayerController.network(url);
+      _controller = VideoPlayerController.networkUrl(uri);
     }
     try {
       await controller.initialize();

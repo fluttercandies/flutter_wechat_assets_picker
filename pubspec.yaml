@@ -19,7 +19,7 @@ dependencies:
   extended_image: ^8.0.0
   photo_manager: ^2.6.0
   provider: ^6.0.5
-  video_player: ^2.6.0
+  video_player: ^2.7.0
 
 dev_dependencies:
   flutter_localizations:
