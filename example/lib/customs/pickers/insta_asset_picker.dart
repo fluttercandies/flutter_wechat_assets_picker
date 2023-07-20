@@ -15,6 +15,8 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../constants/extensions.dart';
+
 /// The reduced height of the viewer
 const double _kReducedViewerHeight = kToolbarHeight;
 
@@ -102,7 +104,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  const Text('Selected Assets'),
+                  Text(context.l10n.selectedAssetsText),
                   Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 10.0,
@@ -240,7 +242,9 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Instagram picker')),
+      appBar: AppBar(
+        title: Text(context.l10n.customPickerInstagramLayoutName),
+      ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -250,15 +254,17 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  paddingText(
-                    'The picker reproduces instagram layout with preview and '
-                    'scroll animations.',
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: SelectableText(
+                      context.l10n.customPickerInstagramLayoutDescription,
+                    ),
                   ),
                   TextButton(
                     onPressed: () => callPicker(context),
-                    child: const Text(
-                      '🎁 Call the Picker',
-                      style: TextStyle(fontSize: 22),
+                    child: Text(
+                      context.l10n.customPickerCallThePickerButton,
+                      style: const TextStyle(fontSize: 22),
                     ),
                   ),
                 ],
