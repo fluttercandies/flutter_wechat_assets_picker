@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
+import 'extensions.dart';
+
 Future<AssetEntity?> _pickFromCamera(BuildContext c) {
   return CameraPicker.pickFromCamera(
     c,
@@ -23,11 +25,28 @@ class PickMethod {
     this.onLongPress,
   });
 
-  factory PickMethod.image(int maxAssetsCount) {
+  factory PickMethod.common(BuildContext context, int maxAssetsCount) {
+    return PickMethod(
+      icon: '📹',
+      name: context.l10n.pickMethodCommonName,
+      description: context.l10n.pickMethodCommonDescription,
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          pickerConfig: AssetPickerConfig(
+            maxAssets: maxAssetsCount,
+            selectedAssets: assets,
+          ),
+        );
+      },
+    );
+  }
+
+  factory PickMethod.image(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '🖼️',
-      name: 'Image picker',
-      description: 'Only pick image from device.',
+      name: context.l10n.pickMethodImageName,
+      description: context.l10n.pickMethodImageDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -41,12 +60,11 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.video(int maxAssetsCount) {
+  factory PickMethod.video(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '🎞',
-      name: 'Video picker',
-      description: 'Only pick video from device. '
-          '(Live Photos will be obtained on iOS.)',
+      name: context.l10n.pickMethodVideoName,
+      description: context.l10n.pickMethodVideoDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -60,11 +78,11 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.audio(int maxAssetsCount) {
+  factory PickMethod.audio(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '🎶',
-      name: 'Audio picker',
-      description: 'Only pick audio from device.',
+      name: context.l10n.pickMethodAudioName,
+      description: context.l10n.pickMethodAudioDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -79,13 +97,14 @@ class PickMethod {
   }
 
   factory PickMethod.camera({
+    required BuildContext context,
     required int maxAssetsCount,
     required Function(BuildContext, AssetEntity) handleResult,
   }) {
     return PickMethod(
       icon: '📷',
-      name: 'Pick from camera',
-      description: 'Allow pick an asset through camera.',
+      name: context.l10n.pickMethodCameraName,
+      description: context.l10n.pickMethodCameraDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         const AssetPickerTextDelegate textDelegate = AssetPickerTextDelegate();
         return AssetPicker.pickAssets(
@@ -127,12 +146,11 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.cameraAndStay({required int maxAssetsCount}) {
+  factory PickMethod.cameraAndStay(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '📸',
-      name: 'Pick from camera and stay',
-      description: 'Take a photo or video with the camera picker, '
-          'select the result and stay in the entities list.',
+      name: context.l10n.pickMethodCameraAndStayName,
+      description: context.l10n.pickMethodCameraAndStayDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         const AssetPickerTextDelegate textDelegate = AssetPickerTextDelegate();
         return AssetPicker.pickAssets(
@@ -185,29 +203,11 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.common(int maxAssetsCount) {
-    return PickMethod(
-      icon: '📹',
-      name: 'Common picker',
-      description: 'Pick images and videos.',
-      method: (BuildContext context, List<AssetEntity> assets) {
-        return AssetPicker.pickAssets(
-          context,
-          pickerConfig: AssetPickerConfig(
-            maxAssets: maxAssetsCount,
-            selectedAssets: assets,
-          ),
-        );
-      },
-    );
-  }
-
-  factory PickMethod.threeItemsGrid(int maxAssetsCount) {
+  factory PickMethod.threeItemsGrid(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '🔲',
-      name: '3 items grid',
-      description: 'Picker will served as 3 items on cross axis. '
-          '(pageSize must be a multiple of gridCount)',
+      name: context.l10n.pickMethodThreeItemsGridName,
+      description: context.l10n.pickMethodThreeItemsGridDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -223,11 +223,14 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.customFilterOptions(int maxAssetsCount) {
+  factory PickMethod.customFilterOptions(
+    BuildContext context,
+    int maxAssetsCount,
+  ) {
     return PickMethod(
       icon: '⏳',
-      name: 'Custom filter options',
-      description: 'Add filter options for the picker.',
+      name: context.l10n.pickMethodCustomFilterOptionsName,
+      description: context.l10n.pickMethodCustomFilterOptionsDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -235,26 +238,24 @@ class PickMethod {
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
             requestType: RequestType.video,
-            filterOptions: FilterOptionGroup()
-              ..setOption(
-                AssetType.video,
-                const FilterOption(
-                  durationConstraint: DurationConstraint(
-                    max: Duration(minutes: 1),
-                  ),
+            filterOptions: FilterOptionGroup(
+              videoOption: const FilterOption(
+                durationConstraint: DurationConstraint(
+                  max: Duration(minutes: 1),
                 ),
               ),
+            ),
           ),
         );
       },
     );
   }
 
-  factory PickMethod.prependItem(int maxAssetsCount) {
+  factory PickMethod.prependItem(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '➕',
-      name: 'Prepend special item',
-      description: 'A special item will prepend to the assets grid.',
+      name: context.l10n.pickMethodPrependItemName,
+      description: context.l10n.pickMethodPrependItemDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -277,11 +278,11 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.noPreview(int maxAssetsCount) {
+  factory PickMethod.noPreview(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '👁️‍🗨️',
-      name: 'No preview',
-      description: 'Pick assets like the WhatsApp/MegaTok pattern.',
+      name: context.l10n.pickMethodNoPreviewName,
+      description: context.l10n.pickMethodNoPreviewDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -296,14 +297,15 @@ class PickMethod {
   }
 
   factory PickMethod.keepScrollOffset({
+    required BuildContext context,
     required DefaultAssetPickerBuilderDelegate Function() delegate,
     required Function(PermissionState state) onPermission,
     GestureLongPressCallback? onLongPress,
   }) {
     return PickMethod(
       icon: '💾',
-      name: 'Keep scroll offset',
-      description: 'Pick assets from same scroll position.',
+      name: context.l10n.pickMethodKeepScrollOffsetName,
+      description: context.l10n.pickMethodKeepScrollOffsetDescription,
       method: (BuildContext context, List<AssetEntity> assets) async {
         final PermissionState ps = await PhotoManager.requestPermissionExtend();
         if (ps != PermissionState.authorized && ps != PermissionState.limited) {
@@ -319,12 +321,11 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.changeLanguages(int maxAssetsCount) {
+  factory PickMethod.changeLanguages(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '🔤',
-      name: 'Change Languages',
-      description: 'Pass text delegates to change between languages. '
-          '(e.g. EnglishTextDelegate)',
+      name: context.l10n.pickMethodChangeLanguagesName,
+      description: context.l10n.pickMethodChangeLanguagesDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -338,11 +339,14 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.preventGIFPicked(int maxAssetsCount) {
+  factory PickMethod.preventGIFPicked(
+    BuildContext context,
+    int maxAssetsCount,
+  ) {
     return PickMethod(
       icon: '🈲',
-      name: 'Prevent GIF being picked',
-      description: 'Use selectPredicate to banned GIF picking when tapped.',
+      name: context.l10n.pickMethodPreventGIFPickedName,
+      description: context.l10n.pickMethodPreventGIFPickedDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -359,11 +363,14 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.customizableTheme(int maxAssetsCount) {
+  factory PickMethod.customizableTheme(
+    BuildContext context,
+    int maxAssetsCount,
+  ) {
     return PickMethod(
       icon: '🎨',
-      name: 'Customizable theme',
-      description: 'Picking assets with the light theme with different color.',
+      name: context.l10n.pickMethodCustomizableThemeName,
+      description: context.l10n.pickMethodCustomizableThemeDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,
@@ -380,11 +387,11 @@ class PickMethod {
     );
   }
 
-  factory PickMethod.pathNameBuilder(int maxAssetsCount) {
+  factory PickMethod.pathNameBuilder(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '🈸',
-      name: 'Path name builder',
-      description: 'Add 🍭 after paths name.',
+      name: context.l10n.pickMethodPathNameBuilderName,
+      description: context.l10n.pickMethodPathNameBuilderDescription,
       method: (BuildContext context, List<AssetEntity> assets) {
         return AssetPicker.pickAssets(
           context,

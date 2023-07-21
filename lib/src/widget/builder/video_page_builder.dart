@@ -102,10 +102,11 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       }
       return;
     }
+    final Uri uri = Uri.parse(url);
     if (Platform.isAndroid) {
-      _controller = VideoPlayerController.contentUri(Uri.parse(url));
+      _controller = VideoPlayerController.contentUri(uri);
     } else {
-      _controller = VideoPlayerController.network(url);
+      _controller = VideoPlayerController.networkUrl(uri);
     }
     try {
       await controller.initialize();
@@ -140,12 +141,13 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   /// Normally it only switches play state for the player. If the video reaches the end,
   /// then click the button will make the video replay.
   /// 一般来说按钮只切换播放暂停。当视频播放结束时，点击按钮将从头开始播放。
-  Future<void> playButtonCallback() async {
+  Future<void> playButtonCallback(BuildContext context) async {
     if (isPlaying.value) {
       controller.pause();
       return;
     }
-    if (widget.delegate.isDisplayingDetail.value) {
+    if (widget.delegate.isDisplayingDetail.value &&
+        !MediaQuery.accessibleNavigationOf(context)) {
       widget.delegate.switchDisplayingDetail(value: false);
     }
     if (controller.value.duration == controller.value.position) {
@@ -173,16 +175,15 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           ValueListenableBuilder<bool>(
             valueListenable: isPlaying,
             builder: (_, bool value, __) => GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: value
-                  ? playButtonCallback
+              onTap: value || MediaQuery.accessibleNavigationOf(context)
+                  ? () => playButtonCallback(context)
                   : widget.delegate.switchDisplayingDetail,
               child: Center(
                 child: AnimatedOpacity(
                   duration: kThemeAnimationDuration,
                   opacity: value ? 0.0 : 1.0,
                   child: GestureDetector(
-                    onTap: playButtonCallback,
+                    onTap: () => playButtonCallback(context),
                     child: DecoratedBox(
                       decoration: const BoxDecoration(
                         boxShadow: <BoxShadow>[
@@ -229,15 +230,10 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           return const SizedBox.shrink();
         }
         return Semantics(
-          onLongPress: playButtonCallback,
+          onLongPress: () => playButtonCallback(context),
           onLongPressHint:
               Singleton.textDelegate.semanticsTextDelegate.sActionPlayHint,
-          child: GestureDetector(
-            onLongPress: MediaQuery.of(context).accessibleNavigation
-                ? playButtonCallback
-                : null,
-            child: _contentBuilder(context),
-          ),
+          child: _contentBuilder(context),
         );
       },
     );

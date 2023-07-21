@@ -4,6 +4,41 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.6.0
+
+### New features
+
+- Sync all UI details from WeChat 8.3.x. (#458)
+- Fix semantics interactions for videos preview. (#458)
+
+## 8.5.0
+
+### Breaking changes
+
+- Migrate to Flutter 3.10, drop supports for previous Flutter versions.
+
+## 8.4.3
+
+### New features
+
+- Add Vietnamese language text delegate. (#424).
+
+### Improvements
+
+- Expand `FilterOptionGroup` to `PMFilter`. (#436)
+
+## 8.4.2
+
+### Fixes
+
+- Avoid clearing selected assets when disposing the provider. (#428)
+
+## 8.4.1
+
+### Fixes
+
+- Call `AssetPickerProvider.dispose` when disposing the builder delegate. (#421)
+
 ## 8.4.0
 
 ### Breaking changes

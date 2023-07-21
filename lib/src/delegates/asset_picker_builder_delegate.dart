@@ -521,9 +521,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1),
       child: Row(
         children: <Widget>[
-          if (!isAppleOS) previewButton(context),
-          if (isAppleOS) const Spacer(),
-          if (isAppleOS) confirmButton(context),
+          previewButton(context),
+          const Spacer(),
+          confirmButton(context),
         ],
       ),
     );
@@ -764,6 +764,7 @@ class DefaultAssetPickerBuilderDelegate
     if (keepScrollOffset) {
       return;
     }
+    provider.dispose();
     super.dispose();
   }
 
@@ -914,22 +915,11 @@ class DefaultAssetPickerBuilderDelegate
   AssetPickerAppBar appBar(BuildContext context) {
     return AssetPickerAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
-      centerTitle: isAppleOS,
       title: Semantics(
         onTapHint: semanticsTextDelegate.sActionSwitchPathLabel,
         child: pathEntitySelector(context),
       ),
       leading: backButton(context),
-      // Condition for displaying the confirm button:
-      // - On Android, show if preview is enabled or if multi asset mode.
-      //   If no preview and single asset mode, do not show confirm button,
-      //   because any click on an asset selects it.
-      // - On iOS and macOS, show nothing.
-      actions: <Widget>[
-        if (!isAppleOS && (isPreviewEnabled || !isSingleAssetMode))
-          confirmButton(context),
-      ],
-      actionsPadding: const EdgeInsetsDirectional.only(end: 14),
       blurRadius: isAppleOS ? appleOSBlurRadius : 0,
     );
   }
@@ -951,7 +941,7 @@ class DefaultAssetPickerBuilderDelegate
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGridBuilder(context)),
-                            if (!isSingleAssetMode && isPreviewEnabled)
+                            if (isPreviewEnabled || !isSingleAssetMode)
                               bottomActionBar(context),
                           ],
                         ),
@@ -978,11 +968,8 @@ class DefaultAssetPickerBuilderDelegate
             child: Stack(
               children: <Widget>[
                 Positioned.fill(child: assetsGridBuilder(context)),
-                if (!isSingleAssetMode || isPreviewEnabled)
-                  Positioned.fill(
-                    top: null,
-                    child: bottomActionBar(context),
-                  ),
+                if (isPreviewEnabled || !isSingleAssetMode)
+                  Positioned.fill(top: null, child: bottomActionBar(context)),
               ],
             ),
           ),
@@ -1574,13 +1561,14 @@ class DefaultAssetPickerBuilderDelegate
       builder: (_, bool isSwitchingPath, __) => Positioned.fill(
         child: IgnorePointer(
           ignoring: !isSwitchingPath,
-          ignoringSemantics: true,
-          child: GestureDetector(
-            onTap: () => this.isSwitchingPath.value = false,
-            child: AnimatedOpacity(
-              duration: switchingPathDuration,
-              opacity: isSwitchingPath ? .75 : 0,
-              child: const ColoredBox(color: Colors.black),
+          child: ExcludeSemantics(
+            child: GestureDetector(
+              onTap: () => this.isSwitchingPath.value = false,
+              child: AnimatedOpacity(
+                duration: switchingPathDuration,
+                opacity: isSwitchingPath ? .75 : 0,
+                child: const ColoredBox(color: Colors.black),
+              ),
             ),
           ),
         ),
@@ -2155,6 +2143,40 @@ class DefaultAssetPickerBuilderDelegate
         ),
       ),
     );
+  }
+
+  @override
+  Widget bottomActionBar(BuildContext context) {
+    Widget child = Container(
+      height: bottomActionBarHeight + context.bottomPadding,
+      padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
+        bottom: context.bottomPadding,
+      ),
+      color: theme.primaryColor.withOpacity(isAppleOS ? .9 : 1),
+      child: Row(
+        children: <Widget>[
+          if (isPreviewEnabled) previewButton(context),
+          if (isPreviewEnabled || !isSingleAssetMode) const Spacer(),
+          if (isPreviewEnabled || !isSingleAssetMode) confirmButton(context),
+        ],
+      ),
+    );
+    if (isPermissionLimited) {
+      child = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[accessLimitedBottomTip(context), child],
+      );
+    }
+    child = ClipRect(
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(
+          sigmaX: appleOSBlurRadius,
+          sigmaY: appleOSBlurRadius,
+        ),
+        child: child,
+      ),
+    );
+    return child;
   }
 
   @override

@@ -18,6 +18,8 @@ const List<AssetPickerTextDelegate> assetPickerTextDelegates =
   JapaneseAssetPickerTextDelegate(),
   ArabicAssetPickerTextDelegate(),
   FrenchAssetPickerTextDelegate(),
+  VietnameseAssetPickerTextDelegate(),
+  TurkishAssetPickerTextDelegate(),
 ];
 
 /// Obtain the text delegate from the given locale.
@@ -106,7 +108,7 @@ class AssetPickerTextDelegate {
     const String separator = ':';
     final String minute = duration.inMinutes.toString().padLeft(2, '0');
     final String second =
-        ((duration - Duration(minutes: duration.inMinutes)).inSeconds)
+        (duration - Duration(minutes: duration.inMinutes)).inSeconds
             .toString()
             .padLeft(2, '0');
     return '$minute$separator$second';
@@ -843,4 +845,194 @@ class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get sUnitAssetCountLabel => 'quantité';
+}
+
+/// [AssetPickerTextDelegate] implements with Vietnamese.
+/// Dịch tiếng Việt
+class VietnameseAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const VietnameseAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'vi';
+
+  @override
+  String get confirm => 'Xác nhận';
+
+  @override
+  String get cancel => 'Hủy';
+
+  @override
+  String get edit => 'Chỉnh sửa';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get loadFailed => 'Tải thất bại';
+
+  @override
+  String get original => 'Gốc';
+
+  @override
+  String get preview => 'Xem trước';
+
+  @override
+  String get select => 'Chọn';
+
+  @override
+  String get emptyList => 'Danh sách trống';
+
+  @override
+  String get unSupportedAssetType => 'Loại tệp không được hỗ trợ';
+
+  @override
+  String get unableToAccessAll =>
+      'Không thể truy cập vào các tệp trên thiết bị của bạn';
+
+  @override
+  String get viewingLimitedAssetsTip => 'Đang xem các tệp và thư mục hạn chế';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'Thay đổi quyền truy cập tệp hạn chế';
+
+  @override
+  String get accessAllTip => 'Ứng dụng chỉ có thể truy cập một số tệp. '
+      'Hãy vào cài đặt hệ thống và cho phép ứng dụng truy cập tất cả các tệp trên thiết bị';
+
+  @override
+  String get goToSystemSettings => 'Đi đến cài đặt hệ thống';
+
+  @override
+  String get accessLimitedAssets => 'Tiếp tục với quyền truy cập hạn chế';
+
+  @override
+  String get accessiblePathName => 'Tệp truy cập';
+
+  @override
+  String get sTypeAudioLabel => 'Âm thanh';
+
+  @override
+  String get sTypeImageLabel => 'Hình ảnh';
+
+  @override
+  String get sTypeVideoLabel => 'Video';
+
+  @override
+  String get sTypeOtherLabel => 'Khác';
+
+  @override
+  String get sActionPlayHint => 'phát';
+
+  @override
+  String get sActionPreviewHint => 'xem trước';
+
+  @override
+  String get sActionSelectHint => 'chọn';
+
+  @override
+  String get sActionSwitchPathLabel => 'chuyển đổi đường dẫn';
+
+  @override
+  String get sActionUseCameraHint => 'Sử dụng máy ảnh';
+
+  @override
+  String get sNameDurationLabel => 'thời lượng';
+
+  @override
+  String get sUnitAssetCountLabel => 'số lượng';
+}
+
+/// [AssetPickerTextDelegate] implements with Turkish
+/// Türkçe Yerelleştirme
+class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const TurkishAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'tr';
+
+  @override
+  String get confirm => 'Onayla';
+
+  @override
+  String get cancel => 'İptal';
+
+  @override
+  String get edit => 'Düzenle';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get loadFailed => 'Yükleme başarısız';
+
+  @override
+  String get original => 'Orijinal';
+
+  @override
+  String get preview => 'Önizleme';
+
+  @override
+  String get select => 'Seç';
+
+  @override
+  String get emptyList => 'Boş liste';
+
+  @override
+  String get unSupportedAssetType => 'Desteklenmeyen HEIC medya tipi';
+
+  @override
+  String get unableToAccessAll => 'Cihazdaki tüm varlıklara erişilemiyor';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'Yalnızca uygulamanın erişebileceği dosya ve albümleri göster';
+
+  @override
+  String get accessAllTip =>
+      'Uygulama, cihazdaki yalnızca bazı dosyalara erişebilir. '
+          'Sistem ayarlarını açın ve uygulamanın şunları yapmasına izin verin '
+          'Cihazdaki tüm dosyalara erişin';
+
+  @override
+  String get goToSystemSettings => 'Sistem ayarlarına gidin';
+
+  @override
+  String get accessLimitedAssets => 'Sınırlı erişimle devam et';
+
+  @override
+  String get accessiblePathName => 'Mevcut Varlıklar';
+
+  @override
+  String get sTypeAudioLabel => 'Ses';
+
+  @override
+  String get sTypeImageLabel => 'Resim';
+
+  @override
+  String get sTypeVideoLabel => 'Video';
+
+  @override
+  String get sTypeOtherLabel => 'Diğer medya';
+
+  @override
+  String get sActionPlayHint => 'Oynat';
+
+  @override
+  String get sActionPreviewHint => 'Ön izleme';
+
+  @override
+  String get sActionSelectHint => 'Seçmek';
+
+  @override
+  String get sActionSwitchPathLabel => 'Dosya yolunu değiştir';
+
+  @override
+  String get sActionUseCameraHint => 'Kamera Kullan';
+
+  @override
+  String get sNameDurationLabel => 'Süre';
+
+  @override
+  String get sUnitAssetCountLabel => 'Sayı';
 }

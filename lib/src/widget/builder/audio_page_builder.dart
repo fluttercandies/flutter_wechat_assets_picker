@@ -89,7 +89,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
     try {
       final String? url = await widget.asset.getMediaUrl();
       assetDuration = Duration(seconds: widget.asset.duration);
-      _controller = VideoPlayerController.network(url!);
+      _controller = VideoPlayerController.networkUrl(Uri.parse(url!));
       await controller.initialize();
       controller.addListener(audioPlayerListener);
     } catch (e) {

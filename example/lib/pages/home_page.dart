@@ -6,14 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 
-import '../constants/screens.dart';
+import '../constants/extensions.dart';
 import '../customs/custom_picker_page.dart';
 import '../main.dart';
 import 'multi_assets_page.dart';
 import 'single_assets_page.dart';
-
-bool get currentIsDark =>
-    Screens.mediaQuery.platformBrightness == Brightness.dark;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -75,14 +72,16 @@ class _HomePageState extends State<HomePage> {
               Semantics(
                 sortKey: const OrdinalSortKey(0),
                 child: Text(
-                  'WeChat Asset Picker',
+                  context.l10n.appTitle,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               Semantics(
                 sortKey: const OrdinalSortKey(0.1),
                 child: Text(
-                  'Version: ${packageVersion ?? 'unknown'}',
+                  context.l10n.appVersion(
+                    packageVersion ?? context.l10n.appVersionUnknown,
+                  ),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -97,7 +96,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: currentIsDark
+      value: Theme.of(context).brightness == Brightness.dark
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark,
       child: Scaffold(
@@ -121,18 +120,18 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentIndex,
           onTap: selectIndex,
-          items: const <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.photo_library),
-              label: 'Multi',
+              icon: const Icon(Icons.photo_library),
+              label: context.l10n.navMulti,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.photo),
-              label: 'Single',
+              icon: const Icon(Icons.photo),
+              label: context.l10n.navSingle,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.explore),
-              label: 'Custom',
+              icon: const Icon(Icons.explore),
+              label: context.l10n.navCustom,
             ),
           ],
         ),

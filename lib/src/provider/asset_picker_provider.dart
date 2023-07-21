@@ -56,7 +56,6 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     _paths.clear();
     _currentPath = null;
     _currentAssets.clear();
-    _selectedAssets.clear();
     super.dispose();
   }
 
@@ -278,7 +277,7 @@ class DefaultAssetPickerProvider
   ///
   /// Will be merged into the base configuration.
   /// 将会与基础条件进行合并。
-  final FilterOptionGroup? filterOptions;
+  final PMFilter? filterOptions;
 
   @override
   set currentPath(PathWrapper<AssetPathEntity>? value) {
@@ -300,25 +299,31 @@ class DefaultAssetPickerProvider
 
   @override
   Future<void> getPaths() async {
-    // Initial base options.
-    // Enable need title for audios and image to get proper display.
-    final FilterOptionGroup options = FilterOptionGroup(
-      imageOption: const FilterOption(
-        needTitle: true,
-        sizeConstraint: SizeConstraint(ignoreSize: true),
-      ),
-      audioOption: const FilterOption(
-        needTitle: true,
-        sizeConstraint: SizeConstraint(ignoreSize: true),
-      ),
-      containsPathModified: sortPathsByModifiedDate,
-      createTimeCond: DateTimeCond.def().copyWith(ignore: true),
-      updateTimeCond: DateTimeCond.def().copyWith(ignore: true),
-    );
-
-    // Merge user's filter option into base options if it's not null.
-    if (filterOptions != null) {
-      options.merge(filterOptions!);
+    final PMFilter options;
+    final PMFilter? fog = filterOptions;
+    if (fog is FilterOptionGroup?) {
+      // Initial base options.
+      // Enable need title for audios and image to get proper display.
+      final FilterOptionGroup newOptions = FilterOptionGroup(
+        imageOption: const FilterOption(
+          needTitle: true,
+          sizeConstraint: SizeConstraint(ignoreSize: true),
+        ),
+        audioOption: const FilterOption(
+          needTitle: true,
+          sizeConstraint: SizeConstraint(ignoreSize: true),
+        ),
+        containsPathModified: sortPathsByModifiedDate,
+        createTimeCond: DateTimeCond.def().copyWith(ignore: true),
+        updateTimeCond: DateTimeCond.def().copyWith(ignore: true),
+      );
+      // Merge user's filter options into base options if it's not null.
+      if (fog != null) {
+        newOptions.merge(fog);
+      }
+      options = newOptions;
+    } else {
+      options = fog;
     }
 
     final List<AssetPathEntity> list = await PhotoManager.getAssetPathList(
