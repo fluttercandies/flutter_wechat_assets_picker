@@ -9,7 +9,12 @@ that can be found in the LICENSE file. -->
 ### New features
 
 - Sync all UI details from WeChat 8.3.x. (#458)
-- Fix semantics interactions for videos preview. (#458)
+- Add Turkish language text delegate. (#331).
+
+### Fixes
+
+- Fix semantics interactions for video preview. (#458)
+- Be able to update the items builder page. (#417)
 
 ## 8.5.0
 
