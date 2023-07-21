@@ -62,6 +62,23 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   bool _isLocallyAvailable = false;
 
   @override
+  void didUpdateWidget(VideoPageBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.asset != oldWidget.asset) {
+      _controller
+        ?..removeListener(videoPlayerListener)
+        ..pause()
+        ..dispose();
+      _controller = null;
+      hasLoaded = false;
+      hasErrorWhenInitializing = false;
+      isPlaying.value = false;
+      _isInitializing = false;
+      _isLocallyAvailable = false;
+    }
+  }
+
+  @override
   void dispose() {
     /// Remove listener from the controller and dispose it when widget dispose.
     /// 部件销毁时移除控制器的监听并销毁控制器。
@@ -194,6 +211,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
+      key: ValueKey<String>(widget.asset.id),
       asset: widget.asset,
       builder: (BuildContext context, AssetEntity asset) {
         if (hasErrorWhenInitializing) {

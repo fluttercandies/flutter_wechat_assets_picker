@@ -38,6 +38,17 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
     _checkLocallyAvailable();
   }
 
+  @override
+  void didUpdateWidget(LocallyAvailableBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.asset != oldWidget.asset ||
+        widget.isOriginal != oldWidget.isOriginal) {
+      _isLocallyAvailable = false;
+      _progressHandler = null;
+      _checkLocallyAvailable();
+    }
+  }
+
   Future<void> _checkLocallyAvailable() async {
     _isLocallyAvailable = await widget.asset.isLocallyAvailable(
       isOrigin: widget.isOriginal,
