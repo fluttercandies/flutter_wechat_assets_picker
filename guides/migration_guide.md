@@ -8,6 +8,7 @@ This document gathered all breaking changes and migrations requirement between m
 
 ## Major versions
 
+- [8.3.0](#830)
 - [8.2.0](#820)
 - [8.0.0](#800)
 - [7.0.0](#700)
