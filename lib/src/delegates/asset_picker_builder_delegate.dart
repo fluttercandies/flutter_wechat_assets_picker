@@ -1480,8 +1480,11 @@ class DefaultAssetPickerBuilderDelegate
   Widget confirmButton(BuildContext context) {
     return Consumer<DefaultAssetPickerProvider>(
       builder: (_, DefaultAssetPickerProvider p, __) {
+        final bool isSelectedNotEmpty = p.isSelectedNotEmpty;
+        final bool shouldAllowConfirm =
+            isSelectedNotEmpty || p.previousSelectedAssets.isNotEmpty;
         return MaterialButton(
-          minWidth: p.isSelectedNotEmpty ? 48 : 20,
+          minWidth: shouldAllowConfirm ? 48 : 20,
           height: appBarItemHeight,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           color: theme.colorScheme.secondary,
@@ -1489,23 +1492,23 @@ class DefaultAssetPickerBuilderDelegate
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(3),
           ),
-          onPressed: p.isSelectedNotEmpty
+          onPressed: shouldAllowConfirm
               ? () => Navigator.of(context).maybePop(p.selectedAssets)
               : null,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           child: ScaleText(
-            p.isSelectedNotEmpty && !isSingleAssetMode
+            isSelectedNotEmpty && !isSingleAssetMode
                 ? '${textDelegate.confirm}'
                     ' (${p.selectedAssets.length}/${p.maxAssets})'
                 : textDelegate.confirm,
             style: TextStyle(
-              color: p.isSelectedNotEmpty
+              color: shouldAllowConfirm
                   ? theme.textTheme.bodyLarge?.color
                   : theme.textTheme.bodySmall?.color,
               fontSize: 17,
               fontWeight: FontWeight.normal,
             ),
-            semanticsLabel: p.isSelectedNotEmpty && !isSingleAssetMode
+            semanticsLabel: isSelectedNotEmpty && !isSingleAssetMode
                 ? '${semanticsTextDelegate.confirm}'
                     ' (${p.selectedAssets.length}/${p.maxAssets})'
                 : semanticsTextDelegate.confirm,

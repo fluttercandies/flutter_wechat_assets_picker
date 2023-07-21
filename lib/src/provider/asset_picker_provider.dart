@@ -28,11 +28,11 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     this.pathThumbnailSize = defaultPathThumbnailSize,
     List<Asset>? selectedAssets,
   })  : assert(maxAssets > 0, 'maxAssets must be greater than 0.'),
-        assert(pageSize > 0, 'pageSize must be greater than 0.') {
-    if (selectedAssets != null && selectedAssets.isNotEmpty) {
-      _selectedAssets = selectedAssets.toList();
-    }
-  }
+        assert(pageSize > 0, 'pageSize must be greater than 0.'),
+        _previousSelectedAssets =
+            selectedAssets?.toList(growable: false) ?? List<Asset>.empty(),
+        _selectedAssets =
+            selectedAssets?.toList() ?? List<Asset>.empty(growable: true);
 
   /// Maximum count for asset selection.
   /// 资源选择的最大数量
@@ -177,10 +177,15 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Selected assets before the picker starts picking.
+  /// 选择器开始选择前已选中的资源
+  List<Asset> get previousSelectedAssets => _previousSelectedAssets;
+  final List<Asset> _previousSelectedAssets;
+
   /// Selected assets.
   /// 已选中的资源
   List<Asset> get selectedAssets => _selectedAssets;
-  List<Asset> _selectedAssets = <Asset>[];
+  late List<Asset> _selectedAssets;
 
   set selectedAssets(List<Asset> value) {
     if (value == _selectedAssets) {
