@@ -18,8 +18,8 @@ const List<AssetPickerTextDelegate> assetPickerTextDelegates =
   JapaneseAssetPickerTextDelegate(),
   ArabicAssetPickerTextDelegate(),
   FrenchAssetPickerTextDelegate(),
-  TurkishAssetPickerTextDelegate(),
   VietnameseAssetPickerTextDelegate(),
+  TurkishAssetPickerTextDelegate(),
 ];
 
 /// Obtain the text delegate from the given locale.
@@ -847,100 +847,6 @@ class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get sUnitAssetCountLabel => 'quantité';
 }
 
-/// [AssetPickerTextDelegate] implements with Turkish
-/// Added Turkish Language Support
-class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
-  const TurkishAssetPickerTextDelegate();
-
-  @override
-  String get languageCode => 'tr';
-
-  @override
-  String get confirm => 'Onayla';
-
-  @override
-  String get cancel => 'İptal';
-
-  @override
-  String get edit => 'Düzenle';
-
-  @override
-  String get gifIndicator => 'GIF';
-
-  @override
-  String get loadFailed => 'Yükleme başarısız';
-
-  @override
-  String get original => 'Orijinal';
-
-  @override
-  String get preview => 'Önizleme';
-
-  @override
-  String get select => 'Seç';
-
-  @override
-  String get emptyList => 'Boş liste';
-
-  @override
-  String get unSupportedAssetType => 'Desteklenmeyen HEIC medya tipi';
-
-  @override
-  String get unableToAccessAll => 'Cihazdaki tüm varlıklara erişilemiyor';
-
-  @override
-  String get viewingLimitedAssetsTip =>
-      'Yalnızca uygulamanın erişebileceği dosya ve albümleri göster';
-
-  @override
-  String get accessAllTip =>
-      'Uygulama, cihazdaki yalnızca bazı dosyalara erişebilir. '
-          'Sistem ayarlarını açın ve uygulamanın şunları yapmasına izin verin '
-          'Cihazdaki tüm dosyalara erişin';
-
-  @override
-  String get goToSystemSettings => 'Sistem ayarlarına gidin';
-
-  @override
-  String get accessLimitedAssets => 'Sınırlı erişimle devam et';
-
-  @override
-  String get accessiblePathName => 'Mevcut Varlıklar';
-
-  @override
-  String get sTypeAudioLabel => 'Ses';
-
-  @override
-  String get sTypeImageLabel => 'Resim';
-
-  @override
-  String get sTypeVideoLabel => 'Video';
-
-  @override
-  String get sTypeOtherLabel => 'Diğer medya';
-
-  @override
-  String get sActionPlayHint => 'Oynat';
-
-  @override
-  String get sActionPreviewHint => 'Ön izleme';
-
-  @override
-  String get sActionSelectHint => 'Seçmek';
-
-  @override
-  String get sActionSwitchPathLabel => 'Dosya yolunu değiştir';
-
-  @override
-  String get sActionUseCameraHint => 'Kamera Kullan';
-
-  @override
-  String get sNameDurationLabel => 'Süre';
-
-  @override
-  String get sUnitAssetCountLabel => 'Sayı';
-}
-
 /// [AssetPickerTextDelegate] implements with Vietnamese.
 /// Dịch tiếng Việt
 class VietnameseAssetPickerTextDelegate extends AssetPickerTextDelegate {
@@ -1035,4 +941,98 @@ class VietnameseAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get sUnitAssetCountLabel => 'số lượng';
+}
+
+/// [AssetPickerTextDelegate] implements with Turkish
+/// Türkçe Yerelleştirme
+class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const TurkishAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'tr';
+
+  @override
+  String get confirm => 'Onayla';
+
+  @override
+  String get cancel => 'İptal';
+
+  @override
+  String get edit => 'Düzenle';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get loadFailed => 'Yükleme başarısız';
+
+  @override
+  String get original => 'Orijinal';
+
+  @override
+  String get preview => 'Önizleme';
+
+  @override
+  String get select => 'Seç';
+
+  @override
+  String get emptyList => 'Boş liste';
+
+  @override
+  String get unSupportedAssetType => 'Desteklenmeyen HEIC medya tipi';
+
+  @override
+  String get unableToAccessAll => 'Cihazdaki tüm varlıklara erişilemiyor';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'Yalnızca uygulamanın erişebileceği dosya ve albümleri göster';
+
+  @override
+  String get accessAllTip =>
+      'Uygulama, cihazdaki yalnızca bazı dosyalara erişebilir. '
+          'Sistem ayarlarını açın ve uygulamanın şunları yapmasına izin verin '
+          'Cihazdaki tüm dosyalara erişin';
+
+  @override
+  String get goToSystemSettings => 'Sistem ayarlarına gidin';
+
+  @override
+  String get accessLimitedAssets => 'Sınırlı erişimle devam et';
+
+  @override
+  String get accessiblePathName => 'Mevcut Varlıklar';
+
+  @override
+  String get sTypeAudioLabel => 'Ses';
+
+  @override
+  String get sTypeImageLabel => 'Resim';
+
+  @override
+  String get sTypeVideoLabel => 'Video';
+
+  @override
+  String get sTypeOtherLabel => 'Diğer medya';
+
+  @override
+  String get sActionPlayHint => 'Oynat';
+
+  @override
+  String get sActionPreviewHint => 'Ön izleme';
+
+  @override
+  String get sActionSelectHint => 'Seçmek';
+
+  @override
+  String get sActionSwitchPathLabel => 'Dosya yolunu değiştir';
+
+  @override
+  String get sActionUseCameraHint => 'Kamera Kullan';
+
+  @override
+  String get sNameDurationLabel => 'Süre';
+
+  @override
+  String get sUnitAssetCountLabel => 'Sayı';
 }
