@@ -69,6 +69,7 @@ Language: [English](README.md) | 中文
 
 ## 特性 ✨
 
+- ♿ 完整的无障碍支持，包括 **TalkBack** 和 **VoiceOver**
 - ♻️ 支持基于代理重载的全量自定义
 - 🎏 完全可自定义的基于 `ThemeData` 的主题
 - 💚 复刻微信风格（甚至优化了更多的细节）

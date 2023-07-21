@@ -73,6 +73,7 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
 
 ## Features ✨
 
+- ♿ Complete a11y support with _TalkBack_ and _VoiceOver_
 - ♻️ Fully customizable with delegates override
 - 🎏 Fully customizable theme based on `ThemeData`
 - 💚 Completely WeChat style (even more)
