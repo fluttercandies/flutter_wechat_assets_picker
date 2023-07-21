@@ -10,6 +10,7 @@ that can be found in the LICENSE file. -->
 
 - Sync all UI details from WeChat 8.3.x. (#458)
 - Add Turkish language text delegate. (#331).
+- Allow to confirm 0 assets if there are selected assets previously. (#461)
 
 ### Fixes
 
