@@ -68,6 +68,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       isLoaded = false;
       isPlaying = false;
       assetDuration = Duration.zero;
+      openAudioFile();
     }
   }
 
