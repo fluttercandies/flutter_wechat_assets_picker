@@ -2,8 +2,12 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'package:flutter/material.dart'
-    show Color, Colors, HSLColor, MaterialColor;
+import 'package:flutter/material.dart';
+import 'package:wechat_assets_picker_demo/l10n/gen/app_localizations.dart';
+
+extension BuildContextExtension on BuildContext {
+  AppLocalizations get l10n => AppLocalizations.of(this)!;
+}
 
 extension ColorExtension on Color {
   MaterialColor get swatch => Colors.primaries.firstWhere(

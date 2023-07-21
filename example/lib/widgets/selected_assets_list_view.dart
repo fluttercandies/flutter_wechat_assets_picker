@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart'
     show AssetEntity, AssetPicker, AssetPickerViewer;
+import 'package:wechat_assets_picker_demo/constants/extensions.dart';
 
 import '../main.dart' show themeColor;
 import 'asset_widget_builder.dart';
@@ -66,7 +67,7 @@ class SelectedAssetsListView extends StatelessWidget {
     );
   }
 
-  Widget get selectedAssetsListView {
+  Widget selectedAssetsListView(BuildContext context) {
     return Expanded(
       child: ListView.builder(
         shrinkWrap: true,
@@ -74,7 +75,7 @@ class SelectedAssetsListView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         scrollDirection: Axis.horizontal,
         itemCount: assets.length,
-        itemBuilder: (BuildContext c, int index) {
+        itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 8.0,
@@ -84,14 +85,14 @@ class SelectedAssetsListView extends StatelessWidget {
               aspectRatio: 1.0,
               child: Stack(
                 children: <Widget>[
-                  Positioned.fill(child: _selectedAssetWidget(c, index)),
+                  Positioned.fill(child: _selectedAssetWidget(context, index)),
                   ValueListenableBuilder<bool>(
                     valueListenable: isDisplayingDetail,
                     builder: (_, bool value, __) => AnimatedPositioned(
                       duration: kThemeAnimationDuration,
                       top: value ? 6.0 : -30.0,
                       right: value ? 6.0 : -30.0,
-                      child: _selectedAssetDeleteButton(c, index),
+                      child: _selectedAssetDeleteButton(context, index),
                     ),
                   ),
                 ],
@@ -128,7 +129,7 @@ class SelectedAssetsListView extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    const Text('Selected Assets'),
+                    Text(context.l10n.selectedAssetsText),
                     if (assets.isNotEmpty)
                       Padding(
                         padding: const EdgeInsetsDirectional.only(start: 10.0),
@@ -141,7 +142,7 @@ class SelectedAssetsListView extends StatelessWidget {
                 ),
               ),
             ),
-            selectedAssetsListView,
+            selectedAssetsListView(context),
           ],
         ),
       ),

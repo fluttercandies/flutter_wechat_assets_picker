@@ -9,9 +9,9 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart'
         DefaultAssetPickerProvider,
         DefaultAssetPickerBuilderDelegate;
 
+import '../constants/picker_method.dart';
 import '../widgets/method_list_view.dart';
 import '../widgets/selected_assets_list_view.dart';
-import 'picker_method.dart';
 
 @optionalTypeArgs
 mixin ExamplePageMixin<T extends StatefulWidget> on State<T> {
@@ -29,7 +29,7 @@ mixin ExamplePageMixin<T extends StatefulWidget> on State<T> {
 
   int get assetsLength => assets.length;
 
-  List<PickMethod> get pickMethods;
+  List<PickMethod> pickMethods(BuildContext context);
 
   /// These fields are for the keep scroll position feature.
   late DefaultAssetPickerProvider keepScrollProvider =
@@ -71,7 +71,7 @@ mixin ExamplePageMixin<T extends StatefulWidget> on State<T> {
       children: <Widget>[
         Expanded(
           child: MethodListView(
-            pickMethods: pickMethods,
+            pickMethods: pickMethods(context),
             onSelectMethod: selectAssets,
           ),
         ),

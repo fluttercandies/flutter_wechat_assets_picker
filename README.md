@@ -25,7 +25,7 @@ The package is using
 [extended_image][extended_image pub] for image preview,
 and [provider][provider pub] to help manage the state of the picker.
 
-Current WeChat version that UI based on: **8.x**
+Current WeChat version that UI based on: **8.3.x**
 UI designs will be updated following the WeChat update in anytime.
 
 To take a photo or a video for assets,
@@ -60,7 +60,7 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
       * [Register assets change observe callback](#register-assets-change-observe-callback)
       * [Upload an `AssetEntity` with a form data](#upload-an-assetentity-with-a-form-data)
         * [With `http`](#with-http)
-        * [With `diox`](#with-diox)
+        * [With `dio`](#with-dio)
     * [Custom pickers](#custom-pickers)
   * [Frequently asked question ❔](#frequently-asked-question-)
     * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photomanagercompiledebugkotlin)
@@ -135,6 +135,9 @@ before you have any questions.
 ## Preparing for use 🍭
 
 ### Versions compatibility
+
+The package only guarantees to be working on **the stable version of Flutter**.
+We won't update it in real-time to align with other channels of Flutter.
 
 |        | 3.0.0 | 3.3.0 | 3.7.0 | 3.10.0 |
 |--------|:-----:|:-----:|:-----:|:------:|
@@ -391,24 +394,24 @@ Future<http.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) asyn
 }
 ```
 
-##### With `diox`
+##### With `dio`
 
-`diox` package: https://pub.dev/packages/diox
+`dio` package: https://pub.dev/packages/dio
 
-The `diox` package also uses
-[`MultipartFile`](https://pub.dev/documentation/diox/5.0.0-dev.2/diox/MultipartFile-class.html)
+The `dio` package also uses
+[`MultipartFile`](https://pub.dev/documentation/dio/latest/dio/MultipartFile-class.html)
 to handle files in requests.
 
 Pseudo code:
 ```dart
-import 'package:diox/diox.dart' as diox;
+import 'package:dio/dio.dart' as dio;
 
 Future<void> upload() async {
   final entity = await obtainYourEntity();
   final uri = Uri.https('example.com', 'create');
-  final response = diox.Dio().requestUri(
+  final response = dio.Dio().requestUri(
     uri,
-    data: diox.FormData.fromMap({
+    data: dio.FormData.fromMap({
       'test_field': 'test_value',
       'test_file': await multipartFileFromAssetEntity(entity),
     }),
@@ -416,20 +419,20 @@ Future<void> upload() async {
   print('Uploaded!');
 }
 
-Future<diox.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
-  diox.MultipartFile mf;
+Future<dio.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
+  dio.MultipartFile mf;
   // Using the file path.
   final file = await entity.file;
   if (file == null) {
     throw StateError('Unable to obtain file of the entity ${entity.id}.');
   }
-  mf = await diox.MultipartFile.fromFile(file.path);
+  mf = await dio.MultipartFile.fromFile(file.path);
   // Using the bytes.
   final bytes = await entity.originBytes;
   if (bytes == null) {
     throw StateError('Unable to obtain bytes of the entity ${entity.id}.');
   }
-  mf = diox.MultipartFile.fromBytes(bytes);
+  mf = dio.MultipartFile.fromBytes(bytes);
   return mf;
 }
 ```

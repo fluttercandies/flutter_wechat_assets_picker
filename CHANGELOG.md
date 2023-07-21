@@ -4,6 +4,13 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+## 8.6.0
+
+### New features
+
+- Sync all UI details from WeChat 8.3.x. (#458)
+- Fix semantics interactions for videos preview. (#458)
+
 ## 8.5.0
 
 ### Breaking changes
