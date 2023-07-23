@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../constants/constants.dart';
 import '../../constants/extensions.dart';
-import '../../internal/methods.dart';
 import '../../internal/singleton.dart';
 import '../scale_text.dart';
 
@@ -93,8 +93,15 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       _controller = VideoPlayerController.networkUrl(Uri.parse(url!));
       await controller.initialize();
       controller.addListener(audioPlayerListener);
-    } catch (e) {
-      realDebugPrint('Error when opening audio file: $e');
+    } catch (e, s) {
+      FlutterError.presentError(
+        FlutterErrorDetails(
+          exception: e,
+          stack: s,
+          library: packageName,
+          silent: true,
+        ),
+      );
     } finally {
       isLoaded = true;
       if (mounted) {

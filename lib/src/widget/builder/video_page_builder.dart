@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../constants/constants.dart';
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
-import '../../internal/methods.dart';
 import '../../internal/singleton.dart';
 import '../scale_text.dart';
 import 'locally_available_builder.dart';
@@ -117,8 +117,15 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       if (widget.hasOnlyOneVideoAndMoment) {
         controller.play();
       }
-    } catch (e) {
-      realDebugPrint('Error when initialize video controller: $e');
+    } catch (e, s) {
+      FlutterError.presentError(
+        FlutterErrorDetails(
+          exception: e,
+          stack: s,
+          library: packageName,
+          silent: true,
+        ),
+      );
       hasErrorWhenInitializing = true;
     } finally {
       if (mounted) {

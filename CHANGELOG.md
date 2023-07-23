@@ -12,6 +12,10 @@ that can be found in the LICENSE file. -->
 - Add Turkish language text delegate. (#331).
 - Allow to confirm 0 assets if there are selected assets previously. (#461)
 
+### Improvements
+
+- Silents part of thumbnail request exceptions.
+
 ### Fixes
 
 - Fix semantics interactions for video preview. (#458)

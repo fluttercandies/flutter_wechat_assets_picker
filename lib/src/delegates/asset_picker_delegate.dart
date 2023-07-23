@@ -8,7 +8,6 @@ import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/config.dart';
 import '../constants/constants.dart';
-import '../internal/methods.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_page_route.dart';
@@ -165,8 +164,15 @@ class AssetPickerDelegate {
     try {
       PhotoManager.addChangeCallback(callback);
       PhotoManager.startChangeNotify();
-    } catch (e) {
-      realDebugPrint('Error when registering assets callback: $e');
+    } catch (e, s) {
+      FlutterError.presentError(
+        FlutterErrorDetails(
+          exception: e,
+          stack: s,
+          library: packageName,
+          silent: true,
+        ),
+      );
     }
   }
 
@@ -181,8 +187,15 @@ class AssetPickerDelegate {
     try {
       PhotoManager.removeChangeCallback(callback);
       PhotoManager.stopChangeNotify();
-    } catch (e) {
-      realDebugPrint('Error when unregistering assets callback: $e');
+    } catch (e, s) {
+      FlutterError.presentError(
+        FlutterErrorDetails(
+          exception: e,
+          stack: s,
+          library: packageName,
+          silent: true,
+        ),
+      );
     }
   }
 
