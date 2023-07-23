@@ -155,6 +155,13 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
 
+    if (bottom != null) {
+      child = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[child, bottom!],
+      );
+    }
+
     // Allow custom blur radius using [ui.ImageFilter.blur].
     if (blurRadius > 0.0) {
       child = ClipRect(
@@ -185,13 +192,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
         );
     child = AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlayStyle,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          child,
-          if (bottom != null) bottom!,
-        ],
-      ),
+      child: child,
     );
 
     final Widget result = Material(
