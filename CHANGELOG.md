@@ -4,6 +4,8 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
+See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
+
 ## 8.6.0
 
 ### Breaking changes
@@ -18,7 +20,7 @@ that can be found in the LICENSE file. -->
 
 ### Improvements
 
-- Silents part of thumbnail request exceptions.
+- Silent part of thumbnail request exceptions.
 
 ### Fixes
 
