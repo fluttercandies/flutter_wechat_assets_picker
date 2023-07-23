@@ -6,6 +6,10 @@ that can be found in the LICENSE file. -->
 
 ## 8.6.0
 
+### Breaking changes
+
+- Use `TargetPlatform` for the `isAppleOS` method in delegates, which relies on a `BuildContext`.
+
 ### New features
 
 - Sync all UI details from WeChat 8.3.x. (#458)
