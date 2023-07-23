@@ -427,14 +427,12 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   AssetPickerAppBar appBar(BuildContext context) {
     return AssetPickerAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
-      centerTitle: isAppleOS(context),
+      centerTitle: true,
       title: Semantics(
         onTapHint: textDelegate.sActionSwitchPathLabel,
         child: pathEntitySelector(context),
       ),
       leading: backButton(context),
-      actions: <Widget>[if (!isAppleOS(context)) confirmButton(context)],
-      actionsPadding: const EdgeInsetsDirectional.only(end: 14),
       blurRadius: isAppleOS(context) ? appleOSBlurRadius : 0,
       bottom: TabBar(
         controller: _tabController,
@@ -444,6 +442,47 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           Tab(text: context.l10n.customPickerMultiTabTab3),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget appleOSLayout(BuildContext context) {
+    final AssetPickerAppBar appBarWidget = appBar(context);
+
+    Widget layout(BuildContext context) {
+      return Stack(
+        children: <Widget>[
+          TabBarView(
+            controller: _tabController,
+            children: <Widget>[
+              ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+                value: provider,
+                builder: (BuildContext context, _) => _buildGrid(context),
+              ),
+              ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+                value: videosProvider,
+                builder: (BuildContext context, _) => _buildGrid(context),
+              ),
+              ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+                value: imagesProvider,
+                builder: (BuildContext context, _) => _buildGrid(context),
+              ),
+            ],
+          ),
+          appBarWidget,
+        ],
+      );
+    }
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: permissionOverlayDisplay,
+      builder: (_, bool value, Widget? child) {
+        if (value) {
+          return ExcludeSemantics(child: child);
+        }
+        return child!;
+      },
+      child: layout(context),
     );
   }
 
@@ -470,9 +509,6 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       ),
     );
   }
-
-  @override
-  Widget appleOSLayout(BuildContext context) => androidLayout(context);
 
   Widget _buildGrid(BuildContext context) {
     return Consumer<DefaultAssetPickerProvider>(
@@ -508,17 +544,19 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       value: overlayStyle,
       child: Theme(
         data: theme,
-        child: Material(
-          color: theme.canvasColor,
-          child: Stack(
-            fit: StackFit.expand,
-            children: <Widget>[
-              if (isAppleOS(context))
-                appleOSLayout(context)
-              else
-                androidLayout(context),
-              if (Platform.isIOS) iOSPermissionOverlay(context),
-            ],
+        child: Builder(
+          builder: (BuildContext context) => Material(
+            color: theme.canvasColor,
+            child: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                if (isAppleOS(context))
+                  appleOSLayout(context)
+                else
+                  androidLayout(context),
+                if (Platform.isIOS) iOSPermissionOverlay(context),
+              ],
+            ),
           ),
         ),
       ),
