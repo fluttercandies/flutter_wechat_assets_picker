@@ -963,7 +963,7 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget appleOSLayout(BuildContext context) {
-    Widget _gridLayout(BuildContext context) {
+    Widget gridLayout(BuildContext context) {
       return ValueListenableBuilder<bool>(
         valueListenable: isSwitchingPath,
         builder: (_, bool isSwitchingPath, __) => Semantics(
@@ -981,7 +981,7 @@ class DefaultAssetPickerBuilderDelegate
       );
     }
 
-    Widget _layout(BuildContext context) {
+    Widget layout(BuildContext context) {
       return Stack(
         children: <Widget>[
           Positioned.fill(
@@ -993,7 +993,7 @@ class DefaultAssetPickerBuilderDelegate
                 if (shouldDisplayAssets) {
                   child = Stack(
                     children: <Widget>[
-                      _gridLayout(context),
+                      gridLayout(context),
                       pathEntityListBackdrop(context),
                       pathEntityListWidget(context),
                     ],
@@ -1021,7 +1021,7 @@ class DefaultAssetPickerBuilderDelegate
         }
         return child!;
       },
-      child: _layout(context),
+      child: layout(context),
     );
   }
 
@@ -1048,9 +1048,9 @@ class DefaultAssetPickerBuilderDelegate
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
       builder: (
-        BuildContext _context,
+        BuildContext context,
         PathWrapper<AssetPathEntity>? wrapper,
-        __,
+        _,
       ) {
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
@@ -1058,7 +1058,7 @@ class DefaultAssetPickerBuilderDelegate
         // If user chose a special item's position, add 1 count.
         if (specialItemPosition != SpecialItemPosition.none) {
           specialItem = specialItemBuilder?.call(
-            _context,
+            context,
             wrapper?.path,
             totalCount,
           );
@@ -1069,7 +1069,7 @@ class DefaultAssetPickerBuilderDelegate
           specialItem = null;
         }
         if (totalCount == 0 && specialItem == null) {
-          return loadingIndicator(_context);
+          return loadingIndicator(context);
         }
         // Then we use the [totalCount] to calculate placeholders we need.
         final int placeholderCount;
@@ -1087,13 +1087,13 @@ class DefaultAssetPickerBuilderDelegate
         // [gridCount] since every grid item is squeezed by the [itemSpacing],
         // and it's actual size is reduced with [itemSpacing / gridCount].
         final double dividedSpacing = itemSpacing / gridCount;
-        final double topPadding = _context.topPadding + kToolbarHeight;
+        final double topPadding = context.topPadding + kToolbarHeight;
 
-        Widget _sliverGrid(BuildContext _context, List<AssetEntity> assets) {
+        Widget sliverGrid(BuildContext context, List<AssetEntity> assets) {
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (_, int index) => Builder(
-                builder: (BuildContext _context) {
+                builder: (BuildContext context) {
                   if (gridRevert) {
                     if (index < placeholderCount) {
                       return const SizedBox.shrink();
@@ -1104,7 +1104,7 @@ class DefaultAssetPickerBuilderDelegate
                     child: Directionality(
                       textDirection: Directionality.of(context),
                       child: assetGridItemBuilder(
-                        _context,
+                        context,
                         index,
                         assets,
                         specialItem: specialItem,
@@ -1114,7 +1114,7 @@ class DefaultAssetPickerBuilderDelegate
                 },
               ),
               childCount: assetsGridItemCount(
-                context: _context,
+                context: context,
                 assets: assets,
                 placeholderCount: placeholderCount,
                 specialItem: specialItem,
@@ -1184,8 +1184,11 @@ class DefaultAssetPickerBuilderDelegate
                       center: gridRevert ? gridRevertKey : null,
                       slivers: <Widget>[
                         if (isAppleOS(context))
-                          SliverGap.v(context.topPadding + kToolbarHeight),
-                        _sliverGrid(context, assets),
+                          SliverGap.v(
+                            context.topPadding +
+                                appBar(context).preferredSize.height,
+                          ),
+                        sliverGrid(context, assets),
                         // Ignore the gap when the [anchor] is not equal to 1.
                         if (gridRevert && anchor == 1) bottomGap,
                         if (gridRevert)
