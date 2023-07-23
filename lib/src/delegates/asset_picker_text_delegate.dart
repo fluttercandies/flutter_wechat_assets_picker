@@ -107,10 +107,10 @@ class AssetPickerTextDelegate {
   String durationIndicatorBuilder(Duration duration) {
     const String separator = ':';
     final String minute = duration.inMinutes.toString().padLeft(2, '0');
-    final String second =
-        (duration - Duration(minutes: duration.inMinutes)).inSeconds
-            .toString()
-            .padLeft(2, '0');
+    final String second = (duration - Duration(minutes: duration.inMinutes))
+        .inSeconds
+        .toString()
+        .padLeft(2, '0');
     return '$minute$separator$second';
   }
 
@@ -127,16 +127,12 @@ class AssetPickerTextDelegate {
   String get sTypeOtherLabel => '其他资源';
 
   String semanticTypeLabel(AssetType type) {
-    switch (type) {
-      case AssetType.audio:
-        return sTypeAudioLabel;
-      case AssetType.image:
-        return sTypeImageLabel;
-      case AssetType.video:
-        return sTypeVideoLabel;
-      case AssetType.other:
-        return sTypeOtherLabel;
-    }
+    return switch (type) {
+      AssetType.audio => sTypeAudioLabel,
+      AssetType.image => sTypeImageLabel,
+      AssetType.video => sTypeVideoLabel,
+      AssetType.other => sTypeOtherLabel,
+    };
   }
 
   String get sActionPlayHint => '播放';
@@ -991,8 +987,8 @@ class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get accessAllTip =>
       'Uygulama, cihazdaki yalnızca bazı dosyalara erişebilir. '
-          'Sistem ayarlarını açın ve uygulamanın şunları yapmasına izin verin '
-          'Cihazdaki tüm dosyalara erişin';
+      'Sistem ayarlarını açın ve uygulamanın şunları yapmasına izin verin '
+      'Cihazdaki tüm dosyalara erişin';
 
   @override
   String get goToSystemSettings => 'Sistem ayarlarına gidin';

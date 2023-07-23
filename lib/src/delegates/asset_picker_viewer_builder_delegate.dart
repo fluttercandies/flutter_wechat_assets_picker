@@ -3,7 +3,7 @@
 // in the LICENSE file.
 
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' show Platform;
 import 'dart:math' as math;
 
 import 'package:extended_image/extended_image.dart';
@@ -324,17 +324,13 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     ExtendedImageState state, {
     bool hasLoaded = false,
   }) {
-    switch (state.extendedImageLoadState) {
-      case LoadState.completed:
-        if (hasLoaded) {
-          return state.completedWidget;
-        }
-        return FadeImageBuilder(child: state.completedWidget);
-      case LoadState.failed:
-        return failedItemBuilder(context);
-      case LoadState.loading:
-        return const SizedBox.shrink();
-    }
+    return switch (state.extendedImageLoadState) {
+      LoadState.completed => hasLoaded
+          ? state.completedWidget
+          : FadeImageBuilder(child: state.completedWidget),
+      LoadState.failed => failedItemBuilder(context),
+      LoadState.loading => const SizedBox.shrink(),
+    };
   }
 
   /// The item widget when [AssetEntity.thumbnailData] load failed.
@@ -413,34 +409,25 @@ class DefaultAssetPickerViewerBuilderDelegate
   @override
   Widget assetPageBuilder(BuildContext context, int index) {
     final AssetEntity asset = previewAssets.elementAt(index);
-    final Widget builder;
-    switch (asset.type) {
-      case AssetType.audio:
-        builder = AudioPageBuilder(asset: asset);
-        break;
-      case AssetType.image:
-        builder = ImagePageBuilder(
+    final Widget builder = switch (asset.type) {
+      AssetType.audio => AudioPageBuilder(asset: asset),
+      AssetType.image => ImagePageBuilder(
           asset: asset,
           delegate: this,
           previewThumbnailSize: previewThumbnailSize,
-        );
-        break;
-      case AssetType.video:
-        builder = VideoPageBuilder(
+        ),
+      AssetType.video => VideoPageBuilder(
           asset: asset,
           delegate: this,
           hasOnlyOneVideoAndMoment: isWeChatMoment && hasVideo,
-        );
-        break;
-      case AssetType.other:
-        builder = Center(
+        ),
+      AssetType.other => Center(
           child: ScaleText(
             textDelegate.unSupportedAssetType,
             semanticsLabel: semanticsTextDelegate.unSupportedAssetType,
           ),
-        );
-        break;
-    }
+        ),
+    };
     return MergeSemantics(
       child: Consumer<AssetPickerViewerProvider<AssetEntity>?>(
         builder: (
@@ -643,18 +630,12 @@ class DefaultAssetPickerViewerBuilderDelegate
           builder: (_, AsyncSnapshot<int> snapshot) {
             final AssetEntity asset = selectedAssets!.elementAt(index);
             final bool isViewing = previewAssets[snapshot.data!] == asset;
-            final Widget item = () {
-              switch (asset.type) {
-                case AssetType.image:
-                  return _imagePreviewItem(asset);
-                case AssetType.video:
-                  return _videoPreviewItem(asset);
-                case AssetType.audio:
-                  return _audioPreviewItem(asset);
-                case AssetType.other:
-                  return const SizedBox.shrink();
-              }
-            }();
+            final Widget item = switch (asset.type) {
+              AssetType.image => _imagePreviewItem(asset),
+              AssetType.video => _videoPreviewItem(asset),
+              AssetType.audio => _audioPreviewItem(asset),
+              AssetType.other => const SizedBox.shrink(),
+            };
             return Semantics(
               label: '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
                   '${index + 1}',

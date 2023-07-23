@@ -31,20 +31,11 @@ class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {
     return ExtendedImage(
       image: widget.image,
       fit: BoxFit.cover,
-      loadStateChanged: (ExtendedImageState state) {
-        Widget loader = const SizedBox.shrink();
-        switch (state.extendedImageLoadState) {
-          case LoadState.loading:
-            loader = const ColoredBox(color: Color(0x10ffffff));
-            break;
-          case LoadState.completed:
-            loader = RepaintBoundary(child: state.completedWidget);
-            break;
-          case LoadState.failed:
-            loader = widget.failedItemBuilder(context);
-            break;
-        }
-        return loader;
+      loadStateChanged: (ExtendedImageState state) =>
+          switch (state.extendedImageLoadState) {
+        LoadState.loading => const ColoredBox(color: Color(0x10ffffff)),
+        LoadState.completed => RepaintBoundary(child: state.completedWidget),
+        LoadState.failed => widget.failedItemBuilder(context),
       },
     );
   }

@@ -80,14 +80,10 @@ class AssetWidgetBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (entity.type) {
-      case AssetType.audio:
-        return _audioAssetWidget(context);
-      case AssetType.video:
-        return _videoAssetWidget(context);
-      case AssetType.image:
-      case AssetType.other:
-        return _imageAssetWidget(context);
-    }
+    return switch (entity.type) {
+      AssetType.audio => _audioAssetWidget(context),
+      AssetType.video => _videoAssetWidget(context),
+      AssetType.image || AssetType.other => _imageAssetWidget(context),
+    };
   }
 }
