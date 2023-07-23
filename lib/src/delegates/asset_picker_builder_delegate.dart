@@ -1100,14 +1100,120 @@ class DefaultAssetPickerBuilderDelegate
                     }
                     index -= placeholderCount;
                   }
+
+                  final DefaultAssetPickerProvider p =
+                      Provider.of<DefaultAssetPickerProvider>(context);
+
+                  final double screenWidth = context.mediaQuery.size.width;
+
+                  final double itemSize = screenWidth / gridCount - itemSpacing;
+
+                  final double topBottomPadding =
+                      appBarItemHeight + bottomSectionHeight;
+
                   return MergeSemantics(
                     child: Directionality(
                       textDirection: Directionality.of(context),
-                      child: assetGridItemBuilder(
-                        context,
-                        index,
-                        assets,
-                        specialItem: specialItem,
+                      child: GestureDetector(
+                        onPanDown: (DragDownDetails details) {
+                          final Offset globalPosition = details.globalPosition;
+                          p.updateInitialPanPosition(
+                            globalPosition.translate(
+                              0.0,
+                              gridScrollController.offset,
+                            ),
+                          );
+
+                          p.selectedPosition(
+                            Offset(
+                              (globalPosition.dx / itemSize).floor().toDouble(),
+                              ((globalPosition.dy -
+                                              topBottomPadding +
+                                              gridScrollController.offset)
+                                          .abs() ~/
+                                      itemSize)
+                                  .toDouble(),
+                            ),
+                          );
+                          p.updateInitialAssetSelectedStatus(assets[index]);
+                        },
+                        onPanUpdate: (DragUpdateDetails details) {
+                          final Offset diff = (details.globalPosition.translate(
+                                0.0,
+                                gridScrollController.offset,
+                              )) -
+                              p.initialPanPosition;
+                          final int diffRow = diff.dy ~/ itemSize;
+                          final int diffColumn = (diff.dx / itemSize).floor();
+
+                          int calculateIndex(
+                            double column,
+                            double row,
+                            bool round,
+                          ) {
+                            if (round) {
+                              return (row * gridCount + column).ceil();
+                            } else {
+                              return (row * gridCount + column).floor();
+                            }
+                          }
+
+                          int initialIndex = calculateIndex(
+                            p.initialSelectedPosition.dx,
+                            p.initialSelectedPosition.dy,
+                            false,
+                          );
+
+                          final Offset endPanResult = p
+                                  .initialSelectedPosition +
+                              Offset(diffColumn.toDouble(), diffRow.toDouble());
+
+                          final int endPanIndex;
+                          if (diffColumn < 0) {
+                            endPanIndex = calculateIndex(
+                              endPanResult.dx,
+                              endPanResult.dy,
+                              true,
+                            );
+                            initialIndex += 1;
+                          } else {
+                            endPanIndex = calculateIndex(
+                                  endPanResult.dx,
+                                  endPanResult.dy,
+                                  true,
+                                ) +
+                                1;
+                          }
+
+                          List<AssetEntity> filteredAssetList;
+                          if (endPanIndex < initialIndex) {
+                            filteredAssetList = assets
+                                .getRange(endPanIndex, initialIndex)
+                                .toList();
+                            filteredAssetList.reversed;
+                          } else {
+                            filteredAssetList = assets
+                                .getRange(initialIndex, endPanIndex)
+                                .toList();
+
+                            if (!p.initialAssetSelectedStatus) {
+                              p.selectedAssets
+                                  .forEach(filteredAssetList.remove);
+                              filteredAssetList = filteredAssetList
+                                  .take(p.maxAssets - p.selectedAssets.length)
+                                  .toList();
+                            }
+                          }
+
+                          p.updateSelectedAsset(filteredAssetList);
+                        },
+                        onPanEnd: (_) => p.resetPanStatus.call(),
+                        child: assetGridItemBuilder(
+                          context,
+                          index,
+                          assets,
+                          specialItem: specialItem,
+                        ),
                       ),
                     ),
                   );

@@ -230,6 +230,44 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     set.remove(item);
     selectedAssets = set;
   }
+
+  /// User gesture initial position
+  /// 用户手势滑动初始位子
+  Offset initialPanPosition = Offset.zero;
+  void updateInitialPanPosition(Offset position) =>
+      initialPanPosition = position;
+
+  /// Position of the first asset tapped
+  /// 第一个点击的asset坐标
+  Offset initialSelectedPosition = Offset.zero;
+  void selectedPosition(Offset position) => initialSelectedPosition = position;
+
+  /// Selected status of the first asset tapped
+  /// 第一个点击的asset选择状态
+  bool initialAssetSelectedStatus = false;
+  void updateInitialAssetSelectedStatus(AssetEntity asset) =>
+      initialAssetSelectedStatus = selectedAssets.contains(asset);
+
+  void updateSelectedAsset(List<Asset> assetList) {
+    if (initialAssetSelectedStatus) {
+      final List<Asset> tempAssetList = List<Asset>.from(selectedAssets);
+      assetList.forEach(tempAssetList.remove);
+      selectedAssets = tempAssetList;
+      return;
+    }
+
+    selectedAssets = <Asset>{
+      ...selectedAssets,
+      ...assetList,
+    }.toList();
+    return;
+  }
+
+  void resetPanStatus() {
+    initialPanPosition = Offset.zero;
+    initialSelectedPosition = Offset.zero;
+    initialAssetSelectedStatus = false;
+  }
 }
 
 class DefaultAssetPickerProvider
