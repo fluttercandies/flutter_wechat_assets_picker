@@ -427,15 +427,15 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   AssetPickerAppBar appBar(BuildContext context) {
     return AssetPickerAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
-      centerTitle: isAppleOS,
+      centerTitle: isAppleOS(context),
       title: Semantics(
         onTapHint: textDelegate.sActionSwitchPathLabel,
         child: pathEntitySelector(context),
       ),
       leading: backButton(context),
-      actions: <Widget>[if (!isAppleOS) confirmButton(context)],
+      actions: <Widget>[if (!isAppleOS(context)) confirmButton(context)],
       actionsPadding: const EdgeInsetsDirectional.only(end: 14),
-      blurRadius: isAppleOS ? appleOSBlurRadius : 0,
+      blurRadius: isAppleOS(context) ? appleOSBlurRadius : 0,
       bottom: TabBar(
         controller: _tabController,
         tabs: <Tab>[
@@ -513,7 +513,10 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              if (isAppleOS) appleOSLayout(context) else androidLayout(context),
+              if (isAppleOS(context))
+                appleOSLayout(context)
+              else
+                androidLayout(context),
               if (Platform.isIOS) iOSPermissionOverlay(context),
             ],
           ),

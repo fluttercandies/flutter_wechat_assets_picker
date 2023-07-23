@@ -3,7 +3,6 @@
 // in the LICENSE file.
 
 import 'dart:async';
-import 'dart:io' show Platform;
 import 'dart:math' as math;
 
 import 'package:extended_image/extended_image.dart';
@@ -147,7 +146,10 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// Whether the current platform is Apple OS.
   /// 当前平台是否为苹果系列系统
-  bool get isAppleOS => Platform.isIOS || Platform.isMacOS;
+  bool isAppleOS(BuildContext context) => switch (Theme.of(context).platform) {
+        TargetPlatform.iOS || TargetPlatform.macOS => true,
+        _ => false,
+      };
 
   AssetPickerTextDelegate get textDelegate => Singleton.textDelegate;
 
@@ -722,7 +724,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 ),
               ),
             ),
-            if (!isAppleOS && specialPickerType == null)
+            if (!isAppleOS(context) && specialPickerType == null)
               Expanded(
                 child: Center(
                   child: Semantics(
@@ -925,11 +927,11 @@ class DefaultAssetPickerViewerBuilderDelegate
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    if (isAppleOS)
+                    if (isAppleOS(context))
                       _appleOSSelectButton(c, isSelected, asset)
                     else
                       _androidSelectButton(c, isSelected, asset),
-                    if (!isAppleOS)
+                    if (!isAppleOS(context))
                       ScaleText(
                         textDelegate.select,
                         style: const TextStyle(fontSize: 17, height: 1.2),
@@ -988,7 +990,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               ] else ...<Widget>[
                 appBar(context),
                 if (selectedAssets != null ||
-                    (isWeChatMoment && hasVideo && isAppleOS))
+                    (isWeChatMoment && hasVideo && isAppleOS(context)))
                   bottomDetailBuilder(context),
               ],
             ],
