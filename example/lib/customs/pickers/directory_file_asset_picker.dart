@@ -702,17 +702,10 @@ class FileAssetPickerBuilder
     int index,
     List<File> currentAssets,
   ) {
-    int currentIndex;
-    switch (specialItemPosition) {
-      case SpecialItemPosition.none:
-      case SpecialItemPosition.append:
-        currentIndex = index;
-        break;
-      case SpecialItemPosition.prepend:
-        currentIndex = index - 1;
-        break;
-    }
-
+    final int currentIndex = switch (specialItemPosition) {
+      SpecialItemPosition.none || SpecialItemPosition.append => index,
+      SpecialItemPosition.prepend => index - 1,
+    };
     final File asset = currentAssets.elementAt(currentIndex);
     final Widget builder = imageAndVideoItemBuilder(
       context,
@@ -745,16 +738,12 @@ class FileAssetPickerBuilder
     required List<File> assets,
     int placeholderCount = 0,
   }) {
-    int length;
-    switch (specialItemPosition) {
-      case SpecialItemPosition.none:
-        length = assets.length;
-        break;
-      case SpecialItemPosition.prepend:
-      case SpecialItemPosition.append:
-        length = assets.length + 1;
-        break;
-    }
+    final int length = switch (specialItemPosition) {
+      SpecialItemPosition.none => assets.length,
+      SpecialItemPosition.prepend ||
+      SpecialItemPosition.append =>
+        assets.length + 1,
+    };
     return length + placeholderCount;
   }
 

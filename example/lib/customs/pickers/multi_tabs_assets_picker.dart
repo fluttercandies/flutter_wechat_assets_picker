@@ -359,19 +359,12 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       builder: (_, __) => Selector<TabController, int>(
         selector: (_, TabController p) => p.index,
         builder: (_, int index, __) {
-          final DefaultAssetPickerProvider pickerProvider;
-          switch (index) {
-            case 1:
-              pickerProvider = videosProvider;
-              break;
-            case 2:
-              pickerProvider = imagesProvider;
-              break;
-            default:
-              pickerProvider = provider;
-          }
           return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-            value: pickerProvider,
+            value: switch (index) {
+              1 => videosProvider,
+              2 => imagesProvider,
+              _ => provider,
+            },
             builder: (BuildContext c, _) => selector(c),
           );
         },
@@ -417,19 +410,12 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       builder: (_, __) => Selector<TabController, int>(
         selector: (_, TabController p) => p.index,
         builder: (_, int index, __) {
-          final DefaultAssetPickerProvider pickerProvider;
-          switch (index) {
-            case 1:
-              pickerProvider = videosProvider;
-              break;
-            case 2:
-              pickerProvider = imagesProvider;
-              break;
-            default:
-              pickerProvider = provider;
-          }
           return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-            value: pickerProvider,
+            value: switch (index) {
+              1 => videosProvider,
+              2 => imagesProvider,
+              _ => provider,
+            },
             builder: (_, __) => button,
           );
         },
