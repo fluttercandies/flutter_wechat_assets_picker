@@ -6,6 +6,16 @@ that can be found in the LICENSE file. -->
 
 See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## 8.6.1
+
+### Improvements
+
+- Remove `needTitle` for image filter options.
+
+### Fixes
+
+- Fix hit test when previewing videos.
+
 ## 8.6.0
 
 ### Breaking changes
