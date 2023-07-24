@@ -182,6 +182,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           ValueListenableBuilder<bool>(
             valueListenable: isPlaying,
             builder: (_, bool value, __) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: value || MediaQuery.accessibleNavigationOf(context)
                   ? () => playButtonCallback(context)
                   : widget.delegate.switchDisplayingDetail,
