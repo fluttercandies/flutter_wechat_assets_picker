@@ -308,10 +308,9 @@ class DefaultAssetPickerProvider
     final PMFilter? fog = filterOptions;
     if (fog is FilterOptionGroup?) {
       // Initial base options.
-      // Enable need title for audios and image to get proper display.
+      // Enable need title for audios to get proper display.
       final FilterOptionGroup newOptions = FilterOptionGroup(
         imageOption: const FilterOption(
-          needTitle: true,
           sizeConstraint: SizeConstraint(ignoreSize: true),
         ),
         audioOption: const FilterOption(
