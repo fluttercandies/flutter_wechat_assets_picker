@@ -135,6 +135,12 @@ abstract class AppLocalizations {
   /// **'Selected Assets'**
   String get selectedAssetsText;
 
+  /// No description provided for @pickMethodNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Pickers in this page are located at the {dist}, defined by `pickMethods`.'**
+  String pickMethodNotice(Object dist);
+
   /// No description provided for @pickMethodImageName.
   ///
   /// In en, this message translates to:
@@ -294,7 +300,7 @@ abstract class AppLocalizations {
   /// No description provided for @pickMethodCustomizableThemeName.
   ///
   /// In en, this message translates to:
-  /// **'Customizable theme'**
+  /// **'Customizable theme (ThemeData)'**
   String get pickMethodCustomizableThemeName;
 
   /// No description provided for @pickMethodCustomizableThemeDescription.
@@ -342,7 +348,7 @@ abstract class AppLocalizations {
   /// No description provided for @customPickerNotice.
   ///
   /// In en, this message translates to:
-  /// **'This page contains customized pickers with different asset types, different UI layouts, or some use case for specific apps. Contribute to add your custom picker are welcomed.'**
+  /// **'This page contains customized pickers with different asset types, different UI layouts, or some use case for specific apps. Contribute to add your custom picker are welcomed.\nPickers in this page are located at the lib/customs/pickers folder.'**
   String get customPickerNotice;
 
   /// No description provided for @customPickerCallThePickerButton.

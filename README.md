@@ -448,9 +448,10 @@ You can extend them and use your own
 type with generic type `<A: Asset, P: Path>`,
 then implement abstract methods.
 
-We've defined a picker that integrates with `Directory` and `File`
-(completely out of the `photo_manager` scope),
-and a picker with multiple tabs switching in the "Custom" page.
+To know about how to fully customize themes, widgets or layouts.
+See how to customize delegates in the custom pickers page in the
+[example](example/lib/customs/pickers).
+
 You can submit PRs to create your own implementation
 if you found your implementation might be useful for others.
 See [Contribute custom implementations][] for more details.

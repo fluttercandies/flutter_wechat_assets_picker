@@ -433,10 +433,9 @@ Future<dio.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async
 更多用法请查看示例中的 `Custom` 页面，
 该页面包含一个以 `<File, Directory>` 为类型基础的选择器。
 
-你可以在「Custom」页面尝试自定义的选择器。
-目前我们提供了一个基于 `Directory` 和 `File`
-（与 `photo_manager` 完全无关）实现的选择器，
-以及一个多 Tab 页切换的选择器。
+想要了解如何完全自定义主题、widget 和布局，前往 [示例](example/lib/customs/pickers)
+查看已有的自定义选择器的实现。
+
 如果你觉得你的实现有价值或能帮助到其他人，欢迎以 PR 的形式进行提交。
 更多细节请阅读 [贡献自定义实现][]。
 

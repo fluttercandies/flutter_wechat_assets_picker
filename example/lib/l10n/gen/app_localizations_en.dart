@@ -28,6 +28,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectedAssetsText => 'Selected Assets';
 
   @override
+  String pickMethodNotice(Object dist) {
+    return 'Pickers in this page are located at the $dist, defined by `pickMethods`.';
+  }
+
+  @override
   String get pickMethodImageName => 'Image picker';
 
   @override
@@ -106,7 +111,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickMethodPreventGIFPickedDescription => 'Use selectPredicate to banned GIF picking when tapped.';
 
   @override
-  String get pickMethodCustomizableThemeName => 'Customizable theme';
+  String get pickMethodCustomizableThemeName => 'Customizable theme (ThemeData)';
 
   @override
   String get pickMethodCustomizableThemeDescription => 'Picking assets with the light theme or with a different color.';
@@ -130,7 +135,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickMethodCustomImagePreviewThumbSizeDescription => 'You can reduce the thumb size to get faster load speed.';
 
   @override
-  String get customPickerNotice => 'This page contains customized pickers with different asset types, different UI layouts, or some use case for specific apps. Contribute to add your custom picker are welcomed.';
+  String get customPickerNotice => 'This page contains customized pickers with different asset types, different UI layouts, or some use case for specific apps. Contribute to add your custom picker are welcomed.\nPickers in this page are located at the lib/customs/pickers folder.';
 
   @override
   String get customPickerCallThePickerButton => '🎁 Call the Picker';

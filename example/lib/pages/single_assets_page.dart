@@ -19,6 +19,9 @@ class SingleAssetPage extends StatefulWidget {
 class _SingleAssetPageState extends State<SingleAssetPage>
     with AutomaticKeepAliveClientMixin, ExamplePageMixin {
   @override
+  String get noticeText => 'lib/pages/single_assets_page.dart';
+
+  @override
   int get maxAssetsCount => 1;
 
   /// Check each method's source code for more details.

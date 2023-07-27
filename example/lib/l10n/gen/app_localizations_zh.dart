@@ -28,6 +28,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get selectedAssetsText => '已选的资源';
 
   @override
+  String pickMethodNotice(Object dist) {
+    return '该页面的所有选择器的代码位于 $dist，由 `pickMethods` 定义。';
+  }
+
+  @override
   String get pickMethodImageName => '图片选择';
 
   @override
@@ -106,7 +111,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pickMethodPreventGIFPickedDescription => '通过 selectPredicate 来禁止 GIF 图片在点击时被选择。';
 
   @override
-  String get pickMethodCustomizableThemeName => '自定义主题';
+  String get pickMethodCustomizableThemeName => '自定义主题 (ThemeData)';
 
   @override
   String get pickMethodCustomizableThemeDescription => '可以用亮色或其他颜色及自定义的主题进行选择。';
@@ -130,7 +135,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pickMethodCustomImagePreviewThumbSizeDescription => '通过降低缩略图的质量来获得更快的加载速度。';
 
   @override
-  String get customPickerNotice => '本页面包含了多种方式、不同界面和特定应用的自定义选择器。欢迎贡献添加你自定义的选择器。';
+  String get customPickerNotice => '本页面包含了多种方式、不同界面和特定应用的自定义选择器。欢迎贡献添加你自定义的选择器。\n该页面的所有选择器的代码位于 lib/customs/pickers 目录。';
 
   @override
   String get customPickerCallThePickerButton => '🎁 开始选择资源';
