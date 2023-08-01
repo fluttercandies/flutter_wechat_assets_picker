@@ -127,6 +127,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
   Widget selectedAssetsListView(BuildContext context) {
     return Expanded(
       child: ListView.builder(
+        shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         scrollDirection: Axis.horizontal,
