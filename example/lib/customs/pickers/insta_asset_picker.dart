@@ -316,15 +316,15 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   /// The responsive height of the preview widget
   /// setup to not be bigger than half the screen height
   double previewHeight(BuildContext context) => min(
-        MediaQuery.of(context).size.width,
-        MediaQuery.of(context).size.height * 0.5,
+        MediaQuery.sizeOf(context).width,
+        MediaQuery.sizeOf(context).height * 0.5,
       );
 
   /// Returns thumbnail [index] position in scroll view
   double indexPosition(BuildContext context, int index) {
     final int row = (index / gridCount).floor();
     final double size =
-        (MediaQuery.of(context).size.width - itemSpacing * (gridCount - 1)) /
+        (MediaQuery.sizeOf(context).width - itemSpacing * (gridCount - 1)) /
             gridCount;
     return row * size + (row * itemSpacing);
   }
@@ -475,7 +475,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         valueListenable: _previewAsset,
         builder: (BuildContext context, AssetEntity? previewAsset, __) =>
             SizedBox(
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery.sizeOf(context).width,
           height: previewHeight(context),
           child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
             selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
@@ -529,7 +529,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     final double topWidgetHeight = previewHeight(context) +
         appBarHeight +
         _kPathSelectorRowHeight +
-        MediaQuery.of(context).padding.top;
+        MediaQuery.paddingOf(context).top;
 
     return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
       value: provider,
@@ -549,7 +549,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               ? const Duration(milliseconds: 250)
               : Duration.zero;
 
-          double gridHeight = MediaQuery.of(context).size.height -
+          double gridHeight = MediaQuery.sizeOf(context).height -
               appBarHeight -
               _kReducedViewerHeight;
           // when not assets are displayed, compute the exact height to show the loader
@@ -569,7 +569,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 duration: animationDuration,
                 child: SizedBox(
                   height: gridHeight,
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.sizeOf(context).width,
                   child: NotificationListener<ScrollNotification>(
                     onNotification: (ScrollNotification notification) =>
                         _handleScroll(
@@ -586,7 +586,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 top: position,
                 duration: animationDuration,
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.sizeOf(context).width,
                   height: topWidgetHeight,
                   child: AssetPickerAppBarWrapper(
                     appBar: appBar(context),
@@ -599,7 +599,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                           Opacity(opacity: opacity, child: buildEntityViewer),
                           SizedBox(
                             height: _kPathSelectorRowHeight,
-                            width: MediaQuery.of(context).size.width,
+                            width: MediaQuery.sizeOf(context).width,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[

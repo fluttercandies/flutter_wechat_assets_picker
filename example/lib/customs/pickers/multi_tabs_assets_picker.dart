@@ -295,7 +295,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           child: Container(
             height: appBarItemHeight,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.5,
+              maxWidth: MediaQuery.sizeOf(context).width * 0.5,
             ),
             padding: const EdgeInsetsDirectional.only(start: 12, end: 6),
             decoration: BoxDecoration(

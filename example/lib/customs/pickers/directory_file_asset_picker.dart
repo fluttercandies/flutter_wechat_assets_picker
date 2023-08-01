@@ -680,7 +680,7 @@ class FileAssetPickerBuilder
                   if (isAppleOS(context) && anchor == 1)
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: MediaQuery.of(context).padding.bottom +
+                        height: MediaQuery.paddingOf(context).bottom +
                             bottomSectionHeight,
                       ),
                     ),
@@ -1414,28 +1414,30 @@ class FileAssetPickerViewerBuilderDelegate
     return Theme(
       data: themeData,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: themeData.brightness == Brightness.dark
+        value: themeData.brightness.reverse == Brightness.dark
             ? SystemUiOverlayStyle.light
             : SystemUiOverlayStyle.dark,
-        child: Material(
-          color: Colors.black,
-          child: Stack(
-            children: <Widget>[
-              Positioned.fill(
-                child: PageView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  controller: _pageController,
-                  itemCount: previewAssets.length,
-                  itemBuilder: assetPageBuilder,
-                  onPageChanged: (int index) {
-                    currentIndex = index;
-                    pageStreamController.add(index);
-                  },
+        child: Builder(
+          builder: (BuildContext context) => Material(
+            color: Colors.black,
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: PageView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    controller: _pageController,
+                    itemCount: previewAssets.length,
+                    itemBuilder: assetPageBuilder,
+                    onPageChanged: (int index) {
+                      currentIndex = index;
+                      pageStreamController.add(index);
+                    },
+                  ),
                 ),
-              ),
-              appBar(context),
-              if (selectedAssets != null) bottomDetailBuilder(context),
-            ],
+                appBar(context),
+                if (selectedAssets != null) bottomDetailBuilder(context),
+              ],
+            ),
           ),
         ),
       ),
