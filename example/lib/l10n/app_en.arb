@@ -45,7 +45,7 @@
   "customPickerNotice": "This page contains customized pickers with different asset types, different UI layouts, or some use case for specific apps. Contribute to add your custom picker are welcomed.\nPickers in this page are located at the lib/customs/pickers folder.",
   "customPickerCallThePickerButton": "\uD83C\uDF81 Call the Picker",
   "customPickerDirectoryAndFileName": "Directory+File picker",
-  "customPickerDirectoryAndFileDescription": "This is a custom picker built for `File`.\nBy browsing this picker, we want you to know that you can build your own picker components using the entity's type you desired.\n\nIn this page, picker will grab files from `getExternalStorageDirectory`, then check whether it contains images. Put files into the path to see how this custom picker work.",
+  "customPickerDirectoryAndFileDescription": "This is a custom picker built for `File`.\nBy browsing this picker, we want you to know that you can build your own picker components using the entity's type you desired.\n\nIn this page, picker will grab files from `getApplicationDocumentsDirectory`, then check whether it contains images. Put files into the path to see how this custom picker work.",
   "customPickerMultiTabName": "Multi tab picker",
   "customPickerMultiTabDescription": "The picker contains multiple tab with different types of assets for the picking at the same time.",
   "customPickerMultiTabTab1": "All",

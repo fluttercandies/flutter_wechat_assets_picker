@@ -65,7 +65,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
     }
   }
 
-  Widget get selectedAssetsWidget {
+  Widget selectedAssetsWidget(BuildContext context) {
     return AnimatedContainer(
       duration: kThemeChangeDuration,
       curve: Curves.easeInOut,
@@ -118,20 +118,21 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
               ),
             ),
           ),
-          selectedAssetsListView,
+          selectedAssetsListView(context),
         ],
       ),
     );
   }
 
-  Widget get selectedAssetsListView {
+  Widget selectedAssetsListView(BuildContext context) {
     return Expanded(
       child: ListView.builder(
+        shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         scrollDirection: Axis.horizontal,
         itemCount: fileList.length,
-        itemBuilder: (BuildContext _, int index) {
+        itemBuilder: (_, int index) {
           return Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 8.0,
@@ -269,7 +270,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
               ),
             ),
           ),
-          selectedAssetsWidget,
+          selectedAssetsWidget(context),
         ],
       ),
     );
@@ -290,17 +291,15 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   Future<void> getPaths() async {
     currentAssets = <File>[];
     paths.clear();
-    final Directory? directory = await getExternalStorageDirectory();
-    if (directory != null) {
-      final PathWrapper<Directory> wrapper = PathWrapper<Directory>(
-        path: directory,
-        thumbnailData: await getThumbnailFromPath(
-          PathWrapper<Directory>(path: directory),
-        ),
-      );
-      paths.add(wrapper);
-      currentPath = wrapper;
-    }
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final PathWrapper<Directory> wrapper = PathWrapper<Directory>(
+      path: directory,
+      thumbnailData: await getThumbnailFromPath(
+        PathWrapper<Directory>(path: directory),
+      ),
+    );
+    paths.add(wrapper);
+    currentPath = wrapper;
   }
 
   @override
@@ -501,7 +500,7 @@ class FileAssetPickerBuilder
 
   @override
   PreferredSizeWidget appBar(BuildContext context) {
-    return AppBar(
+    final AppBar appBar = AppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
       centerTitle: isAppleOS(context),
       title: pathEntitySelector(context),
@@ -513,6 +512,8 @@ class FileAssetPickerBuilder
             ]
           : null,
     );
+    appBarPreferredSize ??= appBar.preferredSize;
+    return appBar;
   }
 
   @override
@@ -555,7 +556,7 @@ class FileAssetPickerBuilder
             },
           ),
         ),
-        appBar(context),
+        Positioned.fill(bottom: null, child: appBar(context)),
       ],
     );
   }
@@ -585,6 +586,7 @@ class FileAssetPickerBuilder
 
   @override
   Widget assetsGridBuilder(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     int totalCount = provider.currentAssets.length;
     if (specialItemPosition != SpecialItemPosition.none) {
       totalCount += 1;
@@ -598,7 +600,7 @@ class FileAssetPickerBuilder
     final int row = (totalCount + placeholderCount) ~/ gridCount;
     final double dividedSpacing = itemSpacing / gridCount;
     final double topPadding =
-        MediaQuery.of(context).padding.top + kToolbarHeight;
+        MediaQuery.paddingOf(context).top + appBarPreferredSize!.height;
 
     Widget sliverGrid(BuildContext ctx, List<File> assets) {
       return SliverGrid(
@@ -670,8 +672,8 @@ class FileAssetPickerBuilder
                   if (isAppleOS(context))
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height:
-                            MediaQuery.of(context).padding.top + kToolbarHeight,
+                        height: MediaQuery.paddingOf(context).top +
+                            appBarPreferredSize!.height,
                       ),
                     ),
                   sliverGrid(_, assets),
@@ -679,7 +681,7 @@ class FileAssetPickerBuilder
                   if (isAppleOS(context) && anchor == 1)
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: MediaQuery.of(context).padding.bottom +
+                        height: MediaQuery.paddingOf(context).bottom +
                             bottomSectionHeight,
                       ),
                     ),
@@ -822,8 +824,9 @@ class FileAssetPickerBuilder
 
   @override
   Widget pathEntityListWidget(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     final double appBarHeight =
-        kToolbarHeight + MediaQuery.paddingOf(context).top;
+        appBarPreferredSize!.height + MediaQuery.paddingOf(context).top;
     final double maxHeight = MediaQuery.sizeOf(context).height * 0.825;
     return ValueListenableBuilder<bool>(
       valueListenable: isSwitchingPath,
@@ -1412,28 +1415,30 @@ class FileAssetPickerViewerBuilderDelegate
     return Theme(
       data: themeData,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: themeData.brightness == Brightness.dark
+        value: themeData.brightness.reverse == Brightness.dark
             ? SystemUiOverlayStyle.light
             : SystemUiOverlayStyle.dark,
-        child: Material(
-          color: Colors.black,
-          child: Stack(
-            children: <Widget>[
-              Positioned.fill(
-                child: PageView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  controller: _pageController,
-                  itemCount: previewAssets.length,
-                  itemBuilder: assetPageBuilder,
-                  onPageChanged: (int index) {
-                    currentIndex = index;
-                    pageStreamController.add(index);
-                  },
+        child: Builder(
+          builder: (BuildContext context) => Material(
+            color: Colors.black,
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: PageView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    controller: _pageController,
+                    itemCount: previewAssets.length,
+                    itemBuilder: assetPageBuilder,
+                    onPageChanged: (int index) {
+                      currentIndex = index;
+                      pageStreamController.add(index);
+                    },
+                  ),
                 ),
-              ),
-              appBar(context),
-              if (selectedAssets != null) bottomDetailBuilder(context),
-            ],
+                appBar(context),
+                if (selectedAssets != null) bottomDetailBuilder(context),
+              ],
+            ),
           ),
         ),
       ),

@@ -132,23 +132,29 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Return a system ui overlay style according to
   /// the brightness of the theme data.
   /// 根据主题返回状态栏的明暗样式
-  SystemUiOverlayStyle get overlayStyle =>
-      theme.appBarTheme.systemOverlayStyle ??
-      (theme.effectiveBrightness.isDark
-          ? SystemUiOverlayStyle.light
-          : SystemUiOverlayStyle.dark);
+  SystemUiOverlayStyle get overlayStyle {
+    if (theme.appBarTheme.systemOverlayStyle != null) {
+      return theme.appBarTheme.systemOverlayStyle!;
+    }
+    return SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+      statusBarIconBrightness: theme.effectiveBrightness,
+      statusBarBrightness: theme.effectiveBrightness.reverse,
+    );
+  }
 
   /// The color for interactive texts.
   /// 可交互的文字的颜色
   Color interactiveTextColor(BuildContext context) => Color.lerp(
-        context.themeData.iconTheme.color?.withOpacity(.7) ?? Colors.white,
+        context.iconTheme.color?.withOpacity(.7) ?? Colors.white,
         Colors.blueAccent,
         0.4,
       )!;
 
   /// Whether the current platform is Apple OS.
   /// 当前平台是否苹果系列系统 (iOS & MacOS)
-  bool isAppleOS(BuildContext context) => switch (Theme.of(context).platform) {
+  bool isAppleOS(BuildContext context) => switch (context.theme.platform) {
         TargetPlatform.iOS || TargetPlatform.macOS => true,
         _ => false,
       };
@@ -363,6 +369,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 选择器自定义的顶栏
   PreferredSizeWidget appBar(BuildContext context);
 
+  /// The preferred size of [appBar].
+  /// [appBar] 的首选大小。
+  ///
+  /// If it's null, typically means the widget hasn't been built yet.
+  /// 为空则意味着 widget 未 build。
+  Size? appBarPreferredSize;
+
   /// Layout for Apple OS devices.
   /// 苹果系列设备的选择器布局
   Widget appleOSLayout(BuildContext context);
@@ -498,7 +511,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             Expanded(
               child: ScaleText(
                 textDelegate.accessAllTip,
-                style: context.themeData.textTheme.bodySmall?.copyWith(
+                style: context.textTheme.bodySmall?.copyWith(
                   fontSize: 14,
                 ),
                 semanticsLabel: semanticsTextDelegate.accessAllTip,
@@ -506,7 +519,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             ),
             Icon(
               Icons.keyboard_arrow_right,
-              color: context.themeData.iconTheme.color?.withOpacity(.5),
+              color: context.iconTheme.color?.withOpacity(.5),
             ),
           ],
         ),
@@ -564,7 +577,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// The overlay when the permission is limited on iOS.
   Widget iOSPermissionOverlay(BuildContext context) {
-    final Size size = context.mediaQuery.size;
+    final Size size = MediaQuery.sizeOf(context);
     final Widget closeButton = Container(
       margin: const EdgeInsetsDirectional.only(start: 16, top: 4),
       alignment: AlignmentDirectional.centerStart,
@@ -637,8 +650,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           child: Semantics(
             sortKey: const OrdinalSortKey(0),
             child: Container(
-              padding: context.mediaQuery.padding,
-              color: context.themeData.canvasColor,
+              padding: MediaQuery.paddingOf(context),
+              color: context.theme.canvasColor,
               child: Column(
                 children: <Widget>[
                   closeButton,
@@ -917,7 +930,7 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   AssetPickerAppBar appBar(BuildContext context) {
-    return AssetPickerAppBar(
+    final AssetPickerAppBar appBar = AssetPickerAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
       title: Semantics(
         onTapHint: semanticsTextDelegate.sActionSwitchPathLabel,
@@ -926,6 +939,8 @@ class DefaultAssetPickerBuilderDelegate
       leading: backButton(context),
       blurRadius: isAppleOS(context) ? appleOSBlurRadius : 0,
     );
+    appBarPreferredSize ??= appBar.preferredSize;
+    return appBar;
   }
 
   @override
@@ -1037,13 +1052,14 @@ class DefaultAssetPickerBuilderDelegate
       },
       child: PlatformProgressIndicator(
         color: theme.iconTheme.color,
-        size: context.mediaQuery.size.width / gridCount / 3,
+        size: MediaQuery.sizeOf(context).width / gridCount / 3,
       ),
     );
   }
 
   @override
   Widget assetsGridBuilder(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     final bool gridRevert = effectiveShouldRevertGrid(context);
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
@@ -1087,7 +1103,8 @@ class DefaultAssetPickerBuilderDelegate
         // [gridCount] since every grid item is squeezed by the [itemSpacing],
         // and it's actual size is reduced with [itemSpacing / gridCount].
         final double dividedSpacing = itemSpacing / gridCount;
-        final double topPadding = context.topPadding + kToolbarHeight;
+        final double topPadding =
+            context.topPadding + appBarPreferredSize!.height;
 
         Widget sliverGrid(BuildContext context, List<AssetEntity> assets) {
           return SliverGrid(
@@ -1177,6 +1194,7 @@ class DefaultAssetPickerBuilderDelegate
                     final SliverGap bottomGap = SliverGap.v(
                       context.bottomPadding + bottomSectionHeight,
                     );
+                    appBarPreferredSize ??= appBar(context).preferredSize;
                     return CustomScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       controller: gridScrollController,
@@ -1185,8 +1203,7 @@ class DefaultAssetPickerBuilderDelegate
                       slivers: <Widget>[
                         if (isAppleOS(context))
                           SliverGap.v(
-                            context.topPadding +
-                                appBar(context).preferredSize.height,
+                            context.topPadding + appBarPreferredSize!.height,
                           ),
                         sliverGrid(context, assets),
                         // Ignore the gap when the [anchor] is not equal to 1.
@@ -1348,10 +1365,10 @@ class DefaultAssetPickerBuilderDelegate
               value: selectedIndex > 0 ? '$selectedIndex' : null,
               child: GestureDetector(
                 // Regression https://github.com/flutter/flutter/issues/35112.
-                onLongPress:
-                    isPreviewEnabled && context.mediaQuery.accessibleNavigation
-                        ? () => viewAsset(context, index, asset)
-                        : null,
+                onLongPress: isPreviewEnabled &&
+                        MediaQuery.accessibleNavigationOf(context)
+                    ? () => viewAsset(context, index, asset)
+                    : null,
                 child: IndexedSemantics(
                   index: semanticIndex(index),
                   child: child,
@@ -1580,8 +1597,11 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget pathEntityListWidget(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     return Positioned.fill(
-      top: isAppleOS(context) ? context.topPadding + kToolbarHeight : 0,
+      top: isAppleOS(context)
+          ? context.topPadding + appBarPreferredSize!.height
+          : 0,
       bottom: null,
       child: ValueListenableBuilder<bool>(
         valueListenable: isSwitchingPath,
@@ -1602,7 +1622,7 @@ class DefaultAssetPickerBuilderDelegate
                 ),
                 child: Container(
                   constraints: BoxConstraints(
-                    maxHeight: context.mediaQuery.size.height *
+                    maxHeight: MediaQuery.sizeOf(context).height *
                         (isAppleOS(context) ? .6 : .8),
                   ),
                   color: theme.colorScheme.background,
@@ -1647,9 +1667,7 @@ class DefaultAssetPickerBuilderDelegate
                       ),
                     ],
                   ),
-                  style: context.themeData.textTheme.bodySmall?.copyWith(
-                    fontSize: 14,
-                  ),
+                  style: context.textTheme.bodySmall?.copyWith(fontSize: 14),
                 ),
               ),
             ),
@@ -1724,7 +1742,7 @@ class DefaultAssetPickerBuilderDelegate
         child: Container(
           height: appBarItemHeight,
           constraints: BoxConstraints(
-            maxWidth: context.mediaQuery.size.width * 0.5,
+            maxWidth: MediaQuery.sizeOf(context).width * 0.5,
           ),
           padding: const EdgeInsetsDirectional.only(start: 12, end: 6),
           decoration: BoxDecoration(
@@ -1960,7 +1978,7 @@ class DefaultAssetPickerBuilderDelegate
                 style: TextStyle(
                   color: p.isSelectedNotEmpty
                       ? null
-                      : c.themeData.textTheme.bodySmall?.color,
+                      : c.textTheme.bodySmall?.color,
                   fontSize: 17,
                 ),
                 maxScaleFactor: 1.2,
@@ -1995,7 +2013,8 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget selectIndicator(BuildContext context, int index, AssetEntity asset) {
-    final double indicatorSize = context.mediaQuery.size.width / gridCount / 3;
+    final double indicatorSize =
+        MediaQuery.sizeOf(context).width / gridCount / 3;
     final Duration duration = switchingPathDuration * 0.75;
     return Selector<DefaultAssetPickerProvider, String>(
       selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
@@ -2009,7 +2028,7 @@ class DefaultAssetPickerBuilderDelegate
           decoration: BoxDecoration(
             border: !selected
                 ? Border.all(
-                    color: context.themeData.unselectedWidgetColor,
+                    color: context.theme.unselectedWidgetColor,
                     width: indicatorSize / 25,
                   )
                 : null,
@@ -2052,7 +2071,8 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget selectedBackdrop(BuildContext context, int index, AssetEntity asset) {
-    final double indicatorSize = context.mediaQuery.size.width / gridCount / 3;
+    final double indicatorSize =
+        MediaQuery.sizeOf(context).width / gridCount / 3;
     return Positioned.fill(
       child: GestureDetector(
         onTap: isPreviewEnabled ? () => viewAsset(context, index, asset) : null,

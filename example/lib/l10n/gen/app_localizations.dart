@@ -366,7 +366,7 @@ abstract class AppLocalizations {
   /// No description provided for @customPickerDirectoryAndFileDescription.
   ///
   /// In en, this message translates to:
-  /// **'This is a custom picker built for `File`.\nBy browsing this picker, we want you to know that you can build your own picker components using the entity\'s type you desired.\n\nIn this page, picker will grab files from `getExternalStorageDirectory`, then check whether it contains images. Put files into the path to see how this custom picker work.'**
+  /// **'This is a custom picker built for `File`.\nBy browsing this picker, we want you to know that you can build your own picker components using the entity\'s type you desired.\n\nIn this page, picker will grab files from `getApplicationDocumentsDirectory`, then check whether it contains images. Put files into the path to see how this custom picker work.'**
   String get customPickerDirectoryAndFileDescription;
 
   /// No description provided for @customPickerMultiTabName.

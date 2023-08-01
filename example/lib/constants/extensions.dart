@@ -9,6 +9,15 @@ extension BuildContextExtension on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
 }
 
+extension BrightnessExtension on Brightness {
+  bool get isDark => this == Brightness.dark;
+
+  bool get isLight => this == Brightness.light;
+
+  Brightness get reverse =>
+      this == Brightness.light ? Brightness.dark : Brightness.light;
+}
+
 extension ColorExtension on Color {
   MaterialColor get swatch => Colors.primaries.firstWhere(
         (Color c) => c.value == value,

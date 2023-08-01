@@ -102,7 +102,7 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
                 state == PMRequestState.failed
                     ? Icons.cloud_off
                     : Icons.cloud_queue,
-                color: context.themeData.iconTheme.color?.withOpacity(.4),
+                color: context.iconTheme.color?.withOpacity(.4),
                 size: 28,
               ),
               if (state != PMRequestState.success &&
@@ -110,7 +110,7 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
                 ScaleText(
                   '  iCloud ${(progress * 100).toInt()}%',
                   style: TextStyle(
-                    color: context.themeData.textTheme.bodyMedium?.color
+                    color: context.textTheme.bodyMedium?.color
                         ?.withOpacity(.4),
                   ),
                 ),

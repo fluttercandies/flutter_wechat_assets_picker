@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 
+import '../constants/extensions.dart';
+
 /// A custom app bar.
 /// 自定义的顶栏
 class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -110,8 +112,8 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
     Widget child = Container(
       width: double.maxFinite,
-      height: _barHeight + MediaQuery.of(context).padding.top,
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      height: _barHeight + MediaQuery.paddingOf(context).top,
+      padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
       child: Stack(
         children: <Widget>[
           if (canPop(context))
@@ -182,13 +184,12 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     final Brightness effectiveBrightness = brightness ??
         appBarTheme.systemOverlayStyle?.statusBarBrightness ??
         theme.brightness;
-    final bool isDark = effectiveBrightness == Brightness.dark;
     final SystemUiOverlayStyle overlayStyle = appBarTheme.systemOverlayStyle ??
         SystemUiOverlayStyle(
           statusBarColor: effectiveBackgroundColor,
           systemNavigationBarIconBrightness: Brightness.light,
-          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-          statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+          statusBarIconBrightness: effectiveBrightness.reverse,
+          statusBarBrightness: effectiveBrightness,
         );
     child = AnnotatedRegion<SystemUiOverlayStyle>(
       value: overlayStyle,
@@ -229,8 +230,8 @@ class AssetPickerAppBarWrapper extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned.fill(
-            top: MediaQuery.of(context).padding.top +
-                appBar.preferredSize.height,
+            top:
+                MediaQuery.paddingOf(context).top + appBar.preferredSize.height,
             child: MediaQuery.removePadding(
               context: context,
               removeTop: true,

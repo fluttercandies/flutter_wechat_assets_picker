@@ -6,6 +6,13 @@ that can be found in the LICENSE file. -->
 
 See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## 8.6.2
+
+### Improvements
+
+- Add `appBarPreferredSize` in the picker delegate to help with padding calculations.
+- Improve the performance with `MediaQuery` callers.
+
 ## 8.6.1
 
 ### Improvements

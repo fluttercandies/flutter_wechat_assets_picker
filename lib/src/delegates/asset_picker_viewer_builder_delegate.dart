@@ -146,7 +146,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// Whether the current platform is Apple OS.
   /// 当前平台是否为苹果系列系统
-  bool isAppleOS(BuildContext context) => switch (Theme.of(context).platform) {
+  bool isAppleOS(BuildContext context) => switch (context.theme.platform) {
         TargetPlatform.iOS || TargetPlatform.macOS => true,
         _ => false,
       };
@@ -468,7 +468,7 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// 音频的底部预览部件
   Widget _audioPreviewItem(AssetEntity asset) {
     return ColoredBox(
-      color: viewerState.context.themeData.dividerColor,
+      color: viewerState.context.theme.dividerColor,
       child: const Center(child: Icon(Icons.audiotrack)),
     );
   }
@@ -611,7 +611,7 @@ class DefaultAssetPickerViewerBuilderDelegate
       pageController.jumpToPage(page);
       final double offset =
           (index - 0.5) * (bottomPreviewHeight - padding * 3) -
-              context.mediaQuery.size.width / 4;
+              MediaQuery.sizeOf(context).width / 4;
       previewingListController.animateTo(
         math.max(0, offset),
         curve: Curves.ease,
