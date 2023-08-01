@@ -290,7 +290,6 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   @override
   Future<void> getPaths() async {
     currentAssets = <File>[];
-    paths.clear();
     final Directory directory = await getApplicationDocumentsDirectory();
     final PathWrapper<Directory> wrapper = PathWrapper<Directory>(
       path: directory,
@@ -298,7 +297,7 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
         PathWrapper<Directory>(path: directory),
       ),
     );
-    paths.add(wrapper);
+    paths = [wrapper];
     currentPath = wrapper;
   }
 
@@ -315,6 +314,11 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
     }
     hasAssetsToDisplay = currentAssets.isNotEmpty;
     totalAssetsCount = currentAssets.length;
+    isAssetsEmpty = totalAssetsCount == 0;
+    final PathWrapper<Directory> wrapper = currentPath!;
+    if (wrapper.assetCount == null) {
+      currentPath = currentPath!.copyWith(assetCount: totalAssetsCount);
+    }
   }
 
   @override
@@ -522,12 +526,8 @@ class FileAssetPickerBuilder
       children: <Widget>[
         Positioned.fill(
           child: Selector<FileAssetPickerProvider, bool>(
-            selector: (
-              _,
-              FileAssetPickerProvider p,
-            ) =>
-                p.hasAssetsToDisplay,
-            builder: (_, bool hasAssetsToDisplay, __) {
+            selector: (_, FileAssetPickerProvider p) => p.hasAssetsToDisplay,
+            builder: (BuildContext context, bool hasAssetsToDisplay, __) {
               return AnimatedSwitcher(
                 duration: switchingPathDuration,
                 child: hasAssetsToDisplay
@@ -607,7 +607,7 @@ class FileAssetPickerBuilder
         delegate: SliverChildBuilderDelegate(
           (_, int index) => Builder(
             builder: (BuildContext c) {
-              if (isAppleOS(context)) {
+              if (isAppleOS(c)) {
                 if (index < placeholderCount) {
                   return const SizedBox.shrink();
                 }
@@ -663,7 +663,7 @@ class FileAssetPickerBuilder
             child: Selector<FileAssetPickerProvider, List<File>>(
               selector: (_, FileAssetPickerProvider provider) =>
                   provider.currentAssets,
-              builder: (_, List<File> assets, __) => CustomScrollView(
+              builder: (context, List<File> assets, __) => CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 controller: gridScrollController,
                 anchor: isAppleOS(context) ? anchor : 0,
@@ -676,7 +676,7 @@ class FileAssetPickerBuilder
                             appBarPreferredSize!.height,
                       ),
                     ),
-                  sliverGrid(_, assets),
+                  sliverGrid(context, assets),
                   // Ignore the gap when the [anchor] is not equal to 1.
                   if (isAppleOS(context) && anchor == 1)
                     SliverToBoxAdapter(

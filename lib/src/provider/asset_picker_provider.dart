@@ -15,7 +15,7 @@ import '../delegates/sort_path_delegate.dart';
 import '../internal/singleton.dart';
 import '../models/path_wrapper.dart';
 
-/// [ChangeNotifier] for assets picker.
+/// Helps the assets picker to manage [Path]s and [Asset]s.
 ///
 /// The provider maintain all methods that control assets and paths.
 /// By extending it you can customize how you can get all assets or paths,
@@ -29,7 +29,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     List<Asset>? selectedAssets,
   })  : assert(maxAssets > 0, 'maxAssets must be greater than 0.'),
         assert(pageSize > 0, 'pageSize must be greater than 0.'),
-        _previousSelectedAssets =
+        previousSelectedAssets =
             selectedAssets?.toList(growable: false) ?? List<Asset>.empty(),
         _selectedAssets =
             selectedAssets?.toList() ?? List<Asset>.empty(growable: true);
@@ -47,6 +47,10 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// Thumbnail size for path selector.
   /// 路径选择器中缩略图的大小
   final ThumbnailSize pathThumbnailSize;
+
+  /// Selected assets before the picker starts picking.
+  /// 选择器开始选择前已选中的资源
+  final List<Asset> previousSelectedAssets;
 
   /// Clear all fields when dispose.
   /// 销毁时重置所有内容
@@ -127,14 +131,17 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Map for all path entity.
-  /// 所有包含资源的路径里列表
-  ///
-  /// Using [Map] in order to save the thumbnail data
-  /// for the first asset under the path.
-  /// 使用 [Map] 来保存路径下第一个资源的缩略图数据
+  /// List for all path entity wrapped by [PathWrapper].
+  /// 所有资源路径的列表，以 [PathWrapper] 包装
   List<PathWrapper<Path>> get paths => _paths;
   List<PathWrapper<Path>> _paths = <PathWrapper<Path>>[];
+
+  set paths(List<PathWrapper<Path>> value) {
+    if (value != _paths) {
+      _paths = value;
+      notifyListeners();
+    }
+  }
 
   /// Set thumbnail [data] for the specific [path].
   /// 为指定的路径设置缩略图数据
@@ -176,11 +183,6 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     _currentAssets = value.toList();
     notifyListeners();
   }
-
-  /// Selected assets before the picker starts picking.
-  /// 选择器开始选择前已选中的资源
-  List<Asset> get previousSelectedAssets => _previousSelectedAssets;
-  final List<Asset> _previousSelectedAssets;
 
   /// Selected assets.
   /// 已选中的资源
@@ -232,6 +234,8 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   }
 }
 
+/// The default implementation of the [AssetPickerProvider] for the picker.
+/// The `Asset` is [AssetEntity], and the `Path` is [AssetPathEntity].
 class DefaultAssetPickerProvider
     extends AssetPickerProvider<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerProvider({
