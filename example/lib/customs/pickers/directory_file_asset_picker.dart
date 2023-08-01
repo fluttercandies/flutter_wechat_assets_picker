@@ -290,17 +290,15 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   Future<void> getPaths() async {
     currentAssets = <File>[];
     paths.clear();
-    final Directory? directory = await getExternalStorageDirectory();
-    if (directory != null) {
-      final PathWrapper<Directory> wrapper = PathWrapper<Directory>(
-        path: directory,
-        thumbnailData: await getThumbnailFromPath(
-          PathWrapper<Directory>(path: directory),
-        ),
-      );
-      paths.add(wrapper);
-      currentPath = wrapper;
-    }
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final PathWrapper<Directory> wrapper = PathWrapper<Directory>(
+      path: directory,
+      thumbnailData: await getThumbnailFromPath(
+        PathWrapper<Directory>(path: directory),
+      ),
+    );
+    paths.add(wrapper);
+    currentPath = wrapper;
   }
 
   @override
