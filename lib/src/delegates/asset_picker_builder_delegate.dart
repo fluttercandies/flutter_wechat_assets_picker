@@ -363,6 +363,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 选择器自定义的顶栏
   PreferredSizeWidget appBar(BuildContext context);
 
+  /// The preferred size of [appBar].
+  /// [appBar] 的首选大小。
+  ///
+  /// If it's null, typically means the widget hasn't been built yet.
+  /// 为空则意味着 widget 未 build。
+  Size? appBarPreferredSize;
+
   /// Layout for Apple OS devices.
   /// 苹果系列设备的选择器布局
   Widget appleOSLayout(BuildContext context);
@@ -917,7 +924,7 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   AssetPickerAppBar appBar(BuildContext context) {
-    return AssetPickerAppBar(
+    final AssetPickerAppBar appBar = AssetPickerAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
       title: Semantics(
         onTapHint: semanticsTextDelegate.sActionSwitchPathLabel,
@@ -926,6 +933,8 @@ class DefaultAssetPickerBuilderDelegate
       leading: backButton(context),
       blurRadius: isAppleOS(context) ? appleOSBlurRadius : 0,
     );
+    appBarPreferredSize ??= appBar.preferredSize;
+    return appBar;
   }
 
   @override
@@ -1044,6 +1053,7 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget assetsGridBuilder(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     final bool gridRevert = effectiveShouldRevertGrid(context);
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
@@ -1087,7 +1097,8 @@ class DefaultAssetPickerBuilderDelegate
         // [gridCount] since every grid item is squeezed by the [itemSpacing],
         // and it's actual size is reduced with [itemSpacing / gridCount].
         final double dividedSpacing = itemSpacing / gridCount;
-        final double topPadding = context.topPadding + kToolbarHeight;
+        final double topPadding =
+            context.topPadding + appBarPreferredSize!.height;
 
         Widget sliverGrid(BuildContext context, List<AssetEntity> assets) {
           return SliverGrid(
@@ -1177,6 +1188,7 @@ class DefaultAssetPickerBuilderDelegate
                     final SliverGap bottomGap = SliverGap.v(
                       context.bottomPadding + bottomSectionHeight,
                     );
+                    appBarPreferredSize ??= appBar(context).preferredSize;
                     return CustomScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       controller: gridScrollController,
@@ -1185,8 +1197,7 @@ class DefaultAssetPickerBuilderDelegate
                       slivers: <Widget>[
                         if (isAppleOS(context))
                           SliverGap.v(
-                            context.topPadding +
-                                appBar(context).preferredSize.height,
+                            context.topPadding + appBarPreferredSize!.height,
                           ),
                         sliverGrid(context, assets),
                         // Ignore the gap when the [anchor] is not equal to 1.
@@ -1580,8 +1591,11 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget pathEntityListWidget(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     return Positioned.fill(
-      top: isAppleOS(context) ? context.topPadding + kToolbarHeight : 0,
+      top: isAppleOS(context)
+          ? context.topPadding + appBarPreferredSize!.height
+          : 0,
       bottom: null,
       child: ValueListenableBuilder<bool>(
         valueListenable: isSwitchingPath,

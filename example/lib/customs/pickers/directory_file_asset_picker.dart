@@ -65,7 +65,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
     }
   }
 
-  Widget get selectedAssetsWidget {
+  Widget selectedAssetsWidget(BuildContext context) {
     return AnimatedContainer(
       duration: kThemeChangeDuration,
       curve: Curves.easeInOut,
@@ -118,20 +118,20 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
               ),
             ),
           ),
-          selectedAssetsListView,
+          selectedAssetsListView(context),
         ],
       ),
     );
   }
 
-  Widget get selectedAssetsListView {
+  Widget selectedAssetsListView(BuildContext context) {
     return Expanded(
       child: ListView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         scrollDirection: Axis.horizontal,
         itemCount: fileList.length,
-        itemBuilder: (BuildContext _, int index) {
+        itemBuilder: (_, int index) {
           return Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 8.0,
@@ -269,7 +269,7 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
               ),
             ),
           ),
-          selectedAssetsWidget,
+          selectedAssetsWidget(context),
         ],
       ),
     );
@@ -501,7 +501,7 @@ class FileAssetPickerBuilder
 
   @override
   PreferredSizeWidget appBar(BuildContext context) {
-    return AppBar(
+    final AppBar appBar = AppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
       centerTitle: isAppleOS(context),
       title: pathEntitySelector(context),
@@ -513,6 +513,8 @@ class FileAssetPickerBuilder
             ]
           : null,
     );
+    appBarPreferredSize ??= appBar.preferredSize;
+    return appBar;
   }
 
   @override
@@ -555,7 +557,7 @@ class FileAssetPickerBuilder
             },
           ),
         ),
-        appBar(context),
+        Positioned.fill(bottom: null, child: appBar(context)),
       ],
     );
   }
@@ -585,6 +587,7 @@ class FileAssetPickerBuilder
 
   @override
   Widget assetsGridBuilder(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     int totalCount = provider.currentAssets.length;
     if (specialItemPosition != SpecialItemPosition.none) {
       totalCount += 1;
@@ -598,7 +601,7 @@ class FileAssetPickerBuilder
     final int row = (totalCount + placeholderCount) ~/ gridCount;
     final double dividedSpacing = itemSpacing / gridCount;
     final double topPadding =
-        MediaQuery.of(context).padding.top + kToolbarHeight;
+        MediaQuery.paddingOf(context).top + appBarPreferredSize!.height;
 
     Widget sliverGrid(BuildContext ctx, List<File> assets) {
       return SliverGrid(
@@ -670,8 +673,8 @@ class FileAssetPickerBuilder
                   if (isAppleOS(context))
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height:
-                            MediaQuery.of(context).padding.top + kToolbarHeight,
+                        height: MediaQuery.paddingOf(context).top +
+                            appBarPreferredSize!.height,
                       ),
                     ),
                   sliverGrid(_, assets),
@@ -822,8 +825,9 @@ class FileAssetPickerBuilder
 
   @override
   Widget pathEntityListWidget(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     final double appBarHeight =
-        kToolbarHeight + MediaQuery.paddingOf(context).top;
+        appBarPreferredSize!.height + MediaQuery.paddingOf(context).top;
     final double maxHeight = MediaQuery.sizeOf(context).height * 0.825;
     return ValueListenableBuilder<bool>(
       valueListenable: isSwitchingPath,

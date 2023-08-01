@@ -425,7 +425,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
   @override
   AssetPickerAppBar appBar(BuildContext context) {
-    return AssetPickerAppBar(
+    final AssetPickerAppBar appBar = AssetPickerAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
       centerTitle: true,
       title: Semantics(
@@ -443,12 +443,12 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         ],
       ),
     );
+    appBarPreferredSize ??= appBar.preferredSize;
+    return appBar;
   }
 
   @override
   Widget appleOSLayout(BuildContext context) {
-    final AssetPickerAppBar appBarWidget = appBar(context);
-
     Widget layout(BuildContext context) {
       return Stack(
         children: <Widget>[
@@ -469,7 +469,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               ),
             ],
           ),
-          appBarWidget,
+          appBar(context),
         ],
       );
     }
