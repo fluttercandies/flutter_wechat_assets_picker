@@ -144,7 +144,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customPickerDirectoryAndFileName => 'Directory+File picker';
 
   @override
-  String get customPickerDirectoryAndFileDescription => 'This is a custom picker built for `File`.\nBy browsing this picker, we want you to know that you can build your own picker components using the entity\'s type you desired.\n\nIn this page, picker will grab files from `getExternalStorageDirectory`, then check whether it contains images. Put files into the path to see how this custom picker work.';
+  String get customPickerDirectoryAndFileDescription => 'This is a custom picker built for `File`.\nBy browsing this picker, we want you to know that you can build your own picker components using the entity\'s type you desired.\n\nIn this page, picker will grab files from `getApplicationDocumentsDirectory`, then check whether it contains images. Put files into the path to see how this custom picker work.';
 
   @override
   String get customPickerMultiTabName => 'Multi tab picker';

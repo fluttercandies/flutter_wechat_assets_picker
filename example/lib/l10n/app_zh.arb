@@ -45,7 +45,7 @@
   "customPickerNotice": "本页面包含了多种方式、不同界面和特定应用的自定义选择器。欢迎贡献添加你自定义的选择器。\n该页面的所有选择器的代码位于 lib/customs/pickers 目录。",
   "customPickerCallThePickerButton": "\uD83C\uDF81 开始选择资源",
   "customPickerDirectoryAndFileName": "Directory+File 选择器",
-  "customPickerDirectoryAndFileDescription": "为 `File` 构建的自定义选择器。\n通过阅读该选择器的源码，你可以学习如何完全以你自定义的资源类型来构建并选择器的界面。\n\n该选择器会从 `getExternalStorageDirectory` 目录获取资源，然后检查它是否包含图片。你需要将图片放在该目录来查看选择器的效果。",
+  "customPickerDirectoryAndFileDescription": "为 `File` 构建的自定义选择器。\n通过阅读该选择器的源码，你可以学习如何完全以你自定义的资源类型来构建并选择器的界面。\n\n该选择器会从 `getApplicationDocumentsDirectory` 目录获取资源，然后检查它是否包含图片。你需要将图片放在该目录来查看选择器的效果。",
   "customPickerMultiTabName": "多 Tab 选择器",
   "customPickerMultiTabDescription": "该选择器会以多 Tab 的形式同时展示多种资源类型的选择器。",
   "customPickerMultiTabTab1": "全部",

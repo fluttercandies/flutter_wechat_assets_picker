@@ -144,7 +144,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get customPickerDirectoryAndFileName => 'Directory+File 选择器';
 
   @override
-  String get customPickerDirectoryAndFileDescription => '为 `File` 构建的自定义选择器。\n通过阅读该选择器的源码，你可以学习如何完全以你自定义的资源类型来构建并选择器的界面。\n\n该选择器会从 `getExternalStorageDirectory` 目录获取资源，然后检查它是否包含图片。你需要将图片放在该目录来查看选择器的效果。';
+  String get customPickerDirectoryAndFileDescription => '为 `File` 构建的自定义选择器。\n通过阅读该选择器的源码，你可以学习如何完全以你自定义的资源类型来构建并选择器的界面。\n\n该选择器会从 `getApplicationDocumentsDirectory` 目录获取资源，然后检查它是否包含图片。你需要将图片放在该目录来查看选择器的效果。';
 
   @override
   String get customPickerMultiTabName => '多 Tab 选择器';
