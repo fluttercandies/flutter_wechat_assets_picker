@@ -22,6 +22,7 @@ dependencies:
   video_player: ^2.7.0
 
 dev_dependencies:
+  flutter_lints: any
   flutter_localizations:
     sdk: flutter
   flutter_test:
