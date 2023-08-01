@@ -11,6 +11,7 @@ See the [Migration Guide](guides/migration_guide.md) for the details of breaking
 ### Improvements
 
 - Add `appBarPreferredSize` in the picker delegate to help with padding calculations.
+- Improve the performance with `MediaQuery` callers.
 
 ## 8.6.1
 
