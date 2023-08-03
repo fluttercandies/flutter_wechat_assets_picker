@@ -832,7 +832,7 @@ class DefaultAssetPickerBuilderDelegate
           ..hasAssetsToDisplay = false
           ..isAssetsEmpty = true
           ..totalAssetsCount = 0
-          ..paths.clear();
+          ..paths = [];
         return;
       }
     }
