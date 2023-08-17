@@ -140,12 +140,13 @@ before you have any questions.
 The package only guarantees to be working on **the stable version of Flutter**.
 We won't update it in real-time to align with other channels of Flutter.
 
-|        | 3.0.0 | 3.3.0 | 3.7.0 | 3.10.0 |
-|--------|:-----:|:-----:|:-----:|:------:|
-| 8.5.0+ |   ❌   |   ❌   |   ❌   |   ✅    |
-| 8.4.0+ |   ❌   |   ❌   |   ✅   |   ❌    |
-| 8.0.0+ |   ✅   |   ✅   |   ❌   |   ❌    |
-| 7.3.0+ |   ✅   |   ✅   |   ❌   |   ❌    |
+|        | 3.0 | 3.3 | 3.7 | 3.10 | **3.13** |
+|--------|:---:|:---:|:---:|:----:|:--------:|
+| 8.7.0+ |  ❌  |  ❌  |  ❌  |  ❌   |    ✅     |
+| 8.5.0+ |  ❌  |  ❌  |  ❌  |  ✅   |    ❌     |
+| 8.4.0+ |  ❌  |  ❌  |  ✅  |  ❌   |    ❌     |
+| 8.0.0+ |  ✅  |  ✅  |  ❌  |  ❌   |    ❌     |
+| 7.3.0+ |  ✅  |  ✅  |  ❌  |  ❌   |    ❌     |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
 please use `dependency_overrides` to fix it.
