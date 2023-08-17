@@ -195,7 +195,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                     child: DecoratedBox(
                       decoration: const BoxDecoration(
                         boxShadow: <BoxShadow>[
-                          BoxShadow(color: Colors.black12)
+                          BoxShadow(color: Colors.black12),
                         ],
                         shape: BoxShape.circle,
                       ),
