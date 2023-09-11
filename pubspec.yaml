@@ -4,6 +4,12 @@ description: |
   An image picker (also with videos and audio)
   for Flutter projects based on WeChat's UI,
   with full support for customization.
+topics:
+  - picker
+  - image
+  - audio
+  - video
+  - wechat
 
 repository: https://github.com/fluttercandies/flutter_wechat_assets_picker
 issue_tracker: https://github.com/fluttercandies/flutter_wechat_assets_picker/issues
