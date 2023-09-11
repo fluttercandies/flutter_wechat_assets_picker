@@ -6,6 +6,12 @@ that can be found in the LICENSE file. -->
 
 See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## 8.7.1
+
+### Improvements
+
+- Improve README docs and add topics for pub.
+
 ## 8.7.0
 
 ### Breaking changes
