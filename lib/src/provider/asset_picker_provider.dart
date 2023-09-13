@@ -56,12 +56,24 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// 销毁时重置所有内容
   @override
   void dispose() {
+    _mounted = false;
     _isAssetsEmpty = false;
     _paths.clear();
     _currentPath = null;
     _currentAssets.clear();
     super.dispose();
   }
+
+  @override
+  void notifyListeners() {
+    if (_mounted) {
+      super.notifyListeners();
+    }
+  }
+
+  /// Whether the provider is mounted. Set to `false` if disposed.
+  bool get mounted => _mounted;
+  bool _mounted = true;
 
   /// Get paths.
   /// 获取所有的资源路径
@@ -490,6 +502,8 @@ class DefaultAssetPickerProvider
     final PathWrapper<AssetPathEntity> wrapper = _currentPath!;
     final int assetCount =
         wrapper.assetCount ?? await wrapper.path.assetCountAsync;
+    // If the picker was disposed (#492), stop fetching the assets
+    if (!mounted) return;
     totalAssetsCount = assetCount;
     isAssetsEmpty = assetCount == 0;
     if (wrapper.assetCount == null) {
