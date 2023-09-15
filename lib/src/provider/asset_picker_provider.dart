@@ -503,7 +503,9 @@ class DefaultAssetPickerProvider
     final int assetCount =
         wrapper.assetCount ?? await wrapper.path.assetCountAsync;
     // If the picker was disposed (#492), stop fetching the assets
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     totalAssetsCount = assetCount;
     isAssetsEmpty = assetCount == 0;
     if (wrapper.assetCount == null) {
