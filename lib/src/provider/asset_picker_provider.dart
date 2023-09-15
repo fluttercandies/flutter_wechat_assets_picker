@@ -56,11 +56,11 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// 销毁时重置所有内容
   @override
   void dispose() {
-    _mounted = false;
     _isAssetsEmpty = false;
     _paths.clear();
     _currentPath = null;
     _currentAssets.clear();
+    _mounted = false;
     super.dispose();
   }
 
