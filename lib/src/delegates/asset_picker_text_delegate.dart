@@ -1040,7 +1040,7 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   const KoreanAssetPickerTextDelegate();
 
   @override
-  String get languageCode => 'kr';
+  String get languageCode => 'ko';
 
   @override
   String get confirm => '확인';
