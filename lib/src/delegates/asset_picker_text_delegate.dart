@@ -1083,7 +1083,7 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get accessAllTip => '앱이 기기의 일부 미디어에만 접근할 수 있습니다. '
-      '모든 미디어에 접근할 수 있도록 허용해 주세요.';
+      '시스템 설정으로 이동하여 앱이 기기의 모든 미디어에 접근하도록 허용해 주세요.';
 
   @override
   String get goToSystemSettings => '시스템 설정 이동';
