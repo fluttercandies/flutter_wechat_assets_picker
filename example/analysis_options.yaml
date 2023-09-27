@@ -1,0 +1,9 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - lib/l10n/gen/*.dart
+
+linter:
+  rules:
+    use_build_context_synchronously: false

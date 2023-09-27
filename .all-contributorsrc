@@ -19,7 +19,9 @@
         "ideas",
         "maintenance",
         "question",
-        "review"
+        "review",
+        "a11y",
+        "translation"
       ]
     },
     {
@@ -209,7 +211,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/22376981?v=4",
       "profile": "https://www.legoffmael.fr",
       "contributions": [
-        "code"
+        "code",
+        "maintenance"
       ]
     },
     {
@@ -229,6 +232,24 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "cevheri",
+      "name": "Cevheri",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12383547?v=4",
+      "profile": "https://sqlturk.wordpress.com/",
+      "contributions": [
+        "translation"
+      ]
+    },
+    {
+      "login": "LIMMIHEE",
+      "name": "mirimhee",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48482259?v=4",
+      "profile": "https://velog.io/@hee_mm_",
+      "contributions": [
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -237,5 +258,6 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "skipCi": true,
-  "commitConvention": "angular"
+  "commitConvention": "angular",
+  "commitType": "docs"
 }

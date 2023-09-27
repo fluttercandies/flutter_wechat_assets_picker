@@ -2,13 +2,13 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
+import 'dart:developer' as dev;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../constants/extensions.dart';
-import '../../internal/methods.dart';
 import '../scale_text.dart';
 
 class LocallyAvailableBuilder extends StatefulWidget {
@@ -38,6 +38,17 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
     _checkLocallyAvailable();
   }
 
+  @override
+  void didUpdateWidget(LocallyAvailableBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.asset != oldWidget.asset ||
+        widget.isOriginal != oldWidget.isOriginal) {
+      _isLocallyAvailable = false;
+      _progressHandler = null;
+      _checkLocallyAvailable();
+    }
+  }
+
   Future<void> _checkLocallyAvailable() async {
     _isLocallyAvailable = await widget.asset.isLocallyAvailable(
       isOrigin: widget.isOriginal,
@@ -54,7 +65,6 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
           withSubtype: true,
           progressHandler: _progressHandler,
         );
-        realDebugPrint('Produced file: $file.');
         if (file != null) {
           _isLocallyAvailable = true;
           if (mounted) {
@@ -64,7 +74,10 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
       });
     }
     _progressHandler?.stream.listen((PMProgressState s) {
-      realDebugPrint('Handling progress: $s.');
+      assert(() {
+        dev.log('Handling progress: $s.');
+        return true;
+      }());
       if (s.state == PMRequestState.success) {
         _isLocallyAvailable = true;
         if (mounted) {
@@ -89,7 +102,7 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
                 state == PMRequestState.failed
                     ? Icons.cloud_off
                     : Icons.cloud_queue,
-                color: context.themeData.iconTheme.color?.withOpacity(.4),
+                color: context.iconTheme.color?.withOpacity(.4),
                 size: 28,
               ),
               if (state != PMRequestState.success &&
@@ -97,7 +110,7 @@ class _LocallyAvailableBuilderState extends State<LocallyAvailableBuilder> {
                 ScaleText(
                   '  iCloud ${(progress * 100).toInt()}%',
                   style: TextStyle(
-                    color: context.themeData.textTheme.bodyMedium?.color
+                    color: context.textTheme.bodyMedium?.color
                         ?.withOpacity(.4),
                   ),
                 ),

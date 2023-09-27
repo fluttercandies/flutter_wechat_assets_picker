@@ -5,8 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-import '../constants/page_mixin.dart';
+import '../constants/extensions.dart';
 import '../constants/picker_method.dart';
+import 'page_mixin.dart';
 
 class MultiAssetsPage extends StatefulWidget {
   const MultiAssetsPage({super.key});
@@ -18,29 +19,33 @@ class MultiAssetsPage extends StatefulWidget {
 class _MultiAssetsPageState extends State<MultiAssetsPage>
     with AutomaticKeepAliveClientMixin, ExamplePageMixin {
   @override
+  String get noticeText => 'lib/pages/multi_assets_page.dart';
+
+  @override
   int get maxAssetsCount => 9;
 
   /// Check each method's source code for more details.
   @override
-  List<PickMethod> get pickMethods {
+  List<PickMethod> pickMethods(BuildContext context) {
     return <PickMethod>[
-      PickMethod.common(maxAssetsCount),
-      PickMethod.image(maxAssetsCount),
-      PickMethod.video(maxAssetsCount),
-      PickMethod.audio(maxAssetsCount),
+      PickMethod.common(context, maxAssetsCount),
+      PickMethod.image(context, maxAssetsCount),
+      PickMethod.video(context, maxAssetsCount),
+      PickMethod.audio(context, maxAssetsCount),
       PickMethod.camera(
+        context: context,
         maxAssetsCount: maxAssetsCount,
         handleResult: (BuildContext context, AssetEntity result) =>
             Navigator.of(context).pop(<AssetEntity>[...assets, result]),
       ),
-      PickMethod.cameraAndStay(maxAssetsCount: maxAssetsCount),
-      PickMethod.changeLanguages(maxAssetsCount),
-      PickMethod.threeItemsGrid(maxAssetsCount),
-      PickMethod.prependItem(maxAssetsCount),
+      PickMethod.cameraAndStay(context, maxAssetsCount),
+      PickMethod.changeLanguages(context, maxAssetsCount),
+      PickMethod.threeItemsGrid(context, maxAssetsCount),
+      PickMethod.prependItem(context, maxAssetsCount),
       PickMethod(
         icon: '🎭',
-        name: 'WeChat Moment',
-        description: 'Pick assets like the WeChat Moment pattern.',
+        name: context.l10n.pickMethodWeChatMomentName,
+        description: context.l10n.pickMethodWeChatMomentDescription,
         method: (BuildContext context, List<AssetEntity> assets) {
           return AssetPicker.pickAssets(
             context,
@@ -51,12 +56,13 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
           );
         },
       ),
-      PickMethod.noPreview(maxAssetsCount),
-      PickMethod.customizableTheme(maxAssetsCount),
-      PickMethod.pathNameBuilder(maxAssetsCount),
-      PickMethod.customFilterOptions(maxAssetsCount),
-      PickMethod.preventGIFPicked(maxAssetsCount),
+      PickMethod.noPreview(context, maxAssetsCount),
+      PickMethod.customizableTheme(context, maxAssetsCount),
+      PickMethod.pathNameBuilder(context, maxAssetsCount),
+      PickMethod.customFilterOptions(context, maxAssetsCount),
+      PickMethod.preventGIFPicked(context, maxAssetsCount),
       PickMethod.keepScrollOffset(
+        context: context,
         delegate: () => keepScrollDelegate!,
         onPermission: (PermissionState state) {
           keepScrollDelegate ??= DefaultAssetPickerBuilderDelegate(
@@ -77,8 +83,9 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
       ),
       PickMethod(
         icon: '🎚',
-        name: 'Custom image preview thumb size',
-        description: 'You can reduce the thumb size to get faster load speed.',
+        name: context.l10n.pickMethodCustomImagePreviewThumbSizeName,
+        description:
+            context.l10n.pickMethodCustomImagePreviewThumbSizeDescription,
         method: (BuildContext context, List<AssetEntity> assets) {
           return AssetPicker.pickAssets(
             context,

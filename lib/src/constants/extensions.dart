@@ -8,21 +8,26 @@ import 'package:provider/provider.dart';
 typedef CNP<T extends ChangeNotifier?> = ChangeNotifierProvider<T>;
 
 extension BuildContextExtension on BuildContext {
-  MediaQueryData get mediaQuery => MediaQuery.of(this);
+  ThemeData get theme => Theme.of(this);
 
-  ThemeData get themeData => Theme.of(this);
+  IconThemeData get iconTheme => IconTheme.of(this);
 
-  double get topPadding => mediaQuery.padding.top;
+  TextTheme get textTheme => Theme.of(this).textTheme;
 
-  double get bottomPadding => mediaQuery.padding.bottom;
+  double get topPadding => MediaQuery.paddingOf(this).top;
 
-  double get bottomInsets => mediaQuery.viewInsets.bottom;
+  double get bottomPadding => MediaQuery.paddingOf(this).bottom;
+
+  double get bottomInsets => MediaQuery.viewInsetsOf(this).bottom;
 }
 
 extension BrightnessExtension on Brightness {
   bool get isDark => this == Brightness.dark;
 
   bool get isLight => this == Brightness.light;
+
+  Brightness get reverse =>
+      this == Brightness.light ? Brightness.dark : Brightness.light;
 }
 
 extension ColorExtension on Color {
