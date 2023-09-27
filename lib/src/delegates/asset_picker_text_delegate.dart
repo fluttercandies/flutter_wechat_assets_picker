@@ -20,6 +20,7 @@ const List<AssetPickerTextDelegate> assetPickerTextDelegates =
   FrenchAssetPickerTextDelegate(),
   VietnameseAssetPickerTextDelegate(),
   TurkishAssetPickerTextDelegate(),
+  KoreanAssetPickerTextDelegate(),
 ];
 
 /// Obtain the text delegate from the given locale.
@@ -1032,3 +1033,98 @@ class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get sUnitAssetCountLabel => 'Sayı';
 }
+
+/// [AssetPickerTextDelegate] implements with Korean.
+/// 한국어 현지화
+class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const KoreanAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'ko';
+
+  @override
+  String get confirm => '확인';
+
+  @override
+  String get cancel => '취소';
+
+  @override
+  String get edit => '편집';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get loadFailed => '불러오기 실패';
+
+  @override
+  String get original => '원본';
+
+  @override
+  String get preview => '미리보기';
+
+  @override
+  String get select => '선택';
+
+  @override
+  String get emptyList => '빈 목록';
+
+  @override
+  String get unSupportedAssetType => '지원하지 않는 HEIC 미디어 유형.';
+
+  @override
+  String get unableToAccessAll => '기기의 모든 미디어에 접근할 수 없습니다.';
+
+  @override
+  String get viewingLimitedAssetsTip => '접근 가능한 미디어과 앨범만 볼 수 있습니다.';
+
+  @override
+  String get changeAccessibleLimitedAssets => '접근 가능한 미디어을 업데이트하려면 클릭하세요.';
+
+  @override
+  String get accessAllTip => '앱이 기기의 일부 미디어에만 접근할 수 있습니다. '
+      '시스템 설정으로 이동하여 앱이 기기의 모든 미디어에 접근하도록 허용해 주세요.';
+
+  @override
+  String get goToSystemSettings => '시스템 설정 이동';
+
+  @override
+  String get accessLimitedAssets => '제한된 접근으로 계속';
+
+  @override
+  String get accessiblePathName => '접근 가능한 미디어';
+
+  @override
+  String get sTypeAudioLabel => '오디오';
+
+  @override
+  String get sTypeImageLabel => '이미지';
+
+  @override
+  String get sTypeVideoLabel => '비디오';
+
+  @override
+  String get sTypeOtherLabel => '다른 미디어';
+
+  @override
+  String get sActionPlayHint => '재생';
+
+  @override
+  String get sActionPreviewHint => '미리보기';
+
+  @override
+  String get sActionSelectHint => '선택';
+
+  @override
+  String get sActionSwitchPathLabel => '경로 변경';
+
+  @override
+  String get sActionUseCameraHint => '카메라 사용';
+
+  @override
+  String get sNameDurationLabel => '기간';
+
+  @override
+  String get sUnitAssetCountLabel => '개';
+}
+

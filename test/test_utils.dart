@@ -37,6 +37,7 @@ Widget defaultPickerTestApp({
       Locale('ar'),
       Locale('fr'),
       Locale('vi'),
+      Locale('ko'),
     ],
     locale: locale,
   );
