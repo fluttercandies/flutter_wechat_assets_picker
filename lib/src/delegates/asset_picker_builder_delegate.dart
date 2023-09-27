@@ -13,6 +13,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:wechat_assets_picker/src/widget/builder/value_listenable_builder_2.dart';
 
 import '../constants/constants.dart';
 import '../constants/enums.dart';
@@ -950,11 +951,11 @@ class DefaultAssetPickerBuilderDelegate
       // - On iOS and macOS, show nothing.
       actions: <Widget>[
         trailing ?? const SizedBox(),
-        if (!isAppleOS && (isPreviewEnabled || !isSingleAssetMode))
+        if (!isAppleOS(context) && (isPreviewEnabled || !isSingleAssetMode))
           confirmButton(context),
       ],
       actionsPadding: const EdgeInsetsDirectional.only(end: 14),
-      blurRadius: isAppleOS ? appleOSBlurRadius : 0,
+      blurRadius: isAppleOS(context) ? appleOSBlurRadius : 0,
     );
     appBarPreferredSize ??= appBar.preferredSize;
     return appBar;
