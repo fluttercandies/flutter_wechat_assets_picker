@@ -5,6 +5,8 @@
 import 'package:flutter/painting.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+const String packageName = 'wechat_assets_picker';
+
 const int defaultAssetsPerPage = 80;
 const int defaultMaxAssetsCount = 9;
 

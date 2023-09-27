@@ -42,6 +42,19 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   bool get _isLivePhoto => widget.asset.isLivePhoto;
 
   @override
+  void didUpdateWidget(ImagePageBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.asset != oldWidget.asset ||
+        widget.previewThumbnailSize != oldWidget.previewThumbnailSize) {
+      _isLocallyAvailable = false;
+      _controller
+        ?..pause()
+        ..dispose();
+      _controller = null;
+    }
+  }
+
+  @override
   void dispose() {
     _controller?.dispose();
     super.dispose();
@@ -153,6 +166,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
+      key: ValueKey<String>(widget.asset.id),
       asset: widget.asset,
       isOriginal: _isOriginal,
       builder: (BuildContext context, AssetEntity asset) {

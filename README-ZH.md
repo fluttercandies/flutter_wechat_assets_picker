@@ -18,12 +18,9 @@ that can be found in the LICENSE file. -->
 
 Language: [English](README.md) | 中文
 
-基于 **微信 UI** 的 Flutter 图片选择器（同时支持视频和音频）。
-该插件基于 [photo_manager][photo_manager pub] 实现资源相关功能，
-[extended_image][extended_image pub] 用于查看图片，
-[provider][provider pub] 用于协助管理选择器的状态。
+基于 **微信 UI** 的 Flutter **图片选择器（同时支持视频和音频）**。
 
-当前的界面设计基于的微信版本：**8.x**
+当前的界面设计基于的微信版本：**8.3.x**
 界面更新将在微信版本更新后随时进行跟进。
 
 如果你需要拍照及录制视频，请先查看示例的详细用法，
@@ -32,11 +29,27 @@ Language: [English](README.md) | 中文
 
 查看 [迁移指南][] 了解如何从破坏性改动中迁移为可用代码。
 
+## 主要使用的 package
+
+该插件基于这些优秀的 package 构建：
+
+| Name                                 | Features      |
+|:-------------------------------------|:--------------|
+| [photo_manager][photo_manager pub]   | 资源的基础抽象和管理。   |
+| [extended_image][extended_image pub] | 以熟悉的操作预览所有资源。 |
+| [provider][provider pub]             | 协助选择器管理器内部状态。 |
+| [video_player][video_player pub]     | 播放对应的视频和音频。   |
+
+这些 package 在该插件中的实现已相对稳定。
+如果你在使用中发现于它们相关的问题，
+请先在本插件的问题跟踪中报告相关问题。
+
 <details>
   <summary>目录列表</summary>
 
 <!-- TOC -->
 * [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
+  * [主要使用的 package](#主要使用的-package)
   * [特性 ✨](#特性-)
     * [特别提醒 📝](#特别提醒-)
   * [项目展柜 🖼️](#项目展柜-)
@@ -57,18 +70,19 @@ Language: [English](README.md) | 中文
       * [注册资源变化回调](#注册资源变化回调)
       * [在表单数据中上传 `AssetEntity`](#在表单数据中上传-assetentity)
         * [使用 `http`](#使用-http)
-        * [使用 `diox`](#使用-diox)
+        * [使用 `dio`](#使用-dio)
     * [自定义选择器](#自定义选择器)
   * [常见问题 ❔](#常见问题-)
-    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task---photomanager--compiledebugkotlin)
+    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photomanagercompiledebugkotlin)
     * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
-    * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示--failed-to-find-generatedappglidemodule)
+    * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
   * [致谢](#致谢)
 <!-- TOC -->
 </details>
 
 ## 特性 ✨
 
+- ♿ 完整的无障碍支持，包括 **TalkBack** 和 **VoiceOver**
 - ♻️ 支持基于代理重载的全量自定义
 - 🎏 完全可自定义的基于 `ThemeData` 的主题
 - 💚 复刻微信风格（甚至优化了更多的细节）
@@ -91,7 +105,7 @@ Language: [English](README.md) | 中文
 1. HEIF (HEIC) 图片支持获取和转换，但是它们的显示依托于 Flutter 的图片解析。
    在此 issue 中 [flutter/flutter#20522](https://github.com/flutter/flutter/issues/20522) 有所说明。
    若要用于显示，请使用 `entity.file` 或 `AssetEntityImage` 进行处理。
-2. 由于 iOS 和 macOS 的系统限制，在获取音频时只能获取应用沙盒环境内的音频
+2. 由于 iOS 和 macOS 的系统限制，在获取音频时只能获取应用沙盒环境内的音频。
 
 ## 项目展柜 🖼️
 
@@ -101,20 +115,23 @@ Language: [English](README.md) | 中文
 
 ## 截图 📸
 
-| ![1](https://pic.alexv525.com/2021-07-05-picker_1.jpg)   | ![2](https://pic.alexv525.com/2021-07-05-picker_2.jpg)   | ![3](https://pic.alexv525.com/2021-07-05-picker_3.jpg)   |
+| ![1](screenshots/README_1.webp)                          | ![2](screenshots/README_2.webp)                          | ![3](screenshots/README_3.webp)                          |
 |----------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
-| ![4](https://pic.alexv525.com/2021-07-05-picker_4.jpg)   | ![5](https://pic.alexv525.com/2021-07-05-picker_5.jpg)   | ![6](https://pic.alexv525.com/2021-07-05-picker_6.jpg)   |
-| ![7](https://pic.alexv525.com/2021-07-06-picker_7.jpg)   | ![8](https://pic.alexv525.com/2021-07-05-picker_8.jpg)   | ![9](https://pic.alexv525.com/2021-07-05-picker_9-1.jpg) |
+| ![4](screenshots/README_4.webp)                          | ![5](screenshots/README_5.webp)                          | ![6](screenshots/README_6.webp)                          |
+| ![7](screenshots/README_7.webp)                          | ![8](screenshots/README_8.webp)                          | ![9](screenshots/README_9.webp)                          |
 | ![10](https://pic.alexv525.com/2021-07-05-picker_10.png) | ![10](https://pic.alexv525.com/2021-07-05-picker_11.png) | ![12](https://pic.alexv525.com/2021-07-05-picker_12.png) |
 
 ## 开始前的注意事项 ‼️
 
-该库与 [photo_manager][photo_manager pub] 有强关联性，
-大部分方法的行为是由 photo_manager 进行控制的。
-
-在选择器中最常使用的 API 是：
-- [`AssetEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
-- [`AssetPathEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
+在开始一切之前，请明确以下两点：
+- 由于理解差异和篇幅限制，并不是所有的内容都会明确地在文档中指出。
+  当你遇到没有找到需求和无法理解的概念时，请先运行项目的示例 example，
+  它可以解决 90% 的常见需求。
+- 该库与 [photo_manager][photo_manager pub] 有强关联性，
+  大部分方法的行为是由 photo_manager 进行控制的，
+  所以请尽可能地确保你了解以下两个类的概念：
+  - 资源（图片/视频/音频） [`AssetEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
+  - 资源合集（相册或集合概念） [`AssetPathEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
 
 当你有与相关的 API 和行为的疑问时，你可以查看
 [photo_manager API 文档][] 了解更多细节。
@@ -126,12 +143,16 @@ Language: [English](README.md) | 中文
 
 ### 版本兼容
 
-|        | 2.10.0 | 3.0.0 | 3.3.0 | 3.7.0 |
-|--------|:------:|:-----:|:-----:|:-----:|
-| 8.4.0+ |   ❌    |   ❌   |   ❌   |   ✅   |
-| 8.0.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
-| 7.3.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
-| 7.0.0+ |   ✅    |   ❌   |   ❌   |   ❌   |
+该插件仅保证能与 **stable 渠道的 Flutter SDK** 配合使用。
+我们不会为其他渠道的 Flutter SDK 做实时支持。
+
+|        | 3.0 | 3.3 | 3.7 | 3.10 | **3.13** |
+|--------|:---:|:---:|:---:|:----:|:--------:|
+| 8.7.0+ |  ❌  |  ❌  |  ❌  |  ❌   |    ✅     |
+| 8.5.0+ |  ❌  |  ❌  |  ❌  |  ✅   |    ❌     |
+| 8.4.0+ |  ❌  |  ❌  |  ✅  |  ❌   |    ❌     |
+| 8.0.0+ |  ✅  |  ✅  |  ❌  |  ❌   |    ❌     |
+| 7.3.0+ |  ✅  |  ✅  |  ❌  |  ❌   |    ❌     |
 
 如果在 `flutter pub get` 时遇到了 `resolve conflict` 失败问题，
 请使用 `dependency_overrides` 解决。
@@ -196,6 +217,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
    ```ruby
    platform :ios, '11.0'
    ```
+   如果该行以 `#` (注释) 开头，请把 `#` 删除。
 2. 将以下内容添加至 `Info.plist`。
 ```
 <key>NSAppTransportSecurity</key>
@@ -210,9 +232,10 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 ### macOS
 
 1. 在 `macos/Podfile` 中指定最低构建版本至 **10.15**。
-   ```ruby
+   ```Podfile
    platform :osx, '10.15'
    ```
+   如果该行以 `#` (注释) 开头，请把 `#` 删除。
 2. 使用 **Xcode** 打开 `macos/Runner.xcworkspace`。
    接着将 macOS 的最低构建版本提升至 **10.15**。
 3. 与 [iOS](#iOS) 一样，添加相同的内容到 `Info.plist` 里。
@@ -234,6 +257,8 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 * 日本語
 * مة العربية
 * Délégué
+* Tiếng Việt
+* Türkçe Yerelleştirme
 
 如果你想使用自定义或固定的文字实现，请通过
 `AssetPickerConfig.textDelegate` 传递调用。
@@ -268,7 +293,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | keepScrollOffset                  | `bool`                               | 选择器是否可以从同样的位置开始选择                                    | `null`                      |
 | sortPathDelegate                  | `SortPathDelegate<AssetPathEntity>?` | 资源路径的排序实现，可自定义路径排序方法                                 | `CommonSortPathDelegate`    |
 | sortPathsByModifiedDate           | `bool`                               | 是否结合 `FilterOptionGroup.containsPathModified` 进行路径排序 | `false`                     |
-| filterOptions                     | `FilterOptionGroup?`                 | 允许用户自定义资源过滤条件                                        | `null`                      |
+| filterOptions                     | `PMFilter?`                          | 允许用户自定义资源过滤条件                                        | `null`                      |
 | gridCount                         | `int`                                | 选择器网格数量                                              | 4                           |
 | themeColor                        | `Color?`                             | 选择器的主题色                                              | `Color(0xff00bc56)`         |
 | pickerTheme                       | `ThemeData?`                         | 选择器的主题提供，包括查看器                                       | `null`                      |
@@ -279,7 +304,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | selectPredicate                   | `AssetSelectPredicate`               | 判断资源可否被选择                                            | `null`                      |
 | shouldRevertGrid                  | `bool?`                              | 判断资源网格是否需要倒序排列                                       | `null`                      |
 | limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?` | 判断有限的权限情况下是否展示提示页面                                   | `null`                      |
-| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 构建自定义路径名称                                            | `null`                      |
+| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 基于路径（相册）构建自定义名称的方法                                   | `null`                      |
 
 - 当 `maxAssets` 等于 `1`（即单选模式），搭配
   `SpecialPickerType.noPreview` 使用会在用户点选资源换时立刻选中并返回。
@@ -372,24 +397,24 @@ Future<http.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) asyn
 }
 ```
 
-##### 使用 `diox`
+##### 使用 `dio`
 
-`diox` package: https://pub.flutter-io.cn/packages/diox
+`dio` package: https://pub.flutter-io.cn/packages/dio
 
-`diox` package 同样使用了
-[`MultipartFile`](https://pub.flutter-io.cn/documentation/diox/5.0.0-dev.2/diox/MultipartFile-class.html)
+`dio` package 同样使用了
+[`MultipartFile`](https://pub.flutter-io.cn/documentation/dio/latest/dio/MultipartFile-class.html)
 来在请求中处理文件。
 
 示例代码：
 ```dart
-import 'package:diox/diox.dart' as diox;
+import 'package:dio/dio.dart' as dio;
 
 Future<void> upload() async {
   final entity = await obtainYourEntity();
   final uri = Uri.https('example.com', 'create');
-  final response = diox.Dio().requestUri(
+  final response = dio.Dio().requestUri(
     uri,
-    data: diox.FormData.fromMap({
+    data: dio.FormData.fromMap({
       'test_field': 'test_value',
       'test_file': await multipartFileFromAssetEntity(entity),
     }),
@@ -397,20 +422,20 @@ Future<void> upload() async {
   print('Uploaded!');
 }
 
-Future<diox.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
-  diox.MultipartFile mf;
+Future<dio.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
+  dio.MultipartFile mf;
   // Using the file path.
   final file = await entity.file;
   if (file == null) {
     throw StateError('Unable to obtain file of the entity ${entity.id}.');
   }
-  mf = await diox.MultipartFile.fromFile(file.path);
+  mf = await dio.MultipartFile.fromFile(file.path);
   // Using the bytes.
   final bytes = await entity.originBytes;
   if (bytes == null) {
     throw StateError('Unable to obtain bytes of the entity ${entity.id}.');
   }
-  mf = diox.MultipartFile.fromBytes(bytes);
+  mf = dio.MultipartFile.fromBytes(bytes);
   return mf;
 }
 ```
@@ -424,10 +449,9 @@ Future<diox.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) asyn
 更多用法请查看示例中的 `Custom` 页面，
 该页面包含一个以 `<File, Directory>` 为类型基础的选择器。
 
-你可以在「Custom」页面尝试自定义的选择器。
-目前我们提供了一个基于 `Directory` 和 `File`
-（与 `photo_manager` 完全无关）实现的选择器，
-以及一个多 Tab 页切换的选择器。
+想要了解如何完全自定义主题、widget 和布局，前往 [示例](example/lib/customs/pickers)
+查看已有的自定义选择器的实现。
+
 如果你觉得你的实现有价值或能帮助到其他人，欢迎以 PR 的形式进行提交。
 更多细节请阅读 [贡献自定义实现][]。
 
@@ -499,6 +523,7 @@ W/Glide   (21133): Failed to find GeneratedAppGlideModule.
 [photo_manager pub]: https://pub.flutter-io.cn/packages/photo_manager
 [extended_image pub]: https://pub.flutter-io.cn/packages/extended_image
 [provider pub]: https://pub.flutter-io.cn/packages/provider
+[video_player pub]: https://pub.flutter-io.cn/packages/video_player
 [wechat_camera_picker pub]: https://pub.flutter-io.cn/packages/wechat_camera_picker
 [迁移指南]: https://github.com/fluttercandies/flutter_wechat_assets_picker/blob/main/guides/migration_guide.md
 [photo_manager API 文档]: https://pub.flutter-io.cn/documentation/photo_manager/latest/

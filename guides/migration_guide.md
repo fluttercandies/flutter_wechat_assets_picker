@@ -8,11 +8,34 @@ This document gathered all breaking changes and migrations requirement between m
 
 ## Major versions
 
+- [8.6.0](#860)
+- [8.3.0](#830)
 - [8.2.0](#820)
 - [8.0.0](#800)
 - [7.0.0](#700)
 - [6.0.0](#600)
 - [5.0.0](#500)
+
+## 8.6.0
+
+### Summary
+
+`isAppleOS` in `AssetPickerBuilderDelegate` and `AssetPickerViewerBuilderDelegate`
+has been refactored to relies on the `TargetPlatform` from a given `BuildContext`.
+Delegates that extends those should update the signature at least.
+
+### Details
+
+Before:
+
+```dart
+bool get isAppleOS;
+```
+
+After:
+```dart
+bool isAppleOS(BuildContext context);
+```
 
 ## 8.3.0
 

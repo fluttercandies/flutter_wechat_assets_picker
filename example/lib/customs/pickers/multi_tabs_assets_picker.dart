@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../constants/extensions.dart';
+
 const Color _themeColor = Color(0xfff2223a);
 
 class MultiTabAssetPicker extends StatefulWidget {
@@ -64,7 +66,7 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
     }
   }
 
-  Widget get selectedAssetsWidget {
+  Widget selectedAssetsWidget(BuildContext context) {
     return AnimatedContainer(
       duration: kThemeChangeDuration,
       curve: Curves.easeInOut,
@@ -88,7 +90,7 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  const Text('Selected Assets'),
+                  Text(context.l10n.selectedAssetsText),
                   Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 10.0,
@@ -117,41 +119,40 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
               ),
             ),
           ),
-          selectedAssetsListView,
+          selectedAssetsListView(context),
         ],
       ),
     );
   }
 
-  Widget get selectedAssetsListView {
+  Widget selectedAssetsListView(BuildContext context) {
     return Expanded(
       child: ListView.builder(
+        shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         scrollDirection: Axis.horizontal,
         itemCount: entities.length,
-        itemBuilder: (BuildContext _, int index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8.0,
-              vertical: 16.0,
+        itemBuilder: (_, int index) => Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8.0,
+            vertical: 16.0,
+          ),
+          child: AspectRatio(
+            aspectRatio: 1.0,
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(child: _selectedAssetWidget(index)),
+                AnimatedPositionedDirectional(
+                  duration: kThemeAnimationDuration,
+                  top: isDisplayingDetail ? 6.0 : -30.0,
+                  end: isDisplayingDetail ? 6.0 : -30.0,
+                  child: _selectedAssetDeleteButton(index),
+                ),
+              ],
             ),
-            child: AspectRatio(
-              aspectRatio: 1.0,
-              child: Stack(
-                children: <Widget>[
-                  Positioned.fill(child: _selectedAssetWidget(index)),
-                  AnimatedPositionedDirectional(
-                    duration: kThemeAnimationDuration,
-                    top: isDisplayingDetail ? 6.0 : -30.0,
-                    end: isDisplayingDetail ? 6.0 : -30.0,
-                    child: _selectedAssetDeleteButton(index),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -159,7 +160,7 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
   Widget _selectedAssetWidget(int index) {
     final AssetEntity asset = entities.elementAt(index);
 
-    Future<void> _onTap() async {
+    Future<void> onTap() async {
       final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
         context,
         currentIndex: index,
@@ -177,7 +178,7 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
     }
 
     return GestureDetector(
-      onTap: isDisplayingDetail ? _onTap : null,
+      onTap: isDisplayingDetail ? onTap : null,
       child: RepaintBoundary(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
@@ -215,17 +216,10 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
     );
   }
 
-  Widget paddingText(String text) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: SelectableText(text),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Multi tab picker')),
+      appBar: AppBar(title: Text(context.l10n.customPickerMultiTabName)),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -235,22 +229,24 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  paddingText(
-                    'The picker contains multiple tab with different types of '
-                    'assets for the picking at the same time.',
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: SelectableText(
+                      context.l10n.customPickerMultiTabDescription,
+                    ),
                   ),
                   TextButton(
                     onPressed: () => callPicker(context),
-                    child: const Text(
-                      '🎁 Call the Picker',
-                      style: TextStyle(fontSize: 22),
+                    child: Text(
+                      context.l10n.customPickerCallThePickerButton,
+                      style: const TextStyle(fontSize: 22),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          selectedAssetsWidget,
+          selectedAssetsWidget(context),
         ],
       ),
     );
@@ -299,7 +295,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           child: Container(
             height: appBarItemHeight,
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.5,
+              maxWidth: MediaQuery.sizeOf(context).width * 0.5,
             ),
             padding: const EdgeInsetsDirectional.only(start: 12, end: 6),
             decoration: BoxDecoration(
@@ -363,19 +359,12 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       builder: (_, __) => Selector<TabController, int>(
         selector: (_, TabController p) => p.index,
         builder: (_, int index, __) {
-          final DefaultAssetPickerProvider pickerProvider;
-          switch (index) {
-            case 1:
-              pickerProvider = videosProvider;
-              break;
-            case 2:
-              pickerProvider = imagesProvider;
-              break;
-            default:
-              pickerProvider = provider;
-          }
           return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-            value: pickerProvider,
+            value: switch (index) {
+              1 => videosProvider,
+              2 => imagesProvider,
+              _ => provider,
+            },
             builder: (BuildContext c, _) => selector(c),
           );
         },
@@ -421,19 +410,12 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       builder: (_, __) => Selector<TabController, int>(
         selector: (_, TabController p) => p.index,
         builder: (_, int index, __) {
-          final DefaultAssetPickerProvider pickerProvider;
-          switch (index) {
-            case 1:
-              pickerProvider = videosProvider;
-              break;
-            case 2:
-              pickerProvider = imagesProvider;
-              break;
-            default:
-              pickerProvider = provider;
-          }
           return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-            value: pickerProvider,
+            value: switch (index) {
+              1 => videosProvider,
+              2 => imagesProvider,
+              _ => provider,
+            },
             builder: (_, __) => button,
           );
         },
@@ -443,25 +425,64 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
   @override
   AssetPickerAppBar appBar(BuildContext context) {
-    return AssetPickerAppBar(
+    final AssetPickerAppBar appBar = AssetPickerAppBar(
       backgroundColor: theme.appBarTheme.backgroundColor,
-      centerTitle: isAppleOS,
+      centerTitle: true,
       title: Semantics(
         onTapHint: textDelegate.sActionSwitchPathLabel,
         child: pathEntitySelector(context),
       ),
       leading: backButton(context),
-      actions: <Widget>[if (!isAppleOS) confirmButton(context)],
-      actionsPadding: const EdgeInsetsDirectional.only(end: 14),
-      blurRadius: isAppleOS ? appleOSBlurRadius : 0,
+      blurRadius: isAppleOS(context) ? appleOSBlurRadius : 0,
       bottom: TabBar(
         controller: _tabController,
-        tabs: const <Tab>[
-          Tab(text: '全部'),
-          Tab(text: '视频'),
-          Tab(text: '图片'),
+        tabs: <Tab>[
+          Tab(text: context.l10n.customPickerMultiTabTab1),
+          Tab(text: context.l10n.customPickerMultiTabTab2),
+          Tab(text: context.l10n.customPickerMultiTabTab3),
         ],
       ),
+    );
+    appBarPreferredSize ??= appBar.preferredSize;
+    return appBar;
+  }
+
+  @override
+  Widget appleOSLayout(BuildContext context) {
+    Widget layout(BuildContext context) {
+      return Stack(
+        children: <Widget>[
+          TabBarView(
+            controller: _tabController,
+            children: <Widget>[
+              ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+                value: provider,
+                builder: (BuildContext context, _) => _buildGrid(context),
+              ),
+              ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+                value: videosProvider,
+                builder: (BuildContext context, _) => _buildGrid(context),
+              ),
+              ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+                value: imagesProvider,
+                builder: (BuildContext context, _) => _buildGrid(context),
+              ),
+            ],
+          ),
+          appBar(context),
+        ],
+      );
+    }
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: permissionOverlayDisplay,
+      builder: (_, bool value, Widget? child) {
+        if (value) {
+          return ExcludeSemantics(child: child);
+        }
+        return child!;
+      },
+      child: layout(context),
     );
   }
 
@@ -488,9 +509,6 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       ),
     );
   }
-
-  @override
-  Widget appleOSLayout(BuildContext context) => androidLayout(context);
 
   Widget _buildGrid(BuildContext context) {
     return Consumer<DefaultAssetPickerProvider>(
@@ -531,7 +549,11 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              if (isAppleOS) appleOSLayout(context) else androidLayout(context),
+                if (isAppleOS(context))
+                  appleOSLayout(context)
+                else
+                  androidLayout(context),
+                if (Platform.isIOS) iOSPermissionOverlay(context),      
             ],
           ),
         ),

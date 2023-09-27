@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../constants/constants.dart';
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
-import '../../internal/methods.dart';
 import '../../internal/singleton.dart';
 import '../scale_text.dart';
 import 'locally_available_builder.dart';
@@ -62,6 +62,23 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   bool _isLocallyAvailable = false;
 
   @override
+  void didUpdateWidget(VideoPageBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.asset != oldWidget.asset) {
+      _controller
+        ?..removeListener(videoPlayerListener)
+        ..pause()
+        ..dispose();
+      _controller = null;
+      hasLoaded = false;
+      hasErrorWhenInitializing = false;
+      isPlaying.value = false;
+      _isInitializing = false;
+      _isLocallyAvailable = false;
+    }
+  }
+
+  @override
   void dispose() {
     /// Remove listener from the controller and dispose it when widget dispose.
     /// 部件销毁时移除控制器的监听并销毁控制器。
@@ -85,10 +102,11 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       }
       return;
     }
+    final Uri uri = Uri.parse(url);
     if (Platform.isAndroid) {
-      _controller = VideoPlayerController.contentUri(Uri.parse(url));
+      _controller = VideoPlayerController.contentUri(uri);
     } else {
-      _controller = VideoPlayerController.network(url);
+      _controller = VideoPlayerController.networkUrl(uri);
     }
     try {
       await controller.initialize();
@@ -99,8 +117,15 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       if (widget.hasOnlyOneVideoAndMoment) {
         controller.play();
       }
-    } catch (e) {
-      realDebugPrint('Error when initialize video controller: $e');
+    } catch (e, s) {
+      FlutterError.presentError(
+        FlutterErrorDetails(
+          exception: e,
+          stack: s,
+          library: packageName,
+          silent: true,
+        ),
+      );
       hasErrorWhenInitializing = true;
     } finally {
       if (mounted) {
@@ -123,12 +148,13 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   /// Normally it only switches play state for the player. If the video reaches the end,
   /// then click the button will make the video replay.
   /// 一般来说按钮只切换播放暂停。当视频播放结束时，点击按钮将从头开始播放。
-  Future<void> playButtonCallback() async {
+  Future<void> playButtonCallback(BuildContext context) async {
     if (isPlaying.value) {
       controller.pause();
       return;
     }
-    if (widget.delegate.isDisplayingDetail.value) {
+    if (widget.delegate.isDisplayingDetail.value &&
+        !MediaQuery.accessibleNavigationOf(context)) {
       widget.delegate.switchDisplayingDetail(value: false);
     }
     if (controller.value.duration == controller.value.position) {
@@ -157,19 +183,19 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
             valueListenable: isPlaying,
             builder: (_, bool value, __) => GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: value
-                  ? playButtonCallback
+              onTap: value || MediaQuery.accessibleNavigationOf(context)
+                  ? () => playButtonCallback(context)
                   : widget.delegate.switchDisplayingDetail,
               child: Center(
                 child: AnimatedOpacity(
                   duration: kThemeAnimationDuration,
                   opacity: value ? 0.0 : 1.0,
                   child: GestureDetector(
-                    onTap: playButtonCallback,
+                    onTap: () => playButtonCallback(context),
                     child: DecoratedBox(
                       decoration: const BoxDecoration(
                         boxShadow: <BoxShadow>[
-                          BoxShadow(color: Colors.black12)
+                          BoxShadow(color: Colors.black12),
                         ],
                         shape: BoxShape.circle,
                       ),
@@ -193,6 +219,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
   @override
   Widget build(BuildContext context) {
     return LocallyAvailableBuilder(
+      key: ValueKey<String>(widget.asset.id),
       asset: widget.asset,
       builder: (BuildContext context, AssetEntity asset) {
         if (hasErrorWhenInitializing) {
@@ -211,15 +238,10 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           return const SizedBox.shrink();
         }
         return Semantics(
-          onLongPress: playButtonCallback,
+          onLongPress: () => playButtonCallback(context),
           onLongPressHint:
               Singleton.textDelegate.semanticsTextDelegate.sActionPlayHint,
-          child: GestureDetector(
-            onLongPress: MediaQuery.of(context).accessibleNavigation
-                ? playButtonCallback
-                : null,
-            child: _contentBuilder(context),
-          ),
+          child: _contentBuilder(context),
         );
       },
     );

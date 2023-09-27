@@ -7,6 +7,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
+import '../constants/extensions.dart';
+
 /// A custom app bar.
 /// 自定义的顶栏
 class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -108,8 +110,8 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     }
     Widget child = Container(
       width: double.maxFinite,
-      height: _barHeight + MediaQuery.of(context).padding.top,
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      height: _barHeight + MediaQuery.paddingOf(context).top,
+      padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
       child: Stack(
         children: <Widget>[
           if (canPop(context))
@@ -153,6 +155,13 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
 
+    if (bottom != null) {
+      child = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[child, bottom!],
+      );
+    }
+
     // Allow custom blur radius using [ui.ImageFilter.blur].
     if (blurRadius > 0.0) {
       child = ClipRect(
@@ -175,6 +184,20 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
         child,
         if (bottom != null) bottom!,
       ],
+//     // Set [SystemUiOverlayStyle] according to the brightness.
+//     final Brightness effectiveBrightness = brightness ??
+//         appBarTheme.systemOverlayStyle?.statusBarBrightness ??
+//         theme.brightness;
+//     final SystemUiOverlayStyle overlayStyle = appBarTheme.systemOverlayStyle ??
+//         SystemUiOverlayStyle(
+//           statusBarColor: effectiveBackgroundColor,
+//           systemNavigationBarIconBrightness: Brightness.light,
+//           statusBarIconBrightness: effectiveBrightness.reverse,
+//           statusBarBrightness: effectiveBrightness,
+//         );
+//     child = AnnotatedRegion<SystemUiOverlayStyle>(
+//       value: overlayStyle,
+//       child: child,
     );
 
     final Widget result = Material(
@@ -211,8 +234,8 @@ class AssetPickerAppBarWrapper extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned.fill(
-            top: MediaQuery.of(context).padding.top +
-                appBar.preferredSize.height,
+            top:
+                MediaQuery.paddingOf(context).top + appBar.preferredSize.height,
             child: MediaQuery.removePadding(
               context: context,
               removeTop: true,

@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../constants/custom_pick_method.dart';
+import '../constants/extensions.dart';
 import 'pickers/directory_file_asset_picker.dart';
 import 'pickers/insta_asset_picker.dart';
 import 'pickers/multi_tabs_assets_picker.dart';
@@ -18,25 +19,19 @@ class CustomPickersPage extends StatefulWidget {
 
 class _CustomPickerPageState extends State<CustomPickersPage>
     with AutomaticKeepAliveClientMixin {
-  Widget get tips {
-    return const Padding(
-      padding: EdgeInsets.all(20.0),
-      child: Text(
-        'This page contains customized pickers with different asset types, '
-        'different UI layouts, or some use case for specific apps. '
-        'Contribute to add your custom picker are welcomed.',
-      ),
+  Widget tips(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Text(context.l10n.customPickerNotice),
     );
   }
 
-  List<CustomPickMethod> get pickMethods {
+  List<CustomPickMethod> pickMethods(BuildContext context) {
     return <CustomPickMethod>[
       CustomPickMethod(
         icon: '🗄',
-        name: 'Directory+File picker',
-        description: 'The picker is built with `Directory` and `File` '
-            'as entities, which allows users to display/select `File` '
-            'through `Directory`.',
+        name: context.l10n.customPickerDirectoryAndFileName,
+        description: context.l10n.customPickerDirectoryAndFileDescription,
         method: (BuildContext context) => Navigator.of(context).push<void>(
           MaterialPageRoute<void>(
             builder: (_) => const DirectoryFileAssetPicker(),
@@ -45,18 +40,16 @@ class _CustomPickerPageState extends State<CustomPickersPage>
       ),
       CustomPickMethod(
         icon: '🔀',
-        name: 'Multi tab picker',
-        description: 'The picker contains multiple tab with different types of '
-            'assets for the picking at the same time.',
+        name: context.l10n.customPickerMultiTabName,
+        description: context.l10n.customPickerMultiTabDescription,
         method: (BuildContext context) => Navigator.of(context).push<void>(
           MaterialPageRoute<void>(builder: (_) => const MultiTabAssetPicker()),
         ),
       ),
       CustomPickMethod(
         icon: '📷',
-        name: 'Instagram layout picker',
-        description: 'The picker reproduces Instagram layout with preview and '
-            "scroll animations. It's also published as the package insta_assets_picker.",
+        name: context.l10n.customPickerInstagramLayoutName,
+        description: context.l10n.customPickerInstagramLayoutDescription,
         method: (BuildContext context) => Navigator.of(context).push<void>(
           MaterialPageRoute<void>(builder: (_) => const InstaAssetPicker()),
         ),
@@ -72,17 +65,15 @@ class _CustomPickerPageState extends State<CustomPickersPage>
     super.build(context);
     return Column(
       children: <Widget>[
-        tips,
-        Expanded(child: _MethodListView(pickMethods: pickMethods)),
+        tips(context),
+        Expanded(child: _MethodListView(pickMethods: pickMethods(context))),
       ],
     );
   }
 }
 
 class _MethodListView extends StatelessWidget {
-  // TODO(Alex): Tracking if it's a false-positive: https://github.com/dart-lang/linter/issues/3386
-  // ignore: unused_element
-  const _MethodListView({super.key, required this.pickMethods});
+  const _MethodListView({required this.pickMethods});
 
   final List<CustomPickMethod> pickMethods;
 

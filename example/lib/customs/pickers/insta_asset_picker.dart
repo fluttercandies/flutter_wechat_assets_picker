@@ -15,6 +15,8 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../constants/extensions.dart';
+
 /// The reduced height of the viewer
 const double _kReducedViewerHeight = kToolbarHeight;
 
@@ -78,7 +80,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
     }
   }
 
-  Widget get selectedAssetsWidget {
+  Widget selectedAssetsWidget(BuildContext context) {
     return AnimatedContainer(
       duration: kThemeChangeDuration,
       curve: Curves.easeInOut,
@@ -102,7 +104,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  const Text('Selected Assets'),
+                  Text(context.l10n.selectedAssetsText),
                   Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 10.0,
@@ -131,20 +133,21 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
               ),
             ),
           ),
-          selectedAssetsListView,
+          selectedAssetsListView(context),
         ],
       ),
     );
   }
 
-  Widget get selectedAssetsListView {
+  Widget selectedAssetsListView(BuildContext context) {
     return Expanded(
       child: ListView.builder(
+        shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         scrollDirection: Axis.horizontal,
         itemCount: entities.length,
-        itemBuilder: (BuildContext _, int index) {
+        itemBuilder: (_, int index) {
           return Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 8.0,
@@ -173,7 +176,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
   Widget _selectedAssetWidget(int index) {
     final AssetEntity asset = entities.elementAt(index);
 
-    Future<void> _onTap() async {
+    Future<void> onTap() async {
       final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
         context,
         currentIndex: index,
@@ -192,7 +195,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
     }
 
     return GestureDetector(
-      onTap: isDisplayingDetail ? _onTap : null,
+      onTap: isDisplayingDetail ? onTap : null,
       child: RepaintBoundary(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
@@ -240,7 +243,9 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Instagram picker')),
+      appBar: AppBar(
+        title: Text(context.l10n.customPickerInstagramLayoutName),
+      ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -250,22 +255,24 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  paddingText(
-                    'The picker reproduces instagram layout with preview and '
-                    'scroll animations.',
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: SelectableText(
+                      context.l10n.customPickerInstagramLayoutDescription,
+                    ),
                   ),
                   TextButton(
                     onPressed: () => callPicker(context),
-                    child: const Text(
-                      '🎁 Call the Picker',
-                      style: TextStyle(fontSize: 22),
+                    child: Text(
+                      context.l10n.customPickerCallThePickerButton,
+                      style: const TextStyle(fontSize: 22),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          selectedAssetsWidget,
+          selectedAssetsWidget(context),
         ],
       ),
     );
@@ -309,15 +316,15 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   /// The responsive height of the preview widget
   /// setup to not be bigger than half the screen height
   double previewHeight(BuildContext context) => min(
-        MediaQuery.of(context).size.width,
-        MediaQuery.of(context).size.height * 0.5,
+        MediaQuery.sizeOf(context).width,
+        MediaQuery.sizeOf(context).height * 0.5,
       );
 
   /// Returns thumbnail [index] position in scroll view
   double indexPosition(BuildContext context, int index) {
     final int row = (index / gridCount).floor();
     final double size =
-        (MediaQuery.of(context).size.width - itemSpacing * (gridCount - 1)) /
+        (MediaQuery.sizeOf(context).width - itemSpacing * (gridCount - 1)) /
             gridCount;
     return row * size + (row * itemSpacing);
   }
@@ -468,7 +475,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         valueListenable: _previewAsset,
         builder: (BuildContext context, AssetEntity? previewAsset, __) =>
             SizedBox(
-          width: MediaQuery.of(context).size.width,
+          width: MediaQuery.sizeOf(context).width,
           height: previewHeight(context),
           child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
             selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
@@ -505,12 +512,24 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   }
 
   @override
+  AssetPickerAppBar appBar(BuildContext context) {
+    final AssetPickerAppBar appBar = AssetPickerAppBar(
+      leading: backButton(context),
+      actions: <Widget>[confirmButton(context)],
+    );
+    appBarPreferredSize ??= appBar.preferredSize;
+    return appBar;
+  }
+
+  @override
   Widget androidLayout(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
+    final double appBarHeight = appBarPreferredSize!.height;
     // height of appbar + viewer + path selector row
     final double topWidgetHeight = previewHeight(context) +
-        kToolbarHeight +
+        appBarHeight +
         _kPathSelectorRowHeight +
-        MediaQuery.of(context).padding.top;
+        MediaQuery.paddingOf(context).top;
 
     return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
       value: provider,
@@ -518,9 +537,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         valueListenable: _viewerPosition,
         builder: (BuildContext context, double position, _) {
           // the top position when the viewer is reduced
-          final double topReducedPosition = -(previewHeight(context) -
-              _kReducedViewerHeight +
-              kToolbarHeight);
+          final double topReducedPosition =
+              -(previewHeight(context) - _kReducedViewerHeight + appBarHeight);
           position =
               position.clamp(topReducedPosition, _kExtendedViewerPosition);
           // opacity is calculated based on the position of the viewer
@@ -531,8 +549,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               ? const Duration(milliseconds: 250)
               : Duration.zero;
 
-          double gridHeight = MediaQuery.of(context).size.height -
-              kToolbarHeight -
+          double gridHeight = MediaQuery.sizeOf(context).height -
+              appBarHeight -
               _kReducedViewerHeight;
           // when not assets are displayed, compute the exact height to show the loader
           if (!provider.hasAssetsToDisplay) {
@@ -551,7 +569,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 duration: animationDuration,
                 child: SizedBox(
                   height: gridHeight,
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.sizeOf(context).width,
                   child: NotificationListener<ScrollNotification>(
                     onNotification: (ScrollNotification notification) =>
                         _handleScroll(
@@ -568,13 +586,10 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 top: position,
                 duration: animationDuration,
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.sizeOf(context).width,
                   height: topWidgetHeight,
                   child: AssetPickerAppBarWrapper(
-                    appBar: AssetPickerAppBar(
-                      leading: backButton(context),
-                      actions: <Widget>[confirmButton(context)],
-                    ),
+                    appBar: appBar(context),
                     body: DecoratedBox(
                       decoration: BoxDecoration(
                         color: pickerTheme?.canvasColor,
@@ -584,7 +599,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                           Opacity(opacity: opacity, child: buildEntityViewer),
                           SizedBox(
                             height: _kPathSelectorRowHeight,
-                            width: MediaQuery.of(context).size.width,
+                            width: MediaQuery.sizeOf(context).width,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
@@ -618,19 +633,23 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   Widget appleOSLayout(BuildContext context) => androidLayout(context);
 
   Widget _buildListAlbums(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     return Consumer<DefaultAssetPickerProvider>(
       builder: (BuildContext context, DefaultAssetPickerProvider provider, __) {
-        if (isAppleOS) {
+        if (isAppleOS(context)) {
           return pathEntityListWidget(context);
         }
 
         // NOTE: fix position on android, quite hacky could be optimized
         return ValueListenableBuilder<bool>(
           valueListenable: isSwitchingPath,
-          builder: (_, bool isSwitchingPath, Widget? child) =>
-              Transform.translate(
+          builder: (_, bool isSwitchingPath, __) => Transform.translate(
             offset: isSwitchingPath
-                ? Offset(0, kToolbarHeight + MediaQuery.of(context).padding.top)
+                ? Offset(
+                    0,
+                    appBarPreferredSize!.height +
+                        MediaQuery.paddingOf(context).top,
+                  )
                 : Offset.zero,
             child: Stack(
               children: <Widget>[pathEntityListWidget(context)],
@@ -642,6 +661,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   }
 
   Widget _buildGrid(BuildContext context) {
+    appBarPreferredSize ??= appBar(context).preferredSize;
     return Consumer<DefaultAssetPickerProvider>(
       builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
         final bool shouldDisplayAssets =
@@ -652,9 +672,10 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           duration: const Duration(milliseconds: 300),
           child: shouldDisplayAssets
               ? MediaQuery(
-                  // fix: https://github.com/fluttercandies/flutter_wechat_assets_picker/issues/395
                   data: MediaQuery.of(context).copyWith(
-                    padding: const EdgeInsets.only(top: -kToolbarHeight),
+                    padding: EdgeInsets.only(
+                      top: -appBarPreferredSize!.height,
+                    ),
                   ),
                   child: RepaintBoundary(child: assetsGridBuilder(context)),
                 )

@@ -4,11 +4,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:wechat_assets_picker_demo/l10n/gen/app_localizations.dart';
 
 import 'constants/extensions.dart';
-import 'constants/screens.dart';
 import 'pages/splash_page.dart';
 
 const Color themeColor = Color(0xff00bc56);
@@ -28,17 +27,20 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  ThemeData _buildTheme(Brightness brightness) {
+    return ThemeData(
+      brightness: brightness,
+      primarySwatch: themeColor.swatch,
+      textSelectionTheme: const TextSelectionThemeData(cursorColor: themeColor),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WeChat Asset Picker Demo',
-      theme: ThemeData(
-        brightness: Screens.mediaQuery.platformBrightness,
-        primarySwatch: themeColor.swatch,
-        textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: themeColor,
-        ),
-      ),
+      onGenerateTitle: (context) => context.l10n.appTitle,
+      theme: _buildTheme(Brightness.light),
+      darkTheme: _buildTheme(Brightness.dark),
       home: const SplashPage(),
       builder: (BuildContext c, Widget? w) {
         return ScrollConfiguration(
@@ -46,11 +48,8 @@ class MyApp extends StatelessWidget {
           child: w!,
         );
       },
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalWidgetsLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }
