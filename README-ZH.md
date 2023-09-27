@@ -57,12 +57,12 @@ Language: [English](README.md) | 中文
       * [注册资源变化回调](#注册资源变化回调)
       * [在表单数据中上传 `AssetEntity`](#在表单数据中上传-assetentity)
         * [使用 `http`](#使用-http)
-        * [使用 `diox`](#使用-diox)
+        * [使用 `dio`](#使用-dio)
     * [自定义选择器](#自定义选择器)
   * [常见问题 ❔](#常见问题-)
-    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task---photomanager--compiledebugkotlin)
+    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photomanagercompiledebugkotlin)
     * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
-    * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示--failed-to-find-generatedappglidemodule)
+    * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
   * [致谢](#致谢)
 <!-- TOC -->
 </details>
@@ -109,12 +109,15 @@ Language: [English](README.md) | 中文
 
 ## 开始前的注意事项 ‼️
 
-该库与 [photo_manager][photo_manager pub] 有强关联性，
-大部分方法的行为是由 photo_manager 进行控制的。
-
-在选择器中最常使用的 API 是：
-- [`AssetEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
-- [`AssetPathEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
+在开始一切之前，请明确以下两点：
+- 由于理解差异和篇幅限制，并不是所有的内容都会明确地在文档中指出。
+  当你遇到没有找到需求和无法理解的概念时，请先运行项目的示例 example，
+  它可以解决 90% 的常见需求。
+- 该库与 [photo_manager][photo_manager pub] 有强关联性，
+  大部分方法的行为是由 photo_manager 进行控制的，
+  所以请尽可能地确保你了解以下两个类的概念：
+  - 资源（图片/视频/音频） [`AssetEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetEntity-class.html)
+  - 资源合集（相册或集合概念） [`AssetPathEntity`](https://pub.flutter-io.cn/documentation/photo_manager/latest/photo_manager/AssetPathEntity-class.html)
 
 当你有与相关的 API 和行为的疑问时，你可以查看
 [photo_manager API 文档][] 了解更多细节。
@@ -126,12 +129,12 @@ Language: [English](README.md) | 中文
 
 ### 版本兼容
 
-|        | 2.10.0 | 3.0.0 | 3.3.0 | 3.7.0 |
-|--------|:------:|:-----:|:-----:|:-----:|
-| 8.4.0+ |   ❌    |   ❌   |   ❌   |   ✅   |
-| 8.0.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
-| 7.3.0+ |   ❌    |   ✅   |   ✅   |   ❌   |
-| 7.0.0+ |   ✅    |   ❌   |   ❌   |   ❌   |
+|        | 3.0.0 | 3.3.0 | 3.7.0 | 3.10.0 |
+|--------|:-----:|:-----:|:-----:|:------:|
+| 8.5.0+ |   ❌   |   ❌   |   ❌   |   ✅    |
+| 8.4.0+ |   ❌   |   ❌   |   ✅   |   ❌    |
+| 8.0.0+ |   ✅   |   ✅   |   ❌   |   ❌    |
+| 7.3.0+ |   ✅   |   ✅   |   ❌   |   ❌    |
 
 如果在 `flutter pub get` 时遇到了 `resolve conflict` 失败问题，
 请使用 `dependency_overrides` 解决。
@@ -210,7 +213,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 ### macOS
 
 1. 在 `macos/Podfile` 中指定最低构建版本至 **10.15**。
-   ```ruby
+   ```Podfile
    platform :osx, '10.15'
    ```
 2. 使用 **Xcode** 打开 `macos/Runner.xcworkspace`。
@@ -234,6 +237,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 * 日本語
 * مة العربية
 * Délégué
+* Tiếng Việt
 
 如果你想使用自定义或固定的文字实现，请通过
 `AssetPickerConfig.textDelegate` 传递调用。
@@ -268,7 +272,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | keepScrollOffset                  | `bool`                               | 选择器是否可以从同样的位置开始选择                                    | `null`                      |
 | sortPathDelegate                  | `SortPathDelegate<AssetPathEntity>?` | 资源路径的排序实现，可自定义路径排序方法                                 | `CommonSortPathDelegate`    |
 | sortPathsByModifiedDate           | `bool`                               | 是否结合 `FilterOptionGroup.containsPathModified` 进行路径排序 | `false`                     |
-| filterOptions                     | `FilterOptionGroup?`                 | 允许用户自定义资源过滤条件                                        | `null`                      |
+| filterOptions                     | `PMFilter?`                          | 允许用户自定义资源过滤条件                                        | `null`                      |
 | gridCount                         | `int`                                | 选择器网格数量                                              | 4                           |
 | themeColor                        | `Color?`                             | 选择器的主题色                                              | `Color(0xff00bc56)`         |
 | pickerTheme                       | `ThemeData?`                         | 选择器的主题提供，包括查看器                                       | `null`                      |
@@ -279,7 +283,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | selectPredicate                   | `AssetSelectPredicate`               | 判断资源可否被选择                                            | `null`                      |
 | shouldRevertGrid                  | `bool?`                              | 判断资源网格是否需要倒序排列                                       | `null`                      |
 | limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?` | 判断有限的权限情况下是否展示提示页面                                   | `null`                      |
-| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 构建自定义路径名称                                            | `null`                      |
+| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 基于路径（相册）构建自定义名称的方法                                   | `null`                      |
 
 - 当 `maxAssets` 等于 `1`（即单选模式），搭配
   `SpecialPickerType.noPreview` 使用会在用户点选资源换时立刻选中并返回。
@@ -372,24 +376,24 @@ Future<http.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) asyn
 }
 ```
 
-##### 使用 `diox`
+##### 使用 `dio`
 
-`diox` package: https://pub.flutter-io.cn/packages/diox
+`dio` package: https://pub.flutter-io.cn/packages/dio
 
-`diox` package 同样使用了
-[`MultipartFile`](https://pub.flutter-io.cn/documentation/diox/5.0.0-dev.2/diox/MultipartFile-class.html)
+`dio` package 同样使用了
+[`MultipartFile`](https://pub.flutter-io.cn/documentation/dio/latest/dio/MultipartFile-class.html)
 来在请求中处理文件。
 
 示例代码：
 ```dart
-import 'package:diox/diox.dart' as diox;
+import 'package:dio/dio.dart' as dio;
 
 Future<void> upload() async {
   final entity = await obtainYourEntity();
   final uri = Uri.https('example.com', 'create');
-  final response = diox.Dio().requestUri(
+  final response = dio.Dio().requestUri(
     uri,
-    data: diox.FormData.fromMap({
+    data: dio.FormData.fromMap({
       'test_field': 'test_value',
       'test_file': await multipartFileFromAssetEntity(entity),
     }),
@@ -397,20 +401,20 @@ Future<void> upload() async {
   print('Uploaded!');
 }
 
-Future<diox.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
-  diox.MultipartFile mf;
+Future<dio.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async {
+  dio.MultipartFile mf;
   // Using the file path.
   final file = await entity.file;
   if (file == null) {
     throw StateError('Unable to obtain file of the entity ${entity.id}.');
   }
-  mf = await diox.MultipartFile.fromFile(file.path);
+  mf = await dio.MultipartFile.fromFile(file.path);
   // Using the bytes.
   final bytes = await entity.originBytes;
   if (bytes == null) {
     throw StateError('Unable to obtain bytes of the entity ${entity.id}.');
   }
-  mf = diox.MultipartFile.fromBytes(bytes);
+  mf = dio.MultipartFile.fromBytes(bytes);
   return mf;
 }
 ```

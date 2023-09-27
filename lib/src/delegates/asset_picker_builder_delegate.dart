@@ -676,6 +676,7 @@ class DefaultAssetPickerBuilderDelegate
     if (keepScrollOffset) {
       return;
     }
+    provider.dispose();
     super.dispose();
   }
 
@@ -1489,14 +1490,15 @@ class DefaultAssetPickerBuilderDelegate
         child: IgnorePointer(
           ignoring: !isSwitchingPath,
           child: ExcludeSemantics(
-              child: GestureDetector(
-            onTap: () => this.isSwitchingPath.value = false,
-            child: AnimatedOpacity(
-              duration: switchingPathDuration,
-              opacity: isSwitchingPath ? .75 : 0,
-              child: const ColoredBox(color: Colors.black),
+            child: GestureDetector(
+              onTap: () => this.isSwitchingPath.value = false,
+              child: AnimatedOpacity(
+                duration: switchingPathDuration,
+                opacity: isSwitchingPath ? .75 : 0,
+                child: const ColoredBox(color: Colors.black),
+              ),
             ),
-          )),
+          ),
         ),
       ),
     );
