@@ -44,7 +44,8 @@ Widget defaultPickerTestApp({
 }
 
 class _DefaultHomePage extends StatelessWidget {
-  const _DefaultHomePage(this.onButtonPressed, {Key? key}) : super(key: key);
+  // ignore: unused_element
+  const _DefaultHomePage(this.onButtonPressed, {super.key});
 
   final void Function(BuildContext)? onButtonPressed;
 
