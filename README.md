@@ -567,6 +567,7 @@ Many thanks to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/loinp"><img src="https://avatars.githubusercontent.com/u/34020090?v=4?s=50" width="50px;" alt="Nguyen Phuc Loi"/><br /><sub><b>Nguyen Phuc Loi</b></sub></a><br /><a href="#translation-nploi" title="Translation">🌍</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://sqlturk.wordpress.com/"><img src="https://avatars.githubusercontent.com/u/12383547?v=4?s=50" width="50px;" alt="Cevheri"/><br /><sub><b>Cevheri</b></sub></a><br /><a href="#translation-cevheri" title="Translation">🌍</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://velog.io/@hee_mm_"><img src="https://avatars.githubusercontent.com/u/48482259?v=4?s=50" width="50px;" alt="mirimhee"/><br /><sub><b>mirimhee</b></sub></a><br /><a href="#translation-LIMMIHEE" title="Translation">🌍</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://amoshk.top"><img src="https://avatars.githubusercontent.com/u/32262985?v=4?s=50" width="50px;" alt="Amos"/><br /><sub><b>Amos</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3AAmosHuKe" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
