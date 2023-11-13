@@ -6,6 +6,11 @@ that can be found in the LICENSE file. -->
 
 See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## Unchanged
+
+- Bump photo_manager to 3.x version.
+- Include photo_manager_image_provider.
+
 ## 8.7.1
 
 ### Improvements
