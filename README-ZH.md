@@ -220,11 +220,6 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
    如果该行以 `#` (注释) 开头，请把 `#` 删除。
 2. 将以下内容添加至 `Info.plist`。
 ```
-<key>NSAppTransportSecurity</key>
-<dict>
-	<key>NSAllowsArbitraryLoads</key>
-	<true/>
-</dict>
 <key>NSPhotoLibraryUsageDescription</key>
 <string>你的相册权限描述</string>
 ```
