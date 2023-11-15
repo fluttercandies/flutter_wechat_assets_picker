@@ -46,8 +46,12 @@ def install_plugin_pods(application_path = nil, relative_symlink_dir, platform)
   plugin_pods.each do |plugin_hash|
     plugin_name = plugin_hash['name']
     plugin_path = plugin_hash['path']
+    # iOS and macOS code can be shared in "darwin" directory, otherwise
+    # respectively in "ios" or "macos" directories.
+    shared_darwin_source = plugin_hash.fetch('shared_darwin_source', false)
+    platform_directory = shared_darwin_source ? 'darwin' : platform
     if (plugin_name && plugin_path)
-      specPath = "#{plugin_path}/#{platform}/#{plugin_name}.podspec"
+      specPath = "#{plugin_path}/#{platform_directory}/#{plugin_name}.podspec"
       pod plugin_name, :path => specPath
     end
   end
