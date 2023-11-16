@@ -31,6 +31,23 @@ The package is a standalone extension that can to be used with combination.
 
 See the [Migration Guide][] to learn how to migrate between breaking changes.
 
+## Versions compatibility
+
+The package only guarantees to be working on **the stable version of Flutter**.
+We won't update it in real-time to align with other channels of Flutter.
+
+|        | 3.0 | 3.3 | 3.7 | 3.10 | 3.13 | 3.16 |
+|--------|:---:|:---:|:---:|:----:|:----:|:----:|
+| 8.7.0+ |  ❌  |  ❌  |  ❌  |  ❌   |  ❌   |  ✅   |
+| 8.7.0+ |  ❌  |  ❌  |  ❌  |  ❌   |  ✅   |  ❌   |
+| 8.5.0+ |  ❌  |  ❌  |  ❌  |  ✅   |  ❌   |  ❌   |
+| 8.4.0+ |  ❌  |  ❌  |  ✅  |  ❌   |  ❌   |  ❌   |
+| 8.0.0+ |  ✅  |  ✅  |  ❌  |  ❌   |  ❌   |  ❌   |
+| 7.3.0+ |  ✅  |  ✅  |  ❌  |  ❌   |  ❌   |  ❌   |
+
+If you got a `resolve conflict` error when running `flutter pub get`,
+please use `dependency_overrides` to fix it.
+
 ## Package credits
 
 The package is built from these wonderful packages.
@@ -51,6 +68,7 @@ submit issues to our issue tracker first.
 
 <!-- TOC -->
 * [Flutter WeChat Assets Picker](#flutter-wechat-assets-picker)
+  * [Versions compatibility](#versions-compatibility)
   * [Package credits](#package-credits)
   * [Features ✨](#features-)
     * [Notes 📝](#notes-)
@@ -58,7 +76,6 @@ submit issues to our issue tracker first.
   * [Screenshots 📸](#screenshots-)
   * [READ THIS FIRST ‼️](#read-this-first-)
   * [Preparing for use 🍭](#preparing-for-use-)
-    * [Versions compatibility](#versions-compatibility)
     * [Flutter](#flutter)
     * [Android](#android)
       * [Permissions](#permissions)
@@ -146,22 +163,6 @@ Please walk through the [example](example) carefully
 before you have any questions.
 
 ## Preparing for use 🍭
-
-### Versions compatibility
-
-The package only guarantees to be working on **the stable version of Flutter**.
-We won't update it in real-time to align with other channels of Flutter.
-
-|        | 3.0 | 3.3 | 3.7 | 3.10 | **3.13** |
-|--------|:---:|:---:|:---:|:----:|:--------:|
-| 8.7.0+ |  ❌  |  ❌  |  ❌  |  ❌   |    ✅     |
-| 8.5.0+ |  ❌  |  ❌  |  ❌  |  ✅   |    ❌     |
-| 8.4.0+ |  ❌  |  ❌  |  ✅  |  ❌   |    ❌     |
-| 8.0.0+ |  ✅  |  ✅  |  ❌  |  ❌   |    ❌     |
-| 7.3.0+ |  ✅  |  ✅  |  ❌  |  ❌   |    ❌     |
-
-If you got a `resolve conflict` error when running `flutter pub get`,
-please use `dependency_overrides` to fix it.
 
 ### Flutter
 
