@@ -6,11 +6,19 @@ that can be found in the LICENSE file. -->
 
 See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
-## 8.7.2
+## 8.8.0
+
+### New features
+
+- Add Korean language support. (#494)
 
 ### Improvements
 
 - Use `viewAsset` in the preview button.
+
+### Fixes
+
+- Fix disposed provider throwing error when fetching assets. (#493)
 
 ## 8.7.1
 
