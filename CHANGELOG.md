@@ -6,6 +6,12 @@ that can be found in the LICENSE file. -->
 
 See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## 8.7.2
+
+### Improvements
+
+- Use `viewAsset` in the preview button.
+
 ## 8.7.1
 
 ### Improvements
