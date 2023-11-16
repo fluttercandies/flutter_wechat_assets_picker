@@ -226,11 +226,6 @@ consider declare only relevant permission in your apps, more specifically:
    Remove the `#` heading if the line starts with it.
 2. Add the following content to `Info.plist`.
 ```
-<key>NSAppTransportSecurity</key>
-<dict>
-	<key>NSAllowsArbitraryLoads</key>
-	<true/>
-</dict>
 <key>NSPhotoLibraryUsageDescription</key>
 <string>Replace with your permission description.</string>
 ```

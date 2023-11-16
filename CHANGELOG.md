@@ -6,10 +6,26 @@ that can be found in the LICENSE file. -->
 
 See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
-## Unchanged
+## 8.9.0-dev.1
 
-- Bump photo_manager to 3.x version.
-- Include photo_manager_image_provider.
+### Breaking changes
+
+- Bump `photo_manager` to v3.x.
+- Export `photo_manager_image_provider`.
+
+## 8.8.0
+
+### New features
+
+- Add Korean language support. (#494)
+
+### Improvements
+
+- Use `viewAsset` in the preview button.
+
+### Fixes
+
+- Fix disposed provider throwing error when fetching assets. (#493)
 
 ## 8.7.1
 
