@@ -10,6 +10,7 @@ See the [Migration Guide](guides/migration_guide.md) for the details of breaking
 
 ### Breaking changes
 
+- Migrate to Flutter 3.16, and drop supports for previous Flutter versions.
 - Bump `photo_manager` to v3.x.
 - Export `photo_manager_image_provider`.
 
