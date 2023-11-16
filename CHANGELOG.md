@@ -6,6 +6,14 @@ that can be found in the LICENSE file. -->
 
 See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## 8.9.0-dev.1
+
+### Breaking changes
+
+- Migrate to Flutter 3.16, and drop supports for previous Flutter versions.
+- Bump `photo_manager` to v3.x.
+- Export `photo_manager_image_provider`.
+
 ## 8.8.0
 
 ### New features
