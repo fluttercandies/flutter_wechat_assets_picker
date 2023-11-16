@@ -21,6 +21,7 @@ const List<AssetPickerTextDelegate> assetPickerTextDelegates =
   VietnameseAssetPickerTextDelegate(),
   TurkishAssetPickerTextDelegate(),
   KoreanAssetPickerTextDelegate(),
+  ItalianAssetPickerTextDelegate(),
 ];
 
 /// Obtain the text delegate from the given locale.
@@ -1128,3 +1129,100 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get sUnitAssetCountLabel => '개';
 }
 
+/// [AssetPickerTextDelegate] implements with Italian.
+/// Localizzazione italiana
+class ItalianAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const ItalianAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'it';
+
+  @override
+  String get confirm => 'Conferma';
+
+  @override
+  String get cancel => 'Cancella';
+
+  @override
+  String get edit => 'Modifica';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get loadFailed => 'Caricamento fallito';
+
+  @override
+  String get original => 'Originale';
+
+  @override
+  String get preview => 'Anteprima';
+
+  @override
+  String get select => 'Seleziona';
+
+  @override
+  String get emptyList => 'Lista vuota';
+
+  @override
+  String get unSupportedAssetType => 'Il tipo HEIC non è supportato';
+
+  @override
+  String get unableToAccessAll =>
+      'Impossibile accedere a tutti i media in questo dispositivo';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'Visualizza solo le risorse e gli album accessibili dall\'app';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'Clicca per aggiornare le risorse accessibili';
+
+  @override
+  String get accessAllTip =>
+      'Impossibile accedere a tutte le risorse in questo dispositivo'
+      'Per modificare, andare in impostazioni di sistema e garantire l\'accesso a tutte le risorse';
+
+  @override
+  String get goToSystemSettings => 'Vai a impostazioni di sistema';
+
+  @override
+  String get accessLimitedAssets => 'Continua con accesso limitato';
+
+  @override
+  String get accessiblePathName => 'Risorse accessibili';
+
+  @override
+  String get sTypeAudioLabel => 'Audio';
+
+  @override
+  String get sTypeImageLabel => 'Image';
+
+  @override
+  String get sTypeVideoLabel => 'Video';
+
+  @override
+  String get sTypeOtherLabel => 'Altra risorsa';
+
+  @override
+  String get sActionPlayHint => 'play';
+
+  @override
+  String get sActionPreviewHint => 'preview';
+
+  @override
+  String get sActionSelectHint => 'seleziona';
+
+  @override
+  String get sActionSwitchPathLabel => 'cambia cartella';
+
+  @override
+  String get sActionUseCameraHint => 'usa camera';
+
+  @override
+  String get sNameDurationLabel => 'durata';
+
+  @override
+  String get sUnitAssetCountLabel => 'conteggio';
+}
