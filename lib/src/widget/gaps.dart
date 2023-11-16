@@ -60,9 +60,9 @@ class SliverGap extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child;
     if (_width != null) {
-      child = Gap.h(_width!, height: _height, color: color);
+      child = Gap.h(_width, height: _height, color: color);
     } else if (_height != null) {
-      child = Gap.v(_height!, width: _width, color: color);
+      child = Gap.v(_height, width: _width, color: color);
     } else {
       child = const SizedBox.shrink();
     }
