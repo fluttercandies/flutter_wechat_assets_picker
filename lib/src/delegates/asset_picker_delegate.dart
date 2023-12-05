@@ -29,9 +29,9 @@ class AssetPickerDelegate {
   /// See also:
   ///  * [PermissionState] which defined all states of required permissions.
   /// {@endtemplate}
-  Future<PermissionState> permissionCheck(
-    PermissionRequestOption requestOption,
-  ) async {
+  Future<PermissionState> permissionCheck({
+    PermissionRequestOption requestOption = const PermissionRequestOption(),
+  }) async {
     final PermissionState ps = await PhotoManager.requestPermissionExtend(
       requestOption: requestOption,
     );
@@ -69,7 +69,12 @@ class AssetPickerDelegate {
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     final PermissionState ps = await permissionCheck(
-      pickerConfig.permissionRequestOption,
+      requestOption: PermissionRequestOption(
+        androidPermission: AndroidPermission(
+          type: pickerConfig.requestType,
+          mediaLocation: false,
+        ),
+      ),
     );
     final AssetPickerPageRoute<List<AssetEntity>> route =
         pageRouteBuilder?.call(const SizedBox.shrink()) ??
@@ -146,7 +151,7 @@ class AssetPickerDelegate {
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
-    await permissionCheck(permissionRequestOption);
+    await permissionCheck(requestOption: permissionRequestOption);
     final Widget picker = AssetPicker<Asset, Path>(
       key: key,
       builder: delegate,

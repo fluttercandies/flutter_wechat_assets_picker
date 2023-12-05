@@ -73,9 +73,9 @@ class TestPhotoManagerPlugin extends PhotoManagerPlugin {
 
 class TestAssetPickerDelegate extends AssetPickerDelegate {
   @override
-  Future<PermissionState> permissionCheck(
-    PermissionRequestOption requestOption,
-  ) async {
+  Future<PermissionState> permissionCheck({
+    PermissionRequestOption requestOption = const PermissionRequestOption(),
+  }) async {
     return SynchronousFuture<PermissionState>(PermissionState.authorized);
   }
 
@@ -88,7 +88,12 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     final PermissionState ps = await permissionCheck(
-      pickerConfig.permissionRequestOption,
+      requestOption: PermissionRequestOption(
+        androidPermission: AndroidPermission(
+          type: pickerConfig.requestType,
+          mediaLocation: false,
+        ),
+      ),
     );
     final AssetPathEntity pathEntity = AssetPathEntity(
       id: 'test',
