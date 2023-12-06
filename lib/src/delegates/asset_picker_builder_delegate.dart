@@ -1434,7 +1434,7 @@ class DefaultAssetPickerBuilderDelegate
         gradient: LinearGradient(
           begin: AlignmentDirectional.bottomCenter,
           end: AlignmentDirectional.topCenter,
-          colors: <Color>[theme.dividerColor, Colors.transparent],
+          colors: <Color>[theme.splashColor, Colors.transparent],
         ),
       ),
       child: Padding(
@@ -1465,7 +1465,7 @@ class DefaultAssetPickerBuilderDelegate
             gradient: LinearGradient(
               begin: AlignmentDirectional.topCenter,
               end: AlignmentDirectional.bottomCenter,
-              colors: <Color>[theme.dividerColor, Colors.transparent],
+              colors: <Color>[theme.splashColor, Colors.transparent],
             ),
           ),
           child: Padding(
@@ -1502,7 +1502,7 @@ class DefaultAssetPickerBuilderDelegate
           height: appBarItemHeight,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           color: theme.colorScheme.secondary,
-          disabledColor: theme.dividerColor,
+          disabledColor: theme.splashColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(3),
           ),
@@ -1745,7 +1745,7 @@ class DefaultAssetPickerBuilderDelegate
           padding: const EdgeInsetsDirectional.only(start: 12, end: 6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
-            color: theme.dividerColor,
+            color: theme.focusColor,
           ),
           child: Selector<DefaultAssetPickerProvider,
               PathWrapper<AssetPathEntity>?>(
@@ -2107,7 +2107,7 @@ class DefaultAssetPickerBuilderDelegate
           gradient: LinearGradient(
             begin: AlignmentDirectional.bottomCenter,
             end: AlignmentDirectional.topCenter,
-            colors: <Color>[theme.dividerColor, Colors.transparent],
+            colors: <Color>[theme.splashColor, Colors.transparent],
           ),
         ),
         child: Row(
@@ -2147,7 +2147,9 @@ class DefaultAssetPickerBuilderDelegate
       padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
         bottom: context.bottomPadding,
       ),
-      color: theme.primaryColor.withOpacity(isAppleOS(context) ? .9 : 1),
+      color: theme.bottomAppBarTheme.color?.withOpacity(
+        theme.bottomAppBarTheme.color!.opacity * (isAppleOS(context) ? .9 : 1),
+      ),
       child: Row(
         children: <Widget>[
           if (isPreviewEnabled) previewButton(context),
@@ -2162,15 +2164,17 @@ class DefaultAssetPickerBuilderDelegate
         children: <Widget>[accessLimitedBottomTip(context), child],
       );
     }
-    child = ClipRect(
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(
-          sigmaX: appleOSBlurRadius,
-          sigmaY: appleOSBlurRadius,
+    if (isAppleOS(context)) {
+      child = ClipRect(
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(
+            sigmaX: appleOSBlurRadius,
+            sigmaY: appleOSBlurRadius,
+          ),
+          child: child,
         ),
-        child: child,
-      ),
-    );
+      );
+    }
     return child;
   }
 

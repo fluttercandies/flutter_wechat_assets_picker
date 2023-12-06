@@ -21,6 +21,7 @@ import '../delegates/asset_picker_text_delegate.dart';
 import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import '../provider/asset_picker_viewer_provider.dart';
+import '../widget/asset_picker_app_bar.dart';
 import '../widget/asset_picker_viewer.dart';
 import '../widget/builder/audio_page_builder.dart';
 import '../widget/builder/fade_image_builder.dart';
@@ -537,7 +538,10 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   @override
   Widget bottomDetailBuilder(BuildContext context) {
-    final Color backgroundColor = themeData.primaryColor.withOpacity(.9);
+    final backgroundColor = themeData.bottomAppBarTheme.color?.withOpacity(
+      themeData.bottomAppBarTheme.color!.opacity *
+          (isAppleOS(context) ? .9 : 1),
+    );
     return ValueListenableBuilder2<bool, int>(
       firstNotifier: isDisplayingDetail,
       secondNotifier: selectedNotifier,
@@ -694,72 +698,40 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// AppBar widget.
   /// 顶栏部件
   Widget appBar(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isDisplayingDetail,
-      builder: (_, bool value, Widget? child) => AnimatedPositionedDirectional(
-        duration: kThemeAnimationDuration,
-        curve: Curves.easeInOut,
-        top: value ? 0.0 : -(context.topPadding + kToolbarHeight),
-        start: 0.0,
-        end: 0.0,
-        height: context.topPadding + kToolbarHeight,
-        child: child!,
-      ),
-      child: Container(
-        padding: EdgeInsetsDirectional.only(top: context.topPadding),
-        color: themeData.canvasColor,
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Semantics(
-                  sortKey: ordinalSortKey(0),
-                  child: IconButton(
-                    icon: const Icon(Icons.close),
-                    tooltip: MaterialLocalizations.of(
-                      context,
-                    ).backButtonTooltip,
-                    onPressed: Navigator.of(context).maybePop,
-                  ),
-                ),
-              ),
-            ),
-            if (specialPickerType == null)
-              Expanded(
-                child: Center(
-                  child: Semantics(
-                    sortKey: ordinalSortKey(0.1),
-                    child: StreamBuilder<int>(
-                      initialData: currentIndex,
-                      stream: pageStreamController.stream,
-                      builder: (_, AsyncSnapshot<int> snapshot) => ScaleText(
-                        '${snapshot.requireData + 1}/${previewAssets.length}',
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            if (provider != null)
-              Expanded(
-                child: Container(
-                  alignment: AlignmentDirectional.centerEnd,
-                  padding: const EdgeInsetsDirectional.only(end: 14),
-                  child: Semantics(
-                    sortKey: ordinalSortKey(0.2),
-                    child: selectButton(context),
-                  ),
-                ),
-              )
-            else
-              const Spacer(),
-          ],
+    return AssetPickerAppBar(
+      leading: Semantics(
+        sortKey: ordinalSortKey(0),
+        child: IconButton(
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          onPressed: Navigator.of(context).maybePop,
+          icon: const Icon(Icons.close),
         ),
       ),
+      centerTitle: true,
+      title: specialPickerType == null
+          ? Semantics(
+              sortKey: ordinalSortKey(0.1),
+              child: StreamBuilder<int>(
+                initialData: currentIndex,
+                stream: pageStreamController.stream,
+                builder: (_, AsyncSnapshot<int> snapshot) => ScaleText(
+                  '${snapshot.requireData + 1}/${previewAssets.length}',
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            )
+          : null,
+      actions: [
+        if (provider != null)
+          Semantics(
+            sortKey: ordinalSortKey(0.2),
+            child: selectButton(context),
+          ),
+        const SizedBox(width: 14),
+      ],
     );
   }
 
@@ -819,7 +791,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             height: 32,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             color: themeData.colorScheme.secondary,
-            disabledColor: themeData.dividerColor,
+            disabledColor: themeData.splashColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3),
             ),
@@ -911,13 +883,12 @@ class DefaultAssetPickerViewerBuilderDelegate
       builder: (_, Widget? w) => StreamBuilder<int>(
         initialData: currentIndex,
         stream: pageStreamController.stream,
-        builder: (BuildContext _, AsyncSnapshot<int> s) {
+        builder: (_, s) {
           final AssetEntity asset = previewAssets.elementAt(s.data!);
           return Selector<AssetPickerViewerProvider<AssetEntity>,
               List<AssetEntity>>(
-            selector: (_, AssetPickerViewerProvider<AssetEntity> p) =>
-                p.currentlySelectedAssets,
-            builder: (BuildContext c, List<AssetEntity> assets, _) {
+            selector: (_, p) => p.currentlySelectedAssets,
+            builder: (context, assets, _) {
               final bool isSelected = assets.contains(asset);
               return Semantics(
                 selected: isSelected,
@@ -929,9 +900,9 @@ class DefaultAssetPickerViewerBuilderDelegate
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     if (isAppleOS(context))
-                      _appleOSSelectButton(c, isSelected, asset)
+                      _appleOSSelectButton(context, isSelected, asset)
                     else
-                      _androidSelectButton(c, isSelected, asset),
+                      _androidSelectButton(context, isSelected, asset),
                     if (!isAppleOS(context))
                       ScaleText(
                         textDelegate.select,
