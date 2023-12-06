@@ -31,8 +31,10 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
   }
 
   /// {@macro wechat_assets_picker.delegates.AssetPickerDelegate.permissionCheck}
-  static Future<PermissionState> permissionCheck() {
-    return _pickerDelegate.permissionCheck();
+  static Future<PermissionState> permissionCheck({
+    PermissionRequestOption requestOption = const PermissionRequestOption(),
+  }) {
+    return _pickerDelegate.permissionCheck(requestOption: requestOption);
   }
 
   /// {@macro wechat_assets_picker.delegates.AssetPickerDelegate.pickAssets}
