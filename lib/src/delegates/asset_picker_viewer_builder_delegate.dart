@@ -725,7 +725,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 ),
               ),
             ),
-            if (!isAppleOS(context) && specialPickerType == null)
+            if (specialPickerType == null)
               Expanded(
                 child: Center(
                   child: Semantics(
@@ -734,7 +734,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                       initialData: currentIndex,
                       stream: pageStreamController.stream,
                       builder: (_, AsyncSnapshot<int> snapshot) => ScaleText(
-                        '${snapshot.data! + 1}/${previewAssets.length}',
+                        '${snapshot.requireData + 1}/${previewAssets.length}',
                         style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
