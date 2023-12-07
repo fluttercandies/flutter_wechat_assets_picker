@@ -12,6 +12,10 @@ See the [Migration Guide](guides/migration_guide.md) for the details of breaking
 
 - Integrate `PermissionRequestOption` for callers.
 
+### Improvements
+
+- Adapt `ThemeData` usages.
+
 ## 8.9.0-dev.1
 
 ### Breaking changes

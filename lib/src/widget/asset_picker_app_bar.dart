@@ -102,8 +102,6 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final AppBarTheme appBarTheme = theme.appBarTheme;
-    final IconThemeData iconTheme = this.iconTheme ?? theme.iconTheme;
     final Widget? titleWidget;
     if (centerTitle) {
       titleWidget = Center(child: title);
@@ -174,16 +172,20 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-    /// Apply the icon theme data.
-    child = IconTheme.merge(data: iconTheme, child: child);
+    final AppBarTheme appBarTheme = theme.appBarTheme;
 
-    final Color effectiveBackgroundColor =
-        backgroundColor ?? theme.colorScheme.surface;
+    /// Apply the icon theme data.
+    child = IconTheme.merge(
+      data: iconTheme ?? appBarTheme.iconTheme ?? theme.iconTheme,
+      child: child,
+    );
 
     // Set [SystemUiOverlayStyle] according to the brightness.
     final Brightness effectiveBrightness = brightness ??
         appBarTheme.systemOverlayStyle?.statusBarBrightness ??
         theme.brightness;
+    final Color effectiveBackgroundColor =
+        backgroundColor ?? theme.colorScheme.surface;
     final SystemUiOverlayStyle overlayStyle = appBarTheme.systemOverlayStyle ??
         SystemUiOverlayStyle(
           statusBarColor: effectiveBackgroundColor,
