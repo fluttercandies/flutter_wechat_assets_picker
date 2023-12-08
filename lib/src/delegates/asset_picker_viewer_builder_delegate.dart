@@ -948,7 +948,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 ? SystemUiOverlayStyle.light
                 : SystemUiOverlayStyle.dark),
         child: Material(
-          color: themeData.colorScheme.onSecondary,
+          color: themeData.scaffoldBackgroundColor,
           child: Stack(
             children: <Widget>[
               Positioned.fill(child: _pageViewBuilder(context)),
