@@ -209,7 +209,11 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: child,
     );
     return semanticsBuilder?.call(result) ??
-        Semantics(sortKey: const OrdinalSortKey(0), child: result);
+        Semantics(
+          sortKey: const OrdinalSortKey(0),
+          explicitChildNodes: true,
+          child: result,
+        );
   }
 }
 
