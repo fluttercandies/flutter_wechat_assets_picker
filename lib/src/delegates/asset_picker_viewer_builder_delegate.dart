@@ -702,9 +702,12 @@ class DefaultAssetPickerViewerBuilderDelegate
       leading: Semantics(
         sortKey: ordinalSortKey(0),
         child: IconButton(
-          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           onPressed: Navigator.of(context).maybePop,
-          icon: const Icon(Icons.close),
+          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+          icon: Icon(
+            Icons.close,
+            semanticLabel: MaterialLocalizations.of(context).closeButtonTooltip,
+          ),
         ),
       ),
       centerTitle: true,
