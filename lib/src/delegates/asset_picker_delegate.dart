@@ -29,12 +29,8 @@ class AssetPickerDelegate {
   /// See also:
   ///  * [PermissionState] which defined all states of required permissions.
   /// {@endtemplate}
-  Future<PermissionState> permissionCheck({
-    PermissionRequestOption requestOption = const PermissionRequestOption(),
-  }) async {
-    final PermissionState ps = await PhotoManager.requestPermissionExtend(
-      requestOption: requestOption,
-    );
+  Future<PermissionState> permissionCheck() async {
+    final PermissionState ps = await PhotoManager.requestPermissionExtend();
     if (ps != PermissionState.authorized && ps != PermissionState.limited) {
       throw StateError('Permission state error with $ps.');
     }
@@ -68,14 +64,7 @@ class AssetPickerDelegate {
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    final PermissionState ps = await permissionCheck(
-      requestOption: PermissionRequestOption(
-        androidPermission: AndroidPermission(
-          type: pickerConfig.requestType,
-          mediaLocation: false,
-        ),
-      ),
-    );
+    final PermissionState ps = await permissionCheck();
     final AssetPickerPageRoute<List<AssetEntity>> route =
         pageRouteBuilder?.call(const SizedBox.shrink()) ??
             AssetPickerPageRoute<List<AssetEntity>>(
@@ -145,13 +134,11 @@ class AssetPickerDelegate {
       PickerProvider extends AssetPickerProvider<Asset, Path>>(
     BuildContext context, {
     required AssetPickerBuilderDelegate<Asset, Path> delegate,
-    PermissionRequestOption permissionRequestOption =
-        const PermissionRequestOption(),
     Key? key,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
-    await permissionCheck(requestOption: permissionRequestOption);
+    await permissionCheck();
     final Widget picker = AssetPicker<Asset, Path>(
       key: key,
       builder: delegate,

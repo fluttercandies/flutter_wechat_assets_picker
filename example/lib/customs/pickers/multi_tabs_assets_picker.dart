@@ -30,14 +30,7 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
   bool isDisplayingDetail = true;
 
   Future<void> callPicker(BuildContext context) async {
-    final PermissionState ps = await AssetPicker.permissionCheck(
-      requestOption: const PermissionRequestOption(
-        androidPermission: AndroidPermission(
-          type: RequestType.all,
-          mediaLocation: false,
-        ),
-      ),
-    );
+    final PermissionState ps = await AssetPicker.permissionCheck();
 
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       selectedAssets: entities,
