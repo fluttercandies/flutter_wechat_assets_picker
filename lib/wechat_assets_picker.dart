@@ -5,7 +5,6 @@
 library wechat_assets_picker;
 
 export 'package:photo_manager/photo_manager.dart';
-export 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 
 export 'src/constants/config.dart';
 export 'src/constants/constants.dart' hide packageName;
