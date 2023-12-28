@@ -7,7 +7,7 @@ that can be found in the LICENSE file. -->
 > [!IMPORTANT]  
 > See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
-## 8.8.1
+## 8.8.1+1
 
 ### Fixes
 
