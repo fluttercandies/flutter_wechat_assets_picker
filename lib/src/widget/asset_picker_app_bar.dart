@@ -7,8 +7,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
-
-import '../constants/extensions.dart';
+import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 /// A custom app bar.
 /// 自定义的顶栏

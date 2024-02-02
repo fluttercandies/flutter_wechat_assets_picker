@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../delegates/sort_path_delegate.dart';
-import '../internal/singleton.dart';
+import '../internals/singleton.dart';
 import '../models/path_wrapper.dart';
 
 /// Helps the assets picker to manage [Path]s and [Asset]s.

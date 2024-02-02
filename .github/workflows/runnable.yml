@@ -75,5 +75,4 @@ jobs:
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
-      - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;21.4.7075529"
       - run: cd example; flutter build apk --debug

@@ -10,9 +10,9 @@ import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
-import 'locally_available_builder.dart';
 
 class ImagePageBuilder extends StatefulWidget {
   const ImagePageBuilder({
