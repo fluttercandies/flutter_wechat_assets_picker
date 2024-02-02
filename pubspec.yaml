@@ -22,6 +22,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  wechat_picker_library: ^1.0.0-0
+
   extended_image: ^8.1.0
   photo_manager: ^3.0.0-dev.1
   photo_manager_image_provider: ^2.0.0

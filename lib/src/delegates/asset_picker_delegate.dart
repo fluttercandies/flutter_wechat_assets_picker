@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../constants/config.dart';
 import '../constants/constants.dart';

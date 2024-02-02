@@ -12,13 +12,13 @@ import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../constants/custom_scroll_physics.dart';
 import '../constants/enums.dart';
-import '../constants/extensions.dart';
 import '../constants/typedefs.dart';
 import '../delegates/asset_picker_text_delegate.dart';
-import '../internal/singleton.dart';
+import '../internals/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import '../provider/asset_picker_viewer_provider.dart';
 import '../widget/asset_picker_app_bar.dart';
@@ -26,9 +26,7 @@ import '../widget/asset_picker_viewer.dart';
 import '../widget/builder/audio_page_builder.dart';
 import '../widget/builder/fade_image_builder.dart';
 import '../widget/builder/image_page_builder.dart';
-import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/builder/video_page_builder.dart';
-import '../widget/scale_text.dart';
 
 abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   AssetPickerViewerBuilderDelegate({
