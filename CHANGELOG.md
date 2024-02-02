@@ -7,6 +7,12 @@ that can be found in the LICENSE file. -->
 > [!IMPORTANT]  
 > See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## 9.0.0-dev.3
+
+### Improvements
+
+- Use `wechat_picker_library`.
+
 ## 9.0.0-dev.2
 
 ### Fixes
