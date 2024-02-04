@@ -870,7 +870,7 @@ class DefaultAssetPickerBuilderDelegate
   @override
   Future<void> viewAsset(
     BuildContext context,
-    int index,
+    int? index,
     AssetEntity currentAsset,
   ) async {
     final DefaultAssetPickerProvider provider =
@@ -902,6 +902,10 @@ class DefaultAssetPickerBuilderDelegate
         selected = provider.selectedAssets;
         effectiveIndex = current.indexOf(currentAsset);
       }
+    } else if (index == null) {
+      current = provider.selectedAssets;
+      selected = provider.selectedAssets;
+      effectiveIndex = selected.indexOf(currentAsset);
     } else {
       current = provider.currentAssets;
       selected = provider.selectedAssets;
@@ -1936,7 +1940,7 @@ class DefaultAssetPickerBuilderDelegate
       child: Consumer<DefaultAssetPickerProvider>(
         builder: (context, DefaultAssetPickerProvider p, __) => GestureDetector(
           onTap: p.isSelectedNotEmpty
-              ? () => viewAsset(context, 0, p.selectedAssets.first)
+              ? () => viewAsset(context, null, p.selectedAssets.first)
               : null,
           child: Selector<DefaultAssetPickerProvider, String>(
             selector: (_, DefaultAssetPickerProvider p) =>
