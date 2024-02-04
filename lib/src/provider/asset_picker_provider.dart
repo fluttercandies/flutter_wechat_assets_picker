@@ -495,21 +495,30 @@ class DefaultAssetPickerProvider
   /// Get assets list from current path entity.
   /// 从当前已选路径获取资源列表
   Future<void> getAssetsFromCurrentPath() async {
-    if (_currentPath == null || _paths.isEmpty) {
+    if (_paths.isEmpty && _currentPath != null) {
+      throw StateError('The current path is not synced with the empty paths.');
+    }
+    if (_paths.isNotEmpty && _currentPath == null) {
+      throw StateError('The empty path is not synced with the current paths.');
+    }
+    if (_paths.isEmpty || _currentPath == null) {
       isAssetsEmpty = true;
       return;
     }
     final PathWrapper<AssetPathEntity> wrapper = _currentPath!;
-    final int assetCount =
-        wrapper.assetCount ?? await wrapper.path.assetCountAsync;
-    // If the picker was disposed (#492), stop fetching the assets
-    if (!mounted) {
-      return;
-    }
-    totalAssetsCount = assetCount;
-    isAssetsEmpty = assetCount == 0;
     if (wrapper.assetCount == null) {
-      currentPath = _currentPath!.copyWith(assetCount: assetCount);
+      final int assetCount = await wrapper.path.assetCountAsync;
+      // If the picker was disposed (#492), stop fetching the assets.
+      if (!mounted ||
+          _paths.isEmpty ||
+          _currentPath == null ||
+          _currentPath != wrapper) {
+        return;
+      }
+      _totalAssetsCount = assetCount;
+      _isAssetsEmpty = assetCount == 0;
+      _currentPath = wrapper.copyWith(assetCount: assetCount);
+      notifyListeners();
     }
     await getAssetsFromPath(0, currentPath!.path);
   }
