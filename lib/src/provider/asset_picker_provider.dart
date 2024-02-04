@@ -509,16 +509,21 @@ class DefaultAssetPickerProvider
     if (wrapper.assetCount == null) {
       final int assetCount = await wrapper.path.assetCountAsync;
       // If the picker was disposed (#492), stop fetching the assets.
-      if (!mounted ||
-          _paths.isEmpty ||
-          _currentPath == null ||
-          _currentPath != wrapper) {
+      if (!mounted) {
         return;
       }
-      _totalAssetsCount = assetCount;
-      _isAssetsEmpty = assetCount == 0;
-      _currentPath = wrapper.copyWith(assetCount: assetCount);
-      notifyListeners();
+      if (_paths.isNotEmpty &&
+          _currentPath != null &&
+          _currentPath!.assetCount == null) {
+        _totalAssetsCount = assetCount;
+        _isAssetsEmpty = assetCount == 0;
+        _currentPath = wrapper.copyWith(assetCount: assetCount);
+        notifyListeners();
+      } else if (_currentPath?.assetCount case final int count) {
+        _totalAssetsCount = count;
+        _isAssetsEmpty = count == 0;
+        notifyListeners();
+      }
     }
     await getAssetsFromPath(0, currentPath!.path);
   }
