@@ -381,8 +381,8 @@ class FileAssetPickerBuilder
   @override
   Future<void> viewAsset(
     BuildContext context,
-    int index,
-    AssetEntity currentAsset,
+    int? index,
+    File currentAsset,
   ) async {
     final List<File>? result = await Navigator.of(context).push<List<File>?>(
       PageRouteBuilder<List<File>>(
@@ -393,7 +393,8 @@ class FileAssetPickerBuilder
         ) {
           return AssetPickerViewer<File, Directory>(
             builder: FileAssetPickerViewerBuilderDelegate(
-              currentIndex: index,
+              currentIndex:
+                  index ?? provider.selectedAssets.indexOf(currentAsset),
               previewAssets: provider.selectedAssets,
               provider: FileAssetPickerViewerProvider(provider.selectedAssets),
               themeData: AssetPicker.themeData(themeColor),
