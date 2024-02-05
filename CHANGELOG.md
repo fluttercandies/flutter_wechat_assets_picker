@@ -13,6 +13,10 @@ that can be found in the LICENSE file. -->
 
 - Use `wechat_picker_library`.
 
+### Fixes
+
+- Fix previewing selected assets behavior.
+
 ## 9.0.0-dev.2
 
 ### Fixes

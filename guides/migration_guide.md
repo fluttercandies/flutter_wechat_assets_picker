@@ -19,7 +19,14 @@ This document gathered all breaking changes and migrations requirement between m
 
 ## 9.0.0
 
-### Summary
+### View assets signature change
+
+`AssetPickerBuilderDelegate.viewAsset` has 2 changes:
+- It now uses the generic type of the delegate rather than always `AssetEntity`.
+- The `index` of arguments is now nullable,
+  to indicate the behavior of previewing selected assets only.
+
+### Permission request option integration
 
 `PermissionRequestOption` has been added to
 `AssetPickerDelegate.permissionCheck` and
@@ -28,7 +35,7 @@ Classes that extend `AssetPickerDelegate` and override these methods must migrat
 Delegates that use `AssetPicker.permissionCheck`
 should choose whether to pass the request option.
 
-### Details
+#### Details
 
 Before:
 
