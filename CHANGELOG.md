@@ -17,6 +17,8 @@ that can be found in the LICENSE file. -->
 ### Fixes
 
 - Fix previewing selected assets behavior.
+- Use `PermissionRequestOption` as much as possible.
+- Raise more errors for non-synced paths.
 
 ## 9.0.0-dev.2
 

@@ -507,7 +507,13 @@ class DefaultAssetPickerProvider
   /// Get assets list from current path entity.
   /// 从当前已选路径获取资源列表
   Future<void> getAssetsFromCurrentPath() async {
-    if (_currentPath == null || _paths.isEmpty) {
+    if (_paths.isEmpty && _currentPath != null) {
+      throw StateError('The current path is not synced with the empty paths.');
+    }
+    if (_paths.isNotEmpty && _currentPath == null) {
+      throw StateError('The empty path is not synced with the current paths.');
+    }
+    if (_paths.isEmpty || _currentPath == null) {
       isAssetsEmpty = true;
       return;
     }
