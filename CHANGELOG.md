@@ -12,6 +12,7 @@ that can be found in the LICENSE file. -->
 ### Improvements
 
 - Use `wechat_picker_library`.
+- Make the first asset count not blocking loads.
 
 ### Fixes
 
