@@ -378,9 +378,12 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   @override
   Future<void> viewAsset(
     BuildContext context,
-    int index,
+    int? index,
     AssetEntity currentAsset,
   ) async {
+    if (index == null) {
+      return;
+    }
     // if is preview asset, unselect it
     if (provider.selectedAssets.isNotEmpty &&
         _previewAsset.value == currentAsset) {

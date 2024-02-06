@@ -84,16 +84,18 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
     BuildContext context, {
     Key? key,
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
+    PermissionRequestOption? permissionRequestOption,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    final PermissionState ps = await permissionCheck(
-      requestOption: PermissionRequestOption(
-        androidPermission: AndroidPermission(
-          type: pickerConfig.requestType,
-          mediaLocation: false,
-        ),
+    permissionRequestOption ??= PermissionRequestOption(
+      androidPermission: AndroidPermission(
+        type: pickerConfig.requestType,
+        mediaLocation: false,
       ),
+    );
+    final PermissionState ps = await permissionCheck(
+      requestOption: permissionRequestOption,
     );
     final AssetPathEntity pathEntity = AssetPathEntity(
       id: 'test',
