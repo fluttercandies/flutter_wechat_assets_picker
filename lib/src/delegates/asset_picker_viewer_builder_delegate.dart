@@ -410,7 +410,9 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   @override
   Widget assetPageBuilder(BuildContext context, int index) {
-    final AssetEntity asset = previewAssets.elementAt(index);
+    final AssetEntity asset = previewAssets.elementAt(
+      shouldReversePreview ? previewAssets.length - index - 1 : index,
+    );
     final Widget builder = switch (asset.type) {
       AssetType.audio => AudioPageBuilder(asset: asset),
       AssetType.image => ImagePageBuilder(
@@ -634,7 +636,10 @@ class DefaultAssetPickerViewerBuilderDelegate
           stream: pageStreamController.stream,
           builder: (_, AsyncSnapshot<int> snapshot) {
             final AssetEntity asset = selectedAssets!.elementAt(index);
-            final bool isViewing = previewAssets[snapshot.data!] == asset;
+            final viewingIndex = shouldReversePreview
+                ? previewAssets.length - snapshot.data! - 1
+                : snapshot.data!;
+            final bool isViewing = previewAssets[viewingIndex] == asset;
             final Widget item = switch (asset.type) {
               AssetType.image => _imagePreviewItem(asset),
               AssetType.video => _videoPreviewItem(asset),
@@ -930,7 +935,6 @@ class DefaultAssetPickerViewerBuilderDelegate
         controller: pageController,
         itemCount: previewAssets.length,
         itemBuilder: assetPageBuilder,
-        reverse: shouldReversePreview,
         onPageChanged: (int index) {
           currentIndex = index;
           pageStreamController.add(index);
