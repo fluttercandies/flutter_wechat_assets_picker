@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:photo_manager/photo_manager.dart' show PermissionState;
 import 'package:provider/provider.dart';
 
-/// {@nodoc}
+/// Mirroring [ChangeNotifierProvider].
 typedef CNP<T extends ChangeNotifier?> = ChangeNotifierProvider<T>;
 
 /// {@template wechat_assets_picker.LoadingIndicatorBuilder}
