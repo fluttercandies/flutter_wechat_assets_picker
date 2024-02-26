@@ -883,7 +883,8 @@ class DefaultAssetPickerBuilderDelegate
             provider.selectedAssets.isNotEmpty)) {
       return;
     }
-    final List<AssetEntity> current;
+    final revert = effectiveShouldRevertGrid(context);
+    List<AssetEntity> current;
     final List<AssetEntity>? selected;
     final int effectiveIndex;
     if (isWeChatMoment) {
@@ -905,7 +906,10 @@ class DefaultAssetPickerBuilderDelegate
     } else {
       current = provider.currentAssets;
       selected = provider.selectedAssets;
-      effectiveIndex = index;
+      effectiveIndex = revert ? current.length - index - 1 : index;
+    }
+    if (revert && index == null) {
+      current = current.reversed.toList(growable: false);
     }
     final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
       context,
@@ -918,7 +922,7 @@ class DefaultAssetPickerBuilderDelegate
       selectorProvider: provider,
       specialPickerType: specialPickerType,
       maxAssets: provider.maxAssets,
-      shouldReversePreview: isAppleOS(context),
+      shouldReversePreview: revert,
     );
     if (result != null) {
       Navigator.of(context).maybePop(result);
