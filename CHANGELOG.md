@@ -7,44 +7,29 @@ that can be found in the LICENSE file. -->
 > [!IMPORTANT]  
 > See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
-## 9.0.0-dev.3
-
-### Improvements
-
-- Use `wechat_picker_library`.
-- Make the first asset count not blocking loads.
-
-### Fixes
-
-- Fix previewing selected assets' behavior.
-- Use `PermissionRequestOption` as much as possible.
-- Raise more errors for non-synced paths.
-- Fix the experience with `shouldRevertGrid`.
-
-## 9.0.0-dev.2
-
-### Fixes
-
-- Fix unhandled child semantics with the app bar title.
-- Fix styles around the app bar and other widgets.
-
-## 9.0.0-dev.1
-
-### Breaking changes
-
-- Integrate `PermissionRequestOption` for callers.
-
-### Improvements
-
-- Adapt `ThemeData` usages.
-
-## 8.9.0-dev.1
+## 9.0.0
 
 ### Breaking changes
 
 - Migrate to Flutter 3.16, and drop supports for previous Flutter versions.
 - Bump `photo_manager` to v3.x.
 - Export `photo_manager_image_provider`.
+- Integrate `PermissionRequestOption` for callers.
+
+### Improvements
+
+- Adapt `ThemeData` usages.
+- Use `wechat_picker_library`.
+- Make the first asset count not blocking loads.
+
+### Fixes
+
+- Fix unhandled child semantics with the app bar title.
+- Fix styles around the app bar and other widgets.
+- Fix previewing selected assets' behavior.
+- Use `PermissionRequestOption` as much as possible.
+- Raise more errors for non-synced paths.
+- Fix the experience with `shouldRevertGrid`.
 
 ## 8.8.0
 
