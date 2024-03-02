@@ -1,5 +1,5 @@
 arb-dir: lib/l10n
-# format: true
+format: true
 output-class: AppLocalizations
 output-dir: lib/l10n/gen
 output-localization-file: app_localizations.dart

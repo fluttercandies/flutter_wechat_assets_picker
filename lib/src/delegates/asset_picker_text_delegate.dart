@@ -1127,4 +1127,3 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get sUnitAssetCountLabel => '개';
 }
-
