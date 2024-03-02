@@ -7,6 +7,12 @@ that can be found in the LICENSE file. -->
 > [!IMPORTANT]  
 > See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## 9.0.1
+
+### Improvements
+
+- Improve code formatting. 
+
 ## 9.0.0
 
 ### Breaking changes
