@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## 9.0.1
 
+### Fixes
+
+- Fix current asset in the picker viewer.
+
 ### Improvements
 
 - Improve code formatting. 

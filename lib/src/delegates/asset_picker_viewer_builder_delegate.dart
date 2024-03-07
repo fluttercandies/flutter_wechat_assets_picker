@@ -132,7 +132,11 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// Getter for the current asset.
   /// 当前资源的Getter
-  Asset get currentAsset => previewAssets.elementAt(currentIndex);
+  Asset get currentAsset => previewAssets.elementAt(
+        shouldReversePreview
+            ? previewAssets.length - currentIndex - 1
+            : currentIndex,
+      );
 
   /// Height for bottom preview widget.
   /// 底栏预览部件的高度
@@ -890,7 +894,10 @@ class DefaultAssetPickerViewerBuilderDelegate
         initialData: currentIndex,
         stream: pageStreamController.stream,
         builder: (_, s) {
-          final AssetEntity asset = previewAssets.elementAt(s.data!);
+          final index = s.data!;
+          final AssetEntity asset = previewAssets.elementAt(
+            shouldReversePreview ? previewAssets.length - index - 1 : index,
+          );
           return Selector<AssetPickerViewerProvider<AssetEntity>,
               List<AssetEntity>>(
             selector: (_, p) => p.currentlySelectedAssets,
