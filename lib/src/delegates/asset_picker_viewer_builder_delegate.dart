@@ -608,11 +608,14 @@ class DefaultAssetPickerViewerBuilderDelegate
     const double padding = 8.0;
 
     void onTap(AssetEntity asset) {
-      final int page;
+      int page;
       if (previewAssets != selectedAssets) {
         page = previewAssets.indexOf(asset);
       } else {
         page = index;
+      }
+      if (shouldReversePreview) {
+        page = previewAssets.length - page - 1;
       }
       if (pageController.page == page.toDouble()) {
         return;
