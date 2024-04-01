@@ -869,18 +869,16 @@ class DefaultAssetPickerBuilderDelegate
     int? index,
     AssetEntity currentAsset,
   ) async {
-    final DefaultAssetPickerProvider provider =
-        context.read<DefaultAssetPickerProvider>();
+    final p = context.read<DefaultAssetPickerProvider>();
     // - When we reached the maximum select count and the asset is not selected,
     //   do nothing.
     // - When the special type is WeChat Moment, pictures and videos cannot
     //   be selected at the same time. Video select should be banned if any
     //   pictures are selected.
-    if ((!provider.selectedAssets.contains(currentAsset) &&
-            provider.selectedMaximumAssets) ||
+    if ((!p.selectedAssets.contains(currentAsset) && p.selectedMaximumAssets) ||
         (isWeChatMoment &&
             currentAsset.type == AssetType.video &&
-            provider.selectedAssets.isNotEmpty)) {
+            p.selectedAssets.isNotEmpty)) {
       return;
     }
     final revert = effectiveShouldRevertGrid(context);
@@ -893,23 +891,29 @@ class DefaultAssetPickerBuilderDelegate
         selected = null;
         effectiveIndex = 0;
       } else {
-        current = provider.currentAssets
+        if (index == null) {
+          current = p.selectedAssets;
+          current = current.reversed.toList(growable: false);
+        } else {
+          current = p.currentAssets;
+        }
+        current = current
             .where((AssetEntity e) => e.type == AssetType.image)
             .toList();
-        selected = provider.selectedAssets;
-        effectiveIndex = current.indexOf(currentAsset);
+        selected = p.selectedAssets;
+        final i = current.indexOf(currentAsset);
+        effectiveIndex = revert ? current.length - i - 1 : i;
       }
-    } else if (index == null) {
-      current = provider.selectedAssets;
-      selected = provider.selectedAssets;
-      effectiveIndex = selected.indexOf(currentAsset);
     } else {
-      current = provider.currentAssets;
-      selected = provider.selectedAssets;
-      effectiveIndex = revert ? current.length - index - 1 : index;
-    }
-    if (revert && index == null) {
-      current = current.reversed.toList(growable: false);
+      selected = p.selectedAssets;
+      if (index == null) {
+        current = p.selectedAssets;
+        current = current.reversed.toList(growable: false);
+        effectiveIndex = selected.indexOf(currentAsset);
+      } else {
+        current = p.currentAssets;
+        effectiveIndex = revert ? current.length - index - 1 : index;
+      }
     }
     final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
       context,
@@ -919,9 +923,9 @@ class DefaultAssetPickerBuilderDelegate
       previewThumbnailSize: previewThumbnailSize,
       selectPredicate: selectPredicate,
       selectedAssets: selected,
-      selectorProvider: provider,
+      selectorProvider: p,
       specialPickerType: specialPickerType,
-      maxAssets: provider.maxAssets,
+      maxAssets: p.maxAssets,
       shouldReversePreview: revert,
     );
     if (result != null) {
