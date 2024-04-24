@@ -2,6 +2,8 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -99,6 +101,8 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
 
 class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
     with TickerProviderStateMixin, WidgetsBindingObserver {
+  Completer<void>? _checkPermissionCompleter;
+
   @override
   void initState() {
     super.initState();
@@ -110,10 +114,24 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+
     if (state == AppLifecycleState.resumed) {
-      PhotoManager.requestPermissionExtend().then((PermissionState ps) {
-        widget.builder.permission.value = ps;
-      });
+      if (_checkPermissionCompleter == null) {
+        final completer = Completer<void>();
+        _checkPermissionCompleter = completer;
+        PhotoManager.requestPermissionExtend().then((PermissionState ps) {
+          widget.builder.permission.value = ps;
+          completer.complete();
+        }).catchError((Object e, StackTrace s) {
+          completer.completeError(e, s);
+        });
+      }
+    }
+
+    if (state == AppLifecycleState.paused) {
+      if (_checkPermissionCompleter != null) {
+        _checkPermissionCompleter = null;
+      }
     }
   }
 
