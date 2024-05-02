@@ -254,6 +254,49 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     set.remove(item);
     selectedAssets = set;
   }
+
+  /// User gesture initial position
+  /// 用户手势滑动初始位子
+  Offset initialPanPosition = Offset.zero;
+  void updateInitialPanPosition(Offset position) =>
+      initialPanPosition = position;
+
+  /// 用户手势滑动初始Item Index
+  int initialPanItemIndex = -1;
+  void updateInitialPanItemIndex(int index) => initialPanItemIndex = index;
+
+  /// Position of the first asset tapped
+  /// 第一个点击的asset坐标
+  Offset initialSelectedPosition = Offset.zero;
+  void selectedPosition(Offset position) => initialSelectedPosition = position;
+
+  /// Selected status of the first asset tapped
+  /// 第一个点击的asset选择状态
+  bool initialAssetSelectedStatus = false;
+  void updateInitialAssetSelectedStatus(AssetEntity asset) =>
+      initialAssetSelectedStatus = selectedAssets.contains(asset);
+
+  void updateSelectedAsset(List<Asset> assetList) {
+    if (initialAssetSelectedStatus) {
+      final List<Asset> tempAssetList = List<Asset>.from(selectedAssets);
+      assetList.forEach(tempAssetList.remove);
+      selectedAssets = tempAssetList;
+      return;
+    }
+
+    selectedAssets = <Asset>{
+      ...selectedAssets,
+      ...assetList,
+    }.toList();
+    return;
+  }
+
+  void resetPanStatus() {
+    initialPanPosition = Offset.zero;
+    initialSelectedPosition = Offset.zero;
+    initialAssetSelectedStatus = false;
+    initialPanItemIndex = -1;
+  }
 }
 
 /// The default implementation of the [AssetPickerProvider] for the picker.
@@ -517,6 +560,16 @@ class DefaultAssetPickerProvider
       isAssetsEmpty = true;
       return;
     }
+
+    final PathWrapper<AssetPathEntity> wrapper = _currentPath!;
+    final int assetCount =
+        wrapper.assetCount ?? await wrapper.path.assetCountAsync;
+    totalAssetsCount = assetCount;
+    isAssetsEmpty = assetCount == 0;
+    if (wrapper.assetCount == null) {
+      currentPath = _currentPath!.copyWith(assetCount: assetCount);
+    }
+
     await getAssetsFromPath(0, currentPath!.path);
   }
 }

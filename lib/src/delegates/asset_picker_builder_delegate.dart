@@ -1121,14 +1121,92 @@ class DefaultAssetPickerBuilderDelegate
                     }
                     index -= placeholderCount;
                   }
+                  final DefaultAssetPickerProvider p =
+                      Provider.of<DefaultAssetPickerProvider>(context);
+
+                  final double screenWidth = MediaQuery.of(context).size.width;
+                  final double screenHeight =
+                      MediaQuery.of(context).size.height;
+
+                  final double itemSize = screenWidth / gridCount - itemSpacing;
+                  final double itemHeight = screenWidth / gridCount;
+
+                  final double topBottomPadding =
+                      appBarItemHeight + bottomSectionHeight;
+                  print(
+                    'screenWidth11: ${screenWidth}, itemSize: ${itemSize}, itemSpacing: ${itemSpacing}, topBottomPadding: ${topBottomPadding}, gridCount: ${gridCount}',
+                  );
                   return MergeSemantics(
                     child: Directionality(
                       textDirection: Directionality.of(context),
-                      child: assetGridItemBuilder(
-                        context,
-                        index,
-                        assets,
-                        specialItem: specialItem,
+                      child: GestureDetector(
+                        // onHorizontalDragStart: (details) {
+                        //   print(
+                        //       'onHorizontalDragStart offset: ${details.globalPosition.toString()}');
+                        // },
+                        onPanDown: (DragDownDetails details) {
+                          print(
+                            'onPanDown: ${details.globalPosition.toString()}',
+                          );
+
+                          p.updateInitialPanItemIndex(index);
+                          p.updateInitialAssetSelectedStatus(assets[index]);
+                          print('currIndex: ${index}');
+                        },
+                        onPanUpdate: (DragUpdateDetails details) {
+                          print(
+                              'onPanUpdate: ${details.globalPosition.toString()}');
+                          int panItemIndex() {
+                            int dx = (details.globalPosition.dx ~/ itemSize);
+                            if (gridRevert) {
+                              // 逆向
+                              int dy = (screenHeight -
+                                          details.globalPosition.dy -
+                                          topBottomPadding -
+                                          gridScrollController.offset)
+                                      .abs() ~/
+                                  itemHeight;
+
+                              dx = gridCount - dx - 1;
+
+                              return dy * 4 + dx - placeholderCount;
+                            } else {
+                              // 正向
+                              final int dy = (gridScrollController.offset +
+                                          details.globalPosition.dy -
+                                          topBottomPadding)
+                                      .abs() ~/
+                                  itemHeight;
+                              return dy * gridCount + dx;
+                            }
+                          }
+
+                          final int panIndex = panItemIndex();
+                          print('onPanUpdate Index: ${panIndex}');
+                          if (panIndex >= 0 && p.initialPanItemIndex >= 0) {
+                            if (p.initialAssetSelectedStatus) {
+                              p.unSelectAsset(assets[p.initialPanItemIndex]);
+                              if (panIndex != p.initialPanItemIndex) {
+                                p.unSelectAsset(assets[panIndex]);
+                              }
+                            } else {
+                              p.selectAsset(assets[p.initialPanItemIndex]);
+                              if (panIndex != p.initialPanItemIndex) {
+                                p.selectAsset(assets[panIndex]);
+                              }
+                            }
+                          }
+                        },
+                        onPanEnd: (_) {
+                          print('onPanUpdate: ' + index.toString());
+                          p.resetPanStatus.call();
+                        },
+                        child: assetGridItemBuilder(
+                          context,
+                          index,
+                          assets,
+                          specialItem: specialItem,
+                        ),
                       ),
                     ),
                   );
