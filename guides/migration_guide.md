@@ -8,6 +8,7 @@ This document gathered all breaking changes and migrations requirement between m
 
 ## Major versions
 
+- [9.0.0](#900)
 - [8.6.0](#860)
 - [8.3.0](#830)
 - [8.2.0](#820)
@@ -15,6 +16,72 @@ This document gathered all breaking changes and migrations requirement between m
 - [7.0.0](#700)
 - [6.0.0](#600)
 - [5.0.0](#500)
+
+## 9.0.0
+
+### View assets signature change
+
+`AssetPickerBuilderDelegate.viewAsset` has 2 changes:
+- It now uses the generic type of the delegate rather than always `AssetEntity`.
+- The `index` of arguments is now nullable,
+  to indicate the behavior of previewing selected assets only.
+
+### Permission request option integration
+
+`PermissionRequestOption` has been added to
+`AssetPickerDelegate.permissionCheck` and
+`AssetPickerDelegate.pickAssetsWithDelegate` as an argument.
+Classes that extend `AssetPickerDelegate` and override these methods must migrate,
+Delegates that use `AssetPicker.permissionCheck`
+should choose whether to pass the request option.
+
+#### Details
+
+Before:
+
+1. ```dart
+   AssetPicker.permissionCheck();
+   ```
+
+2. ```dart
+   Future<PermissionState> permissionCheck();
+   ```
+
+3. ```dart
+   Future<List<Asset>?> pickAssetsWithDelegate<Asset, Path,
+      PickerProvider extends AssetPickerProvider<Asset, Path>>(
+    BuildContext context, {
+    required AssetPickerBuilderDelegate<Asset, Path> delegate,
+    Key? key,
+    bool useRootNavigator = true,
+    AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
+   })
+   ```
+
+After:
+
+1. ```dart
+   AssetPicker.permissionCheck(requestOption: ...);
+   ```
+
+2. ```dart
+   Future<PermissionState> permissionCheck({
+     PermissionRequestOption requestOption = const PermissionRequestOption,
+   });
+   ```
+
+3. ```dart
+   Future<List<Asset>?> pickAssetsWithDelegate<Asset, Path,
+      PickerProvider extends AssetPickerProvider<Asset, Path>>(
+    BuildContext context, {
+    required AssetPickerBuilderDelegate<Asset, Path> delegate,
+    PermissionRequestOption requestOption =
+        const PermissionRequestOption,
+    Key? key,
+    bool useRootNavigator = true,
+    AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
+   })
+   ```
 
 ## 8.6.0
 

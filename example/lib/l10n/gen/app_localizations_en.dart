@@ -42,7 +42,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickMethodVideoName => 'Video picker';
 
   @override
-  String get pickMethodVideoDescription => 'Only pick video from device. (Includes Live Photos on iOS and macOS.)';
+  String get pickMethodVideoDescription =>
+      'Only pick video from device. (Includes Live Photos on iOS and macOS.)';
 
   @override
   String get pickMethodAudioName => 'Audio picker';
@@ -54,13 +55,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickMethodCameraName => 'Pick from camera';
 
   @override
-  String get pickMethodCameraDescription => 'Allow to pick an asset through camera.';
+  String get pickMethodCameraDescription =>
+      'Allow to pick an asset through camera.';
 
   @override
   String get pickMethodCameraAndStayName => 'Pick from camera and stay';
 
   @override
-  String get pickMethodCameraAndStayDescription => 'Take a photo or video with the camera picker, select the result and stay in the entities list.';
+  String get pickMethodCameraAndStayDescription =>
+      'Take a photo or video with the camera picker, select the result and stay in the entities list.';
 
   @override
   String get pickMethodCommonName => 'Common picker';
@@ -72,49 +75,58 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickMethodThreeItemsGridName => '3 items grid';
 
   @override
-  String get pickMethodThreeItemsGridDescription => 'Picker will served as 3 items on cross axis. (pageSize must be a multiple of the gridCount)';
+  String get pickMethodThreeItemsGridDescription =>
+      'Picker will served as 3 items on cross axis. (pageSize must be a multiple of the gridCount)';
 
   @override
   String get pickMethodCustomFilterOptionsName => 'Custom filter options';
 
   @override
-  String get pickMethodCustomFilterOptionsDescription => 'Add filter options for the picker.';
+  String get pickMethodCustomFilterOptionsDescription =>
+      'Add filter options for the picker.';
 
   @override
   String get pickMethodPrependItemName => 'Prepend special item';
 
   @override
-  String get pickMethodPrependItemDescription => 'A special item will prepend to the assets grid.';
+  String get pickMethodPrependItemDescription =>
+      'A special item will prepend to the assets grid.';
 
   @override
   String get pickMethodNoPreviewName => 'No preview';
 
   @override
-  String get pickMethodNoPreviewDescription => 'You cannot preview assets during the picking, the behavior is like the WhatsApp/MegaTok pattern.';
+  String get pickMethodNoPreviewDescription =>
+      'You cannot preview assets during the picking, the behavior is like the WhatsApp/MegaTok pattern.';
 
   @override
   String get pickMethodKeepScrollOffsetName => 'Keep scroll offset';
 
   @override
-  String get pickMethodKeepScrollOffsetDescription => 'Pick assets from same scroll position.';
+  String get pickMethodKeepScrollOffsetDescription =>
+      'Pick assets from same scroll position.';
 
   @override
   String get pickMethodChangeLanguagesName => 'Change Languages';
 
   @override
-  String get pickMethodChangeLanguagesDescription => 'Pass AssetPickerTextDelegate to change between languages (e.g. EnglishAssetPickerTextDelegate).';
+  String get pickMethodChangeLanguagesDescription =>
+      'Pass AssetPickerTextDelegate to change between languages (e.g. EnglishAssetPickerTextDelegate).';
 
   @override
   String get pickMethodPreventGIFPickedName => 'Prevent GIF being picked';
 
   @override
-  String get pickMethodPreventGIFPickedDescription => 'Use selectPredicate to banned GIF picking when tapped.';
+  String get pickMethodPreventGIFPickedDescription =>
+      'Use selectPredicate to banned GIF picking when tapped.';
 
   @override
-  String get pickMethodCustomizableThemeName => 'Customizable theme (ThemeData)';
+  String get pickMethodCustomizableThemeName =>
+      'Customizable theme (ThemeData)';
 
   @override
-  String get pickMethodCustomizableThemeDescription => 'Picking assets with the light theme or with a different color.';
+  String get pickMethodCustomizableThemeDescription =>
+      'Picking assets with the light theme or with a different color.';
 
   @override
   String get pickMethodPathNameBuilderName => 'Path name builder';
@@ -126,16 +138,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickMethodWeChatMomentName => 'WeChat Moment';
 
   @override
-  String get pickMethodWeChatMomentDescription => 'Pick assets with images or only 1 video.';
+  String get pickMethodWeChatMomentDescription =>
+      'Pick assets with images or only 1 video.';
 
   @override
-  String get pickMethodCustomImagePreviewThumbSizeName => 'Custom image preview thumb size';
+  String get pickMethodCustomImagePreviewThumbSizeName =>
+      'Custom image preview thumb size';
 
   @override
-  String get pickMethodCustomImagePreviewThumbSizeDescription => 'You can reduce the thumb size to get faster load speed.';
+  String get pickMethodCustomImagePreviewThumbSizeDescription =>
+      'You can reduce the thumb size to get faster load speed.';
 
   @override
-  String get customPickerNotice => 'This page contains customized pickers with different asset types, different UI layouts, or some use case for specific apps. Contribute to add your custom picker are welcomed.\nPickers in this page are located at the lib/customs/pickers folder.';
+  String get customPickerNotice =>
+      'This page contains customized pickers with different asset types, different UI layouts, or some use case for specific apps. Contribute to add your custom picker are welcomed.\nPickers in this page are located at the lib/customs/pickers folder.';
 
   @override
   String get customPickerCallThePickerButton => '🎁 Call the Picker';
@@ -144,13 +160,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customPickerDirectoryAndFileName => 'Directory+File picker';
 
   @override
-  String get customPickerDirectoryAndFileDescription => 'This is a custom picker built for `File`.\nBy browsing this picker, we want you to know that you can build your own picker components using the entity\'s type you desired.\n\nIn this page, picker will grab files from `getApplicationDocumentsDirectory`, then check whether it contains images. Put files into the path to see how this custom picker work.';
+  String get customPickerDirectoryAndFileDescription =>
+      'This is a custom picker built for `File`.\nBy browsing this picker, we want you to know that you can build your own picker components using the entity\'s type you desired.\n\nIn this page, picker will grab files from `getApplicationDocumentsDirectory`, then check whether it contains images. Put files into the path to see how this custom picker work.';
 
   @override
   String get customPickerMultiTabName => 'Multi tab picker';
 
   @override
-  String get customPickerMultiTabDescription => 'The picker contains multiple tab with different types of assets for the picking at the same time.';
+  String get customPickerMultiTabDescription =>
+      'The picker contains multiple tab with different types of assets for the picking at the same time.';
 
   @override
   String get customPickerMultiTabTab1 => 'All';
@@ -165,5 +183,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customPickerInstagramLayoutName => 'Instagram layout picker';
 
   @override
-  String get customPickerInstagramLayoutDescription => 'The picker reproduces Instagram layout with preview and scroll animations. It\'s also published as the package insta_assets_picker.';
+  String get customPickerInstagramLayoutDescription =>
+      'The picker reproduces Instagram layout with preview and scroll animations. It\'s also published as the package insta_assets_picker.';
 }

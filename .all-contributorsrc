@@ -250,6 +250,15 @@
       "contributions": [
         "translation"
       ]
+    },
+    {
+      "login": "AmosHuKe",
+      "name": "Amos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32262985?v=4",
+      "profile": "https://amoshk.top",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

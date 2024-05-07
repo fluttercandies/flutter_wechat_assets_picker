@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../delegates/sort_path_delegate.dart';
-import '../internal/singleton.dart';
+import '../internals/singleton.dart';
 import '../models/path_wrapper.dart';
 
 /// Helps the assets picker to manage [Path]s and [Asset]s.
@@ -121,9 +121,19 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool? _hasMoreToLoad;
+
   /// Whether more assets are waiting for a load.
   /// 是否还有更多资源可以加载
-  bool get hasMoreToLoad => _currentAssets.length < _totalAssetsCount!;
+  bool get hasMoreToLoad {
+    if (_hasMoreToLoad case final bool value) {
+      return value;
+    }
+    if (_totalAssetsCount case final int count) {
+      return _currentAssets.length < count;
+    }
+    return true;
+  }
 
   /// The current page for assets list.
   /// 当前加载的资源列表分页数
@@ -263,10 +273,7 @@ class DefaultAssetPickerProvider
   }) {
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
     // Call [getAssetList] with route duration when constructing.
-    Future<void>.delayed(initializeDelayDuration, () async {
-      await getPaths();
-      await getAssetsFromCurrentPath();
-    });
+    Future<void>.delayed(initializeDelayDuration, getPaths);
   }
 
   @visibleForTesting
@@ -365,6 +372,8 @@ class DefaultAssetPickerProvider
     if (_paths.isNotEmpty) {
       _currentPath ??= _paths.first;
     }
+
+    await getAssetsFromCurrentPath();
   }
 
   Completer<void>? _getAssetsFromPathCompleter;
@@ -380,6 +389,8 @@ class DefaultAssetPickerProvider
       );
       if (currentPage == 0) {
         _currentAssets.clear();
+      } else if (list.isEmpty) {
+        _hasMoreToLoad = false;
       }
       _currentAssets.addAll(list);
       _hasAssetsToDisplay = _currentAssets.isNotEmpty;
@@ -387,11 +398,12 @@ class DefaultAssetPickerProvider
     }
 
     if (_getAssetsFromPathCompleter == null) {
-      _getAssetsFromPathCompleter = Completer<void>();
-      run().then((_) {
-        _getAssetsFromPathCompleter!.complete();
+      final completer = Completer<void>();
+      _getAssetsFromPathCompleter = completer;
+      run().then((r) {
+        completer.complete();
       }).catchError((Object e, StackTrace s) {
-        _getAssetsFromPathCompleter!.completeError(e, s);
+        completer.completeError(e, s);
       }).whenComplete(() {
         _getAssetsFromPathCompleter = null;
       });
@@ -495,21 +507,15 @@ class DefaultAssetPickerProvider
   /// Get assets list from current path entity.
   /// 从当前已选路径获取资源列表
   Future<void> getAssetsFromCurrentPath() async {
-    if (_currentPath == null || _paths.isEmpty) {
+    if (_paths.isEmpty && _currentPath != null) {
+      throw StateError('The current path is not synced with the empty paths.');
+    }
+    if (_paths.isNotEmpty && _currentPath == null) {
+      throw StateError('The empty path is not synced with the current paths.');
+    }
+    if (_paths.isEmpty || _currentPath == null) {
       isAssetsEmpty = true;
       return;
-    }
-    final PathWrapper<AssetPathEntity> wrapper = _currentPath!;
-    final int assetCount =
-        wrapper.assetCount ?? await wrapper.path.assetCountAsync;
-    // If the picker was disposed (#492), stop fetching the assets
-    if (!mounted) {
-      return;
-    }
-    totalAssetsCount = assetCount;
-    isAssetsEmpty = assetCount == 0;
-    if (wrapper.assetCount == null) {
-      currentPath = _currentPath!.copyWith(assetCount: assetCount);
     }
     await getAssetsFromPath(0, currentPath!.path);
   }

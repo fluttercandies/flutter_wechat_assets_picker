@@ -44,7 +44,8 @@ Widget defaultPickerTestApp({
 }
 
 class _DefaultHomePage extends StatelessWidget {
-  const _DefaultHomePage(this.onButtonPressed, {Key? key}) : super(key: key);
+  // ignore: unused_element
+  const _DefaultHomePage(this.onButtonPressed, {super.key});
 
   final void Function(BuildContext)? onButtonPressed;
 
@@ -72,7 +73,9 @@ class TestPhotoManagerPlugin extends PhotoManagerPlugin {
 
 class TestAssetPickerDelegate extends AssetPickerDelegate {
   @override
-  Future<PermissionState> permissionCheck() async {
+  Future<PermissionState> permissionCheck({
+    PermissionRequestOption requestOption = const PermissionRequestOption(),
+  }) async {
     return SynchronousFuture<PermissionState>(PermissionState.authorized);
   }
 
@@ -81,11 +84,20 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
     BuildContext context, {
     Key? key,
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
+    PermissionRequestOption? permissionRequestOption,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    // final PermissionState ps = await permissionCheck();
-    final AssetPathEntity pathEntity = AssetPathEntity(
+      permissionRequestOption ??= PermissionRequestOption(
+      androidPermission: AndroidPermission(
+        type: pickerConfig.requestType,
+        mediaLocation: false,
+      ),
+    );
+//     final PermissionState ps = await permissionCheck(
+//       requestOption: permissionRequestOption,
+//     );
+     final AssetPathEntity pathEntity = AssetPathEntity(
       id: 'test',
       name: 'pathEntity',
     );

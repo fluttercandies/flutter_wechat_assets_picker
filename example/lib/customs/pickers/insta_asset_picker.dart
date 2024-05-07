@@ -6,6 +6,7 @@
 ///
 /// See the package https://github.com/LeGoffMael/insta_assets_picker
 /// for the complete implementations.
+library;
 
 import 'dart:math';
 
@@ -58,8 +59,14 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
   }
 
   Future<void> callPicker(BuildContext context) async {
-    // final PermissionState ps = await AssetPicker.permissionCheck();
-
+//     final PermissionState ps = await AssetPicker.permissionCheck(
+//       requestOption: PermissionRequestOption(
+//         androidPermission: AndroidPermission(
+//           type: provider.requestType,
+//           mediaLocation: false,
+//         ),
+//       ),
+//     );
     final InstaAssetPickerBuilder builder = InstaAssetPickerBuilder(
       provider: provider,
       initialPermission: PermissionState.authorized,
@@ -371,9 +378,12 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   @override
   Future<void> viewAsset(
     BuildContext context,
-    int index,
+    int? index,
     AssetEntity currentAsset,
   ) async {
+    if (index == null) {
+      return;
+    }
     // if is preview asset, unselect it
     if (provider.selectedAssets.isNotEmpty &&
         _previewAsset.value == currentAsset) {

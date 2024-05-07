@@ -51,9 +51,6 @@ mixin ExamplePageMixin<T extends StatefulWidget> on State<T> {
 
   void removeAsset(int index) {
     assets.removeAt(index);
-    if (assets.isEmpty) {
-      isDisplayingDetail.value = false;
-    }
     setState(() {});
   }
 

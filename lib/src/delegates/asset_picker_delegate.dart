@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../constants/config.dart';
 import '../constants/constants.dart';
@@ -29,8 +30,12 @@ class AssetPickerDelegate {
   /// See also:
   ///  * [PermissionState] which defined all states of required permissions.
   /// {@endtemplate}
-  Future<PermissionState> permissionCheck() async {
-    final PermissionState ps = await PhotoManager.requestPermissionExtend();
+  Future<PermissionState> permissionCheck({
+    PermissionRequestOption requestOption = const PermissionRequestOption(),
+  }) async {
+    final PermissionState ps = await PhotoManager.requestPermissionExtend(
+      requestOption: requestOption,
+    );
     if (ps != PermissionState.authorized && ps != PermissionState.limited) {
       throw StateError('Permission state error with $ps.');
     }
@@ -61,10 +66,21 @@ class AssetPickerDelegate {
     BuildContext context, {
     Key? key,
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
+    PermissionRequestOption? permissionRequestOption,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
-    // final PermissionState ps = await permissionCheck();
+ 
+    permissionRequestOption ??= PermissionRequestOption(
+      androidPermission: AndroidPermission(
+        type: pickerConfig.requestType,
+        mediaLocation: false,
+      ),
+    );
+//     final PermissionState ps = await permissionCheck(
+//       requestOption: permissionRequestOption,
+//     );
+ 
     final AssetPickerPageRoute<List<AssetEntity>> route =
         pageRouteBuilder?.call(const SizedBox.shrink()) ??
             AssetPickerPageRoute<List<AssetEntity>>(
@@ -136,12 +152,16 @@ class AssetPickerDelegate {
       PickerProvider extends AssetPickerProvider<Asset, Path>>(
     BuildContext context, {
     required AssetPickerBuilderDelegate<Asset, Path> delegate,
+    PermissionRequestOption permissionRequestOption =
+        const PermissionRequestOption(),
     Key? key,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
-    // await permissionCheck();
-    final Widget picker = AssetPicker<Asset, Path>(
+ 
+//     await permissionCheck(requestOption: permissionRequestOption);
+
+        final Widget picker = AssetPicker<Asset, Path>(
       key: key,
       builder: delegate,
     );
@@ -232,14 +252,30 @@ class AssetPickerDelegate {
           selectionHandleColor: themeColor,
         ),
         indicatorColor: themeColor,
-        appBarTheme: const AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.grey[100],
+          systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarBrightness: Brightness.light,
             statusBarIconBrightness: Brightness.dark,
           ),
+          iconTheme: IconThemeData(color: Colors.grey[900]),
           elevation: 0,
         ),
+        bottomAppBarTheme: BottomAppBarTheme(
+          color: Colors.grey[100],
+        ),
         buttonTheme: ButtonThemeData(buttonColor: themeColor),
+        iconTheme: IconThemeData(color: Colors.grey[900]),
+        checkboxTheme: CheckboxThemeData(
+          checkColor: MaterialStateProperty.all(Colors.black),
+          fillColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.selected)) {
+              return themeColor;
+            }
+            return null;
+          }),
+          side: const BorderSide(color: Colors.black),
+        ),
         colorScheme: ColorScheme(
           primary: Colors.grey[50]!,
           secondary: themeColor,
@@ -248,7 +284,7 @@ class AssetPickerDelegate {
           brightness: Brightness.light,
           error: const Color(0xffcf6679),
           onPrimary: Colors.white,
-          onSecondary: Colors.white,
+          onSecondary: Colors.grey[100]!,
           onSurface: Colors.black,
           onBackground: Colors.black,
           onError: Colors.white,
@@ -271,14 +307,30 @@ class AssetPickerDelegate {
         selectionHandleColor: themeColor,
       ),
       indicatorColor: themeColor,
-      appBarTheme: const AppBarTheme(
-        systemOverlayStyle: SystemUiOverlayStyle(
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.grey[850],
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light,
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
       ),
+      bottomAppBarTheme: BottomAppBarTheme(
+        color: Colors.grey[850],
+      ),
       buttonTheme: ButtonThemeData(buttonColor: themeColor),
+      iconTheme: const IconThemeData(color: Colors.white),
+      checkboxTheme: CheckboxThemeData(
+        checkColor: MaterialStateProperty.all(Colors.white),
+        fillColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) {
+            return themeColor;
+          }
+          return null;
+        }),
+        side: const BorderSide(color: Colors.white),
+      ),
       colorScheme: ColorScheme(
         primary: Colors.grey[900]!,
         secondary: themeColor,
@@ -287,7 +339,7 @@ class AssetPickerDelegate {
         brightness: Brightness.dark,
         error: const Color(0xffcf6679),
         onPrimary: Colors.black,
-        onSecondary: Colors.black,
+        onSecondary: Colors.grey[850]!,
         onSurface: Colors.white,
         onBackground: Colors.white,
         onError: Colors.black,

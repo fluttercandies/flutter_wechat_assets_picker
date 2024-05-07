@@ -7,11 +7,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:video_player/video_player.dart';
+import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../../constants/constants.dart';
-import '../../constants/extensions.dart';
-import '../../internal/singleton.dart';
-import '../scale_text.dart';
+import '../../internals/singleton.dart';
 
 class AudioPageBuilder extends StatefulWidget {
   const AudioPageBuilder({super.key, required this.asset});

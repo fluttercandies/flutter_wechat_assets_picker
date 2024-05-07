@@ -4,7 +4,68 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
-See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
+> [!IMPORTANT]  
+> See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
+
+## 9.0.3
+
+### Fixes
+
+- Fix index reverting in `viewAsset`.
+
+## 9.0.2
+
+### Fixes
+
+- Fix the index with bottom items in the preview.
+
+## 9.0.1
+
+### Fixes
+
+- Fix current asset in the picker viewer.
+
+### Improvements
+
+- Improve code formatting. 
+
+## 9.0.0
+
+### Breaking changes
+
+- Migrate to Flutter 3.16, and drop supports for previous Flutter versions.
+- Bump `photo_manager` to v3.x.
+- Export `photo_manager_image_provider`.
+- Integrate `PermissionRequestOption` for callers.
+
+### Improvements
+
+- Adapt `ThemeData` usages.
+- Use `wechat_picker_library`.
+- Make the first asset count not blocking loads.
+
+### Fixes
+
+- Fix unhandled child semantics with the app bar title.
+- Fix styles around the app bar and other widgets.
+- Fix previewing selected assets' behavior.
+- Use `PermissionRequestOption` as much as possible.
+- Raise more errors for non-synced paths.
+- Fix the experience with `shouldRevertGrid`.
+
+## 8.8.0
+
+### New features
+
+- Add Korean language support. (#494)
+
+### Improvements
+
+- Use `viewAsset` in the preview button.
+
+### Fixes
+
+- Fix disposed provider throwing error when fetching assets. (#493)
 
 ## 8.7.1
 

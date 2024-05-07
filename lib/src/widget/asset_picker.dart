@@ -31,14 +31,17 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
   }
 
   /// {@macro wechat_assets_picker.delegates.AssetPickerDelegate.permissionCheck}
-  static Future<PermissionState> permissionCheck() {
-    return _pickerDelegate.permissionCheck();
+  static Future<PermissionState> permissionCheck({
+    PermissionRequestOption requestOption = const PermissionRequestOption(),
+  }) {
+    return _pickerDelegate.permissionCheck(requestOption: requestOption);
   }
 
   /// {@macro wechat_assets_picker.delegates.AssetPickerDelegate.pickAssets}
   static Future<List<AssetEntity>?> pickAssets(
     BuildContext context, {
     Key? key,
+    PermissionRequestOption? permissionRequestOption,
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
@@ -47,6 +50,7 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
       context,
       key: key,
       pickerConfig: pickerConfig,
+      permissionRequestOption: permissionRequestOption,
       useRootNavigator: useRootNavigator,
       pageRouteBuilder: pageRouteBuilder,
     );
@@ -56,15 +60,18 @@ class AssetPicker<Asset, Path> extends StatefulWidget {
   static Future<List<Asset>?> pickAssetsWithDelegate<Asset, Path,
       PickerProvider extends AssetPickerProvider<Asset, Path>>(
     BuildContext context, {
-    Key? key,
     required AssetPickerBuilderDelegate<Asset, Path> delegate,
-    bool useRootNavigator = true,
+    PermissionRequestOption permissionRequestOption =
+        const PermissionRequestOption(),
+    Key? key,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
+    bool useRootNavigator = true,
   }) {
     return _pickerDelegate.pickAssetsWithDelegate<Asset, Path, PickerProvider>(
       context,
       key: key,
       delegate: delegate,
+      permissionRequestOption: permissionRequestOption,
       useRootNavigator: useRootNavigator,
       pageRouteBuilder: pageRouteBuilder,
     );

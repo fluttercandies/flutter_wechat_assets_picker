@@ -4,10 +4,10 @@
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
+import 'package:wechat_picker_library/wechat_picker_library.dart';
 
-import '../../internal/singleton.dart';
-import '../../widget/scale_text.dart';
+import '../../internals/singleton.dart';
 
 class AssetEntityGridItemBuilder extends StatefulWidget {
   const AssetEntityGridItemBuilder({
