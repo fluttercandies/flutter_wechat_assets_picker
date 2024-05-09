@@ -44,8 +44,7 @@ Widget defaultPickerTestApp({
 }
 
 class _DefaultHomePage extends StatelessWidget {
-  // ignore: unused_element
-  const _DefaultHomePage(this.onButtonPressed, {super.key});
+  const _DefaultHomePage(this.onButtonPressed);
 
   final void Function(BuildContext)? onButtonPressed;
 
@@ -54,7 +53,9 @@ class _DefaultHomePage extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: TextButton(
-          onPressed: () => onButtonPressed?.call(context),
+          onPressed: () {
+            onButtonPressed?.call(context);
+          },
           child: const Text(_testButtonText),
         ),
       ),

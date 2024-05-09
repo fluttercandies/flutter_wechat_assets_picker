@@ -311,7 +311,10 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// Sync selected assets currently with asset picker provider.
   /// 在预览中当前已选的图片同步到选择器的状态
-  @Deprecated('The method is not used by the package anymore')
+  @Deprecated(
+    'No longer used by the package. '
+    'This will be removed in 10.0.0',
+  )
   Future<bool> syncSelectedAssetsWhenPop() async {
     if (provider?.currentlySelectedAssets != null) {
       selectorProvider?.selectedAssets = provider!.currentlySelectedAssets;
@@ -519,7 +522,9 @@ class DefaultAssetPickerViewerBuilderDelegate
       child: Semantics(
         sortKey: ordinalSortKey(0),
         child: IconButton(
-          onPressed: Navigator.of(context).maybePop,
+          onPressed: () {
+            Navigator.maybeOf(context)?.maybePop();
+          },
           padding: EdgeInsets.zero,
           constraints: BoxConstraints.tight(const Size.square(28)),
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
@@ -657,11 +662,15 @@ class DefaultAssetPickerViewerBuilderDelegate
               label: '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
                   '${index + 1}',
               selected: isViewing,
-              onTap: () => onTap(asset),
+              onTap: () {
+                onTap(asset);
+              },
               onTapHint: semanticsTextDelegate.sActionPreviewHint,
               excludeSemantics: true,
               child: GestureDetector(
-                onTap: () => onTap(asset),
+                onTap: () {
+                  onTap(asset);
+                },
                 child: Selector<AssetPickerViewerProvider<AssetEntity>?,
                     List<AssetEntity>?>(
                   selector: (_, AssetPickerViewerProvider<AssetEntity>? p) =>
@@ -712,7 +721,9 @@ class DefaultAssetPickerViewerBuilderDelegate
       leading: Semantics(
         sortKey: ordinalSortKey(0),
         child: IconButton(
-          onPressed: Navigator.of(context).maybePop,
+          onPressed: () {
+            Navigator.maybeOf(context)?.maybePop();
+          },
           tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
           icon: Icon(
             Icons.close,
@@ -765,15 +776,15 @@ class DefaultAssetPickerViewerBuilderDelegate
           );
           Future<void> onPressed() async {
             if (isWeChatMoment && hasVideo) {
-              Navigator.of(context).pop(<AssetEntity>[currentAsset]);
+              Navigator.maybeOf(context)?.pop(<AssetEntity>[currentAsset]);
               return;
             }
             if (provider!.isSelectedNotEmpty) {
-              Navigator.of(context).pop(provider.currentlySelectedAssets);
+              Navigator.maybeOf(context)?.pop(provider.currentlySelectedAssets);
               return;
             }
             if (await onChangingSelected(context, currentAsset, false)) {
-              Navigator.of(context).pop(
+              Navigator.maybeOf(context)?.pop(
                 selectedAssets ?? <AssetEntity>[currentAsset],
               );
             }
@@ -909,7 +920,9 @@ class DefaultAssetPickerViewerBuilderDelegate
               return Semantics(
                 selected: isSelected,
                 label: semanticsTextDelegate.select,
-                onTap: () => onChangingSelected(context, asset, isSelected),
+                onTap: () {
+                  onChangingSelected(context, asset, isSelected);
+                },
                 onTapHint: semanticsTextDelegate.select,
                 excludeSemantics: true,
                 child: Row(

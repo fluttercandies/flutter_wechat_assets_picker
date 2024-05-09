@@ -111,9 +111,9 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      PhotoManager.requestPermissionExtend().then(
-        (PermissionState ps) => widget.builder.permission.value = ps,
-      );
+      PhotoManager.requestPermissionExtend().then((PermissionState ps) {
+        widget.builder.permission.value = ps;
+      });
     }
   }
 

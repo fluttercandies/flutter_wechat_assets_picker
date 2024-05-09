@@ -29,7 +29,7 @@ class _SplashPageState extends State<SplashPage> {
     } catch (_) {}
     await Future<void>.delayed(const Duration(seconds: 1));
     if (mounted) {
-      Navigator.of(context).pushReplacement(
+      Navigator.maybeOf(context)?.pushReplacement(
         PageRouteBuilder<void>(
           pageBuilder: (_, __, ___) => const HomePage(),
           transitionsBuilder: (_, Animation<double> a, __, Widget child) {

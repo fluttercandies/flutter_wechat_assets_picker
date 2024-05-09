@@ -61,9 +61,13 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
     currentlySelectedAssets = newList;
   }
 
-  @Deprecated('Use selectAsset instead')
-  void selectAssetEntity(A entity) => selectAsset(entity);
+  @Deprecated('Use selectAsset instead. This will be removed in 10.0.0')
+  void selectAssetEntity(A entity) {
+    selectAsset(entity);
+  }
 
-  @Deprecated('Use unSelectAsset instead')
-  void unselectAssetEntity(A entity) => unSelectAsset(entity);
+  @Deprecated('Use unSelectAsset instead. This will be removed in 10.0.0')
+  void unselectAssetEntity(A entity) {
+    unSelectAsset(entity);
+  }
 }

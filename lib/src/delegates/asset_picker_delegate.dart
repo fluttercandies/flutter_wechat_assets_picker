@@ -117,10 +117,10 @@ class AssetPickerDelegate {
         locale: Localizations.maybeLocaleOf(context),
       ),
     );
-    final List<AssetEntity>? result = await Navigator.of(
+    final List<AssetEntity>? result = await Navigator.maybeOf(
       context,
       rootNavigator: useRootNavigator,
-    ).push<List<AssetEntity>>(
+    )?.push<List<AssetEntity>>(
       pageRouteBuilder?.call(picker) ??
           AssetPickerPageRoute<List<AssetEntity>>(builder: (_) => picker),
     );
@@ -159,10 +159,10 @@ class AssetPickerDelegate {
       key: key,
       builder: delegate,
     );
-    final List<Asset>? result = await Navigator.of(
+    final List<Asset>? result = await Navigator.maybeOf(
       context,
       rootNavigator: useRootNavigator,
-    ).push<List<Asset>>(
+    )?.push<List<Asset>>(
       pageRouteBuilder?.call(picker) ??
           AssetPickerPageRoute<List<Asset>>(builder: (_) => picker),
     );

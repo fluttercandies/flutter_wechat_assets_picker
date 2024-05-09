@@ -3,8 +3,18 @@ include: package:flutter_lints/flutter.yaml
 linter:
   rules:
     always_declare_return_types: true
+    always_put_control_body_on_new_line: true
+    avoid_print: false
+    avoid_renaming_method_parameters: true
+    avoid_unnecessary_containers: true
+    avoid_void_async: true
+    curly_braces_in_flow_control_structures: true
+    directives_ordering: true
     flutter_style_todos: true
     library_private_types_in_public_api: false
+    overridden_fields: false
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: false
     prefer_final_fields: true
     prefer_final_in_for_each: true
     prefer_final_locals: true
@@ -13,5 +23,9 @@ linter:
     sort_child_properties_last: true
     sort_constructors_first: true
     sort_unnamed_constructors_first: true
+    unnecessary_await_in_return: true
+    unnecessary_breaks: true
     unnecessary_late: true
+    unnecessary_parenthesis: true
     use_build_context_synchronously: false
+    void_checks: true

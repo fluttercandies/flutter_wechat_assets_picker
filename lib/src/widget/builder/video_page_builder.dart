@@ -183,14 +183,18 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
             builder: (_, bool value, __) => GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: value || MediaQuery.accessibleNavigationOf(context)
-                  ? () => playButtonCallback(context)
+                  ? () {
+                      playButtonCallback(context);
+                    }
                   : widget.delegate.switchDisplayingDetail,
               child: Center(
                 child: AnimatedOpacity(
                   duration: kThemeAnimationDuration,
                   opacity: value ? 0.0 : 1.0,
                   child: GestureDetector(
-                    onTap: () => playButtonCallback(context),
+                    onTap: () {
+                      playButtonCallback(context);
+                    },
                     child: DecoratedBox(
                       decoration: const BoxDecoration(
                         boxShadow: <BoxShadow>[
@@ -237,7 +241,9 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           return const SizedBox.shrink();
         }
         return Semantics(
-          onLongPress: () => playButtonCallback(context),
+          onLongPress: () {
+            playButtonCallback(context);
+          },
           onLongPressHint:
               Singleton.textDelegate.semanticsTextDelegate.sActionPlayHint,
           child: _contentBuilder(context),

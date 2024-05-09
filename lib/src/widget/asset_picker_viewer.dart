@@ -75,7 +75,7 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
       },
     );
     final List<AssetEntity>? result =
-        await Navigator.of(context).push<List<AssetEntity>>(pageRoute);
+        await Navigator.maybeOf(context)?.push<List<AssetEntity>>(pageRoute);
     return result;
   }
 
@@ -95,9 +95,8 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
         return FadeTransition(opacity: animation, child: child);
       },
     );
-    final List<A>? result = await Navigator.of(context).push<List<A>>(
-      pageRoute,
-    );
+    final List<A>? result =
+        await Navigator.maybeOf(context)?.push<List<A>>(pageRoute);
     return result;
   }
 }

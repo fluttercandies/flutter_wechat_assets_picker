@@ -32,25 +32,32 @@ class _CustomPickerPageState extends State<CustomPickersPage>
         icon: '🗄',
         name: context.l10n.customPickerDirectoryAndFileName,
         description: context.l10n.customPickerDirectoryAndFileDescription,
-        method: (BuildContext context) => Navigator.of(context).push<void>(
-          MaterialPageRoute<void>(
-            builder: (_) => const DirectoryFileAssetPicker(),
-          ),
-        ),
+        method: (BuildContext context) {
+          Navigator.maybeOf(context)?.push<void>(
+            MaterialPageRoute<void>(
+              builder: (_) => const DirectoryFileAssetPicker(),
+            ),
+          );
+        },
       ),
       CustomPickMethod(
         icon: '🔀',
         name: context.l10n.customPickerMultiTabName,
         description: context.l10n.customPickerMultiTabDescription,
-        method: (BuildContext context) => Navigator.of(context).push<void>(
-          MaterialPageRoute<void>(builder: (_) => const MultiTabAssetPicker()),
-        ),
+        method: (BuildContext context) {
+          Navigator.maybeOf(context)?.push<void>(
+            MaterialPageRoute<void>(
+              builder: (_) => const MultiTabAssetPicker(),
+            ),
+          );
+        },
       ),
       CustomPickMethod(
         icon: '📷',
         name: context.l10n.customPickerInstagramLayoutName,
         description: context.l10n.customPickerInstagramLayoutDescription,
-        method: (BuildContext context) => Navigator.of(context).push<void>(
+        method: (BuildContext context) =>
+            Navigator.maybeOf(context)?.push<void>(
           MaterialPageRoute<void>(builder: (_) => const InstaAssetPicker()),
         ),
       ),

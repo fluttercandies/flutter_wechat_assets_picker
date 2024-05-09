@@ -36,7 +36,7 @@ class _SingleAssetPageState extends State<SingleAssetPage>
         context: context,
         maxAssetsCount: maxAssetsCount,
         handleResult: (BuildContext context, AssetEntity result) =>
-            Navigator.of(context).pop(<AssetEntity>[result]),
+            Navigator.maybeOf(context)?.pop(<AssetEntity>[result]),
       ),
       PickMethod.cameraAndStay(context, maxAssetsCount),
       PickMethod.changeLanguages(context, maxAssetsCount),

@@ -75,7 +75,9 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
       file,
       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
     );
-    setState(() => _controller = c);
+    setState(() {
+      _controller = c;
+    });
     c
       ..initialize()
       ..setVolume(0)
@@ -181,8 +183,12 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: widget.delegate.switchDisplayingDetail,
-          onLongPress: _isLivePhoto ? () => _play() : null,
-          onLongPressEnd: _isLivePhoto ? (_) => _stop() : null,
+          onLongPress: _isLivePhoto ? _play : null,
+          onLongPressEnd: _isLivePhoto
+              ? (_) {
+                  _stop();
+                }
+              : null,
           child: Builder(
             builder: (BuildContext context) {
               if (!_isLivePhoto) {

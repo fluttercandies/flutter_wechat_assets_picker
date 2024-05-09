@@ -87,8 +87,12 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   final Semantics Function(Widget appBar)? semanticsBuilder;
 
-  bool canPop(BuildContext context) =>
-      Navigator.of(context).canPop() && automaticallyImplyLeading;
+  bool canPop(BuildContext context) {
+    if (Navigator.maybeOf(context)?.canPop() ?? false) {
+      return automaticallyImplyLeading;
+    }
+    return false;
+  }
 
   double get _barHeight => height ?? kToolbarHeight;
 

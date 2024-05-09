@@ -36,7 +36,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
         context: context,
         maxAssetsCount: maxAssetsCount,
         handleResult: (BuildContext context, AssetEntity result) =>
-            Navigator.of(context).pop(<AssetEntity>[...assets, result]),
+            Navigator.maybeOf(context)?.pop(<AssetEntity>[...assets, result]),
       ),
       PickMethod.cameraAndStay(context, maxAssetsCount),
       PickMethod.changeLanguages(context, maxAssetsCount),

@@ -34,7 +34,12 @@ void main() async {
       expect(provider, isA<DefaultAssetPickerProvider>());
       await tester.tap(find.widgetWithIcon(IconButton, Icons.close));
       await tester.pumpAndSettle();
-      expect(() => provider.addListener(() {}), throwsA(isA<AssertionError>()));
+      expect(
+        () {
+          provider.addListener(() {});
+        },
+        throwsA(isA<AssertionError>()),
+      );
     });
 
     /// Regression: https://github.com/fluttercandies/flutter_wechat_assets_picker/issues/427
