@@ -1133,9 +1133,9 @@ class DefaultAssetPickerBuilderDelegate
 
                   final double topBottomPadding =
                       appBarItemHeight + bottomSectionHeight;
-                  print(
-                    'screenWidth11: ${screenWidth}, itemSize: ${itemSize}, itemSpacing: ${itemSpacing}, topBottomPadding: ${topBottomPadding}, gridCount: ${gridCount}',
-                  );
+                  // print(
+                  //   'screenWidth11: ${screenWidth}, itemSize: ${itemSize}, itemSpacing: ${itemSpacing}, topBottomPadding: ${topBottomPadding}, gridCount: ${gridCount}',
+                  // );
                   return MergeSemantics(
                     child: Directionality(
                       textDirection: Directionality.of(context),
