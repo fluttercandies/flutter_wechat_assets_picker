@@ -124,13 +124,12 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
           completer.complete();
         }).catchError((Object e, StackTrace s) {
           completer.completeError(e, s);
+        }).whenComplete(() async {
+          // to set _checkPermissionCompleter = null after next didChangeAppLifecycleState is called, else result in infinite loop.
+          // refer to https://github.com/Baseflow/flutter-geolocator/issues/1056 for more information.
+          await Future.delayed(const Duration(milliseconds: 100));
+          _checkPermissionCompleter = null;
         });
-      }
-    }
-
-    if (state == AppLifecycleState.paused) {
-      if (_checkPermissionCompleter != null) {
-        _checkPermissionCompleter = null;
       }
     }
   }
