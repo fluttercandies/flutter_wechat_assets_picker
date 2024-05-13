@@ -7,6 +7,12 @@ that can be found in the LICENSE file. -->
 > [!IMPORTANT]  
 > See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## 9.0.4
+
+### Fixes
+
+- Fix the app bar of the viewer that is not animating.
+
 ## 9.0.3
 
 ### Fixes
