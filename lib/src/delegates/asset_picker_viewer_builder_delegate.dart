@@ -551,15 +551,14 @@ class DefaultAssetPickerViewerBuilderDelegate
       themeData.bottomAppBarTheme.color!.opacity *
           (isAppleOS(context) ? .9 : 1),
     );
-    return ValueListenableBuilder2<bool, int>(
-      firstNotifier: isDisplayingDetail,
-      secondNotifier: selectedNotifier,
-      builder: (_, bool v, __, Widget? child) => AnimatedPositionedDirectional(
+    return ValueListenableBuilder(
+      valueListenable: isDisplayingDetail,
+      builder: (_, v, child) => AnimatedPositionedDirectional(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        bottom: v ? 0 : -(context.bottomPadding + bottomDetailHeight),
-        start: 0,
-        end: 0,
+        bottom: v ? 0.0 : -(context.bottomPadding + bottomDetailHeight),
+        start: 0.0,
+        end: 0.0,
         height: context.bottomPadding + bottomDetailHeight,
         child: child!,
       ),
@@ -717,7 +716,7 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// AppBar widget.
   /// 顶栏部件
   Widget appBar(BuildContext context) {
-    return AssetPickerAppBar(
+    final bar = AssetPickerAppBar(
       leading: Semantics(
         sortKey: ordinalSortKey(0),
         child: IconButton(
@@ -756,6 +755,18 @@ class DefaultAssetPickerViewerBuilderDelegate
           ),
         const SizedBox(width: 14),
       ],
+    );
+    return ValueListenableBuilder(
+      valueListenable: isDisplayingDetail,
+      builder: (_, v, child) => AnimatedPositionedDirectional(
+        duration: kThemeAnimationDuration,
+        curve: Curves.easeInOut,
+        top: v ? 0.0 : -(context.topPadding + bar.preferredSize.height),
+        start: 0.0,
+        end: 0.0,
+        child: child!,
+      ),
+      child: bar,
     );
   }
 
