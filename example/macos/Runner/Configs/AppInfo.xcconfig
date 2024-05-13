@@ -11,4 +11,4 @@ PRODUCT_NAME = Wechat Assets Picker Example
 PRODUCT_BUNDLE_IDENTIFIER = com.fluttercandies.wechatAssetsPickerExample
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2020 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2021 FlutterCandies. All rights reserved.
