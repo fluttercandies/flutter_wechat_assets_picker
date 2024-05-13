@@ -25,8 +25,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.fluttercandies.wechatAssetsPickerExample"
-
-    compileSdkVersion 34
+    compileSdk flutter.compileSdkVersion
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -35,10 +34,9 @@ android {
     defaultConfig {
         applicationId "com.fluttercandies.wechatAssetsPickerExample"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     kotlinOptions {
