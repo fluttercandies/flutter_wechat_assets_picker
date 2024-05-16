@@ -12,6 +12,7 @@ that can be found in the LICENSE file. -->
 ### Fixes
 
 - Fix the app bar of the viewer that is not animating.
+- Fix loading when no assets in the path.
 
 ## 9.0.3
 

@@ -394,6 +394,7 @@ class DefaultAssetPickerProvider
       }
       _currentAssets.addAll(list);
       _hasAssetsToDisplay = _currentAssets.isNotEmpty;
+      _isAssetsEmpty = _currentAssets.isEmpty;
       notifyListeners();
     }
 
