@@ -134,8 +134,13 @@ class PickMethod {
                       handleResult(context, result);
                     }
                   },
-                  child: const Center(
-                    child: Icon(Icons.camera_enhance, size: 42.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(28.0),
+                    color: Theme.of(context).dividerColor,
+                    child: const FittedBox(
+                      fit: BoxFit.fill,
+                      child: Icon(Icons.camera_enhance),
+                    ),
                   ),
                 ),
               );
@@ -191,8 +196,13 @@ class PickMethod {
                     );
                     p.selectAsset(result);
                   },
-                  child: const Center(
-                    child: Icon(Icons.camera_enhance, size: 42.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(28.0),
+                    color: Theme.of(context).dividerColor,
+                    child: const FittedBox(
+                      fit: BoxFit.fill,
+                      child: Icon(Icons.camera_enhance),
+                    ),
                   ),
                 ),
               );
