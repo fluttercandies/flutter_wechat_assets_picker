@@ -312,6 +312,7 @@ Fields in `AssetPickerConfig`:
 | pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`              | Build customized path (album) name with the given path entity.                                 | `null`                      |
 | assetsChangeCallback              | `AssetsChangeCallback<AssetPathEntity>?`         | The callback that will be called when the system notifies assets changes.                      | `null`                      |
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | Whether assets changing should call refresh with the given call and the current selected path. | `null`                      |
+| shouldPreviewAutoPlay             | `bool?`                              | Whether the preview should auto play.                                                        | `false`                      |
 
 - When `maxAssets` equals to `1` (a.k.a. single picking mode),
   use `SpecialPickerType.noPreview` will immediately select asset
