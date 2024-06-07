@@ -389,6 +389,7 @@ class DefaultAssetPickerProvider
       );
       if (currentPage == 0) {
         _currentAssets.clear();
+        _hasMoreToLoad = null;
       } else if (list.isEmpty) {
         _hasMoreToLoad = false;
       }

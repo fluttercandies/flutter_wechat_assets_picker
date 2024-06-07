@@ -13,6 +13,7 @@ that can be found in the LICENSE file. -->
 
 - Fix the app bar of the viewer that is not animating.
 - Fix loading when no assets in the path.
+- Reset the has more to load flag between path switching.
 
 ## 9.0.3
 
