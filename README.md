@@ -314,10 +314,6 @@ Fields in `AssetPickerConfig`:
 - When `maxAssets` equals to `1` (a.k.a. single picking mode),
   use `SpecialPickerType.noPreview` will immediately select asset
   clicked (pressed) by the user and popped.
-- When `requestType` equals to `RequestType.video`,
-  the picker will obtain *Live Photos* on iOS by default.
-  You can disable it by setting `FilterOptionGroup.containsLivePhotos`
-  to `false`.
 - `limitedPermissionOverlayPredicate` lives without persistence,
   if you want to ignore the limited preview after restart,
   you'll need to integrate with your own saving methods.
