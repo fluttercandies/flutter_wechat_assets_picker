@@ -914,7 +914,9 @@ class DefaultAssetPickerBuilderDelegate
       selected = p.selectedAssets;
       if (index == null) {
         current = p.selectedAssets;
-        current = current.reversed.toList(growable: false);
+        if (revert) {
+          current = current.reversed.toList(growable: false);
+        }
         effectiveIndex = selected.indexOf(currentAsset);
       } else {
         current = p.currentAssets;
