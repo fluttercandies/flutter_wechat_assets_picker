@@ -1,6 +1,6 @@
 name: wechat_assets_picker_demo
 description: The demo project for the wechat_assets_picker package.
-version: 9.0.4+53
+version: 9.0.5+54
 publish_to: none
 
 environment:
