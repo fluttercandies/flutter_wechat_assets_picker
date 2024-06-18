@@ -273,7 +273,10 @@ class DefaultAssetPickerProvider
   }) {
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
     // Call [getAssetList] with route duration when constructing.
-    Future<void>.delayed(initializeDelayDuration, getPaths);
+    Future<void>.delayed(initializeDelayDuration, () async {
+      await getPaths(onlyAll: true);
+      await getPaths(onlyAll: false);
+    });
   }
 
   @visibleForTesting
@@ -326,13 +329,13 @@ class DefaultAssetPickerProvider
   }
 
   @override
-  Future<void> getPaths() async {
+  Future<void> getPaths({bool onlyAll = false}) async {
     final PMFilter options;
-    final PMFilter? fog = filterOptions;
+    final fog = filterOptions;
     if (fog is FilterOptionGroup?) {
       // Initial base options.
       // Enable need title for audios to get proper display.
-      final FilterOptionGroup newOptions = FilterOptionGroup(
+      final newOptions = FilterOptionGroup(
         imageOption: const FilterOption(
           sizeConstraint: SizeConstraint(ignoreSize: true),
         ),
@@ -353,14 +356,13 @@ class DefaultAssetPickerProvider
       options = fog;
     }
 
-    final List<AssetPathEntity> list = await PhotoManager.getAssetPathList(
+    final list = await PhotoManager.getAssetPathList(
       type: requestType,
       filterOption: options,
+      onlyAll: onlyAll,
     );
 
-    _paths = list
-        .map((AssetPathEntity p) => PathWrapper<AssetPathEntity>(path: p))
-        .toList();
+    _paths = list.map((p) => PathWrapper<AssetPathEntity>(path: p)).toList();
     // Sort path using sort path delegate.
     Singleton.sortPathDelegate.sort(_paths);
     // Use sync method to avoid unnecessary wait.
@@ -373,7 +375,9 @@ class DefaultAssetPickerProvider
       _currentPath ??= _paths.first;
     }
 
-    await getAssetsFromCurrentPath();
+    if (onlyAll) {
+      await getAssetsFromCurrentPath();
+    }
   }
 
   Completer<void>? _getAssetsFromPathCompleter;
@@ -381,9 +385,9 @@ class DefaultAssetPickerProvider
   @override
   Future<void> getAssetsFromPath([int? page, AssetPathEntity? path]) {
     Future<void> run() async {
-      final int currentPage = page ?? currentAssetsListPage;
-      final AssetPathEntity currentPath = path ?? this.currentPath!.path;
-      final List<AssetEntity> list = await currentPath.getAssetListPaged(
+      final currentPage = page ?? currentAssetsListPage;
+      final currentPath = path ?? this.currentPath!.path;
+      final list = await currentPath.getAssetListPaged(
         page: currentPage,
         size: pageSize,
       );
