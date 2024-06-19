@@ -6,8 +6,9 @@ that can be found in the LICENSE file. -->
 
 This document gathered all breaking changes and migrations requirement between major versions.
 
-## Major versions
+## Breaking changes in versions
 
+- [9.1.0](#910)
 - [9.0.0](#900)
 - [8.6.0](#860)
 - [8.3.0](#830)
@@ -16,6 +17,14 @@ This document gathered all breaking changes and migrations requirement between m
 - [7.0.0](#700)
 - [6.0.0](#600)
 - [5.0.0](#500)
+
+## 9.1.0
+
+### Deprecates `iOSPermissionOverlay`
+
+Due to the support of the limited permission status on Android,
+the permission overlay will also displays on Android.
+Thus, `iOSPermissionOverlay` is now migrating to `permissionOverlay`.
 
 ## 9.0.0
 

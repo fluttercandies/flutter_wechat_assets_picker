@@ -2,7 +2,6 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:io' show Platform;
 import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
@@ -574,7 +573,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   }
 
   /// The overlay when the permission is limited on iOS.
+  @Deprecated('Use permissionOverlay instead. This will be removed in 10.0.0')
   Widget iOSPermissionOverlay(BuildContext context) {
+    return permissionOverlay(context);
+  }
+
+  /// The overlay when the permission is limited.
+  Widget permissionOverlay(BuildContext context) {
     final Size size = MediaQuery.sizeOf(context);
     final Widget closeButton = Container(
       margin: const EdgeInsetsDirectional.only(start: 16, top: 4),
@@ -652,7 +657,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           child: Semantics(
             sortKey: const OrdinalSortKey(0),
             child: Container(
-              padding: MediaQuery.paddingOf(context),
+              padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
               color: context.theme.canvasColor,
               child: Column(
                 children: <Widget>[
@@ -661,6 +666,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
                   goToSettingsButton,
                   SizedBox(height: size.height / 18),
                   accessLimitedButton,
+                  SizedBox(
+                    height: math.max(
+                      MediaQuery.paddingOf(context).bottom,
+                      24.0,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -2220,7 +2231,7 @@ class DefaultAssetPickerBuilderDelegate
                   appleOSLayout(context)
                 else
                   androidLayout(context),
-                if (Platform.isIOS) iOSPermissionOverlay(context),
+                permissionOverlay(context),
               ],
             ),
           ),

@@ -7,6 +7,18 @@ that can be found in the LICENSE file. -->
 > [!IMPORTANT]  
 > See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## 9.1.0
+
+### Fixes
+
+- Requests with the correct options with the picker.
+
+### Improvements
+
+- Support limited permission displays on Android.
+- Improves the limited overlay padding on Android.
+- Adds permission request lock for the picker state.
+
 ## 9.0.5
 
 ### Fixes
