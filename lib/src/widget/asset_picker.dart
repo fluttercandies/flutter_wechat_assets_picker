@@ -15,8 +15,13 @@ import 'asset_picker_page_route.dart';
 AssetPickerDelegate _pickerDelegate = const AssetPickerDelegate();
 
 class AssetPicker<Asset, Path> extends StatefulWidget {
-  const AssetPicker({super.key, required this.builder});
+  const AssetPicker({
+    super.key,
+    required this.permissionRequestOption,
+    required this.builder,
+  });
 
+  final PermissionRequestOption permissionRequestOption;
   final AssetPickerBuilderDelegate<Asset, Path> builder;
 
   /// Provide another [AssetPickerDelegate] which override with

@@ -96,6 +96,7 @@ class AssetPickerDelegate {
     );
     final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
       key: key,
+      permissionRequestOption: permissionRequestOption,
       builder: DefaultAssetPickerBuilderDelegate(
         provider: provider,
         initialPermission: ps,
@@ -157,6 +158,7 @@ class AssetPickerDelegate {
     await permissionCheck(requestOption: permissionRequestOption);
     final Widget picker = AssetPicker<Asset, Path>(
       key: key,
+      permissionRequestOption: permissionRequestOption,
       builder: delegate,
     );
     final List<Asset>? result = await Navigator.maybeOf(
