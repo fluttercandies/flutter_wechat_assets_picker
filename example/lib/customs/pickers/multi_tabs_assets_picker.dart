@@ -2,7 +2,6 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -562,7 +561,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                   appleOSLayout(context)
                 else
                   androidLayout(context),
-                if (Platform.isIOS) iOSPermissionOverlay(context),
+                permissionOverlay(context),
               ],
             ),
           ),
