@@ -332,14 +332,17 @@ class DefaultAssetPickerProvider
   Future<void> getPaths({bool onlyAll = false}) async {
     final PMFilter options;
     final fog = filterOptions;
-    if (fog is FilterOptionGroup?) {
-      // Initial base options.
-      // Enable need title for audios to get proper display.
+    if (fog == null) {
+      options = AdvancedCustomFilter(
+        orderBy: [OrderByItem.desc(CustomColumns.base.createDate)],
+      );
+    } else if (fog is FilterOptionGroup) {
       final newOptions = FilterOptionGroup(
         imageOption: const FilterOption(
           sizeConstraint: SizeConstraint(ignoreSize: true),
         ),
         audioOption: const FilterOption(
+          // Enable title for audios to get proper display.
           needTitle: true,
           sizeConstraint: SizeConstraint(ignoreSize: true),
         ),
@@ -347,10 +350,7 @@ class DefaultAssetPickerProvider
         createTimeCond: DateTimeCond.def().copyWith(ignore: true),
         updateTimeCond: DateTimeCond.def().copyWith(ignore: true),
       );
-      // Merge user's filter options into base options if it's not null.
-      if (fog != null) {
-        newOptions.merge(fog);
-      }
+      newOptions.merge(fog);
       options = newOptions;
     } else {
       options = fog;
