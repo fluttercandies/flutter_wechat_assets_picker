@@ -18,8 +18,8 @@ that can be found in the LICENSE file. -->
 - Support limited permission displays on Android.
 - Improves the limited overlay padding on Android.
 - Adds permission request lock for the picker state.
-
-## 9.0.5
+- Speeding up by splitting asset loading into separate steps.
+- Speeding up using `AdvancedCustomFilter` rather than `FilterOptionGroup` by default.
 
 ### Fixes
 
