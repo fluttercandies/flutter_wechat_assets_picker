@@ -9,10 +9,6 @@ that can be found in the LICENSE file. -->
 
 ## 9.1.0
 
-### Fixes
-
-- Requests with the correct options with the picker.
-
 ### Improvements
 
 - Support limited permission displays on Android.
@@ -24,13 +20,14 @@ that can be found in the LICENSE file. -->
 ### Fixes
 
 - Fix reverted index when previewing assets on Android.
+- Requests with the correct options with the picker.
 
 ## 9.0.4
 
 ### Fixes
 
 - Fix the app bar of the viewer that is not animating.
-- Fix loading when no assets in the path.
+- Fix loading when no assets are in the path.
 - Reset the has more to load flag between path switching.
 
 ## 9.0.3
@@ -49,7 +46,7 @@ that can be found in the LICENSE file. -->
 
 ### Fixes
 
-- Fix current asset in the picker viewer.
+- Fix the current asset in the picker viewer.
 
 ### Improvements
 
