@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -121,8 +122,12 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
       requestPermission().then((ps) {
-        if (mounted) {
-          widget.builder.permission.value = ps;
+        if (!mounted) {
+          return;
+        }
+        widget.builder.permission.value = ps;
+        if (ps == PermissionState.limited && Platform.isAndroid) {
+          _onLimitedAssetsUpdated(const MethodCall(''));
         }
       });
     }
