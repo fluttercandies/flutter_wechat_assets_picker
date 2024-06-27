@@ -842,7 +842,7 @@ class DefaultAssetPickerBuilderDelegate
       if (assetsChangeRefreshPredicate != null) {
         return assetsChangeRefreshPredicate!(p, call, path);
       }
-      return p != PermissionState.limited;
+      return path?.isAll == true;
     }
 
     if (!predicate()) {
