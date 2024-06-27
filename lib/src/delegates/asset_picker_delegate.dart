@@ -113,6 +113,7 @@ class AssetPickerDelegate {
         limitedPermissionOverlayPredicate:
             pickerConfig.limitedPermissionOverlayPredicate,
         pathNameBuilder: pickerConfig.pathNameBuilder,
+        assetsChangeRefreshPredicate: pickerConfig.assetsChangeRefreshPredicate,
         textDelegate: pickerConfig.textDelegate,
         themeColor: pickerConfig.themeColor,
         locale: Localizations.maybeLocaleOf(context),
