@@ -703,6 +703,7 @@ class DefaultAssetPickerBuilderDelegate
     this.previewThumbnailSize,
     this.specialPickerType,
     this.keepScrollOffset = false,
+    this.shouldPreviewAutoPlay = false,
   }) {
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
@@ -756,6 +757,10 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the picker should save the scroll offset between pushes and pops.
   /// 选择器是否可以从同样的位置开始选择
   final bool keepScrollOffset;
+
+  /// Whether the preview should auto play.
+  /// 预览是否自动播放
+  final bool shouldPreviewAutoPlay;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
@@ -946,6 +951,7 @@ class DefaultAssetPickerBuilderDelegate
       specialPickerType: specialPickerType,
       maxAssets: p.maxAssets,
       shouldReversePreview: revert,
+      shouldPreviewAutoPlay: shouldPreviewAutoPlay,
     );
     if (result != null) {
       Navigator.maybeOf(context)?.maybePop(result);

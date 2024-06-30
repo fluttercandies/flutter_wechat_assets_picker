@@ -310,6 +310,8 @@ Fields in `AssetPickerConfig`:
 | shouldRevertGrid                  | `bool?`                              | Whether the assets grid should revert.                                                       | `null`                      |
 | limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?` | Predicate whether the limited permission overlay should be displayed.                        | `null`                      |
 | pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | Build customized path (album) name with the given path entity.                               | `null`                      |
+| shouldPreviewAutoPlay             | `bool?`                              | Whether the preview should auto play.                                                        | `false`                      |
+
 
 - When `maxAssets` equals to `1` (a.k.a. single picking mode),
   use `SpecialPickerType.noPreview` will immediately select asset
