@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photo_manager/photo_manager.dart' show PermissionState;
 import 'package:provider/provider.dart';
@@ -53,3 +54,24 @@ typedef LimitedPermissionOverlayPredicate = bool Function(
 /// 构建自定义路径名称。
 /// {@endtemplate}
 typedef PathNameBuilder<Path> = String Function(Path path);
+
+/// {@template wechat_assets_picker.AssetsChangeCallback}
+/// The callback that will be called when the system notifies assets changes.
+/// 当系统通知资源变化时将调用的回调。
+/// {@endtemplate}
+typedef AssetsChangeCallback<Path> = void Function(
+  PermissionState permission,
+  MethodCall call,
+  Path? path,
+);
+
+/// {@template wechat_assets_picker.AssetsChangeRefreshPredicate}
+/// Whether assets changing should call refresh with the given [call]
+/// and the current selected [path].
+/// 判断资源变化是否根据 [call] 和当前选中的 [path] 进行更新。
+/// {@endtemplate}
+typedef AssetsChangeRefreshPredicate<Path> = bool Function(
+  PermissionState permission,
+  MethodCall call,
+  Path? path,
+);

@@ -45,6 +45,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.shouldRevertGrid,
     this.limitedPermissionOverlayPredicate,
     this.pathNameBuilder,
+    this.assetsChangeCallback,
+    this.assetsChangeRefreshPredicate,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
@@ -120,6 +122,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// {@macro wechat_assets_picker.PathNameBuilder}
   final PathNameBuilder<AssetPathEntity>? pathNameBuilder;
+
+  /// {@macro wechat_assets_picker.AssetsChangeCallback}
+  final AssetsChangeCallback<AssetPathEntity>? assetsChangeCallback;
+
+  /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
+  final AssetsChangeRefreshPredicate<AssetPathEntity>?
+      assetsChangeRefreshPredicate;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -696,6 +705,8 @@ class DefaultAssetPickerBuilderDelegate
     super.shouldRevertGrid,
     super.limitedPermissionOverlayPredicate,
     super.pathNameBuilder,
+    super.assetsChangeCallback,
+    super.assetsChangeRefreshPredicate,
     super.themeColor,
     super.textDelegate,
     super.locale,
@@ -830,9 +841,23 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Future<void> onAssetsChanged(MethodCall call, StateSetter setState) async {
-    if (!isPermissionLimited) {
+    bool predicate() {
+      final PermissionState p = permission.value;
+      final AssetPathEntity? path = provider.currentPath?.path;
+      if (assetsChangeRefreshPredicate != null) {
+        return assetsChangeRefreshPredicate!(p, call, path);
+      }
+      return path?.isAll == true;
+    }
+
+    if (!predicate()) {
       return;
     }
+    assetsChangeCallback?.call(
+      permission.value,
+      call,
+      provider.currentPath?.path,
+    );
     isSwitchingPath.value = false;
     if (call.arguments is Map) {
       final Map<dynamic, dynamic> arguments =
