@@ -301,6 +301,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | shouldRevertGrid                  | `bool?`                                          | 判断资源网格是否需要倒序排列                                       | `null`                      |
 | limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?`             | 判断有限的权限情况下是否展示提示页面                                   | `null`                      |
 | pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`              | 基于路径（相册）构建自定义名称的方法                                   | `null`                      |
+| assetsChangeCallback              | `AssetsChangeCallback<AssetPathEntity>?`         | 当系统通知资源变化时将调用的回调                                     | `null`                      |
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | 判断资源变化是否根据 call 和当前选中的路径进行更新                         | `null`                      |
 
 - 当 `maxAssets` 等于 `1`（即单选模式），搭配
