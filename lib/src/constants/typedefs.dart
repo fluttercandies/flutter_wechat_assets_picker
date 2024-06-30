@@ -55,6 +55,16 @@ typedef LimitedPermissionOverlayPredicate = bool Function(
 /// {@endtemplate}
 typedef PathNameBuilder<Path> = String Function(Path path);
 
+/// {@template wechat_assets_picker.AssetsChangeCallback}
+/// The callback that will be called when the system notifies assets changes.
+/// 当系统通知资源变化时将调用的回调。
+/// {@endtemplate}
+typedef AssetsChangeCallback<Path> = void Function(
+  PermissionState permission,
+  MethodCall call,
+  Path? path,
+);
+
 /// {@template wechat_assets_picker.AssetsChangeRefreshPredicate}
 /// Whether assets changing should call refresh with the given [call]
 /// and the current selected [path].
