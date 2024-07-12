@@ -814,10 +814,9 @@ class DefaultAssetPickerViewerBuilderDelegate
             return textDelegate.confirm;
           }
 
-          final bool isButtonEnabled = provider == null ||
-              provider.currentlySelectedAssets.isNotEmpty ||
+          final isButtonEnabled = provider == null ||
               previewAssets.isEmpty ||
-              selectedNotifier.value == 0;
+              (selectedAssets?.isNotEmpty ?? false);
           return MaterialButton(
             minWidth:
                 (isWeChatMoment && hasVideo) || provider!.isSelectedNotEmpty
