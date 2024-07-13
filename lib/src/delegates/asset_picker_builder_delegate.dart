@@ -911,7 +911,7 @@ class DefaultAssetPickerBuilderDelegate
         return;
       }
 
-      await provider.getPaths();
+      await provider.getPaths(keepPreviousCount: true);
       provider.currentPath = provider.paths.first;
       final currentWrapper = provider.currentPath;
       if (currentWrapper != null) {
