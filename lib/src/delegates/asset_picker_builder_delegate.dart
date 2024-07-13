@@ -864,16 +864,30 @@ class DefaultAssetPickerBuilderDelegate
       provider.currentPath?.path,
     );
 
+    final createIds = <String>[];
+    final updateIds = <String>[];
+    final deleteIds = <String>[];
     // Typically for iOS.
     if (call.arguments case final Map arguments) {
-      final create = (arguments['create'] as List?) ?? [];
-      final update = (arguments['update'] as List?) ?? [];
-      final delete = (arguments['delete'] as List?) ?? [];
-      if (create.isEmpty && update.isEmpty && delete.isEmpty) {
+      for (final e in (arguments['create'] as List?) ?? []) {
+        if (e['id'] case final String id) {
+          createIds.add(id);
+        }
+      }
+      for (final e in (arguments['update'] as List?) ?? []) {
+        if (e['id'] case final String id) {
+          updateIds.add(id);
+        }
+      }
+      for (final e in (arguments['delete'] as List?) ?? []) {
+        if (e['id'] case final String id) {
+          deleteIds.add(id);
+        }
+      }
+      if (createIds.isEmpty && updateIds.isEmpty && deleteIds.isEmpty) {
         return;
       }
     }
-
     // Throttle handling.
     if (onAssetsChangedLock case final lock?) {
       return lock.future;
@@ -882,7 +896,21 @@ class DefaultAssetPickerBuilderDelegate
     onAssetsChangedLock = lock;
 
     Future<void>(() async {
-      print(call);
+      // Replace the updated assets if update only.
+      if (updateIds.isNotEmpty && createIds.isEmpty && deleteIds.isEmpty) {
+        await Future.wait(
+          updateIds.map((id) async {
+            final i = provider.currentAssets.indexWhere((e) => e.id == id);
+            if (i != -1) {
+              final asset =
+                  await provider.currentAssets[i].obtainForNewProperties();
+              provider.currentAssets[i] = asset!;
+            }
+          }),
+        );
+        return;
+      }
+
       await provider.getPaths();
       provider.currentPath = provider.paths.first;
       final currentWrapper = provider.currentPath;

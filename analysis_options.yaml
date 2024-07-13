@@ -8,7 +8,7 @@ linter:
   rules:
     always_declare_return_types: true
     always_put_control_body_on_new_line: true
-    avoid_print: false
+    avoid_print: true
     avoid_renaming_method_parameters: true
     avoid_unnecessary_containers: true
     avoid_void_async: true
