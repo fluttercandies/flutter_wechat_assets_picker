@@ -7,6 +7,14 @@ that can be found in the LICENSE file. -->
 > [!IMPORTANT]  
 > See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## Unreleased
+
+### Fixes
+
+- Raise detailed negative range error.
+- Fix viewer confirm button predication.
+- Enlarge GIF gradients.
+
 ## 9.1.0
 
 ### Improvements
