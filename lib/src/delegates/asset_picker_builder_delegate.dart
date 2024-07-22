@@ -1674,7 +1674,7 @@ class DefaultAssetPickerBuilderDelegate
                 label: '${semanticsTextDelegate.viewingLimitedAssetsTip}, '
                     '${semanticsTextDelegate.changeAccessibleLimitedAssets}',
                 button: true,
-                onTap: PhotoManager.presentLimited,
+                onTap: presentLimitedAndReload,
                 hidden: !isPermissionLimited,
                 focusable: isPermissionLimited,
                 excludeSemantics: true,
@@ -1696,7 +1696,7 @@ class DefaultAssetPickerBuilderDelegate
                             '${textDelegate.changeAccessibleLimitedAssets}',
                         style: TextStyle(color: interactiveTextColor(context)),
                         recognizer: TapGestureRecognizer()
-                          ..onTap = PhotoManager.presentLimited,
+                          ..onTap = presentLimitedAndReload,
                       ),
                     ],
                   ),
@@ -1764,7 +1764,7 @@ class DefaultAssetPickerBuilderDelegate
       child: GestureDetector(
         onTap: () {
           if (isPermissionLimited && provider.isAssetsEmpty) {
-            PhotoManager.presentLimited();
+            presentLimitedAndReload();
             return;
           }
           if (provider.currentPath == null) {
@@ -2164,6 +2164,12 @@ class DefaultAssetPickerBuilderDelegate
         ),
       ),
     );
+  }
+
+  Future<void> presentLimitedAndReload() async {
+    await PhotoManager.presentLimited();
+    await provider.getPaths(onlyAll: true);
+    await provider.getPaths(onlyAll: false);
   }
 
   @override

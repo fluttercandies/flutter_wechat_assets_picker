@@ -366,9 +366,11 @@ class DefaultAssetPickerProvider
     // Sort path using sort path delegate.
     Singleton.sortPathDelegate.sort(_paths);
     // Use sync method to avoid unnecessary wait.
-    _paths
-      ..forEach(getAssetCountFromPath)
-      ..forEach(getThumbnailFromPath);
+
+    for (final element in _paths) {
+      await getAssetCountFromPath(element);
+      await getThumbnailFromPath(element);
+    }
 
     // Set first path entity as current path entity.
     if (_paths.isNotEmpty) {
