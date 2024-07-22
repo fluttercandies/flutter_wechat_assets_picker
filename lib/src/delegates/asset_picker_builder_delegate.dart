@@ -2,6 +2,7 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
+import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
@@ -2168,8 +2169,14 @@ class DefaultAssetPickerBuilderDelegate
 
   Future<void> presentLimitedAndReload() async {
     await PhotoManager.presentLimited();
-    await provider.getPaths(onlyAll: true);
-    await provider.getPaths(onlyAll: false);
+    // reload new image for Android
+    if (Platform.isAndroid) {
+      // 刷新权限，从旧版本 Android 升级而来的用户，在触发 presentLimited 后，可能会获得完整相册权限
+      // Update permissions. When users upgrade from older versions of Android may get full album permissions after presentLimited is called.
+      permission.value = await PhotoManager.requestPermissionExtend();
+      await provider.getPaths(onlyAll: true);
+      await provider.getPaths(onlyAll: false);
+    }
   }
 
   @override

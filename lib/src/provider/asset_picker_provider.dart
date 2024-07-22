@@ -368,9 +368,12 @@ class DefaultAssetPickerProvider
     // Use sync method to avoid unnecessary wait.
 
     for (final element in _paths) {
-      final assetCount = await element.path.assetCountAsync;
-      getAssetCountFromPath(element, initAssetCount: assetCount);
-      getThumbnailFromPath(element, initAssetCount: assetCount);
+      // without await for async
+      () async {
+        final assetCount = await element.path.assetCountAsync;
+        getAssetCountFromPath(element, initAssetCount: assetCount);
+        getThumbnailFromPath(element, initAssetCount: assetCount);
+      }();
     }
 
     // Set first path entity as current path entity.
