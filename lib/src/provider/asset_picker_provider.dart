@@ -368,8 +368,9 @@ class DefaultAssetPickerProvider
     // Use sync method to avoid unnecessary wait.
 
     for (final element in _paths) {
-      await getAssetCountFromPath(element);
-      await getThumbnailFromPath(element);
+      final assetCount = await element.path.assetCountAsync;
+      getAssetCountFromPath(element, initAssetCount: assetCount);
+      getThumbnailFromPath(element, initAssetCount: assetCount);
     }
 
     // Set first path entity as current path entity.
@@ -452,13 +453,14 @@ class DefaultAssetPickerProvider
 
   @override
   Future<Uint8List?> getThumbnailFromPath(
-    PathWrapper<AssetPathEntity> path,
-  ) async {
+    PathWrapper<AssetPathEntity> path, {
+    int? initAssetCount,
+  }) async {
     try {
       if (requestType == RequestType.audio) {
         return null;
       }
-      final int assetCount = path.assetCount ?? await path.path.assetCountAsync;
+      final int assetCount = initAssetCount ?? await path.path.assetCountAsync;
       if (assetCount == 0) {
         return null;
       }
@@ -481,8 +483,16 @@ class DefaultAssetPickerProvider
         (PathWrapper<AssetPathEntity> p) => p.path == path.path,
       );
       if (index != -1) {
-        _paths[index] = _paths[index].copyWith(thumbnailData: data);
+        _paths[index] =
+            _paths[index].copyWith(thumbnailData: data, assetCount: assetCount);
         notifyListeners();
+      }
+      // update _currentPath fix: https://github.com/fluttercandies/flutter_wechat_assets_picker/issues/602
+      if (index == 0) {
+        _currentPath = _currentPath?.copyWith(
+          thumbnailData: data,
+          assetCount: assetCount,
+        );
       }
       return data;
     } catch (e, s) {
@@ -498,8 +508,11 @@ class DefaultAssetPickerProvider
     }
   }
 
-  Future<void> getAssetCountFromPath(PathWrapper<AssetPathEntity> path) async {
-    final int assetCount = await path.path.assetCountAsync;
+  Future getAssetCountFromPath(
+    PathWrapper<AssetPathEntity> path, {
+    int? initAssetCount,
+  }) async {
+    final assetCount = initAssetCount;
     final int index = _paths.indexWhere(
       (PathWrapper<AssetPathEntity> p) => p == path,
     );
