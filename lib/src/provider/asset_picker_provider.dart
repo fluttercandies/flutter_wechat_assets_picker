@@ -512,7 +512,7 @@ class DefaultAssetPickerProvider
     PathWrapper<AssetPathEntity> path, {
     int? initAssetCount,
   }) async {
-    final assetCount = initAssetCount;
+    final assetCount = initAssetCount ?? await path.path.assetCountAsync;
     final int index = _paths.indexWhere(
       (PathWrapper<AssetPathEntity> p) => p == path,
     );
