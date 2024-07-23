@@ -1220,4 +1220,14 @@ class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get sUnitAssetCountLabel => 'عدد';
+
+
+  @override
+  AssetPickerTextDelegate get semanticsTextDelegate {
+    if (Platform.isAndroid) {
+      return const EnglishAssetPickerTextDelegate();
+    }
+    return this;
+  }
+
 }
