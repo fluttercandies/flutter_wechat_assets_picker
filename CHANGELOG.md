@@ -9,6 +9,11 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+### New features
+
+- Introduce `AssetsChangeCallback` and `AssetsChangeRefreshPredicate`
+  to help users act according to assets changes.
+
 ### Fixes
 
 - Raise detailed negative range error.

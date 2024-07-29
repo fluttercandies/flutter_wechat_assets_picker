@@ -113,7 +113,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    AssetPicker.registerObserve(_onLimitedAssetsUpdated);
+    AssetPicker.registerObserve(_onAssetsUpdated);
     widget.builder.initState(this);
   }
 
@@ -127,7 +127,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
         }
         widget.builder.permission.value = ps;
         if (ps == PermissionState.limited && Platform.isAndroid) {
-          _onLimitedAssetsUpdated(const MethodCall(''));
+          _onAssetsUpdated(const MethodCall(''));
         }
       });
     }
@@ -136,12 +136,12 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    AssetPicker.unregisterObserve(_onLimitedAssetsUpdated);
+    AssetPicker.unregisterObserve(_onAssetsUpdated);
     widget.builder.dispose();
     super.dispose();
   }
 
-  Future<void> _onLimitedAssetsUpdated(MethodCall call) {
+  Future<void> _onAssetsUpdated(MethodCall call) {
     return widget.builder.onAssetsChanged(call, (VoidCallback fn) {
       fn();
       if (mounted) {
