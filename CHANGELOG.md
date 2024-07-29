@@ -14,6 +14,7 @@ that can be found in the LICENSE file. -->
 - Raise detailed negative range error.
 - Fix viewer confirm button predication.
 - Enlarge GIF gradients.
+- Fix potential paths assets count unexpected merging behaviors.
 
 ## 9.1.0
 
