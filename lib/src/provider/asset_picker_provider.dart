@@ -377,10 +377,13 @@ class DefaultAssetPickerProvider
     }).toList();
     // Sort path using sort path delegate.
     Singleton.sortPathDelegate.sort(_paths);
-    // Use sync method to avoid unnecessary wait.
-    _paths
-      ..forEach(getAssetCountFromPath)
-      ..forEach(getThumbnailFromPath);
+    // Populate fields to paths without awaiting.
+    for (final path in _paths) {
+      Future(() async {
+        await getAssetCountFromPath(path);
+        await getThumbnailFromPath(path);
+      });
+    }
 
     // Set first path entity as current path entity.
     if (_paths.isNotEmpty) {
@@ -491,7 +494,10 @@ class DefaultAssetPickerProvider
         (PathWrapper<AssetPathEntity> p) => p.path == path.path,
       );
       if (index != -1) {
-        _paths[index] = _paths[index].copyWith(thumbnailData: data);
+        _paths[index] = _paths[index].copyWith(
+          assetCount: assetCount,
+          thumbnailData: data,
+        );
         notifyListeners();
       }
       return data;

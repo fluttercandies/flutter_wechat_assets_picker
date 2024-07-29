@@ -402,10 +402,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// GIF image type indicator.
   /// GIF 类型图片指示
   Widget gifIndicator(BuildContext context, Asset asset) {
-    return PositionedDirectional(
-      start: 0,
-      bottom: 0,
+    return Positioned.fill(
+      top: null,
       child: Container(
+        alignment: AlignmentDirectional.centerEnd,
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           gradient: LinearGradient(

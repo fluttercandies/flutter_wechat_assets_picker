@@ -814,10 +814,9 @@ class DefaultAssetPickerViewerBuilderDelegate
             return textDelegate.confirm;
           }
 
-          final bool isButtonEnabled = provider == null ||
-              provider.currentlySelectedAssets.isNotEmpty ||
+          final isButtonEnabled = provider == null ||
               previewAssets.isEmpty ||
-              selectedNotifier.value == 0;
+              (selectedAssets?.isNotEmpty ?? false);
           return MaterialButton(
             minWidth:
                 (isWeChatMoment && hasVideo) || provider!.isSelectedNotEmpty
@@ -920,9 +919,23 @@ class DefaultAssetPickerViewerBuilderDelegate
         stream: pageStreamController.stream,
         builder: (_, s) {
           final index = s.data!;
-          final AssetEntity asset = previewAssets.elementAt(
-            shouldReversePreview ? previewAssets.length - index - 1 : index,
-          );
+          final assetIndex =
+              shouldReversePreview ? previewAssets.length - index - 1 : index;
+          if (assetIndex < 0) {
+            throw IndexError.withLength(
+              assetIndex,
+              previewAssets.length,
+              indexable: previewAssets,
+              name: 'selectButton.assetIndex',
+              message: 'previewReversed: $shouldReversePreview\n'
+                  'stream.index: $index\n'
+                  'selectedAssets.length: ${selectedAssets?.length}\n'
+                  'previewAssets.length: ${previewAssets.length}\n'
+                  'currentIndex: $currentIndex\n'
+                  'maxAssets: $maxAssets',
+            );
+          }
+          final asset = previewAssets.elementAt(assetIndex);
           return Selector<AssetPickerViewerProvider<AssetEntity>,
               List<AssetEntity>>(
             selector: (_, p) => p.currentlySelectedAssets,
