@@ -13,11 +13,19 @@ import '../../constants/constants.dart';
 import '../../internals/singleton.dart';
 
 class AudioPageBuilder extends StatefulWidget {
-  const AudioPageBuilder({super.key, required this.asset});
+  const AudioPageBuilder({
+    super.key,
+    required this.asset,
+    this.shouldAutoplayPreview = false,
+  });
 
   /// Asset currently displayed.
   /// 展示的资源
   final AssetEntity asset;
+
+  /// Whether the preview should auto play.
+  /// 预览是否自动播放
+  final bool shouldAutoplayPreview;
 
   @override
   State<StatefulWidget> createState() => _AudioPageBuilderState();
@@ -92,6 +100,9 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       _controller = VideoPlayerController.networkUrl(Uri.parse(url!));
       await controller.initialize();
       controller.addListener(audioPlayerListener);
+      if (widget.shouldAutoplayPreview) {
+        controller.play();
+      }
     } catch (e, s) {
       FlutterError.presentError(
         FlutterErrorDetails(

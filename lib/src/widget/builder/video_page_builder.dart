@@ -19,6 +19,7 @@ class VideoPageBuilder extends StatefulWidget {
     required this.asset,
     required this.delegate,
     this.hasOnlyOneVideoAndMoment = false,
+    this.shouldAutoplayPreview = false,
   });
 
   /// Asset currently displayed.
@@ -30,6 +31,10 @@ class VideoPageBuilder extends StatefulWidget {
   /// Only previewing one video and with the [SpecialPickerType.wechatMoment].
   /// 是否处于 [SpecialPickerType.wechatMoment] 且只有一个视频
   final bool hasOnlyOneVideoAndMoment;
+
+  /// Whether the preview should auto play.
+  /// 预览是否自动播放
+  final bool shouldAutoplayPreview;
 
   @override
   State<VideoPageBuilder> createState() => _VideoPageBuilderState();
@@ -113,7 +118,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       controller
         ..addListener(videoPlayerListener)
         ..setLooping(widget.hasOnlyOneVideoAndMoment);
-      if (widget.hasOnlyOneVideoAndMoment) {
+      if (widget.hasOnlyOneVideoAndMoment || widget.shouldAutoplayPreview) {
         controller.play();
       }
     } catch (e, s) {
