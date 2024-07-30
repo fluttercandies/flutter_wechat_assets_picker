@@ -16,7 +16,7 @@ class AudioPageBuilder extends StatefulWidget {
   const AudioPageBuilder({
     super.key,
     required this.asset,
-    this.shouldPreviewAutoPlay = false,
+    this.shouldAutoplayPreview = false,
   });
 
   /// Asset currently displayed.
@@ -25,7 +25,7 @@ class AudioPageBuilder extends StatefulWidget {
 
   /// Whether the preview should auto play.
   /// 预览是否自动播放
-  final bool shouldPreviewAutoPlay;
+  final bool shouldAutoplayPreview;
 
   @override
   State<StatefulWidget> createState() => _AudioPageBuilderState();
@@ -100,7 +100,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       _controller = VideoPlayerController.networkUrl(Uri.parse(url!));
       await controller.initialize();
       controller.addListener(audioPlayerListener);
-      if (widget.shouldPreviewAutoPlay) {
+      if (widget.shouldAutoplayPreview) {
         controller.play();
       }
     } catch (e, s) {

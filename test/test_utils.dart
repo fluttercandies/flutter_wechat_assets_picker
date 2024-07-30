@@ -142,7 +142,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
         textDelegate: pickerConfig.textDelegate,
         themeColor: pickerConfig.themeColor,
         locale: Localizations.maybeLocaleOf(context),
-        shouldPreviewAutoPlay: pickerConfig.shouldPreviewAutoPlay,
+        shouldAutoplayPreview: pickerConfig.shouldAutoplayPreview,
       ),
     );
     final List<AssetEntity>? result = await Navigator.of(

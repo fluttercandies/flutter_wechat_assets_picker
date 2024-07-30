@@ -19,7 +19,7 @@ class VideoPageBuilder extends StatefulWidget {
     required this.asset,
     required this.delegate,
     this.hasOnlyOneVideoAndMoment = false,
-    this.shouldPreviewAutoPlay = false,
+    this.shouldAutoplayPreview = false,
   });
 
   /// Asset currently displayed.
@@ -34,7 +34,7 @@ class VideoPageBuilder extends StatefulWidget {
 
   /// Whether the preview should auto play.
   /// 预览是否自动播放
-  final bool shouldPreviewAutoPlay;
+  final bool shouldAutoplayPreview;
 
   @override
   State<VideoPageBuilder> createState() => _VideoPageBuilderState();
@@ -118,7 +118,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       controller
         ..addListener(videoPlayerListener)
         ..setLooping(widget.hasOnlyOneVideoAndMoment);
-      if (widget.hasOnlyOneVideoAndMoment || widget.shouldPreviewAutoPlay) {
+      if (widget.hasOnlyOneVideoAndMoment || widget.shouldAutoplayPreview) {
         controller.play();
       }
     } catch (e, s) {

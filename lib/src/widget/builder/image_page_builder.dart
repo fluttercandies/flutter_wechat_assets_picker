@@ -20,7 +20,7 @@ class ImagePageBuilder extends StatefulWidget {
     required this.asset,
     required this.delegate,
     this.previewThumbnailSize,
-    this.shouldPreviewAutoPlay = false,
+    this.shouldAutoplayPreview = false,
   });
 
   /// Asset currently displayed.
@@ -33,7 +33,7 @@ class ImagePageBuilder extends StatefulWidget {
 
   /// Whether the preview should auto play.
   /// 预览是否自动播放
-  final bool shouldPreviewAutoPlay;
+  final bool shouldAutoplayPreview;
 
   @override
   State<ImagePageBuilder> createState() => _ImagePageBuilderState();
@@ -85,7 +85,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
     });
     c
       ..initialize().then((_) {
-        if (widget.shouldPreviewAutoPlay) {
+        if (widget.shouldAutoplayPreview) {
           _play();
         }
       })

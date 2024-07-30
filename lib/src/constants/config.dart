@@ -38,7 +38,7 @@ class AssetPickerConfig {
     this.pathNameBuilder,
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
-    this.shouldPreviewAutoPlay = false,
+    this.shouldAutoplayPreview = false,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'pickerTheme and themeColor cannot be set at the same time.',
@@ -204,5 +204,5 @@ class AssetPickerConfig {
 
   /// Whether the preview should auto play.
   /// 预览是否自动播放
-  final bool shouldPreviewAutoPlay;
+  final bool shouldAutoplayPreview;
 }

@@ -390,12 +390,12 @@ class DefaultAssetPickerViewerBuilderDelegate
     super.maxAssets,
     super.shouldReversePreview,
     super.selectPredicate,
-    this.shouldPreviewAutoPlay = false,
+    this.shouldAutoplayPreview = false,
   });
 
   /// Whether the preview should auto play.
   /// 预览是否自动播放
-  final bool shouldPreviewAutoPlay;
+  final bool shouldAutoplayPreview;
 
   /// Thumb size for the preview of images in the viewer.
   /// 预览时图片的缩略图大小
@@ -428,19 +428,19 @@ class DefaultAssetPickerViewerBuilderDelegate
     final Widget builder = switch (asset.type) {
       AssetType.audio => AudioPageBuilder(
           asset: asset,
-          shouldPreviewAutoPlay: shouldPreviewAutoPlay,
+          shouldAutoplayPreview: shouldAutoplayPreview,
         ),
       AssetType.image => ImagePageBuilder(
           asset: asset,
           delegate: this,
           previewThumbnailSize: previewThumbnailSize,
-          shouldPreviewAutoPlay: shouldPreviewAutoPlay,
+          shouldAutoplayPreview: shouldAutoplayPreview,
         ),
       AssetType.video => VideoPageBuilder(
           asset: asset,
           delegate: this,
           hasOnlyOneVideoAndMoment: isWeChatMoment && hasVideo,
-          shouldPreviewAutoPlay: shouldPreviewAutoPlay,
+          shouldAutoplayPreview: shouldAutoplayPreview,
         ),
       AssetType.other => Center(
           child: ScaleText(
