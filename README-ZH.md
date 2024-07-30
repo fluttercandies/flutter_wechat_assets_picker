@@ -276,31 +276,34 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 
 `AssetPickerConfig` 的成员说明：
 
-| 参数名                               | 类型                                   | 描述                                                   | 默认值                         |
-|-----------------------------------|--------------------------------------|------------------------------------------------------|-----------------------------|
-| selectedAssets                    | `List<AssetEntity>?`                 | 已选的资源。确保不重复选择。                                       | `null`                      |
-| maxAssets                         | `int`                                | 最多选择的图片数量                                            | 9                           |
-| pageSize                          | `int`                                | 分页加载时每页加载的资源数量。**必须为网格数的倍数。                          | 80                          |
-| gridThumbnailSize                 | `ThumbnailSize`                      | 预览网格的缩略图大小                                           | `ThumbnailSize.square(200)` |
-| pathThumbnailSize                 | `ThumbnailSize`                      | 路径选择器的缩略图大小                                          | `ThumbnailSize.square(80)`  |
-| previewThumbnailSize              | `ThumbnailSize?`                     | 预览时图片的缩略图大小                                          | `null`                      |
-| requestType                       | `RequestType`                        | 选择器选择资源的类型                                           | `RequestType.common`        |
-| specialPickerType                 | `SpecialPickerType?`                 | 提供一些特殊的选择器类型以整合非常规的选择行为                              | `null`                      |
-| keepScrollOffset                  | `bool`                               | 选择器是否可以从同样的位置开始选择                                    | `null`                      |
-| sortPathDelegate                  | `SortPathDelegate<AssetPathEntity>?` | 资源路径的排序实现，可自定义路径排序方法                                 | `CommonSortPathDelegate`    |
-| sortPathsByModifiedDate           | `bool`                               | 是否结合 `FilterOptionGroup.containsPathModified` 进行路径排序 | `false`                     |
-| filterOptions                     | `PMFilter?`                          | 允许用户自定义资源过滤条件                                        | `null`                      |
-| gridCount                         | `int`                                | 选择器网格数量                                              | 4                           |
-| themeColor                        | `Color?`                             | 选择器的主题色                                              | `Color(0xff00bc56)`         |
-| pickerTheme                       | `ThemeData?`                         | 选择器的主题提供，包括查看器                                       | `null`                      |
-| textDelegate                      | `AssetPickerTextDelegate?`           | 选择器的文本代理构建，用于自定义文本                                   | `AssetPickerTextDelegate()` |
-| specialItemPosition               | `SpecialItemPosition`                | 允许用户在选择器中添加一个自定义item，并指定位置。                          | `SpecialPosition.none`      |
-| specialItemBuilder                | `SpecialItemBuilder?`                | 自定义item的构造方法                                         | `null`                      |
-| loadingIndicatorBuilder           | `IndicatorBuilder?`                  | 加载器的实现                                               | `null`                      |
-| selectPredicate                   | `AssetSelectPredicate`               | 判断资源可否被选择                                            | `null`                      |
-| shouldRevertGrid                  | `bool?`                              | 判断资源网格是否需要倒序排列                                       | `null`                      |
-| limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?` | 判断有限的权限情况下是否展示提示页面                                   | `null`                      |
-| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | 基于路径（相册）构建自定义名称的方法                                   | `null`                      |
+| 参数名                               | 类型                                               | 描述                                                   | 默认值                         |
+|-----------------------------------|--------------------------------------------------|------------------------------------------------------|-----------------------------|
+| selectedAssets                    | `List<AssetEntity>?`                             | 已选的资源。确保不重复选择。                                       | `null`                      |
+| maxAssets                         | `int`                                            | 最多选择的图片数量                                            | 9                           |
+| pageSize                          | `int`                                            | 分页加载时每页加载的资源数量。**必须为网格数的倍数。                          | 80                          |
+| gridThumbnailSize                 | `ThumbnailSize`                                  | 预览网格的缩略图大小                                           | `ThumbnailSize.square(200)` |
+| pathThumbnailSize                 | `ThumbnailSize`                                  | 路径选择器的缩略图大小                                          | `ThumbnailSize.square(80)`  |
+| previewThumbnailSize              | `ThumbnailSize?`                                 | 预览时图片的缩略图大小                                          | `null`                      |
+| requestType                       | `RequestType`                                    | 选择器选择资源的类型                                           | `RequestType.common`        |
+| specialPickerType                 | `SpecialPickerType?`                             | 提供一些特殊的选择器类型以整合非常规的选择行为                              | `null`                      |
+| keepScrollOffset                  | `bool`                                           | 选择器是否可以从同样的位置开始选择                                    | `null`                      |
+| sortPathDelegate                  | `SortPathDelegate<AssetPathEntity>?`             | 资源路径的排序实现，可自定义路径排序方法                                 | `CommonSortPathDelegate`    |
+| sortPathsByModifiedDate           | `bool`                                           | 是否结合 `FilterOptionGroup.containsPathModified` 进行路径排序 | `false`                     |
+| filterOptions                     | `PMFilter?`                                      | 允许用户自定义资源过滤条件                                        | `null`                      |
+| gridCount                         | `int`                                            | 选择器网格数量                                              | 4                           |
+| themeColor                        | `Color?`                                         | 选择器的主题色                                              | `Color(0xff00bc56)`         |
+| pickerTheme                       | `ThemeData?`                                     | 选择器的主题提供，包括查看器                                       | `null`                      |
+| textDelegate                      | `AssetPickerTextDelegate?`                       | 选择器的文本代理构建，用于自定义文本                                   | `AssetPickerTextDelegate()` |
+| specialItemPosition               | `SpecialItemPosition`                            | 允许用户在选择器中添加一个自定义item，并指定位置。                          | `SpecialPosition.none`      |
+| specialItemBuilder                | `SpecialItemBuilder?`                            | 自定义item的构造方法                                         | `null`                      |
+| loadingIndicatorBuilder           | `IndicatorBuilder?`                              | 加载器的实现                                               | `null`                      |
+| selectPredicate                   | `AssetSelectPredicate`                           | 判断资源可否被选择                                            | `null`                      |
+| shouldRevertGrid                  | `bool?`                                          | 判断资源网格是否需要倒序排列                                       | `null`                      |
+| limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?`             | 判断有限的权限情况下是否展示提示页面                                   | `null`                      |
+| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`              | 基于路径（相册）构建自定义名称的方法                                   | `null`                      |
+| assetsChangeCallback              | `AssetsChangeCallback<AssetPathEntity>?`         | 当系统通知资源变化时将调用的回调                                     | `null`                      |
+| assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | 判断资源变化是否根据 call 和当前选中的路径进行更新                         | `null`                      |
+| shouldAutoplayPreview             | `bool`                               | 预览是否应自动播放                                                        | `false`                     |
 
 - 当 `maxAssets` 等于 `1`（即单选模式），搭配
   `SpecialPickerType.noPreview` 使用会在用户点选资源换时立刻选中并返回。

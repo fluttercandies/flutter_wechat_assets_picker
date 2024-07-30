@@ -285,31 +285,34 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 
 Fields in `AssetPickerConfig`:
 
-| Name                              | Type                                 | Description                                                                                  | Default                     |
-|-----------------------------------|--------------------------------------|----------------------------------------------------------------------------------------------|-----------------------------|
-| selectedAssets                    | `List<AssetEntity>?`                 | Selected assets. Prevent duplicate selection.                                                | `null`                      |
-| maxAssets                         | `int`                                | Maximum asset that the picker can pick.                                                      | 9                           |
-| pageSize                          | `int?`                               | Number of assets per page. **Must be a multiple of `gridCount`**.                            | 80                          |
-| gridThumbnailSize                 | `ThumbnailSize`                      | Thumbnail size for the grid's item.                                                          | `ThumbnailSize.square(200)` |
-| pathThumbnailSize                 | `ThumbnailSize`                      | Thumbnail size for the path selector.                                                        | `ThumbnailSize.square(80)`  |
-| previewThumbnailSize              | `ThumbnailSize?`                     | Preview thumbnail size in the viewer.                                                        | `null`                      |
-| requestType                       | `RequestType`                        | Request type for picker.                                                                     | `RequestType.common`        |
-| specialPickerType                 | `SpecialPickerType?`                 | Provides the option to integrate a custom picker type.                                       | `null`                      |
-| keepScrollOffset                  | `bool`                               | Whether the picker should save the scroll offset between pushes and pops.                    | `null`                      |
-| sortPathDelegate                  | `SortPathDelegate<AssetPathEntity>?` | Path entities sort delegate for the picker, sort paths as you want.                          | `CommonSortPathDelegate`    |
-| sortPathsByModifiedDate           | `bool`                               | Whether to allow sort delegates to sort paths with `FilterOptionGroup.containsPathModified`. | `false`                     |
-| filterOptions                     | `PMFilter?`                          | Allow users to customize assets filter options.                                              | `null`                      |
-| gridCount                         | `int`                                | Grid count in picker.                                                                        | 4                           |
-| themeColor                        | `Color?`                             | Main theme color for the picker.                                                             | `Color(0xff00bc56)`         |
-| pickerTheme                       | `ThemeData?`                         | Theme data provider for the picker and the viewer.                                           | `null`                      |
-| textDelegate                      | `AssetPickerTextDelegate?`           | Text delegate for the picker, for customize the texts.                                       | `AssetPickerTextDelegate()` |
-| specialItemPosition               | `SpecialItemPosition`                | Allow users set a special item in the picker with several positions.                         | `SpecialItemPosition.none`  |
-| specialItemBuilder                | `SpecialItemBuilder?`                | The widget builder for the special item.                                                     | `null`                      |
-| loadingIndicatorBuilder           | `IndicatorBuilder?`                  | Indicates the loading status for the builder.                                                | `null`                      |
-| selectPredicate                   | `AssetSelectPredicate`               | Predicate whether an asset can be selected or unselected.                                    | `null`                      |
-| shouldRevertGrid                  | `bool?`                              | Whether the assets grid should revert.                                                       | `null`                      |
-| limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?` | Predicate whether the limited permission overlay should be displayed.                        | `null`                      |
-| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`  | Build customized path (album) name with the given path entity.                               | `null`                      |
+| Name                              | Type                                             | Description                                                                                    | Default                     |
+|-----------------------------------|--------------------------------------------------|------------------------------------------------------------------------------------------------|-----------------------------|
+| selectedAssets                    | `List<AssetEntity>?`                             | Selected assets. Prevent duplicate selection.                                                  | `null`                      |
+| maxAssets                         | `int`                                            | Maximum asset that the picker can pick.                                                        | 9                           |
+| pageSize                          | `int?`                                           | Number of assets per page. **Must be a multiple of `gridCount`**.                              | 80                          |
+| gridThumbnailSize                 | `ThumbnailSize`                                  | Thumbnail size for the grid's item.                                                            | `ThumbnailSize.square(200)` |
+| pathThumbnailSize                 | `ThumbnailSize`                                  | Thumbnail size for the path selector.                                                          | `ThumbnailSize.square(80)`  |
+| previewThumbnailSize              | `ThumbnailSize?`                                 | Preview thumbnail size in the viewer.                                                          | `null`                      |
+| requestType                       | `RequestType`                                    | Request type for picker.                                                                       | `RequestType.common`        |
+| specialPickerType                 | `SpecialPickerType?`                             | Provides the option to integrate a custom picker type.                                         | `null`                      |
+| keepScrollOffset                  | `bool`                                           | Whether the picker should save the scroll offset between pushes and pops.                      | `null`                      |
+| sortPathDelegate                  | `SortPathDelegate<AssetPathEntity>?`             | Path entities sort delegate for the picker, sort paths as you want.                            | `CommonSortPathDelegate`    |
+| sortPathsByModifiedDate           | `bool`                                           | Whether to allow sort delegates to sort paths with `FilterOptionGroup.containsPathModified`.   | `false`                     |
+| filterOptions                     | `PMFilter?`                                      | Allow users to customize assets filter options.                                                | `null`                      |
+| gridCount                         | `int`                                            | Grid count in picker.                                                                          | 4                           |
+| themeColor                        | `Color?`                                         | Main theme color for the picker.                                                               | `Color(0xff00bc56)`         |
+| pickerTheme                       | `ThemeData?`                                     | Theme data provider for the picker and the viewer.                                             | `null`                      |
+| textDelegate                      | `AssetPickerTextDelegate?`                       | Text delegate for the picker, for customize the texts.                                         | `AssetPickerTextDelegate()` |
+| specialItemPosition               | `SpecialItemPosition`                            | Allow users set a special item in the picker with several positions.                           | `SpecialItemPosition.none`  |
+| specialItemBuilder                | `SpecialItemBuilder?`                            | The widget builder for the special item.                                                       | `null`                      |
+| loadingIndicatorBuilder           | `IndicatorBuilder?`                              | Indicates the loading status for the builder.                                                  | `null`                      |
+| selectPredicate                   | `AssetSelectPredicate`                           | Predicate whether an asset can be selected or unselected.                                      | `null`                      |
+| shouldRevertGrid                  | `bool?`                                          | Whether the assets grid should revert.                                                         | `null`                      |
+| limitedPermissionOverlayPredicate | `LimitedPermissionOverlayPredicate?`             | Predicate whether the limited permission overlay should be displayed.                          | `null`                      |
+| pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`              | Build customized path (album) name with the given path entity.                                 | `null`                      |
+| assetsChangeCallback              | `AssetsChangeCallback<AssetPathEntity>?`         | The callback that will be called when the system notifies assets changes.                      | `null`                      |
+| assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | Whether assets changing should call refresh with the given call and the current selected path. | `null`                      |
+| shouldAutoPlayPreview             | `bool`                               | Whether the preview should auto play.                                                        | `false`                      |
 
 - When `maxAssets` equals to `1` (a.k.a. single picking mode),
   use `SpecialPickerType.noPreview` will immediately select asset

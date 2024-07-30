@@ -2,6 +2,7 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
@@ -45,6 +46,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.shouldRevertGrid,
     this.limitedPermissionOverlayPredicate,
     this.pathNameBuilder,
+    this.assetsChangeCallback,
+    this.assetsChangeRefreshPredicate,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
@@ -120,6 +123,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// {@macro wechat_assets_picker.PathNameBuilder}
   final PathNameBuilder<AssetPathEntity>? pathNameBuilder;
+
+  /// {@macro wechat_assets_picker.AssetsChangeCallback}
+  final AssetsChangeCallback<AssetPathEntity>? assetsChangeCallback;
+
+  /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
+  final AssetsChangeRefreshPredicate<AssetPathEntity>?
+      assetsChangeRefreshPredicate;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -234,6 +244,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 选择资源的方法。自定义的 delegate 可以通过实现该方法，整合判断、回调等操作。
   @protected
   void selectAsset(BuildContext context, Asset asset, int index, bool selected);
+
+  /// Throttle the assets changing calls.
+  Completer<void>? onAssetsChangedLock;
 
   /// Called when assets changed and obtained notifications from the OS.
   /// 系统发出资源变更的通知时调用的方法
@@ -389,10 +402,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// GIF image type indicator.
   /// GIF 类型图片指示
   Widget gifIndicator(BuildContext context, Asset asset) {
-    return PositionedDirectional(
-      start: 0,
-      bottom: 0,
+    return Positioned.fill(
+      top: null,
       child: Container(
+        alignment: AlignmentDirectional.centerEnd,
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -696,6 +709,8 @@ class DefaultAssetPickerBuilderDelegate
     super.shouldRevertGrid,
     super.limitedPermissionOverlayPredicate,
     super.pathNameBuilder,
+    super.assetsChangeCallback,
+    super.assetsChangeRefreshPredicate,
     super.themeColor,
     super.textDelegate,
     super.locale,
@@ -703,6 +718,7 @@ class DefaultAssetPickerBuilderDelegate
     this.previewThumbnailSize,
     this.specialPickerType,
     this.keepScrollOffset = false,
+    this.shouldAutoplayPreview = false,
   }) {
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
@@ -756,6 +772,10 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the picker should save the scroll offset between pushes and pops.
   /// 选择器是否可以从同样的位置开始选择
   final bool keepScrollOffset;
+
+  /// Whether the preview should auto play.
+  /// 预览是否自动播放
+  final bool shouldAutoplayPreview;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
@@ -830,54 +850,102 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Future<void> onAssetsChanged(MethodCall call, StateSetter setState) async {
-    if (!isPermissionLimited) {
+    bool predicate() {
+      final p = permission.value;
+      final path = provider.currentPath?.path;
+      if (assetsChangeRefreshPredicate != null) {
+        return assetsChangeRefreshPredicate!(p, call, path);
+      }
+      return path?.isAll == true;
+    }
+
+    if (!predicate()) {
       return;
     }
-    isSwitchingPath.value = false;
-    if (call.arguments is Map) {
-      final Map<dynamic, dynamic> arguments =
-          call.arguments as Map<dynamic, dynamic>;
-      if (arguments['newCount'] == 0) {
-        provider
-          ..currentAssets = <AssetEntity>[]
-          ..currentPath = null
-          ..selectedAssets = <AssetEntity>[]
-          ..hasAssetsToDisplay = false
-          ..isAssetsEmpty = true
-          ..totalAssetsCount = 0
-          ..paths = [];
+
+    assetsChangeCallback?.call(
+      permission.value,
+      call,
+      provider.currentPath?.path,
+    );
+
+    final createIds = <String>[];
+    final updateIds = <String>[];
+    final deleteIds = <String>[];
+    // Typically for iOS.
+    if (call.arguments case final Map arguments) {
+      for (final e in (arguments['create'] as List?) ?? []) {
+        if (e['id'] case final String id) {
+          createIds.add(id);
+        }
+      }
+      for (final e in (arguments['update'] as List?) ?? []) {
+        if (e['id'] case final String id) {
+          updateIds.add(id);
+        }
+      }
+      for (final e in (arguments['delete'] as List?) ?? []) {
+        if (e['id'] case final String id) {
+          deleteIds.add(id);
+        }
+      }
+      if (createIds.isEmpty && updateIds.isEmpty && deleteIds.isEmpty) {
         return;
       }
     }
-    await provider.getPaths();
-    provider.currentPath = provider.paths.first;
-    final PathWrapper<AssetPathEntity>? currentWrapper = provider.currentPath;
-    if (currentWrapper != null) {
-      final AssetPathEntity newPath =
-          await currentWrapper.path.obtainForNewProperties();
-      final int assetCount = await newPath.assetCountAsync;
-      final PathWrapper<AssetPathEntity> newPathWrapper =
-          PathWrapper<AssetPathEntity>(
-        path: newPath,
-        assetCount: assetCount,
-      );
-      provider
-        ..currentPath = newPathWrapper
-        ..hasAssetsToDisplay = assetCount != 0
-        ..isAssetsEmpty = assetCount == 0
-        ..totalAssetsCount = assetCount
-        ..getThumbnailFromPath(newPathWrapper);
-      if (newPath.isAll) {
-        await provider.getAssetsFromCurrentPath();
-        final List<AssetEntity> entitiesShouldBeRemoved = <AssetEntity>[];
-        for (final AssetEntity entity in provider.selectedAssets) {
-          if (!provider.currentAssets.contains(entity)) {
-            entitiesShouldBeRemoved.add(entity);
-          }
-        }
-        entitiesShouldBeRemoved.forEach(provider.selectedAssets.remove);
-      }
+    // Throttle handling.
+    if (onAssetsChangedLock case final lock?) {
+      return lock.future;
     }
+    final lock = Completer<void>();
+    onAssetsChangedLock = lock;
+
+    Future<void>(() async {
+      // Replace the updated assets if update only.
+      if (updateIds.isNotEmpty && createIds.isEmpty && deleteIds.isEmpty) {
+        await Future.wait(
+          updateIds.map((id) async {
+            final i = provider.currentAssets.indexWhere((e) => e.id == id);
+            if (i != -1) {
+              final asset =
+                  await provider.currentAssets[i].obtainForNewProperties();
+              provider.currentAssets[i] = asset!;
+            }
+          }),
+        );
+        return;
+      }
+
+      await provider.getPaths(keepPreviousCount: true);
+      provider.currentPath = provider.paths.first;
+      final currentWrapper = provider.currentPath;
+      if (currentWrapper != null) {
+        final newPath = await currentWrapper.path.obtainForNewProperties();
+        final assetCount = await newPath.assetCountAsync;
+        final newPathWrapper = PathWrapper<AssetPathEntity>(
+          path: newPath,
+          assetCount: assetCount,
+        );
+        if (newPath.isAll) {
+          await provider.getAssetsFromCurrentPath();
+          final entitiesShouldBeRemoved = <AssetEntity>[];
+          for (final entity in provider.selectedAssets) {
+            if (!provider.currentAssets.contains(entity)) {
+              entitiesShouldBeRemoved.add(entity);
+            }
+          }
+          entitiesShouldBeRemoved.forEach(provider.selectedAssets.remove);
+        }
+        provider
+          ..currentPath = newPathWrapper
+          ..hasAssetsToDisplay = assetCount != 0
+          ..isAssetsEmpty = assetCount == 0
+          ..totalAssetsCount = assetCount
+          ..getThumbnailFromPath(newPathWrapper);
+      }
+    }).then(lock.complete).catchError(lock.completeError).whenComplete(() {
+      onAssetsChangedLock = null;
+    });
   }
 
   @override
@@ -946,6 +1014,7 @@ class DefaultAssetPickerBuilderDelegate
       specialPickerType: specialPickerType,
       maxAssets: p.maxAssets,
       shouldReversePreview: revert,
+      shouldAutoplayPreview: shouldAutoplayPreview,
     );
     if (result != null) {
       Navigator.maybeOf(context)?.maybePop(result);

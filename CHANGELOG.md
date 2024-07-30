@@ -7,6 +7,20 @@ that can be found in the LICENSE file. -->
 > [!IMPORTANT]  
 > See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
+## Unreleased
+
+### New features
+
+- Introduce `AssetsChangeCallback` and `AssetsChangeRefreshPredicate`
+  to help users act according to assets changes.
+
+### Fixes
+
+- Raise detailed negative range error.
+- Fix viewer confirm button predication.
+- Enlarge GIF gradients.
+- Fix potential paths assets count unexpected merging behaviors.
+
 ## 9.1.0
 
 ### Improvements

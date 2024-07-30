@@ -329,7 +329,10 @@ class DefaultAssetPickerProvider
   }
 
   @override
-  Future<void> getPaths({bool onlyAll = false}) async {
+  Future<void> getPaths({
+    bool onlyAll = false,
+    bool keepPreviousCount = false,
+  }) async {
     final PMFilter options;
     final fog = filterOptions;
     if (fog == null) {
@@ -362,13 +365,25 @@ class DefaultAssetPickerProvider
       onlyAll: onlyAll,
     );
 
-    _paths = list.map((p) => PathWrapper<AssetPathEntity>(path: p)).toList();
+    _paths = list.map((p) {
+      final int? assetCount;
+      if (keepPreviousCount) {
+        assetCount =
+            _paths.where((e) => e.path.id == p.id).firstOrNull?.assetCount;
+      } else {
+        assetCount = null;
+      }
+      return PathWrapper<AssetPathEntity>(path: p, assetCount: assetCount);
+    }).toList();
     // Sort path using sort path delegate.
     Singleton.sortPathDelegate.sort(_paths);
-    // Use sync method to avoid unnecessary wait.
-    _paths
-      ..forEach(getAssetCountFromPath)
-      ..forEach(getThumbnailFromPath);
+    // Populate fields to paths without awaiting.
+    for (final path in _paths) {
+      Future(() async {
+        await getAssetCountFromPath(path);
+        await getThumbnailFromPath(path);
+      });
+    }
 
     // Set first path entity as current path entity.
     if (_paths.isNotEmpty) {
@@ -479,7 +494,10 @@ class DefaultAssetPickerProvider
         (PathWrapper<AssetPathEntity> p) => p.path == path.path,
       );
       if (index != -1) {
-        _paths[index] = _paths[index].copyWith(thumbnailData: data);
+        _paths[index] = _paths[index].copyWith(
+          assetCount: assetCount,
+          thumbnailData: data,
+        );
         notifyListeners();
       }
       return data;

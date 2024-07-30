@@ -43,6 +43,7 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
+    bool shouldAutoplayPreview = false,
   }) async {
     await AssetPicker.permissionCheck(requestOption: permissionRequestOption);
     final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
@@ -65,6 +66,7 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
         maxAssets: maxAssets,
         shouldReversePreview: shouldReversePreview,
         selectPredicate: selectPredicate,
+        shouldAutoplayPreview: shouldAutoplayPreview,
       ),
     );
     final PageRouteBuilder<List<AssetEntity>> pageRoute =

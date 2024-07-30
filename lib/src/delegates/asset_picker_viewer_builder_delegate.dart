@@ -390,7 +390,12 @@ class DefaultAssetPickerViewerBuilderDelegate
     super.maxAssets,
     super.shouldReversePreview,
     super.selectPredicate,
+    this.shouldAutoplayPreview = false,
   });
+
+  /// Whether the preview should auto play.
+  /// 预览是否自动播放
+  final bool shouldAutoplayPreview;
 
   /// Thumb size for the preview of images in the viewer.
   /// 预览时图片的缩略图大小
@@ -421,16 +426,21 @@ class DefaultAssetPickerViewerBuilderDelegate
       shouldReversePreview ? previewAssets.length - index - 1 : index,
     );
     final Widget builder = switch (asset.type) {
-      AssetType.audio => AudioPageBuilder(asset: asset),
+      AssetType.audio => AudioPageBuilder(
+          asset: asset,
+          shouldAutoplayPreview: shouldAutoplayPreview,
+        ),
       AssetType.image => ImagePageBuilder(
           asset: asset,
           delegate: this,
           previewThumbnailSize: previewThumbnailSize,
+          shouldAutoplayPreview: shouldAutoplayPreview,
         ),
       AssetType.video => VideoPageBuilder(
           asset: asset,
           delegate: this,
           hasOnlyOneVideoAndMoment: isWeChatMoment && hasVideo,
+          shouldAutoplayPreview: shouldAutoplayPreview,
         ),
       AssetType.other => Center(
           child: ScaleText(
@@ -814,10 +824,9 @@ class DefaultAssetPickerViewerBuilderDelegate
             return textDelegate.confirm;
           }
 
-          final bool isButtonEnabled = provider == null ||
-              provider.currentlySelectedAssets.isNotEmpty ||
+          final isButtonEnabled = provider == null ||
               previewAssets.isEmpty ||
-              selectedNotifier.value == 0;
+              (selectedAssets?.isNotEmpty ?? false);
           return MaterialButton(
             minWidth:
                 (isWeChatMoment && hasVideo) || provider!.isSelectedNotEmpty
@@ -920,9 +929,23 @@ class DefaultAssetPickerViewerBuilderDelegate
         stream: pageStreamController.stream,
         builder: (_, s) {
           final index = s.data!;
-          final AssetEntity asset = previewAssets.elementAt(
-            shouldReversePreview ? previewAssets.length - index - 1 : index,
-          );
+          final assetIndex =
+              shouldReversePreview ? previewAssets.length - index - 1 : index;
+          if (assetIndex < 0) {
+            throw IndexError.withLength(
+              assetIndex,
+              previewAssets.length,
+              indexable: previewAssets,
+              name: 'selectButton.assetIndex',
+              message: 'previewReversed: $shouldReversePreview\n'
+                  'stream.index: $index\n'
+                  'selectedAssets.length: ${selectedAssets?.length}\n'
+                  'previewAssets.length: ${previewAssets.length}\n'
+                  'currentIndex: $currentIndex\n'
+                  'maxAssets: $maxAssets',
+            );
+          }
+          final asset = previewAssets.elementAt(assetIndex);
           return Selector<AssetPickerViewerProvider<AssetEntity>,
               List<AssetEntity>>(
             selector: (_, p) => p.currentlySelectedAssets,

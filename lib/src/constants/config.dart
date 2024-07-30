@@ -36,6 +36,9 @@ class AssetPickerConfig {
     this.shouldRevertGrid,
     this.limitedPermissionOverlayPredicate,
     this.pathNameBuilder,
+    this.assetsChangeCallback,
+    this.assetsChangeRefreshPredicate,
+    this.shouldAutoplayPreview = false,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'pickerTheme and themeColor cannot be set at the same time.',
@@ -191,4 +194,15 @@ class AssetPickerConfig {
 
   /// {@macro wechat_assets_picker.PathNameBuilder}
   final PathNameBuilder<AssetPathEntity>? pathNameBuilder;
+
+  /// {@macro wechat_assets_picker.AssetsChangeCallback}
+  final AssetsChangeCallback<AssetPathEntity>? assetsChangeCallback;
+
+  /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
+  final AssetsChangeRefreshPredicate<AssetPathEntity>?
+      assetsChangeRefreshPredicate;
+
+  /// Whether the preview should auto play.
+  /// 预览是否自动播放
+  final bool shouldAutoplayPreview;
 }
