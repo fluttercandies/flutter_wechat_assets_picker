@@ -967,7 +967,9 @@ class DefaultAssetPickerBuilderDelegate
       return;
     }
     final revert = effectiveShouldRevertGrid(context);
-    List<AssetEntity> current;
+    // ignore: no_leading_underscores_for_local_identifiers
+    final int _debugFlow; // Only for debug process.
+    final List<AssetEntity> current;
     final List<AssetEntity>? selected;
     final int effectiveIndex;
     if (isWeChatMoment) {
@@ -975,32 +977,49 @@ class DefaultAssetPickerBuilderDelegate
         current = <AssetEntity>[currentAsset];
         selected = null;
         effectiveIndex = 0;
+        _debugFlow = 10;
       } else {
+        final List<AssetEntity> list;
         if (index == null) {
-          current = p.selectedAssets;
-          current = current.reversed.toList(growable: false);
+          list = p.selectedAssets.reversed.toList(growable: false);
         } else {
-          current = p.currentAssets;
+          list = p.currentAssets;
         }
-        current = current
-            .where((AssetEntity e) => e.type == AssetType.image)
-            .toList();
+        current = list.where((e) => e.type == AssetType.image).toList();
         selected = p.selectedAssets;
         final i = current.indexOf(currentAsset);
         effectiveIndex = revert ? current.length - i - 1 : i;
+        _debugFlow = switch ((index == null, revert)) {
+          (true, true) => 21,
+          (true, false) => 20,
+          (false, true) => 31,
+          (false, false) => 30,
+        };
       }
     } else {
       selected = p.selectedAssets;
+      final List<AssetEntity> list;
       if (index == null) {
-        current = p.selectedAssets;
         if (revert) {
-          current = current.reversed.toList(growable: false);
+          list = p.selectedAssets.reversed.toList(growable: false);
+        } else {
+          list = p.selectedAssets;
         }
         effectiveIndex = selected.indexOf(currentAsset);
+        current = list;
       } else {
         current = p.currentAssets;
         effectiveIndex = revert ? current.length - index - 1 : index;
       }
+      _debugFlow = switch ((index == null, revert)) {
+        (true, true) => 41,
+        (true, false) => 40,
+        (false, true) => 51,
+        (false, false) => 50,
+      };
+    }
+    if (current.isEmpty) {
+      throw StateError('Previewing empty assets is not allowed. $_debugFlow');
     }
     final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
       context,

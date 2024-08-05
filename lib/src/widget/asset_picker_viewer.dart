@@ -45,6 +45,9 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
         const PermissionRequestOption(),
     bool shouldAutoplayPreview = false,
   }) async {
+    if (previewAssets.isEmpty) {
+      throw StateError('Previewing empty assets is not allowed.');
+    }
     await AssetPicker.permissionCheck(requestOption: permissionRequestOption);
     final Widget viewer = AssetPickerViewer<AssetEntity, AssetPathEntity>(
       builder: DefaultAssetPickerViewerBuilderDelegate(
