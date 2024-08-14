@@ -9,7 +9,7 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+- Use `LocallyAvailableBuilder` in the grid to provide better user awareness.
 
 ## 9.2.0
 
