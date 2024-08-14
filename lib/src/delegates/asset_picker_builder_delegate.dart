@@ -1701,13 +1701,11 @@ class DefaultAssetPickerBuilderDelegate
             size: 24.0,
           ),
           if (state != PMRequestState.success && state != PMRequestState.failed)
-            Flexible(
-              child: ScaleText(
-                ' ${((progress ?? 0) * 100).toInt()}%',
-                style: TextStyle(
-                  color: context.textTheme.bodyMedium?.color?.withOpacity(.4),
-                  fontSize: 12.0,
-                ),
+            ScaleText(
+              ' ${((progress ?? 0) * 100).toInt()}%',
+              style: TextStyle(
+                color: context.textTheme.bodyMedium?.color?.withOpacity(.4),
+                fontSize: 12.0,
               ),
             ),
         ],
