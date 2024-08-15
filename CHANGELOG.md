@@ -9,7 +9,7 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+- Improve changes when limited on iOS.
 
 ## 9.2.0
 
