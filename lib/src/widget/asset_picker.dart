@@ -125,7 +125,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
         if (!mounted) {
           return;
         }
-        widget.builder.permission.value = ps;
+        widget.builder.permissionNotifier.value = ps;
         if (ps == PermissionState.limited && Platform.isAndroid) {
           _onAssetsUpdated(const MethodCall(''));
         }
