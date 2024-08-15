@@ -9,6 +9,7 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+- Improve changes when limited on iOS.
 - Use `LocallyAvailableBuilder` in the grid to provide better user awareness.
 
 ## 9.2.0
