@@ -1086,7 +1086,8 @@ class DefaultAssetPickerBuilderDelegate
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGridBuilder(context)),
-                            if (isPreviewEnabled || !isSingleAssetMode)
+                            if (isPreviewEnabled || !isSingleAssetMode
+                            || permissionNotifier.value == PermissionState.limited)
                               bottomActionBar(context),
                           ],
                         ),
@@ -1113,7 +1114,8 @@ class DefaultAssetPickerBuilderDelegate
             child: Stack(
               children: <Widget>[
                 Positioned.fill(child: assetsGridBuilder(context)),
-                if (isPreviewEnabled || !isSingleAssetMode)
+                if (isPreviewEnabled || !isSingleAssetMode
+                || permissionNotifier.value == PermissionState.limited)
                   Positioned.fill(top: null, child: bottomActionBar(context)),
               ],
             ),
