@@ -1676,6 +1676,7 @@ class DefaultAssetPickerBuilderDelegate
   ) {
     return LocallyAvailableBuilder(
       asset: asset,
+      isOriginal: false,
       builder: (context, asset) {
         final imageProvider = AssetEntityImageProvider(
           asset,

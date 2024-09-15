@@ -11,6 +11,10 @@ that can be found in the LICENSE file. -->
 
 *None.*
 
+## 9.2.2
+
+- Uses correct `isOriginal` for the `LocallyAvailableBuilder`.
+
 ## 9.2.1
 
 - Improve changes when limited on iOS.
