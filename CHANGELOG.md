@@ -9,7 +9,7 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+- Uses correct `isOriginal` for the `LocallyAvailableBuilder`.
 
 ## 9.2.1
 
