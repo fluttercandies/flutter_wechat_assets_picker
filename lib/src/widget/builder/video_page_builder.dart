@@ -229,6 +229,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
     return LocallyAvailableBuilder(
       key: ValueKey<String>(widget.asset.id),
       asset: widget.asset,
+      isOriginal: false,
       builder: (BuildContext context, AssetEntity asset) {
         if (hasErrorWhenInitializing) {
           return Center(
