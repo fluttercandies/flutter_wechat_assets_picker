@@ -538,35 +538,44 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Action bar widget aligned to bottom.
   /// 底部操作栏部件
   Widget bottomActionBar(BuildContext context) {
-    Widget child = Container(
-      height: bottomActionBarHeight + context.bottomPadding,
-      padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
-        bottom: context.bottomPadding,
+    final children = <Widget>[
+      if (isPermissionLimited) accessLimitedBottomTip(context),
+      Container(
+        height: bottomActionBarHeight + context.bottomPadding,
+        padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
+          bottom: context.bottomPadding,
+        ),
+        color: theme.bottomAppBarTheme.color?.withOpacity(
+          theme.bottomAppBarTheme.color!.opacity *
+              (isAppleOS(context) ? .9 : 1),
+        ),
+        child: Row(
+          children: <Widget>[
+            previewButton(context),
+            if (!isSingleAssetMode) const Spacer(),
+            if (!isSingleAssetMode) confirmButton(context),
+          ],
+        ),
       ),
-      color: theme.primaryColor.withOpacity(isAppleOS(context) ? 0.90 : 1),
-      child: Row(
-        children: <Widget>[
-          previewButton(context),
-          const Spacer(),
-          confirmButton(context),
-        ],
-      ),
+    ];
+    if (children.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    Widget child = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
     );
-    if (isPermissionLimited) {
-      child = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[accessLimitedBottomTip(context), child],
+    if (isAppleOS(context)) {
+      child = ClipRect(
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(
+            sigmaX: appleOSBlurRadius,
+            sigmaY: appleOSBlurRadius,
+          ),
+          child: child,
+        ),
       );
     }
-    child = ClipRect(
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(
-          sigmaX: appleOSBlurRadius,
-          sigmaY: appleOSBlurRadius,
-        ),
-        child: child,
-      ),
-    );
     return child;
   }
 
@@ -799,6 +808,9 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   bool get isSingleAssetMode => provider.maxAssets == 1;
+
+  /// Whether the bottom actions bar should display.
+  bool get hasBottomActions => isPreviewEnabled || !isSingleAssetMode;
 
   /// The listener to track the scroll position of the [gridScrollController]
   /// if [keepScrollOffset] is true.
@@ -1086,8 +1098,7 @@ class DefaultAssetPickerBuilderDelegate
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGridBuilder(context)),
-                            if (isPreviewEnabled || !isSingleAssetMode)
-                              bottomActionBar(context),
+                            bottomActionBar(context),
                           ],
                         ),
                       ),
@@ -1113,8 +1124,7 @@ class DefaultAssetPickerBuilderDelegate
             child: Stack(
               children: <Widget>[
                 Positioned.fill(child: assetsGridBuilder(context)),
-                if (isPreviewEnabled || !isSingleAssetMode)
-                  Positioned.fill(top: null, child: bottomActionBar(context)),
+                Positioned.fill(top: null, child: bottomActionBar(context)),
               ],
             ),
           ),
@@ -2295,29 +2305,81 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
-  Widget bottomActionBar(BuildContext context) {
-    Widget child = Container(
-      height: bottomActionBarHeight + context.bottomPadding,
-      padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
-        bottom: context.bottomPadding,
-      ),
-      color: theme.bottomAppBarTheme.color?.withOpacity(
-        theme.bottomAppBarTheme.color!.opacity * (isAppleOS(context) ? .9 : 1),
-      ),
-      child: Row(
-        children: <Widget>[
-          if (isPreviewEnabled) previewButton(context),
-          if (isPreviewEnabled || !isSingleAssetMode) const Spacer(),
-          if (isPreviewEnabled || !isSingleAssetMode) confirmButton(context),
-        ],
+  Widget accessLimitedBottomTip(BuildContext context) {
+    final double bottomPadding;
+    if (hasBottomActions) {
+      bottomPadding = 0;
+    } else {
+      bottomPadding = MediaQuery.paddingOf(context).bottom;
+    }
+    return GestureDetector(
+      onTap: () {
+        Feedback.forTap(context);
+        PhotoManager.openSetting();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10)
+            .add(EdgeInsets.only(bottom: bottomPadding)),
+        height: permissionLimitedBarHeight + bottomPadding,
+        color: theme.primaryColor.withOpacity(isAppleOS(context) ? 0.90 : 1),
+        child: Row(
+          children: <Widget>[
+            const SizedBox(width: 5),
+            Icon(
+              Icons.warning,
+              color: Colors.orange[400]!.withOpacity(.8),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: ScaleText(
+                textDelegate.accessAllTip,
+                style: context.textTheme.bodySmall?.copyWith(
+                  fontSize: 14,
+                ),
+                semanticsLabel: semanticsTextDelegate.accessAllTip,
+              ),
+            ),
+            Icon(
+              Icons.keyboard_arrow_right,
+              color: context.iconTheme.color?.withOpacity(.5),
+            ),
+          ],
+        ),
       ),
     );
-    if (isPermissionLimited) {
-      child = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[accessLimitedBottomTip(context), child],
-      );
+  }
+
+  @override
+  Widget bottomActionBar(BuildContext context) {
+    final children = <Widget>[
+      if (isPermissionLimited) accessLimitedBottomTip(context),
+      if (hasBottomActions)
+        Container(
+          height: bottomActionBarHeight + context.bottomPadding,
+          padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(
+            bottom: context.bottomPadding,
+          ),
+          color: theme.bottomAppBarTheme.color?.withOpacity(
+            theme.bottomAppBarTheme.color!.opacity *
+                (isAppleOS(context) ? .9 : 1),
+          ),
+          child: Row(
+            children: <Widget>[
+              if (isPreviewEnabled) previewButton(context),
+              if (isPreviewEnabled || !isSingleAssetMode) const Spacer(),
+              if (isPreviewEnabled || !isSingleAssetMode)
+                confirmButton(context),
+            ],
+          ),
+        ),
+    ];
+    if (children.isEmpty) {
+      return const SizedBox.shrink();
     }
+    Widget child = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
+    );
     if (isAppleOS(context)) {
       child = ClipRect(
         child: BackdropFilter(

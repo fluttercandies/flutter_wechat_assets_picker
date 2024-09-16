@@ -485,8 +485,7 @@ class FileAssetPickerBuilder
                               child: Column(
                                 children: <Widget>[
                                   Expanded(child: assetsGridBuilder(context)),
-                                  if (!isAppleOS(context))
-                                    bottomActionBar(context),
+                                  bottomActionBar(context),
                                 ],
                               ),
                             ),
@@ -537,11 +536,10 @@ class FileAssetPickerBuilder
                                 Positioned.fill(
                                   child: assetsGridBuilder(context),
                                 ),
-                                if (!isSingleAssetMode || isAppleOS(context))
-                                  PositionedDirectional(
-                                    bottom: 0.0,
-                                    child: bottomActionBar(context),
-                                  ),
+                                PositionedDirectional(
+                                  bottom: 0.0,
+                                  child: bottomActionBar(context),
+                                ),
                               ],
                             ),
                           ),

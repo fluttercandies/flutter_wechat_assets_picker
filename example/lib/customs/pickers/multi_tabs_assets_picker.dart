@@ -531,7 +531,7 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                       child: Column(
                         children: <Widget>[
                           Expanded(child: assetsGridBuilder(context)),
-                          if (isPreviewEnabled) bottomActionBar(context),
+                          bottomActionBar(context),
                         ],
                       ),
                     ),
