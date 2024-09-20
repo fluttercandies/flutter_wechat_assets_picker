@@ -9,7 +9,9 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+### Fixes
+
+- Fix bottom actions bar display conditions.
 
 ## 9.2.2
 
