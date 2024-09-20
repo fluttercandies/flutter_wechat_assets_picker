@@ -60,6 +60,10 @@ class AssetPickerTextDelegate {
   /// GIF指示的字段
   String get gifIndicator => 'GIF';
 
+  /// Live-Photo image indicator string.
+  /// 实况图片指示的字段
+  String get livePhotoIndicator => '实况';
+
   /// Load failed string for item.
   /// 资源加载失败时的字段
   String get loadFailed => '加载失败';
@@ -181,6 +185,9 @@ class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get gifIndicator => 'GIF';
+
+  @override
+  String get livePhotoIndicator => 'LIVE';
 
   @override
   String get loadFailed => 'Load failed';

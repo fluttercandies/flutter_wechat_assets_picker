@@ -21,7 +21,7 @@ Language: English | [中文](README-ZH.md)
 An **image picker (also with videos and audios)**
 for Flutter projects based on the WeChat's UI.
 
-Current WeChat version that UI based on: **8.3.x**
+Current WeChat version that UI based on: **8.0.51**
 UI designs will be updated following the WeChat update in anytime.
 
 To take a photo or a video for assets,

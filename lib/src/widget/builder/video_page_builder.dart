@@ -101,9 +101,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
     final String? url = await widget.asset.getMediaUrl();
     if (url == null) {
       hasErrorWhenInitializing = true;
-      if (mounted) {
-        setState(() {});
-      }
+      safeSetState(() {});
       return;
     }
     final Uri uri = Uri.parse(url);
@@ -132,9 +130,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       );
       hasErrorWhenInitializing = true;
     } finally {
-      if (mounted) {
-        setState(() {});
-      }
+      safeSetState(() {});
     }
   }
 

@@ -405,8 +405,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// GIF image type indicator.
   /// GIF 类型图片指示
   Widget gifIndicator(BuildContext context, Asset asset) {
-    return Positioned.fill(
-      top: null,
+    return Align(
+      alignment: Alignment.bottomCenter,
       child: Container(
         alignment: AlignmentDirectional.centerEnd,
         padding: const EdgeInsets.all(6),
@@ -437,6 +437,34 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             semanticsLabel: semanticsTextDelegate.gifIndicator,
             strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildLivePhotoIndicator(BuildContext context, Asset asset) {
+    return Align(
+      alignment: AlignmentDirectional.bottomCenter,
+      child: Container(
+        width: double.maxFinite,
+        height: 26,
+        alignment: AlignmentDirectional.bottomStart,
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: AlignmentDirectional.bottomCenter,
+            end: AlignmentDirectional.topCenter,
+            colors: <Color>[
+              theme.canvasColor.withAlpha(80),
+              Colors.transparent,
+            ],
+          ),
+        ),
+        child: Image.asset(
+          'assets/icon/indicator-live-photos.png',
+          package: packageName,
+          gaplessPlayback: true,
+          color: Colors.white,
         ),
       ),
     );
@@ -1700,19 +1728,19 @@ class DefaultAssetPickerBuilderDelegate
           type = SpecialImageType.heic;
         }
         return Stack(
+          fit: StackFit.expand,
           children: <Widget>[
-            Positioned.fill(
-              child: RepaintBoundary(
-                child: AssetEntityGridItemBuilder(
-                  image: imageProvider,
-                  failedItemBuilder: failedItemBuilder,
-                ),
+            RepaintBoundary(
+              child: AssetEntityGridItemBuilder(
+                image: imageProvider,
+                failedItemBuilder: failedItemBuilder,
               ),
             ),
             if (type == SpecialImageType.gif) // 如果为GIF则显示标识
               gifIndicator(context, asset),
             if (asset.type == AssetType.video) // 如果为视频则显示标识
               videoIndicator(context, asset),
+            if (asset.isLivePhoto) buildLivePhotoIndicator(context, asset),
           ],
         );
       },
@@ -2260,10 +2288,8 @@ class DefaultAssetPickerBuilderDelegate
   /// 将指示器的图标和文字设置为 [Colors.white]。
   @override
   Widget videoIndicator(BuildContext context, AssetEntity asset) {
-    return PositionedDirectional(
-      start: 0,
-      end: 0,
-      bottom: 0,
+    return Align(
+      alignment: Alignment.bottomCenter,
       child: Container(
         width: double.maxFinite,
         height: 26,

@@ -37,6 +37,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter:
+  assets:
+    - 'assets/icon/'
+
 screenshots:
   - description: 'Screenshot 1'
     path: screenshots/README_1.webp

@@ -114,9 +114,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
       );
     } finally {
       isLoaded = true;
-      if (mounted) {
-        setState(() {});
-      }
+      safeSetState(() {});
     }
   }
 
@@ -125,9 +123,7 @@ class _AudioPageBuilderState extends State<AudioPageBuilder> {
   void audioPlayerListener() {
     if (isControllerPlaying != isPlaying) {
       isPlaying = isControllerPlaying;
-      if (mounted) {
-        setState(() {});
-      }
+      safeSetState(() {});
     }
 
     /// Add the current position into the stream.
