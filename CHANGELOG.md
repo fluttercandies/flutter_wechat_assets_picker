@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+### New features
+
+- Add explicit Live Photos indicator for assets.
+
 ### Fixes
 
 - Fix bottom actions bar display conditions.
