@@ -82,7 +82,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
       file,
       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
     );
-    setState(() {
+    safeSetState(() {
       _livePhotoVideoController = c;
     });
     c
@@ -91,9 +91,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
       })
       ..setVolume(0)
       ..addListener(() {
-        if (mounted) {
-          setState(() {});
-        }
+        safeSetState(() {});
       });
   }
 
@@ -158,11 +156,11 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
             return;
           }
           if (scale != 1.0 && _showLivePhotoIndicator) {
-            setState(() {
+            safeSetState(() {
               _showLivePhotoIndicator = false;
             });
           } else if (scale == 1.0 && !_showLivePhotoIndicator) {
-            setState(() {
+            safeSetState(() {
               _showLivePhotoIndicator = true;
             });
           }

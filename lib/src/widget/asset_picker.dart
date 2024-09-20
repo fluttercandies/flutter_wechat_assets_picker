@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../constants/config.dart';
 import '../delegates/asset_picker_builder_delegate.dart';
@@ -144,9 +145,7 @@ class AssetPickerState<Asset, Path> extends State<AssetPicker<Asset, Path>>
   Future<void> _onAssetsUpdated(MethodCall call) {
     return widget.builder.onAssetsChanged(call, (VoidCallback fn) {
       fn();
-      if (mounted) {
-        setState(() {});
-      }
+      safeSetState(() {});
     });
   }
 
