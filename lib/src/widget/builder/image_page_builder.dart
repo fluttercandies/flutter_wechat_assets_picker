@@ -127,7 +127,8 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
             color: Colors.white,
             fontSize: 14.0,
           ),
-          semanticsLabel: widget.delegate.semanticsTextDelegate.livePhotoIndicator,
+          semanticsLabel:
+              widget.delegate.semanticsTextDelegate.livePhotoIndicator,
           strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
         ),
       ],
