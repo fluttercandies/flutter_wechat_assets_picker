@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None.*
+
+## 9.3.0
+
 ### New features
 
 - Add explicit Live Photos indicator for assets.
