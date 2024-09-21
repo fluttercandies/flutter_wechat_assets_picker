@@ -13,6 +13,7 @@ import 'package:video_player/video_player.dart';
 import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../../constants/constants.dart';
+import '../../delegates/asset_picker_text_delegate.dart';
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
 
 class ImagePageBuilder extends StatefulWidget {
@@ -42,12 +43,13 @@ class ImagePageBuilder extends StatefulWidget {
 
 class _ImagePageBuilderState extends State<ImagePageBuilder> {
   bool _isLocallyAvailable = false;
-  bool _showLivePhotoIndicator = true;
   VideoPlayerController? _livePhotoVideoController;
 
   bool get _isOriginal => widget.previewThumbnailSize == null;
 
   bool get _isLivePhoto => widget.asset.isLivePhoto;
+
+  final _gestureDetailsIsChanging = ValueNotifier<bool>(false);
 
   @override
   void didUpdateWidget(ImagePageBuilder oldWidget) {
@@ -82,57 +84,15 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
       file,
       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
     );
+    await c.initialize();
     safeSetState(() {
       _livePhotoVideoController = c;
     });
     c
-      ..initialize().then((_) {
-        _play();
-      })
       ..setVolume(0)
       ..addListener(() {
         safeSetState(() {});
       });
-  }
-
-  void _play() {
-    if (_livePhotoVideoController?.value.isInitialized ?? false) {
-      // Only impact when initialized.
-      HapticFeedback.lightImpact();
-      _livePhotoVideoController?.play();
-    }
-  }
-
-  Future<void> _stop() async {
-    await _livePhotoVideoController?.pause();
-    await _livePhotoVideoController?.seekTo(Duration.zero);
-  }
-
-  Widget _buildLivePhotoIndicator(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          'assets/icon/indicator-live-photos.png',
-          width: 24.0,
-          height: 24.0,
-          package: packageName,
-          gaplessPlayback: true,
-          color: Colors.white,
-        ),
-        const SizedBox(width: 2.0),
-        Text(
-          widget.delegate.textDelegate.livePhotoIndicator,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14.0,
-          ),
-          semanticsLabel:
-              widget.delegate.semanticsTextDelegate.livePhotoIndicator,
-          strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
-        ),
-      ],
-    );
   }
 
   Widget _imageBuilder(BuildContext context, AssetEntity asset) {
@@ -151,103 +111,24 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
         animationMinScale: 0.6,
         animationMaxScale: 4.0,
         inPageView: true,
-        gestureDetailsIsChanged: (details) {
-          final scale = details?.totalScale;
-          if (scale == null) {
-            return;
-          }
-          if (scale != 1.0 && _showLivePhotoIndicator) {
-            safeSetState(() {
-              _showLivePhotoIndicator = false;
-            });
-          } else if (scale == 1.0 && !_showLivePhotoIndicator) {
-            safeSetState(() {
-              _showLivePhotoIndicator = true;
-            });
-          }
-        },
+        initialAlignment: InitialAlignment.center,
       ),
       loadStateChanged: (ExtendedImageState state) {
-        final Size? imageSize;
-        final double? aspectRatio;
-        if (state.extendedImageInfo case final imageInfo?) {
-          final dpr = MediaQuery.devicePixelRatioOf(context);
-          imageSize = Size(
-            imageInfo.image.width / dpr,
-            imageInfo.image.height / dpr,
-          );
-          aspectRatio = imageSize.aspectRatio;
-        } else {
-          imageSize = null;
-          aspectRatio = _livePhotoVideoController?.value.aspectRatio;
-        }
-        Widget imageWidget = widget.delegate.previewWidgetLoadStateChanged(
+        final imageWidget = widget.delegate.previewWidgetLoadStateChanged(
           context,
           state,
           hasLoaded: state.extendedImageLoadState == LoadState.completed,
         );
-        if (_isLivePhoto && _showLivePhotoIndicator) {
-          imageWidget = Stack(
-            alignment: Alignment.center,
-            children: [
-              imageWidget,
-              PositionedDirectional(
-                start: 20.0,
-                bottom: 20.0,
-                child: _buildLivePhotoIndicator(context),
-              ),
-            ],
+        if (_isLivePhoto && _livePhotoVideoController != null) {
+          return _LivePhotoWidget(
+            controller: _livePhotoVideoController!,
+            fit: BoxFit.contain,
+            state: state,
+            gestureDetailsIsChanging: _gestureDetailsIsChanging,
+            textDelegate: widget.delegate.textDelegate,
           );
         }
-        if (imageSize case final size?) {
-          imageWidget = Center(
-            child: AspectRatio(
-              aspectRatio: size.aspectRatio,
-              child: imageWidget,
-            ),
-          );
-        }
-        return Stack(
-          alignment: Alignment.center,
-          fit: StackFit.expand,
-          children: [
-            if (_livePhotoVideoController case final controller?) ...[
-              ValueListenableBuilder(
-                valueListenable: controller,
-                builder: (context, value, child) => AnimatedSwitcher(
-                  duration: kThemeChangeDuration,
-                  child: AspectRatio(
-                    aspectRatio: aspectRatio!,
-                    child: child,
-                  ),
-                ),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    PositionedDirectional(
-                      start: 0,
-                      end: 0,
-                      child: AspectRatio(
-                        aspectRatio: controller.value.aspectRatio,
-                        child: IgnorePointer(child: VideoPlayer(controller)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              ValueListenableBuilder(
-                valueListenable: controller,
-                builder: (context, value, child) => AnimatedOpacity(
-                  opacity: value.isPlaying ? 0 : 1,
-                  duration: kThemeChangeDuration,
-                  child: child,
-                ),
-                child: imageWidget,
-              ),
-            ] else
-              imageWidget,
-          ],
-        );
+        return imageWidget;
       },
     );
   }
@@ -265,21 +146,206 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
           _initializeLivePhoto();
         }
         _isLocallyAvailable = true;
-        // TODO(Alex): Wait until `extended_image` support synchronized zooming.
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: widget.delegate.switchDisplayingDetail,
-          onLongPress: _isLivePhoto ? _play : null,
-          onLongPressEnd: _isLivePhoto
-              ? (_) {
-                  _stop();
-                }
-              : null,
-          child: Builder(
-            builder: (context) => _imageBuilder(context, asset),
-          ),
+          child: _imageBuilder(context, asset),
         );
       },
+    );
+  }
+}
+
+class _LivePhotoWidget extends StatefulWidget {
+  const _LivePhotoWidget({
+    required this.controller,
+    required this.state,
+    required this.fit,
+    required this.gestureDetailsIsChanging,
+    required this.textDelegate,
+  });
+
+  final VideoPlayerController controller;
+  final ExtendedImageState state;
+  final BoxFit fit;
+  final ValueNotifier<bool> gestureDetailsIsChanging;
+  final AssetPickerTextDelegate textDelegate;
+
+  @override
+  State<_LivePhotoWidget> createState() => _LivePhotoWidgetState();
+}
+
+class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
+  final _showVideo = ValueNotifier<bool>(false);
+  late final _controller = widget.controller;
+
+  bool _pointerDown = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!widget.gestureDetailsIsChanging.value) {
+        HapticFeedback.lightImpact();
+        _showVideo.value = true;
+        _controller.play();
+      }
+    });
+
+    _controller.addListener(_notify);
+    widget.gestureDetailsIsChanging.addListener(_onGestureDetailsIsChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.gestureDetailsIsChanging.removeListener(_onGestureDetailsIsChanged);
+    _controller.pause();
+    _controller.removeListener(_notify);
+    super.dispose();
+  }
+
+  Future<void> _onGestureDetailsIsChanged() async {
+    if (!_showVideo.value) {
+      return;
+    }
+    if (widget.gestureDetailsIsChanging.value) {
+      await _controller.pause();
+    } else if (!_pointerDown) {
+      await continuePlay();
+    }
+  }
+
+  Future<void> continuePlay() async {
+    if (_showVideo.value && _controller.value.position != Duration.zero) {
+      HapticFeedback.lightImpact();
+      await _controller.play();
+    }
+  }
+
+  Future<void> _notify() async {
+    if (_controller.value.position >= _controller.value.duration) {
+      await _controller.pause();
+      await _controller.seekTo(Duration.zero);
+      _showVideo.value = false;
+    }
+  }
+
+  Future<void> _showVideoAndPlay() async {
+    HapticFeedback.lightImpact();
+    _showVideo.value = true;
+    await _controller.play();
+  }
+
+  Future<void> _hideVideoAndStop() async {
+    await _controller.pause();
+    await _controller.seekTo(Duration.zero);
+    _showVideo.value = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerDown: (PointerDownEvent event) {
+        _pointerDown = true;
+      },
+      onPointerUp: (PointerUpEvent event) {
+        _pointerDown = false;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          continuePlay();
+        });
+      },
+      onPointerCancel: (PointerCancelEvent event) {
+        _pointerDown = false;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          continuePlay();
+        });
+      },
+      child: GestureDetector(
+        onLongPress: () {
+          _showVideoAndPlay();
+        },
+        onLongPressUp: () {
+          _hideVideoAndStop();
+        },
+        child: ExtendedImageGesture(
+          widget.state,
+          imageBuilder: (
+            Widget image, {
+            ExtendedImageGestureState? imageGestureState,
+          }) {
+            return ValueListenableBuilder(
+              valueListenable: _showVideo,
+              builder: (context, showVideo, child) {
+                final Widget result;
+                if (showVideo) {
+                  result = imageGestureState!.wrapGestureWidget(
+                    VideoPlayer(_controller),
+                  );
+                } else if (imageGestureState == null ||
+                    imageGestureState.gestureDetails?.totalScale !=
+                        imageGestureState.imageGestureConfig?.initialScale) {
+                  result = child!;
+                } else {
+                  final size = MediaQuery.sizeOf(context);
+                  final destinationRect =
+                      GestureWidgetDelegateFromState.getRectFormState(
+                    Offset.zero & size,
+                    imageGestureState,
+                  );
+                  result = Stack(
+                    children: <Widget>[
+                      Positioned.fromRect(
+                        rect: destinationRect,
+                        child: image,
+                      ),
+                      Positioned.fromRect(
+                        rect: destinationRect,
+                        child: _buildLivePhotoIndicator(context),
+                      ),
+                    ],
+                  );
+                }
+                return AnimatedSwitcher(
+                  duration: kThemeAnimationDuration,
+                  child: result,
+                );
+              },
+              child: image,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLivePhotoIndicator(BuildContext context) {
+    return Container(
+      alignment: AlignmentDirectional.bottomStart,
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            'assets/icon/indicator-live-photos.png',
+            width: 24.0,
+            height: 24.0,
+            package: packageName,
+            gaplessPlayback: true,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 2.0),
+          Text(
+            widget.textDelegate.livePhotoIndicator,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+            ),
+            semanticsLabel:
+                widget.textDelegate.semanticsTextDelegate.livePhotoIndicator,
+            strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
+          ),
+        ],
+      ),
     );
   }
 }
