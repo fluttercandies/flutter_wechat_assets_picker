@@ -179,8 +179,6 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   final _showVideo = ValueNotifier<bool>(false);
   late final _controller = widget.controller;
 
-  bool _pointerDown = false;
-
   @override
   void initState() {
     super.initState();
@@ -193,26 +191,13 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
     });
 
     _controller.addListener(_notify);
-    widget.gestureDetailsIsChanging.addListener(_onGestureDetailsIsChanged);
   }
 
   @override
   void dispose() {
-    widget.gestureDetailsIsChanging.removeListener(_onGestureDetailsIsChanged);
     _controller.pause();
     _controller.removeListener(_notify);
     super.dispose();
-  }
-
-  Future<void> _onGestureDetailsIsChanged() async {
-    if (!_showVideo.value) {
-      return;
-    }
-    if (widget.gestureDetailsIsChanging.value) {
-      await _controller.pause();
-    } else if (!_pointerDown) {
-      await continuePlay();
-    }
   }
 
   Future<void> continuePlay() async {
@@ -231,6 +216,9 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   Future<void> _showVideoAndPlay() async {
+    if (_controller.value.isPlaying) {
+      return;
+    }
     HapticFeedback.lightImpact();
     _showVideo.value = true;
     await _controller.play();
@@ -245,21 +233,6 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerDown: (PointerDownEvent event) {
-        _pointerDown = true;
-      },
-      onPointerUp: (PointerUpEvent event) {
-        _pointerDown = false;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          continuePlay();
-        });
-      },
-      onPointerCancel: (PointerCancelEvent event) {
-        _pointerDown = false;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          continuePlay();
-        });
-      },
       child: GestureDetector(
         onLongPress: () {
           _showVideoAndPlay();
@@ -276,38 +249,45 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
             return ValueListenableBuilder(
               valueListenable: _showVideo,
               builder: (context, showVideo, child) {
-                final Widget result;
-                if (showVideo) {
-                  result = imageGestureState!.wrapGestureWidget(
-                    VideoPlayer(_controller),
-                  );
-                } else if (imageGestureState == null ||
-                    imageGestureState.gestureDetails?.totalScale !=
-                        imageGestureState.imageGestureConfig?.initialScale) {
-                  result = child!;
-                } else {
-                  final size = MediaQuery.sizeOf(context);
-                  final destinationRect =
-                      GestureWidgetDelegateFromState.getRectFormState(
-                    Offset.zero & size,
-                    imageGestureState,
-                  );
-                  result = Stack(
-                    children: <Widget>[
-                      Positioned.fromRect(
-                        rect: destinationRect,
-                        child: image,
+                if (imageGestureState == null ||
+                    widget.state.extendedImageInfo == null) {
+                  return child!;
+                }
+                final size = MediaQuery.sizeOf(context);
+                final rect = GestureWidgetDelegateFromState.getRectFormState(
+                  Offset.zero & size,
+                  imageGestureState,
+                  width: _controller.value.size.width,
+                  height: _controller.value.size.height,
+                  copy: true,
+                );
+                return Stack(
+                  children: <Widget>[
+                    imageGestureState.wrapGestureWidget(
+                      FittedBox(
+                        fit: BoxFit.cover,
+                        clipBehavior: Clip.hardEdge,
+                        child: SizedBox(
+                          width: rect.width,
+                          height: rect.height,
+                          child: VideoPlayer(_controller),
+                        ),
                       ),
+                    ),
+                    Positioned.fromRect(
+                      rect: rect,
+                      child: AnimatedOpacity(
+                        duration: kThemeChangeDuration,
+                        opacity: showVideo ? 0.0 : 1.0,
+                        child: child!,
+                      ),
+                    ),
+                    if (!showVideo)
                       Positioned.fromRect(
-                        rect: destinationRect,
+                        rect: rect,
                         child: _buildLivePhotoIndicator(context),
                       ),
-                    ],
-                  );
-                }
-                return AnimatedSwitcher(
-                  duration: kThemeAnimationDuration,
-                  child: result,
+                  ],
                 );
               },
               child: image,
