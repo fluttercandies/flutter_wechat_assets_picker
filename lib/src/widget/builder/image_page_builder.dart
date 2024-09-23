@@ -232,68 +232,68 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      child: GestureDetector(
-        onLongPress: () {
-          _showVideoAndPlay();
-        },
-        onLongPressUp: () {
-          _hideVideoAndStop();
-        },
-        child: ExtendedImageGesture(
-          widget.state,
-          imageBuilder: (
-            Widget image, {
-            ExtendedImageGestureState? imageGestureState,
-          }) {
-            return ValueListenableBuilder(
-              valueListenable: _showVideo,
-              builder: (context, showVideo, child) {
-                if (imageGestureState == null ||
-                    widget.state.extendedImageInfo == null) {
-                  return child!;
-                }
-                final size = MediaQuery.sizeOf(context);
-                final rect = GestureWidgetDelegateFromState.getRectFormState(
-                  Offset.zero & size,
-                  imageGestureState,
-                  width: _controller.value.size.width,
-                  height: _controller.value.size.height,
-                  copy: true,
-                );
-                return Stack(
-                  children: <Widget>[
-                    imageGestureState.wrapGestureWidget(
-                      FittedBox(
-                        fit: BoxFit.cover,
-                        clipBehavior: Clip.hardEdge,
-                        child: SizedBox(
-                          width: rect.width,
-                          height: rect.height,
-                          child: VideoPlayer(_controller),
-                        ),
+    return GestureDetector(
+      onLongPress: () {
+        _showVideoAndPlay();
+      },
+      onLongPressUp: () {
+        _hideVideoAndStop();
+      },
+      child: ExtendedImageGesture(
+        widget.state,
+        imageBuilder: (
+          Widget image, {
+          ExtendedImageGestureState? imageGestureState,
+        }) {
+          return ValueListenableBuilder(
+            valueListenable: _showVideo,
+            builder: (context, showVideo, child) {
+              if (imageGestureState == null ||
+                  widget.state.extendedImageInfo == null) {
+                return child!;
+              }
+              final size = MediaQuery.sizeOf(context);
+              final rect = GestureWidgetDelegateFromState.getRectFormState(
+                Offset.zero & size,
+                imageGestureState,
+                width: _controller.value.size.width,
+                height: _controller.value.size.height,
+                copy: true,
+              );
+              return Stack(
+                children: <Widget>[
+                  imageGestureState.wrapGestureWidget(
+                    FittedBox(
+                      fit: BoxFit.cover,
+                      clipBehavior: Clip.hardEdge,
+                      child: SizedBox(
+                        width: rect.width,
+                        height: rect.height,
+                        child: VideoPlayer(_controller),
                       ),
                     ),
-                    Positioned.fromRect(
-                      rect: rect,
-                      child: AnimatedOpacity(
-                        duration: kThemeChangeDuration,
-                        opacity: showVideo ? 0.0 : 1.0,
-                        child: child!,
-                      ),
+                  ),
+                  Positioned.fill(
+                    child: AnimatedOpacity(
+                      duration: kThemeChangeDuration,
+                      opacity: showVideo ? 0.0 : 1.0,
+                      child: child!,
                     ),
-                    if (!showVideo)
-                      Positioned.fromRect(
-                        rect: rect,
-                        child: _buildLivePhotoIndicator(context),
-                      ),
-                  ],
-                );
-              },
-              child: image,
-            );
-          },
-        ),
+                  ),
+                  Positioned.fromRect(
+                    rect: rect,
+                    child: AnimatedOpacity(
+                      duration: kThemeChangeDuration,
+                      opacity: showVideo ? 0.0 : 1.0,
+                      child: _buildLivePhotoIndicator(context),
+                    ),
+                  ),
+                ],
+              );
+            },
+            child: image,
+          );
+        },
       ),
     );
   }
