@@ -9,7 +9,9 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+### Improvements
+
+- Make Live Photos gesture consist when scaling and panning.
 
 ## 9.3.0
 
