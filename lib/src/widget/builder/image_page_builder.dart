@@ -49,8 +49,6 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
 
   bool get _isLivePhoto => widget.asset.isLivePhoto;
 
-  final _gestureDetailsIsChanging = ValueNotifier<bool>(false);
-
   @override
   void didUpdateWidget(ImagePageBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -124,7 +122,6 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
             controller: _livePhotoVideoController!,
             fit: BoxFit.contain,
             state: state,
-            gestureDetailsIsChanging: _gestureDetailsIsChanging,
             textDelegate: widget.delegate.textDelegate,
           );
         }
@@ -161,14 +158,12 @@ class _LivePhotoWidget extends StatefulWidget {
     required this.controller,
     required this.state,
     required this.fit,
-    required this.gestureDetailsIsChanging,
     required this.textDelegate,
   });
 
   final VideoPlayerController controller;
   final ExtendedImageState state;
   final BoxFit fit;
-  final ValueNotifier<bool> gestureDetailsIsChanging;
   final AssetPickerTextDelegate textDelegate;
 
   @override
@@ -183,13 +178,11 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!widget.gestureDetailsIsChanging.value) {
+      _controller.play().then((_) {
         HapticFeedback.lightImpact();
         _showVideo.value = true;
-        _controller.play();
-      }
+      });
     });
-
     _controller.addListener(_notify);
   }
 
