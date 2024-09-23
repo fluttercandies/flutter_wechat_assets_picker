@@ -1715,6 +1715,8 @@ class DefaultAssetPickerBuilderDelegate
     return LocallyAvailableBuilder(
       asset: asset,
       isOriginal: false,
+      withSubtype: false,
+      thumbnailOption: ThumbnailOption(size: gridThumbnailSize),
       builder: (context, asset) {
         final imageProvider = AssetEntityImageProvider(
           asset,

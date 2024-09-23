@@ -136,6 +136,11 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
       key: ValueKey<String>(widget.asset.id),
       asset: widget.asset,
       isOriginal: _isOriginal,
+      withSubtype: _isOriginal,
+      thumbnailOption: switch (widget.previewThumbnailSize) {
+        final size? => ThumbnailOption(size: size),
+        _ => null,
+      },
       builder: (BuildContext context, AssetEntity asset) {
         // Initialize the video controller when the asset is a Live photo
         // and available for further use.
