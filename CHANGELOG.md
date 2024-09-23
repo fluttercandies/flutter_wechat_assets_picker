@@ -12,6 +12,7 @@ that can be found in the LICENSE file. -->
 ### Improvements
 
 - Make Live Photos gesture consist when scaling and panning.
+- Integrate `LocallyAvailableBuilder` with thumbnail options to improve the thumbnail loading speed.
 
 ## 9.3.0
 
