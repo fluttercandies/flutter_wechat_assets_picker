@@ -2435,15 +2435,15 @@ class DefaultAssetPickerBuilderDelegate
         }
       });
     }
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: overlayStyle,
-      child: Theme(
-        data: theme,
+    return Theme(
+      data: theme,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: overlayStyle,
         child: CNP<DefaultAssetPickerProvider>.value(
           value: provider,
-          builder: (BuildContext context, _) => Material(
-            color: theme.canvasColor,
-            child: Stack(
+          builder: (BuildContext context, _) => Scaffold(
+            backgroundColor: theme.scaffoldBackgroundColor,
+            body: Stack(
               fit: StackFit.expand,
               children: <Widget>[
                 if (isAppleOS(context))

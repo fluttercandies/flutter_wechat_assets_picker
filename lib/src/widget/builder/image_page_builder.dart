@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../../constants/constants.dart';
@@ -179,29 +180,45 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   final _showVideo = ValueNotifier<bool>(false);
   late final _controller = widget.controller;
 
+  ScrollNotificationObserverState? _scrollNotificationObserver;
+  bool _scrolling = false;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.play().then((_) {
-        HapticFeedback.lightImpact();
-        _showVideo.value = true;
-      });
-    });
     _controller.addListener(_notify);
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _scrollNotificationObserver?.removeListener(_handleScrollNotification);
+    _scrollNotificationObserver = ScrollNotificationObserver.maybeOf(context);
+    _scrollNotificationObserver?.addListener(_handleScrollNotification);
+  }
+
+  @override
   void dispose() {
+    _scrollNotificationObserver?.removeListener(_handleScrollNotification);
     _controller.pause();
     _controller.removeListener(_notify);
     super.dispose();
   }
 
-  Future<void> continuePlay() async {
-    if (_showVideo.value && _controller.value.position != Duration.zero) {
-      HapticFeedback.lightImpact();
-      await _controller.play();
+  void _handleScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      _scrolling = true;
+    } else if (notification is ScrollEndNotification) {
+      _scrolling = false;
+    }
+  }
+
+  void _onVisibilityChanged(VisibilityInfo info) {
+    final fraction = info.visibleFraction;
+    if (fraction == 1 && !_showVideo.value && !_scrolling) {
+      _showVideoAndPlay();
+    } else if (fraction < 1 && _showVideo.value) {
+      _hideVideoAndStop();
     }
   }
 
@@ -223,75 +240,89 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   Future<void> _hideVideoAndStop() async {
+    _showVideo.value = false;
+    await Future.delayed(kThemeChangeDuration);
     await _controller.pause();
     await _controller.seekTo(Duration.zero);
-    _showVideo.value = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: () {
-        _showVideoAndPlay();
-      },
-      onLongPressUp: () {
-        _hideVideoAndStop();
-      },
-      child: ExtendedImageGesture(
-        widget.state,
-        imageBuilder: (
-          Widget image, {
-          ExtendedImageGestureState? imageGestureState,
-        }) {
-          return ValueListenableBuilder(
-            valueListenable: _showVideo,
-            builder: (context, showVideo, child) {
-              if (imageGestureState == null ||
-                  widget.state.extendedImageInfo == null) {
-                return child!;
-              }
-              final size = MediaQuery.sizeOf(context);
-              final rect = GestureWidgetDelegateFromState.getRectFormState(
-                Offset.zero & size,
-                imageGestureState,
-                width: _controller.value.size.width,
-                height: _controller.value.size.height,
-                copy: true,
-              );
-              return Stack(
-                children: <Widget>[
-                  imageGestureState.wrapGestureWidget(
-                    FittedBox(
-                      fit: BoxFit.cover,
-                      clipBehavior: Clip.hardEdge,
-                      child: SizedBox(
-                        width: rect.width,
-                        height: rect.height,
-                        child: VideoPlayer(_controller),
+    return VisibilityDetector(
+      key: ValueKey(widget.state),
+      onVisibilityChanged: _onVisibilityChanged,
+      child: GestureDetector(
+        onLongPress: () {
+          _showVideoAndPlay();
+        },
+        onLongPressUp: () {
+          _hideVideoAndStop();
+        },
+        child: ExtendedImageGesture(
+          widget.state,
+          imageBuilder: (
+            Widget image, {
+            ExtendedImageGestureState? imageGestureState,
+          }) {
+            return ValueListenableBuilder(
+              valueListenable: _showVideo,
+              builder: (context, showVideo, child) {
+                if (imageGestureState == null ||
+                    widget.state.extendedImageInfo == null) {
+                  return child!;
+                }
+                final scaled = imageGestureState.gestureDetails?.totalScale !=
+                    imageGestureState.imageGestureConfig?.initialScale;
+                final size = MediaQuery.sizeOf(context);
+                final imageRect =
+                    GestureWidgetDelegateFromState.getRectFormState(
+                  Offset.zero & size,
+                  imageGestureState,
+                  copy: true,
+                );
+                final videoRect =
+                    GestureWidgetDelegateFromState.getRectFormState(
+                  Offset.zero & size,
+                  imageGestureState,
+                  width: _controller.value.size.width,
+                  height: _controller.value.size.height,
+                  copy: true,
+                );
+                return Stack(
+                  children: <Widget>[
+                    imageGestureState.wrapGestureWidget(
+                      FittedBox(
+                        fit: BoxFit.cover,
+                        clipBehavior: Clip.hardEdge,
+                        child: SizedBox(
+                          width: videoRect.width,
+                          height: videoRect.height,
+                          child: VideoPlayer(_controller),
+                        ),
                       ),
                     ),
-                  ),
-                  Positioned.fill(
-                    child: AnimatedOpacity(
-                      duration: kThemeChangeDuration,
-                      opacity: showVideo ? 0.0 : 1.0,
-                      child: child!,
+                    Positioned.fill(
+                      child: AnimatedOpacity(
+                        duration: kThemeChangeDuration,
+                        opacity: showVideo ? 0.0 : 1.0,
+                        child: child!,
+                      ),
                     ),
-                  ),
-                  Positioned.fromRect(
-                    rect: rect,
-                    child: AnimatedOpacity(
-                      duration: kThemeChangeDuration,
-                      opacity: showVideo ? 0.0 : 1.0,
-                      child: _buildLivePhotoIndicator(context),
+                    Positioned.fromRect(
+                      rect: imageRect,
+                      child: AnimatedOpacity(
+                        duration: kThemeChangeDuration,
+                        opacity: showVideo || scaled ? 0.0 : 1.0,
+                        child: _buildLivePhotoIndicator(context),
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
-            child: image,
-          );
-        },
+                  ],
+                );
+              },
+              child: image,
+            );
+          },
+        ),
       ),
     );
   }

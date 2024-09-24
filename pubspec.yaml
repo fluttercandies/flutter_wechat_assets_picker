@@ -29,6 +29,7 @@ dependencies:
   photo_manager_image_provider: ^2.1.2
   provider: ^6.0.5
   video_player: ^2.7.0
+  visibility_detector: ^0.4.0
 
 dev_dependencies:
   flutter_lints: any
