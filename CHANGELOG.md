@@ -13,6 +13,7 @@ that can be found in the LICENSE file. -->
 
 - Make Live Photos gesture consist when scaling and panning.
 - Integrate `LocallyAvailableBuilder` with thumbnail options to improve the thumbnail loading speed.
+- Use `visibility_detector` and scroll observer to improve media playing experiences.
 
 ## 9.3.0
 
