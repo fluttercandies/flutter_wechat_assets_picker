@@ -1010,9 +1010,9 @@ class DefaultAssetPickerViewerBuilderDelegate
             (themeData.effectiveBrightness.isDark
                 ? SystemUiOverlayStyle.light
                 : SystemUiOverlayStyle.dark),
-        child: Material(
-          color: themeData.scaffoldBackgroundColor,
-          child: Stack(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Stack(
             children: <Widget>[
               Positioned.fill(child: _pageViewBuilder(context)),
               if (isWeChatMoment && hasVideo) ...<Widget>[
