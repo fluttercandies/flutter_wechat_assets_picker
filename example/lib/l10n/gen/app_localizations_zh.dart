@@ -42,13 +42,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pickMethodVideoName => '视频选择';
 
   @override
-  String get pickMethodVideoDescription => '仅选择视频。（在 iOS 和 macOS 上将包括实况图片。）';
+  String get pickMethodVideoDescription => '仅选择视频。';
 
   @override
   String get pickMethodAudioName => '音频选择';
 
   @override
   String get pickMethodAudioDescription => '仅选择音频。';
+
+  @override
+  String get pickMethodLivePhotoName => '实况图片选择';
+
+  @override
+  String get pickMethodLivePhotoDescription => '仅选择实况图片。';
 
   @override
   String get pickMethodCameraName => '从相机生成选择';
