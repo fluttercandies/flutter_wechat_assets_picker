@@ -87,11 +87,9 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
     safeSetState(() {
       _livePhotoVideoController = c;
     });
-    c
-      ..setVolume(0)
-      ..addListener(() {
-        safeSetState(() {});
-      });
+    c.addListener(() {
+      safeSetState(() {});
+    });
   }
 
   Widget _imageBuilder(BuildContext context, AssetEntity asset) {
