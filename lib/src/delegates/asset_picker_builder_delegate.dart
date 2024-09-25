@@ -408,7 +408,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        alignment: AlignmentDirectional.centerEnd,
+        width: double.infinity,
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           gradient: LinearGradient(
