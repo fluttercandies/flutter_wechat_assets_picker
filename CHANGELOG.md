@@ -9,7 +9,14 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+### Improvements
+
+- Do not mute the Live Photo during the preview.
+
+### Fixes
+
+- Fix the GIF indicator's layout.
+- Fix the directionality with the reverted grid item.
 
 ## 9.3.0
 

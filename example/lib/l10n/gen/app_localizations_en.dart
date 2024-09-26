@@ -52,6 +52,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickMethodAudioDescription => 'Only pick audio from device.';
 
   @override
+  String get pickMethodLivePhotoName => 'Live Photo picker';
+
+  @override
+  String get pickMethodLivePhotoDescription =>
+      'Only pick Live Photos from device.';
+
+  @override
   String get pickMethodCameraName => 'Pick from camera';
 
   @override

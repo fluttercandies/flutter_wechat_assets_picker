@@ -408,7 +408,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        alignment: AlignmentDirectional.centerEnd,
+        width: double.infinity,
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -1227,11 +1227,7 @@ class DefaultAssetPickerBuilderDelegate
     final bool gridRevert = effectiveShouldRevertGrid(context);
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
-      builder: (
-        BuildContext context,
-        PathWrapper<AssetPathEntity>? wrapper,
-        _,
-      ) {
+      builder: (context, wrapper, _) {
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
         final Widget? specialItem;
@@ -1270,30 +1266,29 @@ class DefaultAssetPickerBuilderDelegate
         final double topPadding =
             context.topPadding + appBarPreferredSize!.height;
 
+        final textDirection = Directionality.of(context);
         Widget sliverGrid(BuildContext context, List<AssetEntity> assets) {
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
-              (_, int index) => Builder(
-                builder: (BuildContext context) {
-                  if (gridRevert) {
-                    if (index < placeholderCount) {
-                      return const SizedBox.shrink();
-                    }
-                    index -= placeholderCount;
+              (context, int index) {
+                if (gridRevert) {
+                  if (index < placeholderCount) {
+                    return const SizedBox.shrink();
                   }
-                  return MergeSemantics(
-                    child: Directionality(
-                      textDirection: Directionality.of(context),
-                      child: assetGridItemBuilder(
-                        context,
-                        index,
-                        assets,
-                        specialItem: specialItem,
-                      ),
+                  index -= placeholderCount;
+                }
+                return MergeSemantics(
+                  child: Directionality(
+                    textDirection: textDirection,
+                    child: assetGridItemBuilder(
+                      context,
+                      index,
+                      assets,
+                      specialItem: specialItem,
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
               childCount: assetsGridItemCount(
                 context: context,
                 assets: assets,

@@ -180,6 +180,18 @@ abstract class AppLocalizations {
   /// **'Only pick audio from device.'**
   String get pickMethodAudioDescription;
 
+  /// No description provided for @pickMethodLivePhotoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Photo picker'**
+  String get pickMethodLivePhotoName;
+
+  /// No description provided for @pickMethodLivePhotoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Only pick Live Photos from device.'**
+  String get pickMethodLivePhotoDescription;
+
   /// No description provided for @pickMethodCameraName.
   ///
   /// In en, this message translates to:
