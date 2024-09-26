@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None.*
+
+## 9.3.1
+
 ### Improvements
 
 - Do not mute the Live Photo during the preview.
