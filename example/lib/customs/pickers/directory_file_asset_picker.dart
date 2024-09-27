@@ -584,7 +584,7 @@ class FileAssetPickerBuilder
   Widget assetsGridBuilder(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
     int totalCount = provider.currentAssets.length;
-    if (specialItemPosition != SpecialItemPosition.none) {
+    if (specialItems.isNotEmpty) {
       totalCount += 1;
     }
     final int placeholderCount;
@@ -701,10 +701,10 @@ class FileAssetPickerBuilder
     int index,
     List<File> currentAssets,
   ) {
-    final int currentIndex = switch (specialItemPosition) {
-      SpecialItemPosition.none || SpecialItemPosition.append => index,
-      SpecialItemPosition.prepend => index - 1,
-    };
+    int currentIndex = index;
+
+    currentIndex = index - prependSpecialItems.length;
+
     final File asset = currentAssets.elementAt(currentIndex);
     final Widget builder = imageAndVideoItemBuilder(
       context,
@@ -737,12 +737,7 @@ class FileAssetPickerBuilder
     required List<File> assets,
     int placeholderCount = 0,
   }) {
-    final int length = switch (specialItemPosition) {
-      SpecialItemPosition.none => assets.length,
-      SpecialItemPosition.prepend ||
-      SpecialItemPosition.append =>
-        assets.length + 1,
-    };
+    final int length = assets.length + specialItems.length;
     return length + placeholderCount;
   }
 

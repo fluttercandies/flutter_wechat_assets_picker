@@ -46,6 +46,7 @@ class _SingleAssetPageState extends State<SingleAssetPage>
       PickMethod.changeLanguages(context, maxAssetsCount),
       PickMethod.threeItemsGrid(context, maxAssetsCount),
       PickMethod.prependItem(context, maxAssetsCount),
+      PickMethod.multiSpecialItems(context, maxAssetsCount),
       PickMethod.customFilterOptions(context, maxAssetsCount),
       PickMethod.preventGIFPicked(context, maxAssetsCount),
       PickMethod.noPreview(context, maxAssetsCount),

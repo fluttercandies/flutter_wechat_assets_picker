@@ -135,39 +135,45 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
-            specialItemPosition: SpecialItemPosition.prepend,
-            specialItemBuilder: (
-              BuildContext context,
-              AssetPathEntity? path,
-              int length,
-            ) {
-              if (path?.isAll != true) {
-                return null;
-              }
-              return Semantics(
-                label: textDelegate.sActionUseCameraHint,
-                button: true,
-                onTapHint: textDelegate.sActionUseCameraHint,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () async {
-                    Feedback.forTap(context);
-                    final AssetEntity? result = await _pickFromCamera(context);
-                    if (result != null) {
-                      handleResult(context, result);
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(28.0),
-                    color: Theme.of(context).dividerColor,
-                    child: const FittedBox(
-                      fit: BoxFit.fill,
-                      child: Icon(Icons.camera_enhance),
+            specialItems: [
+              SpecialItem(
+                position: SpecialItemPosition.prepend,
+                builder: (
+                  BuildContext context,
+                  AssetPathEntity? path,
+                  int length,
+                  bool isPermissionLimited,
+                ) {
+                  if (path?.isAll != true) {
+                    return null;
+                  }
+                  return Semantics(
+                    label: textDelegate.sActionUseCameraHint,
+                    button: true,
+                    onTapHint: textDelegate.sActionUseCameraHint,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () async {
+                        Feedback.forTap(context);
+                        final AssetEntity? result =
+                            await _pickFromCamera(context);
+                        if (result != null) {
+                          handleResult(context, result);
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(28.0),
+                        color: Theme.of(context).dividerColor,
+                        child: const FittedBox(
+                          fit: BoxFit.fill,
+                          child: Icon(Icons.camera_enhance),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ],
           ),
         );
       },
@@ -186,50 +192,56 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
-            specialItemPosition: SpecialItemPosition.prepend,
-            specialItemBuilder: (
-              BuildContext context,
-              AssetPathEntity? path,
-              int length,
-            ) {
-              if (path?.isAll != true) {
-                return null;
-              }
-              return Semantics(
-                label: textDelegate.sActionUseCameraHint,
-                button: true,
-                onTapHint: textDelegate.sActionUseCameraHint,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () async {
-                    final AssetEntity? result = await _pickFromCamera(context);
-                    if (result == null) {
-                      return;
-                    }
-                    final picker = context.findAncestorWidgetOfExactType<
-                        AssetPicker<AssetEntity, AssetPathEntity>>()!;
-                    final builder =
-                        picker.builder as DefaultAssetPickerBuilderDelegate;
-                    final p = builder.provider;
-                    await p.switchPath(
-                      PathWrapper<AssetPathEntity>(
-                        path:
-                            await p.currentPath!.path.obtainForNewProperties(),
+            specialItems: [
+              SpecialItem(
+                position: SpecialItemPosition.prepend,
+                builder: (
+                  BuildContext context,
+                  AssetPathEntity? path,
+                  int length,
+                  bool isPermissionLimited,
+                ) {
+                  if (path?.isAll != true) {
+                    return null;
+                  }
+                  return Semantics(
+                    label: textDelegate.sActionUseCameraHint,
+                    button: true,
+                    onTapHint: textDelegate.sActionUseCameraHint,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () async {
+                        final AssetEntity? result =
+                            await _pickFromCamera(context);
+                        if (result == null) {
+                          return;
+                        }
+                        final picker = context.findAncestorWidgetOfExactType<
+                            AssetPicker<AssetEntity, AssetPathEntity>>()!;
+                        final builder =
+                            picker.builder as DefaultAssetPickerBuilderDelegate;
+                        final p = builder.provider;
+                        await p.switchPath(
+                          PathWrapper<AssetPathEntity>(
+                            path: await p.currentPath!.path
+                                .obtainForNewProperties(),
+                          ),
+                        );
+                        p.selectAsset(result);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(28.0),
+                        color: Theme.of(context).dividerColor,
+                        child: const FittedBox(
+                          fit: BoxFit.fill,
+                          child: Icon(Icons.camera_enhance),
+                        ),
                       ),
-                    );
-                    p.selectAsset(result);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(28.0),
-                    color: Theme.of(context).dividerColor,
-                    child: const FittedBox(
-                      fit: BoxFit.fill,
-                      child: Icon(Icons.camera_enhance),
                     ),
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ],
           ),
         );
       },
@@ -295,16 +307,69 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
-            specialItemPosition: SpecialItemPosition.prepend,
-            specialItemBuilder: (
-              BuildContext context,
-              AssetPathEntity? path,
-              int length,
-            ) {
-              return const Center(
-                child: Text('Custom Widget', textAlign: TextAlign.center),
-              );
-            },
+            specialItems: [
+              SpecialItem(
+                position: SpecialItemPosition.prepend,
+                builder: (
+                  BuildContext context,
+                  AssetPathEntity? path,
+                  int length,
+                  bool isPermissionLimited,
+                ) {
+                  return const Center(
+                    child: Text('Custom Widget', textAlign: TextAlign.center),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  factory PickMethod.multiSpecialItems(
+    BuildContext context,
+    int maxAssetsCount,
+  ) {
+    return PickMethod(
+      icon: '💡',
+      name: context.l10n.pickMethodMultiSpecialItemsName,
+      description: context.l10n.pickMethodMultiSpecialItemsDescription,
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          pickerConfig: AssetPickerConfig(
+            maxAssets: maxAssetsCount,
+            selectedAssets: assets,
+            specialItems: [
+              SpecialItem(
+                position: SpecialItemPosition.prepend,
+                builder: (
+                  BuildContext context,
+                  AssetPathEntity? path,
+                  int length,
+                  bool isPermissionLimited,
+                ) {
+                  return const Center(
+                    child: Text('Prepand Widget', textAlign: TextAlign.center),
+                  );
+                },
+              ),
+              SpecialItem(
+                position: SpecialItemPosition.append,
+                builder: (
+                  BuildContext context,
+                  AssetPathEntity? path,
+                  int length,
+                  bool isPermissionLimited,
+                ) {
+                  return const Center(
+                    child: Text('Append Widget', textAlign: TextAlign.center),
+                  );
+                },
+              ),
+            ],
           ),
         );
       },

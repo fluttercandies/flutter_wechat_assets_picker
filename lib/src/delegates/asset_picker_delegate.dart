@@ -105,8 +105,6 @@ class AssetPickerDelegate {
         gridThumbnailSize: pickerConfig.gridThumbnailSize,
         previewThumbnailSize: pickerConfig.previewThumbnailSize,
         specialPickerType: pickerConfig.specialPickerType,
-        specialItemPosition: pickerConfig.specialItemPosition,
-        specialItemBuilder: pickerConfig.specialItemBuilder,
         loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
         selectPredicate: pickerConfig.selectPredicate,
         shouldRevertGrid: pickerConfig.shouldRevertGrid,
@@ -119,6 +117,7 @@ class AssetPickerDelegate {
         themeColor: pickerConfig.themeColor,
         locale: Localizations.maybeLocaleOf(context),
         shouldAutoplayPreview: pickerConfig.shouldAutoplayPreview,
+        specialItems: pickerConfig.specialItems,
       ),
     );
     final List<AssetEntity>? result = await Navigator.maybeOf(
