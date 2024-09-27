@@ -8,6 +8,7 @@ import 'package:photo_manager/photo_manager.dart';
 import '../constants/typedefs.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
+import '../models/special_item.dart';
 import 'constants.dart';
 import 'enums.dart';
 
@@ -29,8 +30,6 @@ class AssetPickerConfig {
     this.themeColor,
     this.pickerTheme,
     this.textDelegate,
-    this.specialItemPosition = SpecialItemPosition.none,
-    this.specialItemBuilder,
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
@@ -39,6 +38,7 @@ class AssetPickerConfig {
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
     this.shouldAutoplayPreview = false,
+    this.specialItems = const [],
   })  : assert(
           pickerTheme == null || themeColor == null,
           'pickerTheme and themeColor cannot be set at the same time.',
@@ -55,13 +55,6 @@ class AssetPickerConfig {
               requestType == RequestType.common,
           'SpecialPickerType.wechatMoment and requestType '
           'cannot be set at the same time.',
-        ),
-        assert(
-          (specialItemBuilder == null &&
-                  identical(specialItemPosition, SpecialItemPosition.none)) ||
-              (specialItemBuilder != null &&
-                  !identical(specialItemPosition, SpecialItemPosition.none)),
-          'Custom item did not set properly.',
         );
 
   /// Selected assets.
@@ -167,14 +160,6 @@ class AssetPickerConfig {
 
   final AssetPickerTextDelegate? textDelegate;
 
-  /// Allow users set a special item in the picker with several positions.
-  /// 允许用户在选择器中添加一个自定义item，并指定位置
-  final SpecialItemPosition specialItemPosition;
-
-  /// The widget builder for the the special item.
-  /// 自定义item的构造方法
-  final SpecialItemBuilder<AssetPathEntity>? specialItemBuilder;
-
   /// Indicates the loading status for the builder.
   /// 指示目前加载的状态
   final LoadingIndicatorBuilder? loadingIndicatorBuilder;
@@ -205,4 +190,8 @@ class AssetPickerConfig {
   /// Whether the preview should auto play.
   /// 预览是否自动播放
   final bool shouldAutoplayPreview;
+
+  /// List of special items.
+  /// 自定义item列表
+  final List<SpecialItem<AssetPathEntity>> specialItems;
 }
