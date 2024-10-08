@@ -1504,6 +1504,7 @@ class DefaultAssetPickerBuilderDelegate
               enabled: !isBanned,
               excludeSemantics: true,
               focusable: !isSwitchingPath,
+              identifier: asset.id,
               label: '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
                   '${semanticIndex(index)}, '
                   '${asset.createDateTime.toString().replaceAll('.000', '')}',

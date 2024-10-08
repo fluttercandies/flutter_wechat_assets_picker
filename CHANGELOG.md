@@ -12,6 +12,7 @@ that can be found in the LICENSE file. -->
 ### Improvements
 
 - Adapt the file type getter from the image provider to get a precise file type in grid.
+- Adds the identifier for grid item's semantics.
 
 ## 9.3.1
 
