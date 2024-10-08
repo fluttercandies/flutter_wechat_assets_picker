@@ -414,7 +414,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           gradient: LinearGradient(
             begin: AlignmentDirectional.bottomCenter,
             end: AlignmentDirectional.topCenter,
-            colors: <Color>[theme.dividerColor, Colors.transparent],
+            colors: <Color>[
+              theme.canvasColor.withAlpha(128),
+              Colors.transparent,
+            ],
           ),
         ),
         child: Container(
@@ -428,11 +431,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           child: ScaleText(
             textDelegate.gifIndicator,
             style: TextStyle(
-              color: isAppleOS(context)
-                  ? theme.textTheme.bodyMedium?.color
-                  : theme.primaryColor,
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
+              color: theme.textTheme.bodyMedium?.color,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
             ),
             semanticsLabel: semanticsTextDelegate.gifIndicator,
             strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
@@ -1718,12 +1719,6 @@ class DefaultAssetPickerBuilderDelegate
           isOriginal: false,
           thumbnailSize: gridThumbnailSize,
         );
-        SpecialImageType? type;
-        if (imageProvider.imageFileType == ImageFileType.gif) {
-          type = SpecialImageType.gif;
-        } else if (imageProvider.imageFileType == ImageFileType.heic) {
-          type = SpecialImageType.heic;
-        }
         return Stack(
           fit: StackFit.expand,
           children: <Widget>[
@@ -1733,8 +1728,16 @@ class DefaultAssetPickerBuilderDelegate
                 failedItemBuilder: failedItemBuilder,
               ),
             ),
-            if (type == SpecialImageType.gif) // 如果为GIF则显示标识
-              gifIndicator(context, asset),
+            FutureBuilder(
+              future: imageProvider.imageFileType,
+              builder: (context, snapshot) {
+                if (snapshot.data case final type?
+                    when type == ImageFileType.gif) {
+                  return gifIndicator(context, asset);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
             if (asset.type == AssetType.video) // 如果为视频则显示标识
               videoIndicator(context, asset),
             if (asset.isLivePhoto) buildLivePhotoIndicator(context, asset),
