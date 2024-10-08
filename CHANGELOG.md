@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None.*
+
+## 9.3.2
+
 ### Improvements
 
 - Adapt the file type getter from the image provider to get a precise file type in grid.
