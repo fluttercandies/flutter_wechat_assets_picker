@@ -279,7 +279,10 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   late final TabController _tabController;
 
   @override
-  void initState(AssetPickerState<AssetEntity, AssetPathEntity> state) {
+  void initState(
+    AssetPickerState<AssetEntity, AssetPathEntity, MultiTabAssetPickerBuilder>
+        state,
+  ) {
     super.initState(state);
     _tabController = TabController(length: 3, vsync: state);
   }

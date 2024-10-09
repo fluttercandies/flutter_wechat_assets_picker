@@ -121,14 +121,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
 
   /// {@macro wechat_assets_picker.PathNameBuilder}
-  final PathNameBuilder<AssetPathEntity>? pathNameBuilder;
+  final PathNameBuilder<Path>? pathNameBuilder;
 
   /// {@macro wechat_assets_picker.AssetsChangeCallback}
-  final AssetsChangeCallback<AssetPathEntity>? assetsChangeCallback;
+  final AssetsChangeCallback<Path>? assetsChangeCallback;
 
   /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
-  final AssetsChangeRefreshPredicate<AssetPathEntity>?
-      assetsChangeRefreshPredicate;
+  final AssetsChangeRefreshPredicate<Path>? assetsChangeRefreshPredicate;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -229,7 +228,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Keep a `initState` method to sync with [State].
   /// 保留一个 `initState` 方法与 [State] 同步。
   @mustCallSuper
-  void initState(AssetPickerState<Asset, Path> state) {}
+  void initState(
+    covariant AssetPickerState<Asset, Path,
+            AssetPickerBuilderDelegate<Asset, Path>>
+        state,
+  ) {}
 
   /// Keep a `dispose` method to sync with [State].
   /// 保留一个 `dispose` 方法与 [State] 同步。
@@ -395,11 +398,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Loading indicator.
   /// 加载指示器
   ///
-  /// Subclasses need to implement this due to the generic type limitation, and
-  /// not all delegates use [AssetPickerProvider].
-  ///
-  /// See also:
-  /// - [DefaultAssetPickerBuilderDelegate.loadingIndicator] as an example.
+  /// See [DefaultAssetPickerBuilderDelegate.loadingIndicator] as an example.
   Widget loadingIndicator(BuildContext context);
 
   /// GIF image type indicator.
@@ -1653,7 +1652,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     );
   }
 
-  /// It'll pop with [AssetPickerProvider.selectedAssets]
+  /// It'll pop with [T.selectedAssets]
   /// when there are any assets were chosen.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   @override
