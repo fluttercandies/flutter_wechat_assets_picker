@@ -33,7 +33,6 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     required this.previewAssets,
     required this.themeData,
     required this.currentIndex,
-    this.selectorProvider,
     this.provider,
     this.selectedAssets,
     this.maxAssets,
@@ -58,10 +57,6 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// Selected assets.
   /// 已选的资源
   final List<Asset>? selectedAssets;
-
-  /// Provider for [AssetPicker].
-  /// 资源选择器的状态保持
-  final AssetPickerProvider<Asset, Path>? selectorProvider;
 
   /// Whether the preview sequence is reversed.
   /// 预览时顺序是否为反向
@@ -264,7 +259,6 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   void unSelectAsset(Asset entity) {
     provider?.unSelectAsset(entity);
-    selectorProvider?.unSelectAsset(entity);
     if (!isSelectedPreviewing) {
       selectedAssets?.remove(entity);
     }
@@ -276,7 +270,6 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
       return;
     }
     provider?.selectAsset(entity);
-    selectorProvider?.selectAsset(entity);
     if (!isSelectedPreviewing) {
       selectedAssets?.add(entity);
     }
@@ -316,12 +309,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
     'No longer used by the package. '
     'This will be removed in 10.0.0',
   )
-  Future<bool> syncSelectedAssetsWhenPop() async {
-    if (provider?.currentlySelectedAssets != null) {
-      selectorProvider?.selectedAssets = provider!.currentlySelectedAssets;
-    }
-    return true;
-  }
+  Future<bool> syncSelectedAssetsWhenPop() async => true;
 
   /// Split page builder according to type of asset.
   /// 根据资源类型使用不同的构建页
@@ -383,9 +371,9 @@ class DefaultAssetPickerViewerBuilderDelegate
     required super.currentIndex,
     required super.previewAssets,
     required super.themeData,
-    super.selectorProvider,
     super.provider,
     super.selectedAssets,
+    this.selectorProvider,
     this.previewThumbnailSize,
     this.specialPickerType,
     super.maxAssets,
@@ -394,9 +382,9 @@ class DefaultAssetPickerViewerBuilderDelegate
     this.shouldAutoplayPreview = false,
   });
 
-  /// Whether the preview should auto play.
-  /// 预览是否自动播放
-  final bool shouldAutoplayPreview;
+  /// Provider for [AssetPicker].
+  /// 资源选择器的状态保持
+  final P? selectorProvider;
 
   /// Thumb size for the preview of images in the viewer.
   /// 预览时图片的缩略图大小
@@ -409,6 +397,10 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// 如果类型不为空，则标题将不会显示。
   final SpecialPickerType? specialPickerType;
 
+  /// Whether the preview should auto play.
+  /// 预览是否自动播放
+  final bool shouldAutoplayPreview;
+
   /// Whether the [SpecialPickerType.wechatMoment] is enabled.
   /// 当前是否为微信朋友圈选择模式
   bool get isWeChatMoment =>
@@ -420,6 +412,30 @@ class DefaultAssetPickerViewerBuilderDelegate
       previewAssets.any((AssetEntity e) => e.type == AssetType.video) ||
       (selectedAssets?.any((AssetEntity e) => e.type == AssetType.video) ??
           false);
+
+  @override
+  void unSelectAsset(AssetEntity entity) {
+    super.unSelectAsset(entity);
+    selectorProvider?.unSelectAsset(entity);
+  }
+
+  @override
+  void selectAsset(AssetEntity entity) {
+    super.selectAsset(entity);
+    selectedNotifier.value = selectedCount;
+  }
+
+  @Deprecated(
+    'No longer used by the package. '
+    'This will be removed in 10.0.0',
+  )
+  @override
+  Future<bool> syncSelectedAssetsWhenPop() async {
+    if (provider?.currentlySelectedAssets != null) {
+      selectorProvider?.selectedAssets = provider!.currentlySelectedAssets;
+    }
+    return true;
+  }
 
   Widget assetSemanticsBuilder(BuildContext context, int index) {
     final asset = previewAssets.elementAt(
