@@ -16,6 +16,7 @@ import 'package:wechat_picker_library/wechat_picker_library.dart';
 import '../../constants/constants.dart';
 import '../../delegates/asset_picker_text_delegate.dart';
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
+import '../../provider/asset_picker_viewer_provider.dart';
 
 class ImagePageBuilder extends StatefulWidget {
   const ImagePageBuilder({
@@ -30,7 +31,8 @@ class ImagePageBuilder extends StatefulWidget {
   /// 展示的资源
   final AssetEntity asset;
 
-  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> delegate;
+  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity,
+      AssetPickerViewerProvider<AssetEntity>> delegate;
 
   final ThumbnailSize? previewThumbnailSize;
 

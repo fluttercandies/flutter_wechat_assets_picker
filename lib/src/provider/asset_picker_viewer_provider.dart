@@ -8,14 +8,14 @@ import '../constants/constants.dart';
 
 /// [ChangeNotifier] for assets picker viewer.
 /// 资源选择查看器的 provider model.
-class AssetPickerViewerProvider<A> extends ChangeNotifier {
-  /// Copy selected assets for editing when constructing.
-  /// 构造时深拷贝已选择的资源集合，用于后续编辑。
+class AssetPickerViewerProvider<Asset> extends ChangeNotifier {
   AssetPickerViewerProvider(
-    List<A>? assets, {
+    List<Asset>? assets, {
     this.maxAssets = defaultMaxAssetsCount,
   }) : assert(maxAssets > 0, 'maxAssets must be greater than 0.') {
-    _currentlySelectedAssets = (assets ?? <A>[]).toList();
+    // Copy selected assets for editing when constructing.
+    // 构造时深拷贝已选择的资源集合，用于后续编辑。
+    _currentlySelectedAssets = (assets ?? <Asset>[]).toList();
   }
 
   /// Maximum count for asset selection.
@@ -24,11 +24,11 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
 
   /// Selected assets in the viewer.
   /// 查看器中已选择的资源
-  late List<A> _currentlySelectedAssets;
+  late List<Asset> _currentlySelectedAssets;
 
-  List<A> get currentlySelectedAssets => _currentlySelectedAssets;
+  List<Asset> get currentlySelectedAssets => _currentlySelectedAssets;
 
-  set currentlySelectedAssets(List<A> value) {
+  set currentlySelectedAssets(List<Asset> value) {
     if (value == _currentlySelectedAssets) {
       return;
     }
@@ -41,33 +41,33 @@ class AssetPickerViewerProvider<A> extends ChangeNotifier {
 
   /// Select asset.
   /// 选中资源
-  void selectAsset(A item) {
+  void selectAsset(Asset item) {
     if (currentlySelectedAssets.length == maxAssets ||
         currentlySelectedAssets.contains(item)) {
       return;
     }
-    final List<A> newList = _currentlySelectedAssets.toList()..add(item);
+    final List<Asset> newList = _currentlySelectedAssets.toList()..add(item);
     currentlySelectedAssets = newList;
   }
 
   /// Un-select asset.
   /// 取消选中资源
-  void unSelectAsset(A item) {
+  void unSelectAsset(Asset item) {
     if (currentlySelectedAssets.isEmpty ||
         !currentlySelectedAssets.contains(item)) {
       return;
     }
-    final List<A> newList = _currentlySelectedAssets.toList()..remove(item);
+    final List<Asset> newList = _currentlySelectedAssets.toList()..remove(item);
     currentlySelectedAssets = newList;
   }
 
   @Deprecated('Use selectAsset instead. This will be removed in 10.0.0')
-  void selectAssetEntity(A entity) {
+  void selectAssetEntity(Asset entity) {
     selectAsset(entity);
   }
 
   @Deprecated('Use unSelectAsset instead. This will be removed in 10.0.0')
-  void unselectAssetEntity(A entity) {
+  void unselectAssetEntity(Asset entity) {
     unSelectAsset(entity);
   }
 }

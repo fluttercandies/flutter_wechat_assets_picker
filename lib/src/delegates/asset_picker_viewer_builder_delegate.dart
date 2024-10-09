@@ -28,7 +28,8 @@ import '../widget/builder/fade_image_builder.dart';
 import '../widget/builder/image_page_builder.dart';
 import '../widget/builder/video_page_builder.dart';
 
-abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
+abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
+    Provider extends AssetPickerViewerProvider<Asset>> {
   AssetPickerViewerBuilderDelegate({
     required this.previewAssets,
     required this.themeData,
@@ -44,7 +45,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// [ChangeNotifier] for photo selector viewer.
   /// 资源预览器的状态保持
-  final AssetPickerViewerProvider<Asset>? provider;
+  final Provider? provider;
 
   /// Assets provided to preview.
   /// 提供预览的资源
@@ -89,7 +90,8 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// The [State] for a viewer.
   /// 预览器的状态实例
-  late AssetPickerViewerState<Asset, Path> viewerState;
+  late AssetPickerViewerState<Asset, Path, Provider,
+      AssetPickerViewerBuilderDelegate<Asset, Path, Provider>> viewerState;
 
   /// [AnimationController] for double tap animation.
   /// 双击缩放的动画控制器
@@ -160,7 +162,9 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// 当预览器调用 [State.initState] 时注册 [State]。
   @mustCallSuper
   void initStateAndTicker(
-    covariant AssetPickerViewerState<Asset, Path> state,
+    covariant AssetPickerViewerState<Asset, Path, Provider,
+            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
+        state,
     TickerProvider v, // TODO(Alex): Remove this in the next major version.
   ) {
     initAnimations(state);
@@ -175,9 +179,15 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// a new delegate and only calling [State.didUpdateWidget] at the moment.
   @mustCallSuper
   void didUpdateViewer(
-    covariant AssetPickerViewerState<Asset, Path> state,
-    covariant AssetPickerViewer<Asset, Path> oldWidget,
-    covariant AssetPickerViewer<Asset, Path> newWidget,
+    covariant AssetPickerViewerState<Asset, Path, Provider,
+            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
+        state,
+    covariant AssetPickerViewer<Asset, Path, Provider,
+            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
+        oldWidget,
+    covariant AssetPickerViewer<Asset, Path, Provider,
+            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
+        newWidget,
   ) {
     // Widgets are useless in the default delegate.
     initAnimations(state);
@@ -201,7 +211,11 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   /// Initialize animations related to the zooming preview.
   /// 为缩放预览初始化动画
-  void initAnimations(covariant AssetPickerViewerState<Asset, Path> state) {
+  void initAnimations(
+    covariant AssetPickerViewerState<Asset, Path, Provider,
+            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
+        state,
+  ) {
     viewerState = state;
     doubleTapAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -365,8 +379,10 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   Widget build(BuildContext context);
 }
 
-class DefaultAssetPickerViewerBuilderDelegate
-    extends AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> {
+class DefaultAssetPickerViewerBuilderDelegate<
+        T extends AssetPickerViewerProvider<AssetEntity>,
+        P extends DefaultAssetPickerProvider>
+    extends AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity, T> {
   DefaultAssetPickerViewerBuilderDelegate({
     required super.currentIndex,
     required super.previewAssets,
@@ -442,12 +458,8 @@ class DefaultAssetPickerViewerBuilderDelegate
       shouldReversePreview ? previewAssets.length - index - 1 : index,
     );
     return MergeSemantics(
-      child: Consumer<AssetPickerViewerProvider<AssetEntity>?>(
-        builder: (
-          BuildContext c,
-          AssetPickerViewerProvider<AssetEntity>? p,
-          Widget? w,
-        ) {
+      child: Consumer<T?>(
+        builder: (context, T? p, child) {
           final bool isSelected =
               (p?.currentlySelectedAssets ?? selectedAssets)?.contains(asset) ??
                   false;
@@ -595,7 +607,7 @@ class DefaultAssetPickerViewerBuilderDelegate
         height: context.bottomPadding + bottomDetailHeight,
         child: child!,
       ),
-      child: CNP<AssetPickerViewerProvider<AssetEntity>?>.value(
+      child: CNP<T?>.value(
         value: provider,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -703,10 +715,8 @@ class DefaultAssetPickerViewerBuilderDelegate
                 onTap: () {
                   onTap(asset);
                 },
-                child: Selector<AssetPickerViewerProvider<AssetEntity>?,
-                    List<AssetEntity>?>(
-                  selector: (_, AssetPickerViewerProvider<AssetEntity>? p) =>
-                      p?.currentlySelectedAssets,
+                child: Selector<T?, List<AssetEntity>?>(
+                  selector: (_, T? p) => p?.currentlySelectedAssets,
                   child: item,
                   builder: (
                     _,
@@ -809,10 +819,10 @@ class DefaultAssetPickerViewerBuilderDelegate
   /// 资源选择器将识别并一同返回。
   @override
   Widget confirmButton(BuildContext context) {
-    return CNP<AssetPickerViewerProvider<AssetEntity>?>.value(
+    return CNP<T?>.value(
       value: provider,
-      child: Consumer<AssetPickerViewerProvider<AssetEntity>?>(
-        builder: (_, AssetPickerViewerProvider<AssetEntity>? provider, __) {
+      child: Consumer<T?>(
+        builder: (context, T? provider, __) {
           assert(
             isWeChatMoment || provider != null,
             'Viewer provider must not be null '
@@ -945,7 +955,7 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   @override
   Widget selectButton(BuildContext context) {
-    return CNP<AssetPickerViewerProvider<AssetEntity>>.value(
+    return CNP<T>.value(
       value: provider!,
       builder: (_, Widget? w) => StreamBuilder<int>(
         initialData: currentIndex,
@@ -969,8 +979,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             );
           }
           final asset = previewAssets.elementAt(assetIndex);
-          return Selector<AssetPickerViewerProvider<AssetEntity>,
-              List<AssetEntity>>(
+          return Selector<T, List<AssetEntity>>(
             selector: (_, p) => p.currentlySelectedAssets,
             builder: (context, assets, _) {
               final bool isSelected = assets.contains(asset);
