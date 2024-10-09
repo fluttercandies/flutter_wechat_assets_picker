@@ -421,35 +421,10 @@ class DefaultAssetPickerViewerBuilderDelegate
       (selectedAssets?.any((AssetEntity e) => e.type == AssetType.video) ??
           false);
 
-  @override
-  Widget assetPageBuilder(BuildContext context, int index) {
-    final AssetEntity asset = previewAssets.elementAt(
+  Widget assetSemanticsBuilder(BuildContext context, int index) {
+    final asset = previewAssets.elementAt(
       shouldReversePreview ? previewAssets.length - index - 1 : index,
     );
-    final Widget builder = switch (asset.type) {
-      AssetType.audio => AudioPageBuilder(
-          asset: asset,
-          shouldAutoplayPreview: shouldAutoplayPreview,
-        ),
-      AssetType.image => ImagePageBuilder(
-          asset: asset,
-          delegate: this,
-          previewThumbnailSize: previewThumbnailSize,
-          shouldAutoplayPreview: shouldAutoplayPreview,
-        ),
-      AssetType.video => VideoPageBuilder(
-          asset: asset,
-          delegate: this,
-          hasOnlyOneVideoAndMoment: isWeChatMoment && hasVideo,
-          shouldAutoplayPreview: shouldAutoplayPreview,
-        ),
-      AssetType.other => Center(
-          child: ScaleText(
-            textDelegate.unSupportedAssetType,
-            semanticsLabel: semanticsTextDelegate.unSupportedAssetType,
-          ),
-        ),
-    };
     return MergeSemantics(
       child: Consumer<AssetPickerViewerProvider<AssetEntity>?>(
         builder: (
@@ -476,12 +451,43 @@ class DefaultAssetPickerViewerBuilderDelegate
             hint: hint,
             image:
                 asset.type == AssetType.image || asset.type == AssetType.video,
-            child: w,
+            child: child,
           );
         },
-        child: builder,
+        child: assetPageBuilder(context, index),
       ),
     );
+  }
+
+  @override
+  Widget assetPageBuilder(BuildContext context, int index) {
+    final asset = previewAssets.elementAt(
+      shouldReversePreview ? previewAssets.length - index - 1 : index,
+    );
+    return switch (asset.type) {
+      AssetType.audio => AudioPageBuilder(
+          asset: asset,
+          shouldAutoplayPreview: shouldAutoplayPreview,
+        ),
+      AssetType.image => ImagePageBuilder(
+          asset: asset,
+          delegate: this,
+          previewThumbnailSize: previewThumbnailSize,
+          shouldAutoplayPreview: shouldAutoplayPreview,
+        ),
+      AssetType.video => VideoPageBuilder(
+          asset: asset,
+          delegate: this,
+          hasOnlyOneVideoAndMoment: isWeChatMoment && hasVideo,
+          shouldAutoplayPreview: shouldAutoplayPreview,
+        ),
+      AssetType.other => Center(
+          child: ScaleText(
+            textDelegate.unSupportedAssetType,
+            semanticsLabel: semanticsTextDelegate.unSupportedAssetType,
+          ),
+        ),
+    };
   }
 
   /// Preview item widgets for audios.
@@ -992,7 +998,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             : const CustomBouncingScrollPhysics(),
         controller: pageController,
         itemCount: previewAssets.length,
-        itemBuilder: assetPageBuilder,
+        itemBuilder: assetSemanticsBuilder,
         onPageChanged: (int index) {
           currentIndex = index;
           pageStreamController.add(index);
