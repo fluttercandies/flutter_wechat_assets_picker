@@ -90,8 +90,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
 
   /// The [State] for a viewer.
   /// 预览器的状态实例
-  late AssetPickerViewerState<Asset, Path, Provider,
-      AssetPickerViewerBuilderDelegate<Asset, Path, Provider>> viewerState;
+  late AssetPickerViewerState viewerState;
 
   /// [AnimationController] for double tap animation.
   /// 双击缩放的动画控制器
@@ -162,9 +161,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
   /// 当预览器调用 [State.initState] 时注册 [State]。
   @mustCallSuper
   void initStateAndTicker(
-    covariant AssetPickerViewerState<Asset, Path, Provider,
-            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
-        state,
+    covariant AssetPickerViewerState state,
     TickerProvider v, // TODO(Alex): Remove this in the next major version.
   ) {
     initAnimations(state);
@@ -179,15 +176,9 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
   /// a new delegate and only calling [State.didUpdateWidget] at the moment.
   @mustCallSuper
   void didUpdateViewer(
-    covariant AssetPickerViewerState<Asset, Path, Provider,
-            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
-        state,
-    covariant AssetPickerViewer<Asset, Path, Provider,
-            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
-        oldWidget,
-    covariant AssetPickerViewer<Asset, Path, Provider,
-            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
-        newWidget,
+    covariant AssetPickerViewerState state,
+    covariant AssetPickerViewer oldWidget,
+    covariant AssetPickerViewer newWidget,
   ) {
     // Widgets are useless in the default delegate.
     initAnimations(state);
@@ -212,9 +203,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
   /// Initialize animations related to the zooming preview.
   /// 为缩放预览初始化动画
   void initAnimations(
-    covariant AssetPickerViewerState<Asset, Path, Provider,
-            AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>
-        state,
+    covariant AssetPickerViewerState state,
   ) {
     viewerState = state;
     doubleTapAnimationController = AnimationController(
