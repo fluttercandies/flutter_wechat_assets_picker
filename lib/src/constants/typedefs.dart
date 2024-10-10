@@ -31,7 +31,7 @@ typedef SpecialItemBuilder<Path> = Widget? Function(
   BuildContext context,
   Path? path,
   int length,
-  bool isPermissionLimited,
+  PermissionState permissionState,
 );
 
 /// {@template wechat_assets_picker.AssetSelectPredicate}

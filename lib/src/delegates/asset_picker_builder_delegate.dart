@@ -1242,7 +1242,7 @@ class DefaultAssetPickerBuilderDelegate
                   context,
                   wrapper?.path,
                   totalCount,
-                  isPermissionLimited,
+                  permissionNotifier.value,
                 )
               );
             })
