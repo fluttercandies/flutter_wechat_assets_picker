@@ -142,7 +142,7 @@ class PickMethod {
                   BuildContext context,
                   AssetPathEntity? path,
                   int length,
-                  bool isPermissionLimited,
+                  PermissionState permissionState,
                 ) {
                   if (path?.isAll != true) {
                     return null;
@@ -199,7 +199,7 @@ class PickMethod {
                   BuildContext context,
                   AssetPathEntity? path,
                   int length,
-                  bool isPermissionLimited,
+                  PermissionState permissionState,
                 ) {
                   if (path?.isAll != true) {
                     return null;
@@ -314,7 +314,7 @@ class PickMethod {
                   BuildContext context,
                   AssetPathEntity? path,
                   int length,
-                  bool isPermissionLimited,
+                  PermissionState permissionState,
                 ) {
                   return const Center(
                     child: Text('Custom Widget', textAlign: TextAlign.center),
@@ -349,7 +349,7 @@ class PickMethod {
                   BuildContext context,
                   AssetPathEntity? path,
                   int length,
-                  bool isPermissionLimited,
+                  PermissionState permissionState,
                 ) {
                   return const Center(
                     child: Text('Prepand Widget', textAlign: TextAlign.center),
@@ -362,7 +362,7 @@ class PickMethod {
                   BuildContext context,
                   AssetPathEntity? path,
                   int length,
-                  bool isPermissionLimited,
+                  PermissionState permissionState,
                 ) {
                   return const Center(
                     child: Text('Append Widget', textAlign: TextAlign.center),
