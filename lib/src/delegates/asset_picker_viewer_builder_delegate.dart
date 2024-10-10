@@ -160,9 +160,8 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
   /// Call when viewer is calling [State.initState].
   /// 当预览器调用 [State.initState] 时注册 [State]。
   @mustCallSuper
-  void initStateAndTicker(
+  void initState(
     covariant AssetPickerViewerState state,
-    TickerProvider v, // TODO(Alex): Remove this in the next major version.
   ) {
     initAnimations(state);
   }

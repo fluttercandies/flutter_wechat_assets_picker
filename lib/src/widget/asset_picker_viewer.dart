@@ -126,7 +126,7 @@ class AssetPickerViewerState<
   @override
   void initState() {
     super.initState();
-    builder.initStateAndTicker(this, this);
+    builder.initState(this);
   }
 
   @override
