@@ -100,6 +100,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'A special item will prepend to the assets grid.';
 
   @override
+  String get pickMethodMultiSpecialItemsName => 'Multiple special items';
+
+  @override
+  String get pickMethodMultiSpecialItemsDescription =>
+      'Multiple special items will prepend or append to the assets grid';
+
+  @override
   String get pickMethodNoPreviewName => 'No preview';
 
   @override

@@ -264,6 +264,18 @@ abstract class AppLocalizations {
   /// **'A special item will prepend to the assets grid.'**
   String get pickMethodPrependItemDescription;
 
+  /// No description provided for @pickMethodMultiSpecialItemsName.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple special items'**
+  String get pickMethodMultiSpecialItemsName;
+
+  /// No description provided for @pickMethodMultiSpecialItemsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple special items will prepend or append to the assets grid'**
+  String get pickMethodMultiSpecialItemsDescription;
+
   /// No description provided for @pickMethodNoPreviewName.
   ///
   /// In en, this message translates to:

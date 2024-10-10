@@ -94,6 +94,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pickMethodPrependItemDescription => '网格的靠前位置会添加一个自定义的 widget。';
 
   @override
+  String get pickMethodMultiSpecialItemsName => '多个特殊 widget';
+
+  @override
+  String get pickMethodMultiSpecialItemsDescription =>
+      '网格的靠前或靠后位置会可以多个自定义的 widget。';
+
+  @override
   String get pickMethodNoPreviewName => '禁止预览';
 
   @override
