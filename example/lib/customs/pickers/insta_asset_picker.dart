@@ -286,7 +286,8 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
   }
 }
 
-class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
+class InstaAssetPickerBuilder<T extends DefaultAssetPickerProvider>
+    extends DefaultAssetPickerBuilderDelegate<T> {
   InstaAssetPickerBuilder({
     required super.provider,
     required super.initialPermission,
@@ -349,7 +350,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   /// Initialize [_previewAsset] with [p.selectedAssets] if not empty
   /// otherwise if the first item of the album
   Future<void> _initializePreviewAsset(
-    DefaultAssetPickerProvider p,
+    T p,
     bool shouldDisplayAssets,
   ) async {
     if (_previewAsset.value != null) {
@@ -487,8 +488,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
             SizedBox(
           width: MediaQuery.sizeOf(context).width,
           height: previewHeight(context),
-          child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-            selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
+          child: Selector<T, List<AssetEntity>>(
+            selector: (_, T p) => p.selectedAssets,
             builder: (_, List<AssetEntity> selected, __) {
               if (previewAsset == null && selected.isEmpty) {
                 return loadingIndicator(context);
@@ -502,7 +503,11 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               final List<AssetEntity> assets =
                   selected.isEmpty ? <AssetEntity>[previewAsset!] : selected;
 
-              return AssetPickerViewer<AssetEntity, AssetPathEntity>(
+              return AssetPickerViewer<
+                  AssetEntity,
+                  AssetPathEntity,
+                  AssetPickerViewerProvider<AssetEntity>,
+                  InstaAssetPickerViewerBuilder>(
                 builder: InstaAssetPickerViewerBuilder(
                   currentIndex: effectiveIndex == -1 ? 0 : effectiveIndex,
                   previewAssets: assets,
@@ -541,7 +546,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         _kPathSelectorRowHeight +
         MediaQuery.paddingOf(context).top;
 
-    return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+    return ChangeNotifierProvider<T>.value(
       value: provider,
       builder: (BuildContext context, _) => ValueListenableBuilder<double>(
         valueListenable: _viewerPosition,
@@ -644,8 +649,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
   Widget _buildListAlbums(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (BuildContext context, DefaultAssetPickerProvider provider, __) {
+    return Consumer<T>(
+      builder: (BuildContext context, T provider, __) {
         if (isAppleOS(context)) {
           return pathEntityListWidget(context);
         }
@@ -672,8 +677,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
   Widget _buildGrid(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
+    return Consumer<T>(
+      builder: (BuildContext context, T p, __) {
         final bool shouldDisplayAssets =
             p.hasAssetsToDisplay || shouldBuildSpecialItem;
         _initializePreviewAsset(p, shouldDisplayAssets);
