@@ -120,6 +120,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
         );
         if (_isLivePhoto && _livePhotoVideoController != null) {
           return _LivePhotoWidget(
+            asset: asset,
             controller: _livePhotoVideoController!,
             fit: BoxFit.contain,
             state: state,
@@ -161,12 +162,14 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
 
 class _LivePhotoWidget extends StatefulWidget {
   const _LivePhotoWidget({
+    required this.asset,
     required this.controller,
     required this.state,
     required this.fit,
     required this.textDelegate,
   });
 
+  final AssetEntity asset;
   final VideoPlayerController controller;
   final ExtendedImageState state;
   final BoxFit fit;
