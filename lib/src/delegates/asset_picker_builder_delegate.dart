@@ -1418,12 +1418,16 @@ class DefaultAssetPickerBuilderDelegate
     final PathWrapper<AssetPathEntity>? currentWrapper = p.currentPath;
     final AssetPathEntity? currentPathEntity = currentWrapper?.path;
 
-    final prepandSpecialItemModels = specialItemModels.where(
-      (model) => model.position == SpecialItemPosition.prepend,
-    );
-    final appendSpecialItemModels = specialItemModels.where(
-      (model) => model.position == SpecialItemPosition.append,
-    );
+    final prependItems = <SpecialItemModel>[];
+    final appendItems = <SpecialItemModel>[];
+    for (final model in specialItemModels) {
+      switch (model.position) {
+        case SpecialItemPosition.prepend:
+          prependItems.add(model);
+        case SpecialItemPosition.append:
+          appendItems.add(model);
+      }
+    }
 
     if (specialItemModels.isNotEmpty) {
       if (prepandSpecialItemModels.isNotEmpty) {
