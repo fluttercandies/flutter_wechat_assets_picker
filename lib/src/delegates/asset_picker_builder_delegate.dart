@@ -1429,21 +1429,19 @@ class DefaultAssetPickerBuilderDelegate
       }
     }
 
-    if (specialItemModels.isNotEmpty) {
-      if (prepandSpecialItemModels.isNotEmpty) {
-        if (index < prepandSpecialItemModels.length) {
-          return specialItemModels[index].item;
-        }
-      }
-
-      if (appendSpecialItemModels.isNotEmpty) {
-        if (index >= length + prepandSpecialItemModels.length) {
-          return specialItemModels[index - length].item;
-        }
+    if (prependItems.isNotEmpty) {
+      if (index < prependItems.length) {
+        return specialItemModels[index].item;
       }
     }
 
-    final currentIndex = index - prepandSpecialItemModels.length;
+    if (appendItems.isNotEmpty) {
+      if (index >= length + prependItems.length) {
+        return specialItemModels[index - length].item;
+      }
+    }
+
+    final currentIndex = index - prependItems.length;
 
     if (currentPathEntity == null) {
       return const SizedBox.shrink();
