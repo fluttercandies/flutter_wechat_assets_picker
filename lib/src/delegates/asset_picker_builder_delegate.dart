@@ -1577,9 +1577,7 @@ class DefaultAssetPickerBuilderDelegate
     int placeholderCount = 0,
   }) {
     int index = assets.indexWhere((AssetEntity e) => e.id == id);
-
     index += prependSpecialItems.length;
-
     index += placeholderCount;
     return index;
   }
