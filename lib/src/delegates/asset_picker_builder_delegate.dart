@@ -1606,10 +1606,6 @@ class DefaultAssetPickerBuilderDelegate
       return length;
     }
 
-    if (specialItemModels.isEmpty) {
-      return length;
-    }
-
     return length + specialItemModels.length;
   }
 
