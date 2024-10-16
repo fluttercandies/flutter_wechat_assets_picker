@@ -62,6 +62,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             .where(
               (item) => item.position == SpecialItemPosition.prepend,
             )
+            .toList(),
+        appendSpecialItems = specialItems
+            .where(
+              (item) => item.position == SpecialItemPosition.append,
+            )
             .toList() {
     Singleton.textDelegate =
         textDelegate ?? assetPickerTextDelegateFromLocale(locale);
@@ -134,6 +139,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// List of prepend special items.
   /// 前置自定义item列表
   final List<SpecialItem<Path>> prependSpecialItems;
+
+  /// List of append special items.
+  /// 附加自定义item列表
+  final List<SpecialItem<Path>> appendSpecialItems;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
