@@ -1439,9 +1439,7 @@ class DefaultAssetPickerBuilderDelegate
       }
     }
 
-    int currentIndex = index;
-
-    currentIndex = index - prepandSpecialItemModels.length;
+    final currentIndex = index - prepandSpecialItemModels.length;
 
     if (currentPathEntity == null) {
       return const SizedBox.shrink();
