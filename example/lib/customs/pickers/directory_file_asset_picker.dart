@@ -585,7 +585,7 @@ class FileAssetPickerBuilder
     appBarPreferredSize ??= appBar(context).preferredSize;
     int totalCount = provider.currentAssets.length;
     if (specialItems.isNotEmpty) {
-      totalCount += 1;
+      totalCount += specialItems.length;
     }
     final int placeholderCount;
     if (isAppleOS(context) && totalCount % gridCount != 0) {
