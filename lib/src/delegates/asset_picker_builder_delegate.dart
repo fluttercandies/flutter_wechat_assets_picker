@@ -28,6 +28,11 @@ import '../widget/asset_picker_app_bar.dart';
 import '../widget/asset_picker_viewer.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
 
+typedef _SpecialItemModel = ({
+  SpecialItemPosition position,
+  Widget item,
+});
+
 /// The delegate to build the whole picker's components.
 ///
 /// By extending the delegate, you can customize every components on you own.
@@ -1243,7 +1248,7 @@ class DefaultAssetPickerBuilderDelegate
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
 
-        final List<SpecialItemModel> specialItemModels = specialItems
+        final List<_SpecialItemModel> specialItemModels = specialItems
             .map((item) {
               return (
                 position: item.position,
@@ -1255,7 +1260,7 @@ class DefaultAssetPickerBuilderDelegate
                 )
               );
             })
-            .whereType<SpecialItemModel>()
+            .whereType<_SpecialItemModel>()
             .toList();
 
         totalCount += specialItemModels.length;
@@ -1419,7 +1424,7 @@ class DefaultAssetPickerBuilderDelegate
     BuildContext context,
     int index,
     List<AssetEntity> currentAssets, {
-    List<SpecialItemModel> specialItemModels = const [],
+    List<_SpecialItemModel> specialItemModels = const [],
   }) {
     final DefaultAssetPickerProvider p =
         context.read<DefaultAssetPickerProvider>();
@@ -1427,8 +1432,8 @@ class DefaultAssetPickerBuilderDelegate
     final PathWrapper<AssetPathEntity>? currentWrapper = p.currentPath;
     final AssetPathEntity? currentPathEntity = currentWrapper?.path;
 
-    final prependItems = <SpecialItemModel>[];
-    final appendItems = <SpecialItemModel>[];
+    final prependItems = <_SpecialItemModel>[];
+    final appendItems = <_SpecialItemModel>[];
     for (final model in specialItemModels) {
       switch (model.position) {
         case SpecialItemPosition.prepend:
@@ -1587,7 +1592,7 @@ class DefaultAssetPickerBuilderDelegate
     required BuildContext context,
     required List<AssetEntity> assets,
     int placeholderCount = 0,
-    List<SpecialItemModel> specialItemModels = const [],
+    List<_SpecialItemModel> specialItemModels = const [],
   }) {
     final PathWrapper<AssetPathEntity>? currentWrapper = context
         .select<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
@@ -2475,8 +2480,3 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 }
-
-typedef SpecialItemModel = ({
-  SpecialItemPosition position,
-  Widget item,
-});
