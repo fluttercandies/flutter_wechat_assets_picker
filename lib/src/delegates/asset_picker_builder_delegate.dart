@@ -2476,3 +2476,8 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 }
+
+typedef SpecialItemModel = ({
+  SpecialItemPosition position,
+  Widget item,
+});

@@ -9,8 +9,6 @@ import 'package:flutter/widgets.dart';
 import 'package:photo_manager/photo_manager.dart' show PermissionState;
 import 'package:provider/provider.dart';
 
-import './enums.dart';
-
 /// Mirroring [ChangeNotifierProvider].
 typedef CNP<T extends ChangeNotifier?> = ChangeNotifierProvider<T>;
 
@@ -78,8 +76,3 @@ typedef AssetsChangeRefreshPredicate<Path> = bool Function(
   MethodCall call,
   Path? path,
 );
-
-typedef SpecialItemModel = ({
-  SpecialItemPosition position,
-  Widget item,
-});
