@@ -1477,7 +1477,7 @@ class DefaultAssetPickerBuilderDelegate
 
   int semanticIndex(int index) {
     if (prependSpecialItems.isNotEmpty) {
-      return index - prependSpecialItems.length + 1;
+      return index - prependSpecialItems.length;
     }
 
     return index;
