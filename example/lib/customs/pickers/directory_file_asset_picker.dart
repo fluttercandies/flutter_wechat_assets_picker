@@ -701,10 +701,7 @@ class FileAssetPickerBuilder
     int index,
     List<File> currentAssets,
   ) {
-    int currentIndex = index;
-
-    currentIndex = index - prependSpecialItems.length;
-
+    final currentIndex = index - prependSpecialItems.length;
     final File asset = currentAssets.elementAt(currentIndex);
     final Widget builder = imageAndVideoItemBuilder(
       context,
