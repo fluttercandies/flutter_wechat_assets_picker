@@ -1500,11 +1500,11 @@ class DefaultAssetPickerBuilderDelegate
               hint += ', ${asset.title}';
             }
             return Semantics(
+              key: ValueKey('${asset.id}-semantics'),
               button: false,
               enabled: !isBanned,
               excludeSemantics: true,
               focusable: !isSwitchingPath,
-              identifier: asset.id,
               label: '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
                   '${semanticIndex(index)}, '
                   '${asset.createDateTime.toString().replaceAll('.000', '')}',
