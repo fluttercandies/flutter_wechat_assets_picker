@@ -369,6 +369,29 @@ class PickMethod {
                   );
                 },
               ),
+              //builder which return null will not be shown.
+              SpecialItem(
+                position: SpecialItemPosition.append,
+                builder: (
+                  BuildContext context,
+                  AssetPathEntity? path,
+                  int length,
+                  PermissionState permissionState,
+                ) {
+                  return null;
+                },
+              ),
+              SpecialItem(
+                position: SpecialItemPosition.prepend,
+                builder: (
+                  BuildContext context,
+                  AssetPathEntity? path,
+                  int length,
+                  PermissionState permissionState,
+                ) {
+                  return null;
+                },
+              ),
             ],
           ),
         );
