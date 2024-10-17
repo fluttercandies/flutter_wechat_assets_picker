@@ -17,7 +17,7 @@ env:
 
 jobs:
   analyze:
-    name: Analyze on ${{ matrix.os }} with ${{ matric.flutter-version }} Flutter
+    name: Analyze on ${{ matrix.os }} with ${{ matrix.flutter-version }} Flutter
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -52,7 +52,7 @@ jobs:
 
   test_iOS:
     needs: analyze
-    name: Test iOS with ${{ matric.flutter-version }} Flutter
+    name: Test iOS with ${{ matrix.flutter-version }} Flutter
     runs-on: macos-latest
     strategy:
       matrix:
@@ -74,7 +74,7 @@ jobs:
 
   test_android:
     needs: analyze
-    name: Test Android with ${{ matric.flutter-version }} Flutter
+    name: Test Android with ${{ matrix.flutter-version }} Flutter
     runs-on: ubuntu-latest
     strategy:
       matrix:
