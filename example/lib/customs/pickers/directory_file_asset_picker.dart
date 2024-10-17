@@ -584,9 +584,28 @@ class FileAssetPickerBuilder
   Widget assetsGridBuilder(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
     int totalCount = provider.currentAssets.length;
-    if (specialItems.isNotEmpty) {
-      totalCount += specialItems.length;
-    }
+
+    final List<SpecialItemResult> specialItemResults = specialItems
+        .map((item) {
+          final specialItem = item.builder?.call(
+            context,
+            provider.currentPath?.path,
+            totalCount,
+            permissionNotifier.value,
+          );
+          if (specialItem != null) {
+            return SpecialItemResult(
+              position: item.position,
+              item: specialItem,
+            );
+          }
+          return null;
+        })
+        .whereType<SpecialItemResult>()
+        .toList();
+
+    totalCount += specialItemResults.length;
+
     final int placeholderCount;
     if (isAppleOS(context) && totalCount % gridCount != 0) {
       placeholderCount = gridCount - totalCount % gridCount;
@@ -626,6 +645,11 @@ class FileAssetPickerBuilder
                 id: key.value,
                 assets: assets,
                 placeholderCount: placeholderCount,
+                prependSpecialItemResults: specialItemResults
+                    .where(
+                      (item) => item.position == SpecialItemPosition.prepend,
+                    )
+                    .toList(),
               );
             }
             return null;
@@ -699,9 +723,36 @@ class FileAssetPickerBuilder
   Widget assetGridItemBuilder(
     BuildContext context,
     int index,
-    List<File> currentAssets,
-  ) {
-    final currentIndex = index - prependSpecialItems.length;
+    List<File> currentAssets, {
+    List<SpecialItemResult> specialItemResults = const [],
+  }) {
+    final int length = currentAssets.length;
+
+    final prependItems = <SpecialItemResult>[];
+    final appendItems = <SpecialItemResult>[];
+    for (final model in specialItemResults) {
+      switch (model.position) {
+        case SpecialItemPosition.prepend:
+          prependItems.add(model);
+        case SpecialItemPosition.append:
+          appendItems.add(model);
+      }
+    }
+
+    if (prependItems.isNotEmpty) {
+      if (index < prependItems.length) {
+        return specialItemResults[index].item;
+      }
+    }
+
+    if (appendItems.isNotEmpty) {
+      if (index >= length + prependItems.length) {
+        return specialItemResults[index - length].item;
+      }
+    }
+
+    final currentIndex = index - prependItems.length;
+
     final File asset = currentAssets.elementAt(currentIndex);
     final Widget builder = imageAndVideoItemBuilder(
       context,
@@ -724,6 +775,7 @@ class FileAssetPickerBuilder
     int index,
     File asset,
     Widget child,
+    List<SpecialItemResult> prependSpecialItemResults,
   ) {
     return Semantics(child: child);
   }
@@ -1161,6 +1213,7 @@ class FileAssetPickerBuilder
   int findChildIndexBuilder({
     required String id,
     required List<File> assets,
+    required List<SpecialItemResult> prependSpecialItemResults,
     int placeholderCount = 0,
   }) {
     return assets.indexWhere((File file) => file.path == id);

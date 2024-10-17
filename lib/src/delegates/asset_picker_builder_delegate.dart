@@ -28,10 +28,17 @@ import '../widget/asset_picker_app_bar.dart';
 import '../widget/asset_picker_viewer.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
 
-typedef _SpecialItemModel = ({
-  SpecialItemPosition position,
-  Widget item,
-});
+/// Class which contains non-null special item widget and its position which derived from the [SpecialItem]
+/// 包含非空自定义item，并指定其位置。
+class SpecialItemResult {
+  SpecialItemResult({
+    required this.position,
+    required this.item,
+  });
+
+  SpecialItemPosition position;
+  Widget item;
+}
 
 /// The delegate to build the whole picker's components.
 ///
@@ -62,17 +69,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         ),
         themeColor = pickerTheme?.colorScheme.secondary ??
             themeColor ??
-            defaultThemeColorWeChat,
-        prependSpecialItems = specialItems
-            .where(
-              (item) => item.position == SpecialItemPosition.prepend,
-            )
-            .toList(),
-        appendSpecialItems = specialItems
-            .where(
-              (item) => item.position == SpecialItemPosition.append,
-            )
-            .toList() {
+            defaultThemeColorWeChat {
     Singleton.textDelegate =
         textDelegate ?? assetPickerTextDelegateFromLocale(locale);
   }
@@ -140,14 +137,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
   final AssetsChangeRefreshPredicate<AssetPathEntity>?
       assetsChangeRefreshPredicate;
-
-  /// List of prepend special items.
-  /// 前置自定义item列表
-  final List<SpecialItem<Path>> prependSpecialItems;
-
-  /// List of append special items.
-  /// 附加自定义item列表
-  final List<SpecialItem<Path>> appendSpecialItems;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -341,6 +330,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int? findChildIndexBuilder({
     required String id,
     required List<Asset> assets,
+    required List<SpecialItemResult> prependSpecialItemResults,
     int placeholderCount = 0,
   }) =>
       null;
@@ -368,6 +358,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     int index,
     Asset asset,
     Widget child,
+    List<SpecialItemResult> prependSpecialItemResults,
   );
 
   /// The item builder for audio type of asset.
@@ -1248,24 +1239,28 @@ class DefaultAssetPickerBuilderDelegate
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
 
-        final List<_SpecialItemModel> specialItemModels = specialItems
+        final List<SpecialItemResult> specialItemResults = specialItems
             .map((item) {
-              return (
-                position: item.position,
-                item: item.builder?.call(
-                  context,
-                  wrapper?.path,
-                  totalCount,
-                  permissionNotifier.value,
-                )
+              final specialItem = item.builder?.call(
+                context,
+                wrapper?.path,
+                totalCount,
+                permissionNotifier.value,
               );
+              if (specialItem != null) {
+                return SpecialItemResult(
+                  position: item.position,
+                  item: specialItem,
+                );
+              }
+              return null;
             })
-            .whereType<_SpecialItemModel>()
+            .whereType<SpecialItemResult>()
             .toList();
 
-        totalCount += specialItemModels.length;
+        totalCount += specialItemResults.length;
 
-        if (totalCount == 0 && specialItemModels.isEmpty) {
+        if (totalCount == 0 && specialItemResults.isEmpty) {
           return loadingIndicator(context);
         }
         // Then we use the [totalCount] to calculate placeholders we need.
@@ -1305,7 +1300,7 @@ class DefaultAssetPickerBuilderDelegate
                       context,
                       index,
                       assets,
-                      specialItemModels: specialItemModels,
+                      specialItemResults: specialItemResults,
                     ),
                   ),
                 );
@@ -1314,7 +1309,7 @@ class DefaultAssetPickerBuilderDelegate
                 context: context,
                 assets: assets,
                 placeholderCount: placeholderCount,
-                specialItemModels: specialItemModels,
+                specialItemResults: specialItemResults,
               ),
               findChildIndexCallback: (Key? key) {
                 if (key is ValueKey<String>) {
@@ -1322,6 +1317,12 @@ class DefaultAssetPickerBuilderDelegate
                     id: key.value,
                     assets: assets,
                     placeholderCount: placeholderCount,
+                    prependSpecialItemResults: specialItemResults
+                        .where(
+                          (item) =>
+                              item.position == SpecialItemPosition.prepend,
+                        )
+                        .toList(),
                   );
                 }
                 return null;
@@ -1424,7 +1425,7 @@ class DefaultAssetPickerBuilderDelegate
     BuildContext context,
     int index,
     List<AssetEntity> currentAssets, {
-    List<_SpecialItemModel> specialItemModels = const [],
+    List<SpecialItemResult> specialItemResults = const [],
   }) {
     final DefaultAssetPickerProvider p =
         context.read<DefaultAssetPickerProvider>();
@@ -1432,9 +1433,9 @@ class DefaultAssetPickerBuilderDelegate
     final PathWrapper<AssetPathEntity>? currentWrapper = p.currentPath;
     final AssetPathEntity? currentPathEntity = currentWrapper?.path;
 
-    final prependItems = <_SpecialItemModel>[];
-    final appendItems = <_SpecialItemModel>[];
-    for (final model in specialItemModels) {
+    final prependItems = <SpecialItemResult>[];
+    final appendItems = <SpecialItemResult>[];
+    for (final model in specialItemResults) {
       switch (model.position) {
         case SpecialItemPosition.prepend:
           prependItems.add(model);
@@ -1445,13 +1446,13 @@ class DefaultAssetPickerBuilderDelegate
 
     if (prependItems.isNotEmpty) {
       if (index < prependItems.length) {
-        return specialItemModels[index].item;
+        return specialItemResults[index].item;
       }
     }
 
     if (appendItems.isNotEmpty) {
       if (index >= length + prependItems.length) {
-        return specialItemModels[index - length].item;
+        return specialItemResults[index - length].item;
       }
     }
 
@@ -1486,11 +1487,20 @@ class DefaultAssetPickerBuilderDelegate
         itemBannedIndicator(context, asset),
       ],
     );
-    return assetGridItemSemanticsBuilder(context, index, asset, content);
+    return assetGridItemSemanticsBuilder(
+      context,
+      index,
+      asset,
+      content,
+      prependItems,
+    );
   }
 
-  int semanticIndex(int index) {
-    return index - prependSpecialItems.length;
+  int semanticIndex(
+    int index,
+    List<SpecialItemResult> prependSpecialItemResults,
+  ) {
+    return index - prependSpecialItemResults.length;
   }
 
   @override
@@ -1499,6 +1509,7 @@ class DefaultAssetPickerBuilderDelegate
     int index,
     AssetEntity asset,
     Widget child,
+    List<SpecialItemResult> prependSpecialItemResults,
   ) {
     return ValueListenableBuilder<bool>(
       valueListenable: isSwitchingPath,
@@ -1532,7 +1543,7 @@ class DefaultAssetPickerBuilderDelegate
               excludeSemantics: true,
               focusable: !isSwitchingPath,
               label: '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
-                  '${semanticIndex(index)}, '
+                  '${semanticIndex(index, prependSpecialItemResults)}, '
                   '${asset.createDateTime.toString().replaceAll('.000', '')}',
               hidden: isSwitchingPath,
               hint: hint,
@@ -1550,7 +1561,7 @@ class DefaultAssetPickerBuilderDelegate
               onLongPressHint: semanticsTextDelegate.sActionPreviewHint,
               selected: isSelected,
               sortKey: OrdinalSortKey(
-                semanticIndex(index).toDouble(),
+                semanticIndex(index, prependSpecialItemResults).toDouble(),
                 name: 'GridItem',
               ),
               value: selectedIndex > 0 ? '$selectedIndex' : null,
@@ -1563,7 +1574,7 @@ class DefaultAssetPickerBuilderDelegate
                       }
                     : null,
                 child: IndexedSemantics(
-                  index: semanticIndex(index),
+                  index: semanticIndex(index, prependSpecialItemResults),
                   child: child,
                 ),
               ),
@@ -1579,10 +1590,11 @@ class DefaultAssetPickerBuilderDelegate
   int findChildIndexBuilder({
     required String id,
     required List<AssetEntity> assets,
+    required List<SpecialItemResult> prependSpecialItemResults,
     int placeholderCount = 0,
   }) {
     int index = assets.indexWhere((AssetEntity e) => e.id == id);
-    index += prependSpecialItems.length;
+    index += prependSpecialItemResults.length;
     index += placeholderCount;
     return index;
   }
@@ -1592,7 +1604,7 @@ class DefaultAssetPickerBuilderDelegate
     required BuildContext context,
     required List<AssetEntity> assets,
     int placeholderCount = 0,
-    List<_SpecialItemModel> specialItemModels = const [],
+    List<SpecialItemResult> specialItemResults = const [],
   }) {
     final PathWrapper<AssetPathEntity>? currentWrapper = context
         .select<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
@@ -1602,17 +1614,17 @@ class DefaultAssetPickerBuilderDelegate
     final int length = assets.length + placeholderCount;
 
     // Return 1 if the [specialItem] build something.
-    if (currentPathEntity == null && specialItemModels.isNotEmpty) {
-      return placeholderCount + specialItemModels.length;
+    if (currentPathEntity == null && specialItemResults.isNotEmpty) {
+      return placeholderCount + specialItemResults.length;
     }
 
     // Return actual length if the current path is all.
     // 如果当前目录是全部内容，则返回实际的内容数量。
-    if (currentPathEntity?.isAll != true && specialItemModels.isEmpty) {
+    if (currentPathEntity?.isAll != true && specialItemResults.isEmpty) {
       return length;
     }
 
-    return length + specialItemModels.length;
+    return length + specialItemResults.length;
   }
 
   @override
