@@ -11,6 +11,12 @@ that can be found in the LICENSE file. -->
 
 *None.*
 
+## 9.3.3
+
+### Fixes
+
+- Recovers the compatibility with Flutter 3.16.
+
 ## 9.3.2
 
 ### Improvements
