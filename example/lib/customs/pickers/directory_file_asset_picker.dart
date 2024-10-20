@@ -645,7 +645,7 @@ class FileAssetPickerBuilder
                 id: key.value,
                 assets: assets,
                 placeholderCount: placeholderCount,
-                prependSpecialItemResults: specialItemModels
+                specialItemModels: specialItemModels
                     .where(
                       (item) => item.position == SpecialItemPosition.prepend,
                     )
@@ -775,7 +775,7 @@ class FileAssetPickerBuilder
     int index,
     File asset,
     Widget child,
-    List<SpecialItemModel> prependSpecialItemResults,
+    List<SpecialItemModel> specialItemModels,
   ) {
     return Semantics(child: child);
   }
@@ -1213,7 +1213,7 @@ class FileAssetPickerBuilder
   int findChildIndexBuilder({
     required String id,
     required List<File> assets,
-    required List<SpecialItemModel> prependSpecialItemResults,
+    required List<SpecialItemModel> specialItemModels,
     int placeholderCount = 0,
   }) {
     return assets.indexWhere((File file) => file.path == id);

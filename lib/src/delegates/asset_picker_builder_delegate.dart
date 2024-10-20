@@ -330,7 +330,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int? findChildIndexBuilder({
     required String id,
     required List<Asset> assets,
-    required List<SpecialItemModel> prependSpecialItemResults,
+    required List<SpecialItemModel> specialItemModels,
     int placeholderCount = 0,
   }) =>
       null;
@@ -358,7 +358,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     int index,
     Asset asset,
     Widget child,
-    List<SpecialItemModel> prependSpecialItemResults,
+    List<SpecialItemModel> specialItemModels,
   );
 
   /// The item builder for audio type of asset.
@@ -1317,12 +1317,7 @@ class DefaultAssetPickerBuilderDelegate
                     id: key.value,
                     assets: assets,
                     placeholderCount: placeholderCount,
-                    prependSpecialItemResults: specialItemModels
-                        .where(
-                          (item) =>
-                              item.position == SpecialItemPosition.prepend,
-                        )
-                        .toList(),
+                    specialItemModels: specialItemModels,
                   );
                 }
                 return null;
@@ -1492,15 +1487,18 @@ class DefaultAssetPickerBuilderDelegate
       index,
       asset,
       content,
-      prependItems,
+      specialItemModels,
     );
   }
 
   int semanticIndex(
     int index,
-    List<SpecialItemModel> prependSpecialItemResults,
+    List<SpecialItemModel> specialItemModels,
   ) {
-    return index - prependSpecialItemResults.length;
+    final prependSpecialItemModels = specialItemModels.where(
+      (SpecialItemModel model) => model.position == SpecialItemPosition.prepend,
+    );
+    return index - prependSpecialItemModels.length;
   }
 
   @override
@@ -1509,7 +1507,7 @@ class DefaultAssetPickerBuilderDelegate
     int index,
     AssetEntity asset,
     Widget child,
-    List<SpecialItemModel> prependSpecialItemResults,
+    List<SpecialItemModel> specialItemModels,
   ) {
     return ValueListenableBuilder<bool>(
       valueListenable: isSwitchingPath,
@@ -1543,7 +1541,7 @@ class DefaultAssetPickerBuilderDelegate
               excludeSemantics: true,
               focusable: !isSwitchingPath,
               label: '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
-                  '${semanticIndex(index, prependSpecialItemResults)}, '
+                  '${semanticIndex(index, specialItemModels)}, '
                   '${asset.createDateTime.toString().replaceAll('.000', '')}',
               hidden: isSwitchingPath,
               hint: hint,
@@ -1561,7 +1559,7 @@ class DefaultAssetPickerBuilderDelegate
               onLongPressHint: semanticsTextDelegate.sActionPreviewHint,
               selected: isSelected,
               sortKey: OrdinalSortKey(
-                semanticIndex(index, prependSpecialItemResults).toDouble(),
+                semanticIndex(index, specialItemModels).toDouble(),
                 name: 'GridItem',
               ),
               value: selectedIndex > 0 ? '$selectedIndex' : null,
@@ -1574,7 +1572,7 @@ class DefaultAssetPickerBuilderDelegate
                       }
                     : null,
                 child: IndexedSemantics(
-                  index: semanticIndex(index, prependSpecialItemResults),
+                  index: semanticIndex(index, specialItemModels),
                   child: child,
                 ),
               ),
@@ -1590,11 +1588,14 @@ class DefaultAssetPickerBuilderDelegate
   int findChildIndexBuilder({
     required String id,
     required List<AssetEntity> assets,
-    required List<SpecialItemModel> prependSpecialItemResults,
+    required List<SpecialItemModel> specialItemModels,
     int placeholderCount = 0,
   }) {
+    final prependSpecialItemModels = specialItemModels.where(
+      (SpecialItemModel model) => model.position == SpecialItemPosition.prepend,
+    );
     int index = assets.indexWhere((AssetEntity e) => e.id == id);
-    index += prependSpecialItemResults.length;
+    index += prependSpecialItemModels.length;
     index += placeholderCount;
     return index;
   }
