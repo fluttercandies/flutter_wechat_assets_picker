@@ -14,6 +14,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_picker_library/wechat_picker_library.dart';
+import 'package:drag_select_grid_view/drag_select_grid_view.dart';
 
 import '../constants/constants.dart';
 import '../constants/enums.dart';
@@ -408,16 +409,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        width: double.infinity,
+        alignment: AlignmentDirectional.centerEnd,
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: AlignmentDirectional.bottomCenter,
             end: AlignmentDirectional.topCenter,
-            colors: <Color>[
-              theme.canvasColor.withAlpha(128),
-              Colors.transparent,
-            ],
+            colors: <Color>[theme.dividerColor, Colors.transparent],
           ),
         ),
         child: Container(
@@ -431,9 +429,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           child: ScaleText(
             textDelegate.gifIndicator,
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+              color: isAppleOS(context)
+                  ? theme.textTheme.bodyMedium?.color
+                  : theme.primaryColor,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
             ),
             semanticsLabel: semanticsTextDelegate.gifIndicator,
             strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
@@ -1228,7 +1228,11 @@ class DefaultAssetPickerBuilderDelegate
     final bool gridRevert = effectiveShouldRevertGrid(context);
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
-      builder: (context, wrapper, _) {
+      builder: (
+        BuildContext context,
+        PathWrapper<AssetPathEntity>? wrapper,
+        _,
+      ) {
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
         final Widget? specialItem;
@@ -1269,51 +1273,49 @@ class DefaultAssetPickerBuilderDelegate
 
         final textDirection = Directionality.of(context);
         Widget sliverGrid(BuildContext context, List<AssetEntity> assets) {
-          return SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (context, int index) {
-                if (gridRevert) {
-                  if (index < placeholderCount) {
-                    return const SizedBox.shrink();
-                  }
-                  index -= placeholderCount;
-                }
-                return MergeSemantics(
-                  child: Directionality(
-                    textDirection: textDirection,
-                    child: assetGridItemBuilder(
-                      context,
-                      index,
-                      assets,
-                      specialItem: specialItem,
-                    ),
-                  ),
-                );
-              },
-              childCount: assetsGridItemCount(
-                context: context,
-                assets: assets,
-                placeholderCount: placeholderCount,
-                specialItem: specialItem,
-              ),
-              findChildIndexCallback: (Key? key) {
-                if (key is ValueKey<String>) {
-                  return findChildIndexBuilder(
-                    id: key.value,
+          return SliverToBoxAdapter(
+            child: Column(
+              children: [
+                DragSelectGridView(
+                  itemBuilder: (BuildContext context, int index, bool selected) {
+                    Widget c = MergeSemantics(
+                      child: Directionality(
+                        textDirection: textDirection,
+                        child: assetGridItemBuilder(
+                          context,
+                          index,
+                          assets,
+                          specialItem: specialItem,
+                        ),
+                      ),
+                    );
+                    return SelectableItem(
+                      index: index,
+                      color: Colors.blue,
+                      selected: selected,
+                      child: c,
+                      asset: assets[index],
+                      parent: this,
+                      context: context
+                    );
+                  },
+                  itemCount: assetsGridItemCount(
+                    context: context,
                     assets: assets,
                     placeholderCount: placeholderCount,
-                  );
-                }
-                return null;
-              },
-              // Explicitly disable semantic indexes for custom usage.
-              addSemanticIndexes: false,
-            ),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: gridCount,
-              mainAxisSpacing: itemSpacing,
-              crossAxisSpacing: itemSpacing,
-            ),
+                    specialItem: specialItem,
+                  ),
+                  shrinkWrap: true,
+                  // Explicitly disable semantic indexes for custom usage.
+                  addSemanticIndexes: false,
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 150,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                  ),
+                )
+              ]
+            )
           );
         }
 
@@ -1500,7 +1502,6 @@ class DefaultAssetPickerBuilderDelegate
               hint += ', ${asset.title}';
             }
             return Semantics(
-              key: ValueKey('${asset.id}-semantics'),
               button: false,
               enabled: !isBanned,
               excludeSemantics: true,
@@ -1720,6 +1721,12 @@ class DefaultAssetPickerBuilderDelegate
           isOriginal: false,
           thumbnailSize: gridThumbnailSize,
         );
+        SpecialImageType? type;
+        if (imageProvider.imageFileType == ImageFileType.gif) {
+          type = SpecialImageType.gif;
+        } else if (imageProvider.imageFileType == ImageFileType.heic) {
+          type = SpecialImageType.heic;
+        }
         return Stack(
           fit: StackFit.expand,
           children: <Widget>[
@@ -1729,16 +1736,8 @@ class DefaultAssetPickerBuilderDelegate
                 failedItemBuilder: failedItemBuilder,
               ),
             ),
-            FutureBuilder(
-              future: imageProvider.imageFileType,
-              builder: (context, snapshot) {
-                if (snapshot.data case final type?
-                    when type == ImageFileType.gif) {
-                  return gifIndicator(context, asset);
-                }
-                return const SizedBox.shrink();
-              },
-            ),
+            if (type == SpecialImageType.gif) // 如果为GIF则显示标识
+              gifIndicator(context, asset),
             if (asset.type == AssetType.video) // 如果为视频则显示标识
               videoIndicator(context, asset),
             if (asset.isLivePhoto) buildLivePhotoIndicator(context, asset),
@@ -2172,6 +2171,12 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
+
+
+
+
+
+
   @override
   Widget selectIndicator(BuildContext context, int index, AssetEntity asset) {
     final double indicatorSize =
@@ -2221,10 +2226,18 @@ class DefaultAssetPickerBuilderDelegate
           ),
         );
         if (isPreviewEnabled) {
-          return PositionedDirectional(
-            top: 0,
-            end: 0,
-            child: selectorWidget,
+          return SelectableItem(
+            index: index,
+            color: Colors.blue,
+            selected: selected,
+            parent: this,
+            context: context,
+            asset: asset,
+            child: PositionedDirectional(
+              top: 0,
+              end: 0,
+              child: selectorWidget,
+            )
           );
         }
         return selectorWidget;
@@ -2455,6 +2468,246 @@ class DefaultAssetPickerBuilderDelegate
           ),
         ),
       ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class SelectableItem extends StatefulWidget {
+  const SelectableItem({
+    Key? key,
+    required this.index,
+    required this.color,
+    required this.selected,
+    required this.child,
+    required this.asset,
+    required this.parent,
+    required this.context,
+  }) : super(key: key);
+
+  final int index;
+  final MaterialColor color;
+  final bool selected;
+  final Widget child;
+  final AssetEntity asset;
+  final DefaultAssetPickerBuilderDelegate parent;
+  final BuildContext context;
+
+  @override
+  _SelectableItemState createState() => _SelectableItemState();
+}
+
+class _SelectableItemState extends State<SelectableItem>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      value: widget.selected ? 1 : 0,
+      duration: kThemeChangeDuration,
+      vsync: this,
+    );
+
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.ease,
+      ),
+    );
+  }
+
+  @override
+  void didUpdateWidget(SelectableItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selected != widget.selected) {
+      if (widget.selected) {
+        //_controller.forward();
+      } else {
+        //_controller.reverse();
+      }
+      widget.parent.selectAsset(widget.context, widget.asset, widget.index, oldWidget.selected);
+      setState((){});
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _scaleAnimation,
+      builder: (context, child) {
+        return Container(
+          child: Transform.scale(
+            scale: _scaleAnimation.value,
+            child: DecoratedBox(
+              child: child,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                color: calculateColor(),
+              ),
+            ),
+          ),
+        );
+      },
+      child: widget.child
+    );
+  }
+
+  Color? calculateColor() {
+    return Color.lerp(
+      widget.color.shade500,
+      widget.color.shade900,
+      _controller.value,
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class SelectableItem22 extends StatefulWidget {
+  const SelectableItem22({
+    Key? key,
+    required this.index,
+    required this.color,
+    required this.selected,
+  }) : super(key: key);
+
+  final int index;
+  final MaterialColor color;
+  final bool selected;
+
+  @override
+  _SelectableItemState22 createState() => _SelectableItemState22();
+}
+
+class _SelectableItemState22 extends State<SelectableItem22>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      value: widget.selected ? 1 : 0,
+      duration: kThemeChangeDuration,
+      vsync: this,
+    );
+
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.ease,
+      ),
+    );
+  }
+
+  @override
+  void didUpdateWidget(SelectableItem22 oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selected != widget.selected) {
+      if (widget.selected) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _scaleAnimation,
+      builder: (context, child) {
+        return Container(
+          child: Transform.scale(
+            scale: _scaleAnimation.value,
+            child: DecoratedBox(
+              child: child,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                color: calculateColor(),
+              ),
+            ),
+          ),
+        );
+      },
+      child: Container(
+        alignment: Alignment.center,
+        child: Text(
+          'Item\n#${widget.index}',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Color? calculateColor() {
+    return Color.lerp(
+      widget.color.shade500,
+      widget.color.shade900,
+      _controller.value,
     );
   }
 }
