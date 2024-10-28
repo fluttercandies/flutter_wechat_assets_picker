@@ -616,6 +616,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       child: IconButton(
         onPressed: () {
           Navigator.maybeOf(context)?.maybePop();
+          Navigator.maybeOf(context)?.maybePop();
         },
         tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
         icon: Icon(
@@ -640,6 +641,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       alignment: AlignmentDirectional.centerStart,
       child: IconButton(
         onPressed: () {
+          Navigator.maybeOf(context)?.maybePop();
           Navigator.maybeOf(context)?.maybePop();
         },
         icon: const Icon(Icons.close),
@@ -888,6 +890,7 @@ class DefaultAssetPickerBuilderDelegate
     }
     provider.selectAsset(asset);
     if (isSingleAssetMode && !isPreviewEnabled) {
+      Navigator.maybeOf(context)?.maybePop(provider.selectedAssets);
       Navigator.maybeOf(context)?.maybePop(provider.selectedAssets);
     }
   }
@@ -1277,6 +1280,7 @@ class DefaultAssetPickerBuilderDelegate
             child: Column(
               children: [
                 DragSelectGridView(
+                  autoScrollHotspotHeight: 150,
                   itemBuilder: (BuildContext context, int index, bool selected) {
                     Widget c = MergeSemantics(
                       child: Directionality(
@@ -1308,10 +1312,10 @@ class DefaultAssetPickerBuilderDelegate
                   shrinkWrap: true,
                   // Explicitly disable semantic indexes for custom usage.
                   addSemanticIndexes: false,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 150,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: gridCount,
+                    crossAxisSpacing: 2,
+                    mainAxisSpacing: 2,
                   ),
                 )
               ]
@@ -1678,6 +1682,7 @@ class DefaultAssetPickerBuilderDelegate
           ),
           onPressed: shouldAllowConfirm
               ? () {
+                  Navigator.maybeOf(context)?.maybePop(p.selectedAssets);
                   Navigator.maybeOf(context)?.maybePop(p.selectedAssets);
                 }
               : null,
