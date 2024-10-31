@@ -901,7 +901,7 @@ class DefaultAssetPickerBuilderDelegate
       if (assetsChangeRefreshPredicate != null) {
         return assetsChangeRefreshPredicate!(permission, call, path);
       }
-      return path?.isAll == true;
+      return path?.isAll ?? true;
     }
 
     if (!predicate()) {
