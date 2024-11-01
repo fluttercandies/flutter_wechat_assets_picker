@@ -1281,7 +1281,6 @@ class DefaultAssetPickerBuilderDelegate
                   // https://www.google.com/search?q=geusterdetector+flutter+local+position+is+relative+to+grid+not+screen&oq=geusterdetector+flutter+local+position+is+relative+to+grid+not+screen&gs_lcrp=EgZjaHJvbWUyBggAEEUYOdIBCTE4MTIxajBqMagCALACAA&sourceid=chrome&ie=UTF-8
                   dragSelectView: 
                     DragSelectGridView(
-                    topPadding: topPadding,
                     itemBuilder: (BuildContext context, int index, bool selected) {
                       Widget c = MergeSemantics(
                         child: Directionality(
@@ -1353,7 +1352,9 @@ class DefaultAssetPickerBuilderDelegate
 
             return Directionality(
               textDirection: effectiveGridDirection(context),
-              child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
+              child: ColoredBox(
+                color: theme.canvasColor,
+                child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
                   selector: (_, DefaultAssetPickerProvider p) =>
                       p.currentAssets,
                   builder: (BuildContext context, List<AssetEntity> assets, _) {
@@ -1361,12 +1362,30 @@ class DefaultAssetPickerBuilderDelegate
                       context.bottomPadding + bottomSectionHeight,
                     );
                     appBarPreferredSize ??= appBar(context).preferredSize;
-                    return 
-                        sliverGrid(context, assets);
-                      /*],
-                    );*/
+                    return CustomScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      controller: gridScrollController,
+                      anchor: gridRevert ? anchor : 0,
+                      center: gridRevert ? gridRevertKey : null,
+                      slivers: <Widget>[
+                        if (isAppleOS(context))
+                          SliverGap.v(
+                            context.topPadding + appBarPreferredSize!.height,
+                          ),
+                        sliverGrid(context, assets),
+                        // Ignore the gap when the [anchor] is not equal to 1.
+                        if (gridRevert && anchor == 1) bottomGap,
+                        if (gridRevert)
+                          SliverToBoxAdapter(
+                            key: gridRevertKey,
+                            child: const SizedBox.shrink(),
+                          ),
+                        if (isAppleOS(context) && !gridRevert) bottomGap,
+                      ],
+                    );
                   },
                 ),
+              ),
             );
           },
         );
@@ -2470,24 +2489,6 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
