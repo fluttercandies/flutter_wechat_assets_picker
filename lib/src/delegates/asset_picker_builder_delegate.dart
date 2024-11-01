@@ -1276,43 +1276,49 @@ class DefaultAssetPickerBuilderDelegate
           return SliverToBoxAdapter(
             child: Column(
               children: [
-                DragSelectGridView(
-                  itemBuilder: (BuildContext context, int index, bool selected) {
-                    Widget c = MergeSemantics(
-                      child: Directionality(
-                        textDirection: textDirection,
-                        child: assetGridItemBuilder(
-                          context,
-                          index,
-                          assets,
-                          specialItem: specialItem,
+                DragSelectHolder(
+                  // https://stackoverflow.com/questions/52000130/flutter-get-local-position-of-gesture-detector
+                  // https://www.google.com/search?q=geusterdetector+flutter+local+position+is+relative+to+grid+not+screen&oq=geusterdetector+flutter+local+position+is+relative+to+grid+not+screen&gs_lcrp=EgZjaHJvbWUyBggAEEUYOdIBCTE4MTIxajBqMagCALACAA&sourceid=chrome&ie=UTF-8
+                  dragSelectView: 
+                    DragSelectGridView(
+                    topPadding: topPadding,
+                    itemBuilder: (BuildContext context, int index, bool selected) {
+                      Widget c = MergeSemantics(
+                        child: Directionality(
+                          textDirection: textDirection,
+                          child: assetGridItemBuilder(
+                            context,
+                            index,
+                            assets,
+                            specialItem: specialItem,
+                          ),
                         ),
-                      ),
-                    );
-                    return SelectableItem(
-                      index: index,
-                      color: Colors.blue,
-                      selected: selected,
-                      child: c,
-                      asset: assets[index],
-                      parent: this,
-                      context: context
-                    );
-                  },
-                  itemCount: assetsGridItemCount(
-                    context: context,
-                    assets: assets,
-                    placeholderCount: placeholderCount,
-                    specialItem: specialItem,
-                  ),
-                  shrinkWrap: true,
-                  // Explicitly disable semantic indexes for custom usage.
-                  addSemanticIndexes: false,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 150,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
+                      );
+                      return SelectableItem(
+                        index: index,
+                        color: Colors.blue,
+                        selected: selected,
+                        child: c,
+                        asset: assets[index],
+                        parent: this,
+                        context: context
+                      );
+                    },
+                    itemCount: assetsGridItemCount(
+                      context: context,
+                      assets: assets,
+                      placeholderCount: placeholderCount,
+                      specialItem: specialItem,
+                    ),
+                    shrinkWrap: true,
+                    // Explicitly disable semantic indexes for custom usage.
+                    addSemanticIndexes: false,
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 150,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                  )
                 )
               ]
             )
@@ -1347,9 +1353,7 @@ class DefaultAssetPickerBuilderDelegate
 
             return Directionality(
               textDirection: effectiveGridDirection(context),
-              child: ColoredBox(
-                color: theme.canvasColor,
-                child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
+              child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
                   selector: (_, DefaultAssetPickerProvider p) =>
                       p.currentAssets,
                   builder: (BuildContext context, List<AssetEntity> assets, _) {
@@ -1357,36 +1361,31 @@ class DefaultAssetPickerBuilderDelegate
                       context.bottomPadding + bottomSectionHeight,
                     );
                     appBarPreferredSize ??= appBar(context).preferredSize;
-                    return CustomScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      controller: gridScrollController,
-                      anchor: gridRevert ? anchor : 0,
-                      center: gridRevert ? gridRevertKey : null,
-                      slivers: <Widget>[
-                        if (isAppleOS(context))
-                          SliverGap.v(
-                            context.topPadding + appBarPreferredSize!.height,
-                          ),
-                        sliverGrid(context, assets),
-                        // Ignore the gap when the [anchor] is not equal to 1.
-                        if (gridRevert && anchor == 1) bottomGap,
-                        if (gridRevert)
-                          SliverToBoxAdapter(
-                            key: gridRevertKey,
-                            child: const SizedBox.shrink(),
-                          ),
-                        if (isAppleOS(context) && !gridRevert) bottomGap,
-                      ],
-                    );
+                    return 
+                        sliverGrid(context, assets);
+                      /*],
+                    );*/
                   },
                 ),
-              ),
             );
           },
         );
       },
     );
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   /// There are several conditions within this builder:
   ///  * Return item builder according to the asset's type.
@@ -2477,6 +2476,46 @@ class DefaultAssetPickerBuilderDelegate
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class DragSelectHolder extends StatelessWidget {
+  DragSelectGridView dragSelectView;
+
+  DragSelectHolder({
+    required this.dragSelectView
+  });
+
+ @override
+ Widget build(BuildContext context) {
+   return /*SizedBox(
+    width: context.size?.width,
+    height: context.size?.height,
+    child: Scaffold(
+      body:
+      */dragSelectView;
+    /*)
+   );*/
+ }
+}
 
 
 
