@@ -1280,6 +1280,7 @@ class DefaultAssetPickerBuilderDelegate
             child: Column(
               children: [
                 DragSelectGridView(
+                  gridScrollController: gridScrollController,
                   autoScrollHotspotHeight: 150,
                   itemBuilder: (BuildContext context, int index, bool selected) {
                     Widget c = MergeSemantics(
