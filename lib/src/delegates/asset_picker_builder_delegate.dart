@@ -1276,9 +1276,7 @@ class DefaultAssetPickerBuilderDelegate
 
         final textDirection = Directionality.of(context);
         Widget sliverGrid(BuildContext context, List<AssetEntity> assets) {
-          return SliverToBoxAdapter(
-            child: Column(
-              children: [
+          return 
                 DragSelectGridView(
                   gridScrollController: gridScrollController,
                   autoScrollHotspotHeight: 150,
@@ -1318,10 +1316,7 @@ class DefaultAssetPickerBuilderDelegate
                     crossAxisSpacing: 2,
                     mainAxisSpacing: 2,
                   ),
-                )
-              ]
-            )
-          );
+                );
         }
 
         return LayoutBuilder(
@@ -1362,7 +1357,9 @@ class DefaultAssetPickerBuilderDelegate
                       context.bottomPadding + bottomSectionHeight,
                     );
                     appBarPreferredSize ??= appBar(context).preferredSize;
-                    return CustomScrollView(
+                    return sliverGrid(context, assets);
+                    
+                    /*CustomScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       controller: gridScrollController,
                       anchor: gridRevert ? anchor : 0,
@@ -1382,7 +1379,7 @@ class DefaultAssetPickerBuilderDelegate
                           ),
                         if (isAppleOS(context) && !gridRevert) bottomGap,
                       ],
-                    );
+                    );*/
                   },
                 ),
               ),
