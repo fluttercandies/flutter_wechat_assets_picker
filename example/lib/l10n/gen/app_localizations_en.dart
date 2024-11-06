@@ -192,4 +192,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get customPickerInstagramLayoutDescription =>
       'The picker reproduces Instagram layout with preview and scroll animations. It\'s also published as the package insta_assets_picker.';
+
+  @override
+  String get customPickerGalleryMode => 'Gallery mode';
+
+  @override
+  String get customPickerGalleryModeDescription =>
+      'Uses a widget that shows assets with ability to perform actions on them, but not to select and return them to calling widget.';
 }

@@ -759,7 +759,8 @@ class DefaultAssetPickerViewerBuilderDelegate
             )
           : null,
       actions: [
-        if (provider != null)
+        if (provider != null &&
+            specialPickerType != SpecialPickerType.noSelection)
           Semantics(
             sortKey: ordinalSortKey(0.2),
             child: selectButton(context),

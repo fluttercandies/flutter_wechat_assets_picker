@@ -25,6 +25,15 @@ enum SpecialPickerType {
   /// 在多选模式下无论点击选择指示还是 item 都将触发选择，
   /// 而在单选模式下将直接返回点击的资源。
   noPreview,
+
+  /// Disable selection of assets.
+  /// No selection related widgets are shown, and assets can only be shown,
+  /// and allowing actions to be performed on assets by the user.
+  ///
+  /// 禁用资产选择。
+  /// 不显示与选择相关的小部件，只能显示资产，
+  /// 并允许用户对资产执行操作。
+  noSelection,
 }
 
 /// Provide an item slot for custom widget insertion.

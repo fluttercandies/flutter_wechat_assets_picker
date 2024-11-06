@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:wechat_assets_picker_demo/customs/pickers/gallery_mode.dart';
 
 import '../constants/custom_pick_method.dart';
 import '../constants/extensions.dart';
@@ -61,6 +62,15 @@ class _CustomPickerPageState extends State<CustomPickersPage>
           MaterialPageRoute<void>(builder: (_) => const InstaAssetPicker()),
         ),
       ),
+      CustomPickMethod(
+        icon: '🖼️',
+        name: context.l10n.customPickerGalleryMode,
+        description: context.l10n.customPickerGalleryModeDescription,
+        method: (BuildContext context) =>
+            Navigator.maybeOf(context)?.push<void>(
+          MaterialPageRoute<void>(builder: (_) => const AssetsGallery()),
+        ),
+      )
     ];
   }
 

@@ -804,10 +804,13 @@ class DefaultAssetPickerBuilderDelegate
   /// can be selected.
   /// * [SpecialPickerType.noPreview] Disable preview of asset; Clicking on an
   /// asset selects it.
+  /// * [SpecialPickerType.noSelection] Disable selection of assets; no select
+  /// indicator is shown.
   ///
   /// 这里包含一些特殊选择类型：
   /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
   /// * [SpecialPickerType.noPreview] 禁用资源预览。多选时单击资产将直接选中，单选时选中并返回。
+  /// * [SpecialPickerType.noSelection] 禁用资产选择。没有显示选择指示符。
   final SpecialPickerType? specialPickerType;
 
   /// Whether the picker should save the scroll offset between pushes and pops.
@@ -830,6 +833,9 @@ class DefaultAssetPickerBuilderDelegate
   /// 当前是否为微信朋友圈选择模式
   bool get isWeChatMoment =>
       specialPickerType == SpecialPickerType.wechatMoment;
+
+  /// Whether the [SpecialPickerType.noSelection] is enabled.
+  bool get isNoSelection => specialPickerType == SpecialPickerType.noSelection;
 
   /// Whether the preview of assets is enabled.
   /// 资源的预览是否启用
@@ -1447,12 +1453,14 @@ class DefaultAssetPickerBuilderDelegate
       AssetType.audio => audioItemBuilder(context, currentIndex, asset),
       AssetType.other => const SizedBox.shrink(),
     };
+
     final Widget content = Stack(
       key: ValueKey<String>(asset.id),
       children: <Widget>[
         builder,
         selectedBackdrop(context, currentIndex, asset),
-        if (!isWeChatMoment || asset.type != AssetType.video)
+        if ((!isWeChatMoment || asset.type != AssetType.video) &&
+            !isNoSelection)
           selectIndicator(context, index, asset),
         itemBannedIndicator(context, asset),
       ],

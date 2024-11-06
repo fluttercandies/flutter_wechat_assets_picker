@@ -54,5 +54,7 @@
   "customPickerMultiTabTab2": "Videos",
   "customPickerMultiTabTab3": "Images",
   "customPickerInstagramLayoutName": "Instagram layout picker",
-  "customPickerInstagramLayoutDescription": "The picker reproduces Instagram layout with preview and scroll animations. It's also published as the package insta_assets_picker."
+  "customPickerInstagramLayoutDescription": "The picker reproduces Instagram layout with preview and scroll animations. It's also published as the package insta_assets_picker.",
+  "customPickerGalleryMode": "Gallery mode",
+  "customPickerGalleryModeDescription": "Uses a widget that shows assets with ability to perform actions on them, but not to select and return them to calling widget."
 }

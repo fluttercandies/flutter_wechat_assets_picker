@@ -268,6 +268,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Yotamho",
+      "name": "Yotam Hochman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24762809?s=400&u=7e94b2cd1bd998e34794944e12247db4bff7214f&v=4",
+      "profile": "https://github.com/Yotamho",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
