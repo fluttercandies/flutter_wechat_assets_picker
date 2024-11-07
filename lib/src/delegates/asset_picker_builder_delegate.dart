@@ -409,13 +409,16 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        alignment: AlignmentDirectional.centerEnd,
+        width: double.infinity,
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: AlignmentDirectional.bottomCenter,
             end: AlignmentDirectional.topCenter,
-            colors: <Color>[theme.dividerColor, Colors.transparent],
+            colors: <Color>[
+              theme.canvasColor.withAlpha(128),
+              Colors.transparent,
+            ],
           ),
         ),
         child: Container(
@@ -429,11 +432,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           child: ScaleText(
             textDelegate.gifIndicator,
             style: TextStyle(
-              color: isAppleOS(context)
-                  ? theme.textTheme.bodyMedium?.color
-                  : theme.primaryColor,
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
+              color: theme.textTheme.bodyMedium?.color,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
             ),
             semanticsLabel: semanticsTextDelegate.gifIndicator,
             strutStyle: const StrutStyle(forceStrutHeight: true, height: 1),
@@ -1232,18 +1233,13 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
-
   @override
   Widget assetsGridBuilder(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
     final bool gridRevert = effectiveShouldRevertGrid(context);
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
-      builder: (
-        BuildContext context,
-        PathWrapper<AssetPathEntity>? wrapper,
-        _,
-      ) {
+      builder: (context, wrapper, _) {
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
         final Widget? specialItem;
@@ -1574,6 +1570,7 @@ class DefaultAssetPickerBuilderDelegate
               hint += ', ${asset.title}';
             }
             return Semantics(
+              key: ValueKey('${asset.id}-semantics'),
               button: false,
               enabled: !isBanned,
               excludeSemantics: true,
@@ -1751,7 +1748,6 @@ class DefaultAssetPickerBuilderDelegate
           onPressed: shouldAllowConfirm
               ? () {
                   Navigator.maybeOf(context)?.maybePop(p.selectedAssets);
-                  Navigator.maybeOf(context)?.maybePop(p.selectedAssets);
                 }
               : null,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1808,6 +1804,16 @@ class DefaultAssetPickerBuilderDelegate
                 image: imageProvider,
                 failedItemBuilder: failedItemBuilder,
               ),
+            ),
+            FutureBuilder(
+              future: imageProvider.imageFileType,
+              builder: (context, snapshot) {
+                if (snapshot.data case final type?
+                    when type == ImageFileType.gif) {
+                  return gifIndicator(context, asset);
+                }
+                return const SizedBox.shrink();
+              },
             ),
             if (type == SpecialImageType.gif) // 如果为GIF则显示标识
               gifIndicator(context, asset),
@@ -2244,12 +2250,6 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
-
-
-
-
-
-
   @override
   Widget selectIndicator(BuildContext context, int index, AssetEntity asset) {
     final double indicatorSize =
@@ -2299,18 +2299,10 @@ class DefaultAssetPickerBuilderDelegate
           ),
         );
         if (isPreviewEnabled) {
-          return SelectableItem(
-            index: index,
-            color: Colors.blue,
-            selected: selected,
-            parent: this,
-            context: context,
-            asset: asset,
-            child: PositionedDirectional(
-              top: 0,
-              end: 0,
-              child: selectorWidget,
-            )
+          return PositionedDirectional(
+            top: 0,
+            end: 0,
+            child: selectorWidget,
           );
         }
         return selectorWidget;
@@ -2545,25 +2537,8 @@ class DefaultAssetPickerBuilderDelegate
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/// This class is for the drag select.
+/// 该类用于拖动选择。
 class SelectableItem extends StatefulWidget {
   const SelectableItem({
     Key? key,
@@ -2614,129 +2589,6 @@ class _SelectableItemState extends State<SelectableItem>
   Widget build(BuildContext context) {
     return Container(
       child: widget.child
-    );
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class SelectableItem22 extends StatefulWidget {
-  const SelectableItem22({
-    Key? key,
-    required this.index,
-    required this.color,
-    required this.selected,
-  }) : super(key: key);
-
-  final int index;
-  final MaterialColor color;
-  final bool selected;
-
-  @override
-  _SelectableItemState22 createState() => _SelectableItemState22();
-}
-
-class _SelectableItemState22 extends State<SelectableItem22>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      value: widget.selected ? 1 : 0,
-      duration: kThemeChangeDuration,
-      vsync: this,
-    );
-
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.ease,
-      ),
-    );
-  }
-
-  @override
-  void didUpdateWidget(SelectableItem22 oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.selected != widget.selected) {
-      if (widget.selected) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _scaleAnimation,
-      builder: (context, child) {
-        return Container(
-          child: Transform.scale(
-            scale: _scaleAnimation.value,
-            child: DecoratedBox(
-              child: child,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(2),
-                color: calculateColor(),
-              ),
-            ),
-          ),
-        );
-      },
-      child: Container(
-        alignment: Alignment.center,
-        child: Text(
-          'Item\n#${widget.index}',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18, color: Colors.white),
-        ),
-      ),
-    );
-  }
-
-  Color? calculateColor() {
-    return Color.lerp(
-      widget.color.shade500,
-      widget.color.shade900,
-      _controller.value,
     );
   }
 }
