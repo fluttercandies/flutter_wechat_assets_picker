@@ -29,13 +29,10 @@ enum SpecialPickerType {
   /// Drag and Select.
   /// 禁用资源预览
   ///
-  /// There is no preview mode when clicking grid items.
-  /// In multiple select mode, any click (either on the select indicator or on
-  /// the asset itself) will select the asset.
-  /// In single select mode, any click directly selects the asset and returns.
-  /// 用户在点击网格的 item 时无法进入预览。
-  /// 在多选模式下无论点击选择指示还是 item 都将触发选择，
-  /// 而在单选模式下将直接返回点击的资源。
+  /// The user can drag and select items. Must be in multiple select mode.
+  /// Triggers all the settings of preview mode plus drag and select.
+  /// 用户可以拖动并选择项目。必须处于多选模式
+  /// 触发预览模式的所有设置以及拖动和选择。
   dragSelect,
 }
 
