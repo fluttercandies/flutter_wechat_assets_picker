@@ -329,6 +329,24 @@ class PickMethod {
     );
   }
 
+    factory PickMethod.dragSelect(BuildContext context, int maxAssetsCount) {
+    return PickMethod(
+      icon: '📲',
+      name: context.l10n.pickMethodDragSelectName,
+      description: context.l10n.pickMethodDragSelectDescription,
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          pickerConfig: AssetPickerConfig(
+            maxAssets: maxAssetsCount,
+            selectedAssets: assets,
+            specialPickerType: SpecialPickerType.dragSelect,
+          ),
+        );
+      },
+    );
+  }
+
   factory PickMethod.keepScrollOffset({
     required BuildContext context,
     required DefaultAssetPickerBuilderDelegate Function() delegate,

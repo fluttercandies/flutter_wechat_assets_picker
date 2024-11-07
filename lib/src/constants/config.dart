@@ -119,12 +119,16 @@ class AssetPickerConfig {
   ///   no more images can be selected.
   /// * [SpecialPickerType.noPreview] Disable preview of asset;
   ///   Clicking on an asset selects it.
+  /// * [SpecialPickerType.dragSelect] User able to drag
+  ///   and select assets.
   ///
   /// 这里包含一些特殊选择类型：
   /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。
   ///   当用户选择了视频，将不能选择图片。
   /// * [SpecialPickerType.noPreview] 禁用资源预览。
   ///   多选时单击资产将直接选中，单选时选中并返回。
+  /// * [SpecialPickerType.dragSelect] 用户可以拖动
+  /// 并选择资产。
   final SpecialPickerType? specialPickerType;
 
   /// Whether the picker should save the scroll offset between pushes and pops.

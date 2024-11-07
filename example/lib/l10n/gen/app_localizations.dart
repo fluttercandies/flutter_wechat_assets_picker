@@ -8,6 +8,8 @@ import 'package:intl/intl.dart' as intl;
 import 'app_localizations_en.dart';
 import 'app_localizations_zh.dart';
 
+// ignore_for_file: type=lint
+
 /// Callers can lookup localized strings with an instance of AppLocalizations
 /// returned by `AppLocalizations.of(context)`.
 ///
@@ -275,6 +277,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You cannot preview assets during the picking, the behavior is like the WhatsApp/MegaTok pattern.'**
   String get pickMethodNoPreviewDescription;
+
+  /// No description provided for @pickMethodDragSelectName.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag Select'**
+  String get pickMethodDragSelectName;
+
+  /// No description provided for @pickMethodDragSelectDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You can drag and select assets in this mode.'**
+  String get pickMethodDragSelectDescription;
 
   /// No description provided for @pickMethodKeepScrollOffsetName.
   ///

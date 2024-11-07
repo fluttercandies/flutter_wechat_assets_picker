@@ -30,6 +30,8 @@
   "pickMethodPrependItemDescription": "网格的靠前位置会添加一个自定义的 widget。",
   "pickMethodNoPreviewName": "禁止预览",
   "pickMethodNoPreviewDescription": "无法预览选择的资源，与 WhatsApp/MegaTok 的行为类似。",
+  "pickMethodDragSelectName": "拖动选择",
+  "pickMethodDragSelectDescription": "您可以在此模式下拖动并选择资源。",
   "pickMethodKeepScrollOffsetName": "保持滚动位置",
   "pickMethodKeepScrollOffsetDescription": "可以从上次滚动到的位置再次开始选择。",
   "pickMethodChangeLanguagesName": "更改语言",

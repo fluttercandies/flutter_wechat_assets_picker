@@ -61,6 +61,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
         },
       ),
       PickMethod.noPreview(context, maxAssetsCount),
+      PickMethod.dragSelect(context, maxAssetsCount),
       PickMethod.customizableTheme(context, maxAssetsCount),
       PickMethod.pathNameBuilder(context, maxAssetsCount),
       PickMethod.customFilterOptions(context, maxAssetsCount),

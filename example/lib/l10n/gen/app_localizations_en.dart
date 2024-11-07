@@ -1,5 +1,7 @@
 import 'app_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
@@ -105,6 +107,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pickMethodNoPreviewDescription =>
       'You cannot preview assets during the picking, the behavior is like the WhatsApp/MegaTok pattern.';
+
+  @override
+  String get pickMethodDragSelectName => 'Drag Select';
+
+  @override
+  String get pickMethodDragSelectDescription =>
+      'You can drag and select assets in this mode.';
 
   @override
   String get pickMethodKeepScrollOffsetName => 'Keep scroll offset';

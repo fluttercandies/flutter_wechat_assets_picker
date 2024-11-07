@@ -1,5 +1,7 @@
 import 'app_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Chinese (`zh`).
 class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
@@ -99,6 +101,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get pickMethodNoPreviewDescription =>
       '无法预览选择的资源，与 WhatsApp/MegaTok 的行为类似。';
+
+  @override
+  String get pickMethodDragSelectName => '拖动选择';
+
+  @override
+  String get pickMethodDragSelectDescription => '您可以在此模式下拖动并选择资源。';
 
   @override
   String get pickMethodKeepScrollOffsetName => '保持滚动位置';
