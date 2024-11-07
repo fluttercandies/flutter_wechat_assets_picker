@@ -1748,6 +1748,7 @@ class DefaultAssetPickerBuilderDelegate
           onPressed: shouldAllowConfirm
               ? () {
                   Navigator.maybeOf(context)?.maybePop(p.selectedAssets);
+                  Navigator.maybeOf(context)?.maybePop(p.selectedAssets);
                 }
               : null,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
