@@ -1281,27 +1281,70 @@ class DefaultAssetPickerBuilderDelegate
         final textDirection = Directionality.of(context);
 
         Widget sliverGrid(BuildContext context, List<AssetEntity> assets,
-          double anchor, SliverGap bottomGap) {
-          return CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            controller: gridScrollController,
-            anchor: gridRevert ? anchor : 0,
-            center: gridRevert ? gridRevertKey : null,
-            slivers: <Widget>[
-              if (isAppleOS(context))
-                SliverGap.v(
-                  context.topPadding + appBarPreferredSize!.height,
-                ),
-              SliverGrid(
-                delegate: SliverChildBuilderDelegate(
-                  (context, int index) {
+            double anchor, SliverGap bottomGap) {
+          return SliverGrid(
+            delegate: SliverChildBuilderDelegate(
+              (context, int index) {
+                if (gridRevert) {
+                  if (index < placeholderCount) {
+                    return const SizedBox.shrink();
+                  }
+                  index -= placeholderCount;
+                }
+                return MergeSemantics(
+                  child: Directionality(
+                    textDirection: textDirection,
+                    child: assetGridItemBuilder(
+                      context,
+                      index,
+                      assets,
+                      specialItem: specialItem,
+                    ),
+                  ),
+                );
+              },
+              childCount: assetsGridItemCount(
+                context: context,
+                assets: assets,
+                placeholderCount: placeholderCount,
+                specialItem: specialItem,
+              ),
+              findChildIndexCallback: (Key? key) {
+                if (key is ValueKey<String>) {
+                  return findChildIndexBuilder(
+                    id: key.value,
+                    assets: assets,
+                    placeholderCount: placeholderCount,
+                  );
+                }
+                return null;
+              },
+              // Explicitly disable semantic indexes for custom usage.
+              addSemanticIndexes: false,
+            ),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: gridCount,
+              mainAxisSpacing: itemSpacing,
+              crossAxisSpacing: itemSpacing,
+            ),
+          );
+        }
+
+        Widget dragSelectGrid(BuildContext context, List<AssetEntity> assets,
+            double anchor, SliverGap bottomGap) {
+          return SliverToBoxAdapter(
+            child: Column(
+              children: [
+                DragSelectGridView(
+                  autoScrollHotspotHeight: 100,
+                  itemBuilder: (BuildContext context, int index, bool selected) {
                     if (gridRevert) {
                       if (index < placeholderCount) {
                         return const SizedBox.shrink();
                       }
                       index -= placeholderCount;
                     }
-                    return MergeSemantics(
+                    Widget c = MergeSemantics(
                       child: Directionality(
                         textDirection: textDirection,
                         child: assetGridItemBuilder(
@@ -1312,92 +1355,47 @@ class DefaultAssetPickerBuilderDelegate
                         ),
                       ),
                     );
+                    return SelectableItem(
+                      index: index,
+                      color: Colors.blue,
+                      selected: selected,
+                      child: c,
+                      asset: assets[index],
+                      parent: this,
+                      context: context
+                    );
                   },
-                  childCount: assetsGridItemCount(
+                  itemCount: assetsGridItemCount(
                     context: context,
                     assets: assets,
                     placeholderCount: placeholderCount,
                     specialItem: specialItem,
                   ),
-                  findChildIndexCallback: (Key? key) {
-                    if (key is ValueKey<String>) {
-                      return findChildIndexBuilder(
-                        id: key.value,
-                        assets: assets,
-                        placeholderCount: placeholderCount,
-                      );
-                    }
-                    return null;
-                  },
+                  shrinkWrap: true,
                   // Explicitly disable semantic indexes for custom usage.
                   addSemanticIndexes: false,
-                ),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: gridCount,
-                  mainAxisSpacing: itemSpacing,
-                  crossAxisSpacing: itemSpacing,
-                ),
-              ),
-              // Ignore the gap when the [anchor] is not equal to 1.
-              if (gridRevert && anchor == 1) bottomGap,
-              if (gridRevert)
-                SliverToBoxAdapter(
-                  key: gridRevertKey,
-                  child: const SizedBox.shrink(),
-                ),
-              if (isAppleOS(context) && !gridRevert) bottomGap,
-            ],
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: gridCount,
+                    crossAxisSpacing: 2,
+                    mainAxisSpacing: 2,
+                  ),
+                )
+              ]
+            )
           );
         }
 
-        Widget dragSelectGrid(BuildContext context, List<AssetEntity> assets,
+        Widget createGrid(BuildContext context, List<AssetEntity> assets,
           double anchor, SliverGap bottomGap) {
-          return DragSelectGridView(
-            autoScrollHotspotHeight: 100,
-            itemBuilder: (BuildContext context, int index, bool selected) {
-              if (gridRevert) {
-                if (index < placeholderCount) {
-                  return const SizedBox.shrink();
-                }
-                index -= placeholderCount;
-              }
-              Widget c = MergeSemantics(
-                child: Directionality(
-                  textDirection: textDirection,
-                  child: assetGridItemBuilder(
-                    context,
-                    index,
-                    assets,
-                    specialItem: specialItem,
-                  ),
-                ),
-              );
-              return SelectableItem(
-                index: index,
-                color: Colors.blue,
-                selected: selected,
-                child: c,
-                asset: assets[index],
-                parent: this,
-                context: context
-              );
-            },
-            itemCount: assetsGridItemCount(
-              context: context,
-              assets: assets,
-              placeholderCount: placeholderCount,
-              specialItem: specialItem,
-            ),
-            shrinkWrap: true,
-            // Explicitly disable semantic indexes for custom usage.
-            addSemanticIndexes: false,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: gridCount,
-              crossAxisSpacing: 2,
-              mainAxisSpacing: 2,
-            ),
-          );
+        if(isDragEnabled == true)
+        {
+          return dragSelectGrid(context, assets, anchor, bottomGap);
         }
+        else
+        {
+          return sliverGrid(context, assets, anchor, bottomGap);
+        }
+      }
 
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -1437,14 +1435,27 @@ class DefaultAssetPickerBuilderDelegate
                       context.bottomPadding + bottomSectionHeight,
                     );
                     appBarPreferredSize ??= appBar(context).preferredSize;
-                    if(isDragEnabled == true)
-                    {
-                      return dragSelectGrid(context, assets, anchor, bottomGap);
-                    }
-                    else
-                    {
-                      return sliverGrid(context, assets, anchor, bottomGap);
-                    }
+                    return CustomScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      controller: gridScrollController,
+                      anchor: gridRevert ? anchor : 0,
+                      center: gridRevert ? gridRevertKey : null,
+                      slivers: <Widget>[
+                        if (isAppleOS(context))
+                          SliverGap.v(
+                            context.topPadding + appBarPreferredSize!.height,
+                          ),
+                        createGrid(context, assets, anchor, bottomGap),
+                        // Ignore the gap when the [anchor] is not equal to 1.
+                        if (gridRevert && anchor == 1) bottomGap,
+                        if (gridRevert)
+                          SliverToBoxAdapter(
+                            key: gridRevertKey,
+                            child: const SizedBox.shrink(),
+                          ),
+                        if (isAppleOS(context) && !gridRevert) bottomGap,
+                      ]
+                    );
                   },
                 ),
               ),
@@ -2141,7 +2152,9 @@ class DefaultAssetPickerBuilderDelegate
                 Feedback.forTap(context);
                 context.read<DefaultAssetPickerProvider>().switchPath(wrapper);
                 isSwitchingPath.value = false;
-                gridScrollController.jumpTo(0);
+                if (gridScrollController.hasClients) {
+                  gridScrollController.jumpTo(0);
+                }
               },
               child: SizedBox(
                 height: isAppleOS(context) ? 64 : 52,
