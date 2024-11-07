@@ -329,7 +329,7 @@ class PickMethod {
     );
   }
 
-    factory PickMethod.dragSelect(BuildContext context, int maxAssetsCount) {
+  factory PickMethod.dragSelect(BuildContext context, int maxAssetsCount) {
     return PickMethod(
       icon: '📲',
       name: context.l10n.pickMethodDragSelectName,
