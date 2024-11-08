@@ -9,6 +9,14 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+**None.**
+
+## 9.4.0
+
+### Improvements
+
+- Allows `extended_image: ^9.0.0`.
+
 ### Fixes
 
 - Allows assets changing when no path previously.
