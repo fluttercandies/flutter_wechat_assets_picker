@@ -119,6 +119,7 @@ class AssetPickerDelegate {
         themeColor: pickerConfig.themeColor,
         locale: Localizations.maybeLocaleOf(context),
         shouldAutoplayPreview: pickerConfig.shouldAutoplayPreview,
+        enableDragAndSelect: pickerConfig.enableDragAndSelect,
       ),
     );
     final List<AssetEntity>? result = await Navigator.maybeOf(

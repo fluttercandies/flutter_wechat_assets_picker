@@ -47,6 +47,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.pathNameBuilder,
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
+    this.enableDragAndSelect = true,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
@@ -129,6 +130,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
   final AssetsChangeRefreshPredicate<AssetPathEntity>?
       assetsChangeRefreshPredicate;
+
+  /// Should enable drag and select function.
+  /// 是否开启拖拽选择
+  final bool enableDragAndSelect;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -755,6 +760,7 @@ class DefaultAssetPickerBuilderDelegate
     super.themeColor,
     super.textDelegate,
     super.locale,
+    super.enableDragAndSelect,
     this.gridThumbnailSize = defaultAssetGridPreviewSize,
     this.previewThumbnailSize,
     this.specialPickerType,
@@ -1268,6 +1274,10 @@ class DefaultAssetPickerBuilderDelegate
             context.topPadding + appBarPreferredSize!.height;
 
         final textDirection = Directionality.of(context);
+        final provider = Provider.of<DefaultAssetPickerProvider>(context);
+        final double screenWidth = MediaQuery.sizeOf(context).width;
+        final double itemSize = screenWidth / gridCount;
+
         Widget sliverGrid(BuildContext context, List<AssetEntity> assets) {
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
@@ -1278,15 +1288,39 @@ class DefaultAssetPickerBuilderDelegate
                   }
                   index -= placeholderCount;
                 }
+
+                Widget child = assetGridItemBuilder(
+                  context,
+                  index,
+                  assets,
+                  specialItem: specialItem,
+                );
+
+                if (enableDragAndSelect) {
+                  child = GestureDetector(
+                    onLongPressStart: (d) => provider.onDragStart(
+                      context,
+                      d,
+                      index,
+                      assets[index],
+                    ),
+                    onLongPressMoveUpdate: (d) => provider.onDragUpdate(
+                      context,
+                      d,
+                      itemSize,
+                      gridCount,
+                      topPadding,
+                    ),
+                    onLongPressCancel: provider.resetDraggingStatus,
+                    onLongPressEnd: provider.onDragEnd,
+                    child: child,
+                  );
+                }
+
                 return MergeSemantics(
                   child: Directionality(
                     textDirection: textDirection,
-                    child: assetGridItemBuilder(
-                      context,
-                      index,
-                      assets,
-                      specialItem: specialItem,
-                    ),
+                    child: child,
                   ),
                 );
               },
