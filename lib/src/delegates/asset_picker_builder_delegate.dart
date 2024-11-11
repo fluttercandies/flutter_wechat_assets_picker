@@ -176,10 +176,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 选择器是否为单选模式
   bool get isSingleAssetMode;
 
-  /// Whether the delegate should build the special item.
-  /// 是否需要构建自定义 item
-  bool get shouldBuildSpecialItem => specialItems.isNotEmpty;
-
   /// Space between assets item widget.
   /// 资源部件之间的间隔
   double get itemSpacing => 2;
@@ -1121,30 +1117,19 @@ class DefaultAssetPickerBuilderDelegate
   Widget androidLayout(BuildContext context) {
     return AssetPickerAppBarWrapper(
       appBar: appBar(context),
-      body: Consumer<DefaultAssetPickerProvider>(
-        builder: (BuildContext context, DefaultAssetPickerProvider p, _) {
-          final bool shouldDisplayAssets =
-              p.hasAssetsToDisplay || shouldBuildSpecialItem;
-          return AnimatedSwitcher(
-            duration: switchingPathDuration,
-            child: shouldDisplayAssets
-                ? Stack(
-                    children: <Widget>[
-                      RepaintBoundary(
-                        child: Column(
-                          children: <Widget>[
-                            Expanded(child: assetsGridBuilder(context)),
-                            bottomActionBar(context),
-                          ],
-                        ),
-                      ),
-                      pathEntityListBackdrop(context),
-                      pathEntityListWidget(context),
-                    ],
-                  )
-                : loadingIndicator(context),
-          );
-        },
+      body: Stack(
+        children: <Widget>[
+          RepaintBoundary(
+            child: Column(
+              children: <Widget>[
+                Expanded(child: assetsGridBuilder(context)),
+                bottomActionBar(context),
+              ],
+            ),
+          ),
+          pathEntityListBackdrop(context),
+          pathEntityListWidget(context),
+        ],
       ),
     );
   }
@@ -1172,27 +1157,12 @@ class DefaultAssetPickerBuilderDelegate
       return Stack(
         children: <Widget>[
           Positioned.fill(
-            child: Consumer<DefaultAssetPickerProvider>(
-              builder: (_, DefaultAssetPickerProvider p, __) {
-                final Widget child;
-                final bool shouldDisplayAssets =
-                    p.hasAssetsToDisplay || shouldBuildSpecialItem;
-                if (shouldDisplayAssets) {
-                  child = Stack(
-                    children: <Widget>[
-                      gridLayout(context),
-                      pathEntityListBackdrop(context),
-                      pathEntityListWidget(context),
-                    ],
-                  );
-                } else {
-                  child = loadingIndicator(context);
-                }
-                return AnimatedSwitcher(
-                  duration: switchingPathDuration,
-                  child: child,
-                );
-              },
+            child: Stack(
+              children: <Widget>[
+                gridLayout(context),
+                pathEntityListBackdrop(context),
+                pathEntityListWidget(context),
+              ],
             ),
           ),
           appBar(context),

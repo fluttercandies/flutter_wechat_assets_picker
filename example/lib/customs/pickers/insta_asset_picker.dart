@@ -673,8 +673,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     appBarPreferredSize ??= appBar(context).preferredSize;
     return Consumer<DefaultAssetPickerProvider>(
       builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
-        final bool shouldDisplayAssets =
-            p.hasAssetsToDisplay || shouldBuildSpecialItem;
+        final bool shouldDisplayAssets = p.hasAssetsToDisplay;
         _initializePreviewAsset(p, shouldDisplayAssets);
 
         return AnimatedSwitcher(
