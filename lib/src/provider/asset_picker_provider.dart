@@ -337,7 +337,8 @@ class DefaultAssetPickerProvider
     final fog = filterOptions;
     if (fog == null) {
       options = AdvancedCustomFilter(
-        orderBy: [OrderByItem.desc(CustomColumns.base.createDate)],
+        // Same as WeChat.
+        orderBy: [OrderByItem.desc(CustomColumns.base.modifiedDate)],
       );
     } else if (fog is FilterOptionGroup) {
       final newOptions = FilterOptionGroup(
