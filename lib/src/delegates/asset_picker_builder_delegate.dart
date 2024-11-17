@@ -48,7 +48,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.pathNameBuilder,
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
-    this.enableDragAndSelect = true,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
@@ -131,10 +130,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
   final AssetsChangeRefreshPredicate<AssetPathEntity>?
       assetsChangeRefreshPredicate;
-
-  /// Should enable drag and select function.
-  /// 是否开启拖拽选择
-  final bool enableDragAndSelect;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -761,12 +756,12 @@ class DefaultAssetPickerBuilderDelegate
     super.themeColor,
     super.textDelegate,
     super.locale,
-    super.enableDragAndSelect,
     this.gridThumbnailSize = defaultAssetGridPreviewSize,
     this.previewThumbnailSize,
     this.specialPickerType,
     this.keepScrollOffset = false,
     this.shouldAutoplayPreview = false,
+    this.enableDragAndSelect = true,
   }) {
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
@@ -824,6 +819,10 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the preview should auto play.
   /// 预览是否自动播放
   final bool shouldAutoplayPreview;
+
+  /// Should enable drag and select function.
+  /// 是否开启拖拽选择
+  final bool enableDragAndSelect;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
