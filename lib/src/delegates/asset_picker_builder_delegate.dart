@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
+import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -1228,6 +1229,158 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
+  /// 拖拽状态
+  /// Drag status
+  bool isInDragging = false;
+
+  /// 边缘自动滚动控制器
+  /// Edge Auto Scrolling Detector. Use to support edge auto scroll when drag position reach the edge of device's screen.
+  EdgeDraggingAutoScroller? _autoScroller;
+
+  // An eyeballed value for a smooth scrolling experience.
+  static const double _kDefaultAutoScrollVelocityScalar = 50;
+
+  /// 起始选择序号
+  /// Item index of the first selected item
+  int initialSelectedIdx = -1;
+
+  /// 拖拽选择 或 拖拽取消选择
+  /// Drag to select or deselect state
+  bool dragSelect = true;
+
+  /// 长按启动拖拽
+  /// Long Press to enable drag and select
+  void onDragStart(
+    BuildContext context,
+    LongPressStartDetails details,
+    int index,
+    AssetEntity entity,
+  ) {
+    isInDragging = true;
+
+    final scrollableState = _checkScrollableStatePresent(context);
+    if (scrollableState == null) {
+      return;
+    }
+
+    _autoScroller = EdgeDraggingAutoScroller(
+      scrollableState,
+      velocityScalar: _kDefaultAutoScrollVelocityScalar,
+    );
+
+    initialSelectedIdx = index;
+
+    dragSelect = !provider.selectedAssets.contains(entity);
+  }
+
+  void onDragUpdate(
+    BuildContext context,
+    LongPressMoveUpdateDetails details,
+    double itemSize,
+    int gridCount,
+    double topPadding,
+  ) {
+    if (!isInDragging) {
+      return;
+    }
+
+    if (dragSelect && provider.selectedAssets.length == provider.maxAssets) {
+      return;
+    }
+
+    final scrollableState = _checkScrollableStatePresent(context);
+    if (scrollableState == null) {
+      return;
+    }
+
+    final column = _getDragPositionIndex(details.globalPosition.dx, itemSize);
+    final row = _getDragPositionIndex(
+      details.globalPosition.dy -
+          topPadding -
+          (View.of(context).viewPadding.top /
+              View.of(context).devicePixelRatio) +
+          scrollableState.position.pixels,
+      itemSize,
+    );
+
+    final currentDragIndex = row * gridCount + column;
+
+    List<AssetEntity> filteredAssetList = <AssetEntity>[];
+    // add asset
+    if (currentDragIndex < initialSelectedIdx) {
+      filteredAssetList = provider.currentAssets
+          .getRange(
+            currentDragIndex,
+            math.min(initialSelectedIdx + 1, provider.currentAssets.length),
+          )
+          .toList()
+        ..reversed;
+    } else {
+      filteredAssetList = provider.currentAssets
+          .getRange(
+            initialSelectedIdx,
+            math.min(currentDragIndex + 1, provider.currentAssets.length),
+          )
+          .toList();
+    }
+
+    filteredAssetList.forEach(
+      dragSelect ? provider.selectAsset : provider.unSelectAsset,
+    );
+
+    _autoScroller?.startAutoScrollIfNecessary(
+      Rect.fromLTWH(
+        (column + 1) * itemSize,
+        details.globalPosition.dy > MediaQuery.sizeOf(context).height * 0.8
+            ? (row + 1) * itemSize
+            : math.max(topPadding, details.globalPosition.dy),
+        itemSize,
+        itemSize,
+      ),
+    );
+  }
+
+  void onDragEnd(LongPressEndDetails details) {
+    resetDraggingStatus();
+  }
+
+  /// 复原拖拽状态
+  /// Reset dragging status
+  void resetDraggingStatus() {
+    isInDragging = false;
+    initialSelectedIdx = -1;
+    dragSelect = true;
+    _autoScroller?.stopAutoScroll();
+    _autoScroller = null;
+  }
+
+  /// 检查[Scrollable] state是否存在
+  ///
+  ScrollableState? _checkScrollableStatePresent(BuildContext context) {
+    final scrollable = Scrollable.maybeOf(context);
+    assert(
+      scrollable != null,
+      'To use drag and select function, Scrollable state must be the present to get the actual item position.',
+    );
+    assert(
+      scrollable?.position.axis == Axis.vertical,
+      'To use drag and select function. The Scrollable Axis must be in vertical direction',
+    );
+
+    if (scrollable == null || scrollable.position.axis != Axis.vertical) {
+      resetDraggingStatus();
+      return null;
+    }
+
+    return scrollable;
+  }
+
+  /// 获取坐标
+  /// Get Coordinate Helper
+  int _getDragPositionIndex(double delta, double itemSize) {
+    return delta ~/ itemSize;
+  }
+
   @override
   Widget assetsGridBuilder(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
@@ -1274,7 +1427,6 @@ class DefaultAssetPickerBuilderDelegate
             context.topPadding + appBarPreferredSize!.height;
 
         final textDirection = Directionality.of(context);
-        final provider = Provider.of<DefaultAssetPickerProvider>(context);
         final double screenWidth = MediaQuery.sizeOf(context).width;
         final double itemSize = screenWidth / gridCount;
 
@@ -1298,21 +1450,21 @@ class DefaultAssetPickerBuilderDelegate
 
                 if (enableDragAndSelect) {
                   child = GestureDetector(
-                    onLongPressStart: (d) => provider.onDragStart(
+                    onLongPressStart: (d) => onDragStart(
                       context,
                       d,
                       index,
                       assets[index],
                     ),
-                    onLongPressMoveUpdate: (d) => provider.onDragUpdate(
+                    onLongPressMoveUpdate: (d) => onDragUpdate(
                       context,
                       d,
                       itemSize,
                       gridCount,
                       topPadding,
                     ),
-                    onLongPressCancel: provider.resetDraggingStatus,
-                    onLongPressEnd: provider.onDragEnd,
+                    onLongPressCancel: resetDraggingStatus,
+                    onLongPressEnd: onDragEnd,
                     child: child,
                   );
                 }
