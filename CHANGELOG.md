@@ -11,6 +11,32 @@ that can be found in the LICENSE file. -->
 
 *None.*
 
+## 9.4.1
+
+### Improvements
+
+- Improves the default sort conditions.
+
+### Fixes
+
+- Fixes selecting when reached the max asset limit in the preview.
+
+## 9.4.0
+
+### Improvements
+
+- Allows `extended_image: ^9.0.0`.
+
+### Fixes
+
+- Allows assets changing when no path previously.
+
+## 9.3.3
+
+### Fixes
+
+- Recovers the compatibility with Flutter 3.16.
+
 ## 9.3.2
 
 ### Improvements
