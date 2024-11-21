@@ -272,7 +272,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   }
 
   void selectAsset(Asset entity) {
-    if (maxAssets != null && selectedCount >= maxAssets!) {
+    if (maxAssets != null && selectedCount > maxAssets!) {
       return;
     }
     provider?.selectAsset(entity);
