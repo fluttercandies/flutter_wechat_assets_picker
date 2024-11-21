@@ -9,7 +9,19 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+### Improvements
+
+- Improves the default sort conditions.
+
+## 9.4.0
+
+### Improvements
+
+- Allows `extended_image: ^9.0.0`.
+
+### Fixes
+
+- Allows assets changing when no path previously.
 
 ## 9.3.3
 

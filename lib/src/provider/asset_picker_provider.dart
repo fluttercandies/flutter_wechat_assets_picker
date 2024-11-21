@@ -3,6 +3,7 @@
 // in the LICENSE file.
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
@@ -333,14 +334,10 @@ class DefaultAssetPickerProvider
     bool onlyAll = false,
     bool keepPreviousCount = false,
   }) async {
-    final PMFilter options;
+    final PMFilter? options;
     final fog = filterOptions;
-    if (fog == null) {
-      options = AdvancedCustomFilter(
-        orderBy: [OrderByItem.desc(CustomColumns.base.createDate)],
-      );
-    } else if (fog is FilterOptionGroup) {
-      final newOptions = FilterOptionGroup(
+    if (fog is FilterOptionGroup) {
+      options = FilterOptionGroup(
         imageOption: const FilterOption(
           sizeConstraint: SizeConstraint(ignoreSize: true),
         ),
@@ -352,9 +349,11 @@ class DefaultAssetPickerProvider
         containsPathModified: sortPathsByModifiedDate,
         createTimeCond: DateTimeCond.def().copyWith(ignore: true),
         updateTimeCond: DateTimeCond.def().copyWith(ignore: true),
+      )..merge(fog);
+    } else if (fog == null && Platform.isAndroid) {
+      options = AdvancedCustomFilter(
+        orderBy: [OrderByItem.desc(CustomColumns.android.dateTaken)],
       );
-      newOptions.merge(fog);
-      options = newOptions;
     } else {
       options = fog;
     }
