@@ -9,7 +9,9 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-**None.**
+### Improvements
+
+- Improves the default sort conditions.
 
 ## 9.4.0
 
