@@ -115,8 +115,6 @@ class AssetGridDragSelectionAggregator {
       delegate.selectAsset(context, asset, currentDragIndex, !dragSelect);
     }
 
-    // dragSelect ? provider.selectAsset : provider.unSelectAsset,
-
     final bool stopAutoScroll =
         (!dragSelect && delegate.provider.selectedAssets.isEmpty) ||
             (dragSelect &&
@@ -157,8 +155,12 @@ class AssetGridDragSelectionAggregator {
     _autoScroller = null;
   }
 
-  /// 检查[Scrollable] state是否存在
+  /// 检查 [Scrollable] state是否存在
+  /// Check if the [Scrollable] state is exist
   ///
+  /// This is to ensure that the edge auto scrolling is functioning and the drag function is placed correctly
+  /// inside the Scrollable
+  /// 拖拽选择功能必须被放在 可滚动视图下才能启动边缘自动滚动功能
   ScrollableState? _checkScrollableStatePresent(BuildContext context) {
     final scrollable = Scrollable.maybeOf(context);
     assert(
