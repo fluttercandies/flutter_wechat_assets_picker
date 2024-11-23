@@ -9,7 +9,17 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-**None.**
+*None.*
+
+## 9.4.1
+
+### Improvements
+
+- Improves the default sort conditions.
+
+### Fixes
+
+- Fixes selecting when reached the max asset limit in the preview.
 
 ## 9.4.0
 
