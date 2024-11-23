@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:wechat_assets_picker/src/delegates/asset_grid_drag_selection_aggregator.dart';
 import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../constants/constants.dart';
@@ -767,6 +768,8 @@ class DefaultAssetPickerBuilderDelegate
     if (keepScrollOffset) {
       gridScrollController.addListener(keepScrollOffsetListener);
     }
+
+    dragSelector = AssetGridDragSelectionAggregator(delegate: this);
   }
 
   /// [ChangeNotifier] for asset picker.
@@ -811,6 +814,10 @@ class DefaultAssetPickerBuilderDelegate
   /// * [SpecialPickerType.wechatMoment] 微信朋友圈模式。当用户选择了视频，将不能选择图片。
   /// * [SpecialPickerType.noPreview] 禁用资源预览。多选时单击资产将直接选中，单选时选中并返回。
   final SpecialPickerType? specialPickerType;
+
+  /// Drag Selector
+  /// 拖拽选择器
+  late final AssetGridDragSelectionAggregator dragSelector;
 
   /// Whether the picker should save the scroll offset between pushes and pops.
   /// 选择器是否可以从同样的位置开始选择
@@ -1228,158 +1235,6 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
-  /// 拖拽状态
-  /// Drag status
-  bool isInDragging = false;
-
-  /// 边缘自动滚动控制器
-  /// Edge Auto Scrolling Detector. Use to support edge auto scroll when drag position reach the edge of device's screen.
-  EdgeDraggingAutoScroller? _autoScroller;
-
-  // An eyeballed value for a smooth scrolling experience.
-  static const double _kDefaultAutoScrollVelocityScalar = 50;
-
-  /// 起始选择序号
-  /// Item index of the first selected item
-  int initialSelectedIdx = -1;
-
-  /// 拖拽选择 或 拖拽取消选择
-  /// Drag to select or deselect state
-  bool dragSelect = true;
-
-  /// 长按启动拖拽
-  /// Long Press to enable drag and select
-  void onDragStart(
-    BuildContext context,
-    LongPressStartDetails details,
-    int index,
-    AssetEntity entity,
-  ) {
-    isInDragging = true;
-
-    final scrollableState = _checkScrollableStatePresent(context);
-    if (scrollableState == null) {
-      return;
-    }
-
-    _autoScroller = EdgeDraggingAutoScroller(
-      scrollableState,
-      velocityScalar: _kDefaultAutoScrollVelocityScalar,
-    );
-
-    initialSelectedIdx = index;
-
-    dragSelect = !provider.selectedAssets.contains(entity);
-  }
-
-  void onDragUpdate(
-    BuildContext context,
-    LongPressMoveUpdateDetails details,
-    double itemSize,
-    int gridCount,
-    double topPadding,
-  ) {
-    if (!isInDragging) {
-      return;
-    }
-
-    if (dragSelect && provider.selectedAssets.length == provider.maxAssets) {
-      return;
-    }
-
-    final scrollableState = _checkScrollableStatePresent(context);
-    if (scrollableState == null) {
-      return;
-    }
-
-    final column = _getDragPositionIndex(details.globalPosition.dx, itemSize);
-    final row = _getDragPositionIndex(
-      details.globalPosition.dy -
-          topPadding -
-          (View.of(context).viewPadding.top /
-              View.of(context).devicePixelRatio) +
-          scrollableState.position.pixels,
-      itemSize,
-    );
-
-    final currentDragIndex = row * gridCount + column;
-
-    List<AssetEntity> filteredAssetList = <AssetEntity>[];
-    // add asset
-    if (currentDragIndex < initialSelectedIdx) {
-      filteredAssetList = provider.currentAssets
-          .getRange(
-            currentDragIndex,
-            math.min(initialSelectedIdx + 1, provider.currentAssets.length),
-          )
-          .toList()
-        ..reversed;
-    } else {
-      filteredAssetList = provider.currentAssets
-          .getRange(
-            initialSelectedIdx,
-            math.min(currentDragIndex + 1, provider.currentAssets.length),
-          )
-          .toList();
-    }
-
-    filteredAssetList.forEach(
-      dragSelect ? provider.selectAsset : provider.unSelectAsset,
-    );
-
-    _autoScroller?.startAutoScrollIfNecessary(
-      Rect.fromLTWH(
-        (column + 1) * itemSize,
-        details.globalPosition.dy > MediaQuery.sizeOf(context).height * 0.8
-            ? (row + 1) * itemSize
-            : math.max(topPadding, details.globalPosition.dy),
-        itemSize,
-        itemSize,
-      ),
-    );
-  }
-
-  void onDragEnd(LongPressEndDetails details) {
-    resetDraggingStatus();
-  }
-
-  /// 复原拖拽状态
-  /// Reset dragging status
-  void resetDraggingStatus() {
-    isInDragging = false;
-    initialSelectedIdx = -1;
-    dragSelect = true;
-    _autoScroller?.stopAutoScroll();
-    _autoScroller = null;
-  }
-
-  /// 检查[Scrollable] state是否存在
-  ///
-  ScrollableState? _checkScrollableStatePresent(BuildContext context) {
-    final scrollable = Scrollable.maybeOf(context);
-    assert(
-      scrollable != null,
-      'To use drag and select function, Scrollable state must be the present to get the actual item position.',
-    );
-    assert(
-      scrollable?.position.axis == Axis.vertical,
-      'To use drag and select function. The Scrollable Axis must be in vertical direction',
-    );
-
-    if (scrollable == null || scrollable.position.axis != Axis.vertical) {
-      resetDraggingStatus();
-      return null;
-    }
-
-    return scrollable;
-  }
-
-  /// 获取坐标
-  /// Get Coordinate Helper
-  int _getDragPositionIndex(double delta, double itemSize) {
-    return delta ~/ itemSize;
-  }
-
   @override
   Widget assetsGridBuilder(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
@@ -1449,21 +1304,21 @@ class DefaultAssetPickerBuilderDelegate
 
                 if (enableDragAndSelect) {
                   child = GestureDetector(
-                    onLongPressStart: (d) => onDragStart(
+                    onLongPressStart: (d) => dragSelector.onDragStart(
                       context,
                       d,
                       index,
                       assets[index],
                     ),
-                    onLongPressMoveUpdate: (d) => onDragUpdate(
+                    onLongPressMoveUpdate: (d) => dragSelector.onDragUpdate(
                       context,
                       d,
                       itemSize,
                       gridCount,
                       topPadding,
                     ),
-                    onLongPressCancel: resetDraggingStatus,
-                    onLongPressEnd: onDragEnd,
+                    onLongPressCancel: dragSelector.resetDraggingStatus,
+                    onLongPressEnd: dragSelector.onDragEnd,
                     child: child,
                   );
                 }
