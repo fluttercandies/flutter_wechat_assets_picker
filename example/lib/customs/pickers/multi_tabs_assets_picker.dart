@@ -518,30 +518,19 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   }
 
   Widget _buildGrid(BuildContext context) {
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
-        final bool shouldDisplayAssets =
-            p.hasAssetsToDisplay || shouldBuildSpecialItem;
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: shouldDisplayAssets
-              ? Stack(
-                  children: <Widget>[
-                    RepaintBoundary(
-                      child: Column(
-                        children: <Widget>[
-                          Expanded(child: assetsGridBuilder(context)),
-                          bottomActionBar(context),
-                        ],
-                      ),
-                    ),
-                    pathEntityListBackdrop(context),
-                    pathEntityListWidget(context),
-                  ],
-                )
-              : loadingIndicator(context),
-        );
-      },
+    return Stack(
+      children: <Widget>[
+        RepaintBoundary(
+          child: Column(
+            children: <Widget>[
+              Expanded(child: assetsGridBuilder(context)),
+              bottomActionBar(context),
+            ],
+          ),
+        ),
+        pathEntityListBackdrop(context),
+        pathEntityListWidget(context),
+      ],
     );
   }
 
