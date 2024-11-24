@@ -90,25 +90,33 @@ class AssetGridDragSelectionAggregator {
 
     final currentDragIndex = row * gridCount + column;
 
-    List<AssetEntity> filteredAssetList = <AssetEntity>[];
+    final List<AssetEntity> filteredAssetList = <AssetEntity>[];
     // add asset
     if (currentDragIndex < initialSelectedIdx) {
-      filteredAssetList = delegate.provider.currentAssets
-          .getRange(
-            currentDragIndex,
-            math.min(
-                initialSelectedIdx + 1, delegate.provider.currentAssets.length),
-          )
-          .toList()
-        ..reversed;
+      filteredAssetList.addAll(
+        delegate.provider.currentAssets
+            .getRange(
+              currentDragIndex,
+              math.min(
+                initialSelectedIdx + 1,
+                delegate.provider.currentAssets.length,
+              ),
+            )
+            .toList()
+          ..reversed,
+      );
     } else {
-      filteredAssetList = delegate.provider.currentAssets
-          .getRange(
-            initialSelectedIdx,
-            math.min(
-                currentDragIndex + 1, delegate.provider.currentAssets.length),
-          )
-          .toList();
+      filteredAssetList.addAll(
+        delegate.provider.currentAssets
+            .getRange(
+              initialSelectedIdx,
+              math.min(
+                currentDragIndex + 1,
+                delegate.provider.currentAssets.length,
+              ),
+            )
+            .toList(),
+      );
     }
 
     for (final asset in filteredAssetList) {
@@ -126,8 +134,6 @@ class AssetGridDragSelectionAggregator {
       _autoScroller = null;
       return;
     }
-
-    if (!dragSelect && delegate.provider.selectedAssets.isEmpty) {}
 
     _autoScroller?.startAutoScrollIfNecessary(
       Rect.fromLTWH(
