@@ -78,17 +78,27 @@ class AssetGridDragSelectionAggregator {
       return;
     }
 
-    final column = _getDragPositionIndex(details.globalPosition.dx, itemSize);
-    final row = _getDragPositionIndex(
+    /// Calculate the coordinate of the current drag position's asset representation
+    final columnIndex =
+        _getDragPositionIndex(details.globalPosition.dx, itemSize);
+
+    /// Get the actual top padding
+    /// Since viewPadding represents the physical pixels,
+    /// it should be divided by the device pixel ratio to get the logical pixels.
+    final extraTopPadding = topPadding +
+        (View.of(context).viewPadding.top / View.of(context).devicePixelRatio);
+
+    /// Row index is calculated based on the drag's global position.
+    /// The AppBar height, status bar height, and scroll offset are subtracted to adjust for padding and scrolling.
+    /// This gives the actual row index.
+    final rowIndex = _getDragPositionIndex(
       details.globalPosition.dy -
-          topPadding -
-          (View.of(context).viewPadding.top /
-              View.of(context).devicePixelRatio) +
+          extraTopPadding +
           scrollableState.position.pixels,
       itemSize,
     );
 
-    final currentDragIndex = row * gridCount + column;
+    final currentDragIndex = rowIndex * gridCount + columnIndex;
 
     final List<AssetEntity> filteredAssetList = <AssetEntity>[];
     // add asset
@@ -135,11 +145,12 @@ class AssetGridDragSelectionAggregator {
       return;
     }
 
+    /// Enable auto scrolling if the drag detail is at edge
     _autoScroller?.startAutoScrollIfNecessary(
       Rect.fromLTWH(
-        (column + 1) * itemSize,
+        (columnIndex + 1) * itemSize,
         details.globalPosition.dy > MediaQuery.sizeOf(context).height * 0.8
-            ? (row + 1) * itemSize
+            ? (rowIndex + 1) * itemSize
             : math.max(topPadding, details.globalPosition.dy),
         itemSize,
         itemSize,
