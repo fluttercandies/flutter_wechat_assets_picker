@@ -163,7 +163,11 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
     return GestureDetector(
       onTap: isDisplayingDetail
           ? () async {
-              final Widget viewer = AssetPickerViewer<File, Directory>(
+              final viewer = AssetPickerViewer<
+                  File,
+                  Directory,
+                  FileAssetPickerViewerProvider,
+                  FileAssetPickerViewerBuilderDelegate>(
                 builder: FileAssetPickerViewerBuilderDelegate(
                   currentIndex: index,
                   previewAssets: fileList,
@@ -392,7 +396,11 @@ class FileAssetPickerBuilder
           Animation<double> animation,
           Animation<double> secondaryAnimation,
         ) {
-          return AssetPickerViewer<File, Directory>(
+          return AssetPickerViewer<
+              File,
+              Directory,
+              FileAssetPickerViewerProvider,
+              FileAssetPickerViewerBuilderDelegate>(
             builder: FileAssetPickerViewerBuilderDelegate(
               currentIndex:
                   index ?? provider.selectedAssets.indexOf(currentAsset),
@@ -418,7 +426,8 @@ class FileAssetPickerBuilder
     List<File>? selectedAssets,
     FileAssetPickerProvider? selectorProvider,
   }) async {
-    final Widget viewer = AssetPickerViewer<File, Directory>(
+    final viewer = AssetPickerViewer<File, Directory,
+        FileAssetPickerViewerProvider, FileAssetPickerViewerBuilderDelegate>(
       builder: FileAssetPickerViewerBuilderDelegate(
         currentIndex: index,
         previewAssets: previewAssets,
@@ -1210,17 +1219,18 @@ class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
 }
 
 class FileAssetPickerViewerBuilderDelegate
-    extends AssetPickerViewerBuilderDelegate<File, Directory> {
+    extends AssetPickerViewerBuilderDelegate<File, Directory,
+        FileAssetPickerViewerProvider> {
   FileAssetPickerViewerBuilderDelegate({
     required super.previewAssets,
     required super.themeData,
     required super.currentIndex,
     super.selectedAssets,
-    super.selectorProvider,
+    this.selectorProvider,
     super.provider,
-  }) : super(
-          maxAssets: selectorProvider?.maxAssets,
-        );
+  }) : super(maxAssets: selectorProvider?.maxAssets);
+
+  final FileAssetPickerProvider? selectorProvider;
 
   late final PageController _pageController = PageController(
     initialPage: currentIndex,
