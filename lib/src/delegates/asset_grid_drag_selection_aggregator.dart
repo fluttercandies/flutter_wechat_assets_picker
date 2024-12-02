@@ -1,8 +1,18 @@
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:photo_manager/photo_manager.dart' show AssetEntity;
 
+import '../provider/asset_picker_provider.dart';
+import 'asset_picker_builder_delegate.dart';
+
+/// The aggregator that will calculates the corresponding item position based on
+/// gesture details. This will only works with
+/// the [DefaultAssetPickerBuilderDelegate] and the [DefaultAssetPickerProvider].
 class AssetGridDragSelectionAggregator {
   AssetGridDragSelectionAggregator({
     required this.delegate,
@@ -12,34 +22,40 @@ class AssetGridDragSelectionAggregator {
   /// 资源选择器状态保持
   final DefaultAssetPickerBuilderDelegate delegate;
 
-  /// 拖拽状态
-  /// Drag status
-  bool isInDragging = false;
+  // An eyeballed value for a smooth scrolling experience.
+  static const double _kDefaultAutoScrollVelocityScalar = 50.0;
 
   /// 边缘自动滚动控制器
-  /// Edge Auto Scrolling Detector. Use to support edge auto scroll when drag position reach the edge of device's screen.
+  /// Support edge auto scroll when drag positions reach
+  /// the edge of device's screen.
   EdgeDraggingAutoScroller? _autoScroller;
 
-  // An eyeballed value for a smooth scrolling experience.
-  static const double _kDefaultAutoScrollVelocityScalar = 50;
-
   /// 起始选择序号
-  /// Item index of the first selected item
-  int initialSelectedIdx = -1;
+  /// The first selecting item index.
+  int initialSelectingIndex = -1;
+
+  int largestSelectingIndex = -1;
+  int smallestSelectingIndex = -1;
+
+  /// 拖拽状态
+  /// Dragging status.
+  bool dragging = false;
 
   /// 拖拽选择 或 拖拽取消选择
-  /// Drag to select or deselect state
-  bool dragSelect = true;
+  /// Whether to add or to remove the selected assets.
+  bool addSelected = true;
+
+  DefaultAssetPickerProvider get provider => delegate.provider;
 
   /// 长按启动拖拽
   /// Long Press to enable drag and select
   void onDragStart(
     BuildContext context,
-    LongPressStartDetails details,
+    DragStartDetails details,
     int index,
     AssetEntity entity,
   ) {
-    isInDragging = true;
+    dragging = true;
 
     final scrollableState = _checkScrollableStatePresent(context);
     if (scrollableState == null) {
@@ -51,25 +67,25 @@ class AssetGridDragSelectionAggregator {
       velocityScalar: _kDefaultAutoScrollVelocityScalar,
     );
 
-    initialSelectedIdx = index;
+    initialSelectingIndex = index;
+    largestSelectingIndex = index;
+    smallestSelectingIndex = index;
 
-    dragSelect = !delegate.provider.selectedAssets.contains(entity);
+    addSelected = !delegate.provider.selectedAssets.contains(entity);
   }
 
   void onDragUpdate(
     BuildContext context,
-    LongPressMoveUpdateDetails details,
+    DragUpdateDetails details,
     double itemSize,
     int gridCount,
     double topPadding,
   ) {
-    if (!isInDragging) {
+    if (!dragging) {
       return;
     }
 
-    if (dragSelect &&
-        delegate.provider.selectedAssets.length ==
-            delegate.provider.maxAssets) {
+    if (addSelected && provider.selectedAssets.length == provider.maxAssets) {
       return;
     }
 
@@ -78,19 +94,24 @@ class AssetGridDragSelectionAggregator {
       return;
     }
 
-    /// Calculate the coordinate of the current drag position's asset representation
-    final columnIndex =
-        _getDragPositionIndex(details.globalPosition.dx, itemSize);
+    /// Calculate the coordinate of the current drag position's
+    /// asset representation.
+    final columnIndex = _getDragPositionIndex(
+      details.globalPosition.dx,
+      itemSize,
+    );
 
-    /// Get the actual top padding
-    /// Since viewPadding represents the physical pixels,
-    /// it should be divided by the device pixel ratio to get the logical pixels.
-    final extraTopPadding = topPadding +
-        (View.of(context).viewPadding.top / View.of(context).devicePixelRatio);
+    final view = View.of(context);
+
+    /// Get the actual top padding. Since `viewPadding` represents the
+    /// physical pixels, it should be divided by the device pixel ratio
+    /// to get the logical pixels.
+    final extraTopPadding =
+        topPadding + view.viewPadding.top / view.devicePixelRatio;
 
     /// Row index is calculated based on the drag's global position.
-    /// The AppBar height, status bar height, and scroll offset are subtracted to adjust for padding and scrolling.
-    /// This gives the actual row index.
+    /// The AppBar height, status bar height, and scroll offset are subtracted
+    /// to adjust for padding and scrolling. This gives the actual row index.
     final rowIndex = _getDragPositionIndex(
       details.globalPosition.dy -
           extraTopPadding +
@@ -100,44 +121,52 @@ class AssetGridDragSelectionAggregator {
 
     final currentDragIndex = rowIndex * gridCount + columnIndex;
 
-    final List<AssetEntity> filteredAssetList = <AssetEntity>[];
-    // add asset
-    if (currentDragIndex < initialSelectedIdx) {
-      filteredAssetList.addAll(
-        delegate.provider.currentAssets
-            .getRange(
-              currentDragIndex,
-              math.min(
-                initialSelectedIdx + 1,
-                delegate.provider.currentAssets.length,
-              ),
-            )
-            .toList()
-          ..reversed,
-      );
+    // Check the selecting index in order to diff unselecting assets.
+    largestSelectingIndex = math.max(currentDragIndex, largestSelectingIndex);
+    smallestSelectingIndex = math.min(currentDragIndex, smallestSelectingIndex);
+
+    // Filter out pending assets to manipulate.
+    final Iterable<AssetEntity> filteredAssetList;
+    if (currentDragIndex < initialSelectingIndex) {
+      filteredAssetList = provider.currentAssets
+          .getRange(
+            currentDragIndex,
+            math.min(
+              initialSelectingIndex + 1,
+              provider.currentAssets.length,
+            ),
+          )
+          .toList()
+          .reversed;
     } else {
-      filteredAssetList.addAll(
-        delegate.provider.currentAssets
-            .getRange(
-              initialSelectedIdx,
-              math.min(
-                currentDragIndex + 1,
-                delegate.provider.currentAssets.length,
-              ),
-            )
-            .toList(),
+      filteredAssetList = provider.currentAssets.getRange(
+        initialSelectingIndex,
+        math.min(
+          currentDragIndex + 1,
+          provider.currentAssets.length,
+        ),
       );
     }
-
+    final touchedAssets = List<AssetEntity>.from(
+      provider.currentAssets.getRange(
+        smallestSelectingIndex,
+        largestSelectingIndex,
+      ),
+    );
+    // Toggle all filtered assets.
     for (final asset in filteredAssetList) {
-      delegate.selectAsset(context, asset, currentDragIndex, !dragSelect);
+      delegate.selectAsset(context, asset, currentDragIndex, !addSelected);
+      touchedAssets.remove(asset);
+    }
+    // Revert the selection of touched but not filtered assets.
+    for (final asset in touchedAssets) {
+      delegate.selectAsset(context, asset, currentDragIndex, addSelected);
     }
 
-    final bool stopAutoScroll =
-        (!dragSelect && delegate.provider.selectedAssets.isEmpty) ||
-            (dragSelect &&
-                delegate.provider.selectedAssets.length ==
-                    delegate.provider.maxAssets);
+    final stopAutoScroll = switch (addSelected) {
+      true => provider.selectedAssets.length == provider.maxAssets,
+      false => provider.selectedAssets.isEmpty,
+    };
 
     if (stopAutoScroll) {
       _autoScroller?.stopAutoScroll();
@@ -147,29 +176,30 @@ class AssetGridDragSelectionAggregator {
 
     /// Enable auto scrolling if the drag detail is at edge
     _autoScroller?.startAutoScrollIfNecessary(
-      Rect.fromLTWH(
-        (columnIndex + 1) * itemSize,
-        details.globalPosition.dy > MediaQuery.sizeOf(context).height * 0.8
-            ? (rowIndex + 1) * itemSize
-            : math.max(topPadding, details.globalPosition.dy),
-        itemSize,
-        itemSize,
-      ),
+      Offset(
+            (columnIndex + 1) * itemSize,
+            details.globalPosition.dy > MediaQuery.sizeOf(context).height * 0.8
+                ? (rowIndex + 1) * itemSize
+                : math.max(topPadding, details.globalPosition.dy),
+          ) &
+          Size.square(itemSize),
     );
   }
 
-  void onDragEnd(LongPressEndDetails details) {
+  void onDragEnd(DragEndDetails details) {
     resetDraggingStatus();
   }
 
   /// 复原拖拽状态
   /// Reset dragging status
   void resetDraggingStatus() {
-    isInDragging = false;
-    initialSelectedIdx = -1;
-    dragSelect = true;
     _autoScroller?.stopAutoScroll();
     _autoScroller = null;
+    dragging = false;
+    addSelected = true;
+    initialSelectingIndex = -1;
+    largestSelectingIndex = -1;
+    smallestSelectingIndex = -1;
   }
 
   /// 检查 [Scrollable] state是否存在
@@ -182,13 +212,12 @@ class AssetGridDragSelectionAggregator {
     final scrollable = Scrollable.maybeOf(context);
     assert(
       scrollable != null,
-      'To use drag and select function, Scrollable state must be the present to get the actual item position.',
+      'The drag select feature must use along with scrollables.',
     );
     assert(
       scrollable?.position.axis == Axis.vertical,
-      'To use drag and select function. The Scrollable Axis must be in vertical direction',
+      'The drag select feature must use along with vertical scrollables.',
     );
-
     if (scrollable == null || scrollable.position.axis != Axis.vertical) {
       resetDraggingStatus();
       return null;

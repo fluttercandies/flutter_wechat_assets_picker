@@ -1303,21 +1303,21 @@ class DefaultAssetPickerBuilderDelegate
 
                 if (enableDragAndSelect) {
                   child = GestureDetector(
-                    onLongPressStart: (d) => dragSelector.onDragStart(
+                    onHorizontalDragStart: (d) => dragSelector.onDragStart(
                       context,
                       d,
                       index,
                       assets[index],
                     ),
-                    onLongPressMoveUpdate: (d) => dragSelector.onDragUpdate(
+                    onHorizontalDragUpdate: (d) => dragSelector.onDragUpdate(
                       context,
                       d,
                       itemSize,
                       gridCount,
                       topPadding,
                     ),
-                    onLongPressCancel: dragSelector.resetDraggingStatus,
-                    onLongPressEnd: dragSelector.onDragEnd,
+                    onHorizontalDragCancel: dragSelector.resetDraggingStatus,
+                    onHorizontalDragEnd: dragSelector.onDragEnd,
                     child: child,
                   );
                 }
