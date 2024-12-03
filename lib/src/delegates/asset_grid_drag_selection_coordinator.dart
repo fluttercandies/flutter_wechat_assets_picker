@@ -10,11 +10,11 @@ import 'package:photo_manager/photo_manager.dart' show AssetEntity;
 import '../provider/asset_picker_provider.dart';
 import 'asset_picker_builder_delegate.dart';
 
-/// The aggregator that will calculates the corresponding item position based on
+/// The coordinator that will calculates the corresponding item position based on
 /// gesture details. This will only works with
 /// the [DefaultAssetPickerBuilderDelegate] and the [DefaultAssetPickerProvider].
-class AssetGridDragSelectionAggregator {
-  AssetGridDragSelectionAggregator({
+class AssetGridDragSelectionCoordinator {
+  AssetGridDragSelectionCoordinator({
     required this.delegate,
   });
 
@@ -49,9 +49,9 @@ class AssetGridDragSelectionAggregator {
 
   /// 长按启动拖拽
   /// Long Press to enable drag and select
-  void onDragStart(
+  void onSelectionStart(
     BuildContext context,
-    DragStartDetails details,
+    Offset globalPosition,
     int index,
     AssetEntity entity,
   ) {
@@ -74,13 +74,7 @@ class AssetGridDragSelectionAggregator {
     addSelected = !delegate.provider.selectedAssets.contains(entity);
   }
 
-  void onDragUpdate(
-    BuildContext context,
-    DragUpdateDetails details,
-    double itemSize,
-    int gridCount,
-    double topPadding,
-  ) {
+  void onSelectionUpdate(BuildContext context, Offset globalPosition) {
     if (!dragging) {
       return;
     }
@@ -94,28 +88,26 @@ class AssetGridDragSelectionAggregator {
       return;
     }
 
-    /// Calculate the coordinate of the current drag position's
-    /// asset representation.
-    final columnIndex = _getDragPositionIndex(
-      details.globalPosition.dx,
-      itemSize,
-    );
-
+    // Calculate the coordinate of the current drag position's
+    // asset representation.
     final view = View.of(context);
+    final gridCount = delegate.gridCount;
+    final itemSize = view.physicalSize.width / gridCount;
+    final columnIndex = _getDragPositionIndex(globalPosition.dx, itemSize);
 
-    /// Get the actual top padding. Since `viewPadding` represents the
-    /// physical pixels, it should be divided by the device pixel ratio
-    /// to get the logical pixels.
-    final extraTopPadding =
-        topPadding + view.viewPadding.top / view.devicePixelRatio;
+    // Get the actual top padding. Since `viewPadding` represents the
+    // physical pixels, it should be divided by the device pixel ratio
+    // to get the logical pixels.
+    final appBarSize =
+        delegate.appBarPreferredSize ?? delegate.appBar(context).preferredSize;
+    final topPadding =
+        appBarSize.height + view.viewPadding.top / view.devicePixelRatio;
 
-    /// Row index is calculated based on the drag's global position.
-    /// The AppBar height, status bar height, and scroll offset are subtracted
-    /// to adjust for padding and scrolling. This gives the actual row index.
+    // Row index is calculated based on the drag's global position.
+    // The AppBar height, status bar height, and scroll offset are subtracted
+    // to adjust for padding and scrolling. This gives the actual row index.
     final rowIndex = _getDragPositionIndex(
-      details.globalPosition.dy -
-          extraTopPadding +
-          scrollableState.position.pixels,
+      globalPosition.dy - topPadding + scrollableState.position.pixels,
       itemSize,
     );
 
@@ -174,19 +166,19 @@ class AssetGridDragSelectionAggregator {
       return;
     }
 
-    /// Enable auto scrolling if the drag detail is at edge
+    // Enable auto scrolling if the drag detail is at edge
     _autoScroller?.startAutoScrollIfNecessary(
       Offset(
             (columnIndex + 1) * itemSize,
-            details.globalPosition.dy > MediaQuery.sizeOf(context).height * 0.8
+            globalPosition.dy > MediaQuery.sizeOf(context).height * 0.8
                 ? (rowIndex + 1) * itemSize
-                : math.max(topPadding, details.globalPosition.dy),
+                : math.max(topPadding, globalPosition.dy),
           ) &
           Size.square(itemSize),
     );
   }
 
-  void onDragEnd(DragEndDetails details) {
+  void onDragEnd(Offset globalPosition) {
     resetDraggingStatus();
   }
 
