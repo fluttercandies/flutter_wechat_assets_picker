@@ -39,7 +39,7 @@ class AssetPickerConfig {
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
     this.shouldAutoplayPreview = false,
-    this.enableDragAndSelect = true,
+    this.dragToSelect = true,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'pickerTheme and themeColor cannot be set at the same time.',
@@ -207,7 +207,9 @@ class AssetPickerConfig {
   /// 预览是否自动播放
   final bool shouldAutoplayPreview;
 
-  /// Should enable drag and select function.
+  /// {@template wechat_assets_picker.constants.AssetPickerConfig.dragToSelect}
+  /// Whether assets selection can be done with drag gestures.
   /// 是否开启拖拽选择
-  final bool enableDragAndSelect;
+  /// {@endtemplate}
+  final bool dragToSelect;
 }

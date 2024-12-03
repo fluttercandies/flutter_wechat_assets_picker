@@ -761,7 +761,7 @@ class DefaultAssetPickerBuilderDelegate
     this.specialPickerType,
     this.keepScrollOffset = false,
     this.shouldAutoplayPreview = false,
-    this.enableDragAndSelect = true,
+    this.dragToSelect = true,
   }) {
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
@@ -825,9 +825,8 @@ class DefaultAssetPickerBuilderDelegate
   /// 预览是否自动播放
   final bool shouldAutoplayPreview;
 
-  /// Should enable drag and select function.
-  /// 是否开启拖拽选择
-  final bool enableDragAndSelect;
+  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.dragToSelect}
+  final bool dragToSelect;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
@@ -1300,7 +1299,7 @@ class DefaultAssetPickerBuilderDelegate
                   specialItem: specialItem,
                 );
 
-                if (enableDragAndSelect) {
+                if (dragToSelect) {
                   child = GestureDetector(
                     onHorizontalDragStart: (d) {
                       dragSelectCoordinator.onSelectionStart(
