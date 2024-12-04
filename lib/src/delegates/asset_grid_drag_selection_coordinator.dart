@@ -79,11 +79,6 @@ class AssetGridDragSelectionCoordinator {
       return;
     }
 
-    final scrollableState = _checkScrollableStatePresent(context);
-    if (scrollableState == null) {
-      return;
-    }
-
     final view = View.of(context);
     final dimensionSize = view.physicalSize / view.devicePixelRatio;
 
@@ -91,7 +86,6 @@ class AssetGridDragSelectionCoordinator {
     // asset representation.
     final gridCount = delegate.gridCount;
     final itemSize = dimensionSize.width / gridCount;
-    final columnIndex = _getDragPositionIndex(globalPosition.dx, itemSize);
 
     // Get the actual top padding. Since `viewPadding` represents the
     // physical pixels, it should be divided by the device pixel ratio
@@ -100,12 +94,22 @@ class AssetGridDragSelectionCoordinator {
         delegate.appBarPreferredSize ?? delegate.appBar(context).preferredSize;
     final topPadding =
         appBarSize.height + view.viewPadding.top / view.devicePixelRatio;
+    final bottomPadding = delegate.bottomActionBarHeight +
+        view.viewPadding.bottom / view.devicePixelRatio;
 
     // Row index is calculated based on the drag's global position.
     // The AppBar height, status bar height, and scroll offset are subtracted
     // to adjust for padding and scrolling. This gives the actual row index.
+    final gridRevert = delegate.effectiveShouldRevertGrid(context);
+    int columnIndex = _getDragPositionIndex(globalPosition.dx, itemSize);
+    if (gridRevert) {
+      columnIndex = gridCount - columnIndex - 2;
+    }
     final rowIndex = _getDragPositionIndex(
-      globalPosition.dy - topPadding + scrollableState.position.pixels,
+      switch (gridRevert) {
+        true => dimensionSize.height - bottomPadding - globalPosition.dy,
+        false => globalPosition.dy - topPadding,
+      },
       itemSize,
     );
 
@@ -116,17 +120,19 @@ class AssetGridDragSelectionCoordinator {
       currentDragIndex,
       smallestSelectingIndex,
     );
+    smallestSelectingIndex = math.max(0, smallestSelectingIndex);
     largestSelectingIndex = math.max(
       currentDragIndex + 1,
       largestSelectingIndex,
     );
+    largestSelectingIndex = math.max(0, largestSelectingIndex);
 
     // Filter out pending assets to manipulate.
     final Iterable<AssetEntity> filteredAssetList;
     if (currentDragIndex < initialSelectingIndex) {
       filteredAssetList = provider.currentAssets
           .getRange(
-            currentDragIndex,
+            math.max(0, currentDragIndex),
             math.min(
               initialSelectingIndex + 1,
               provider.currentAssets.length,
@@ -136,7 +142,7 @@ class AssetGridDragSelectionCoordinator {
           .reversed;
     } else {
       filteredAssetList = provider.currentAssets.getRange(
-        initialSelectingIndex,
+        math.max(0, initialSelectingIndex),
         math.min(
           currentDragIndex + 1,
           provider.currentAssets.length,
@@ -149,6 +155,17 @@ class AssetGridDragSelectionCoordinator {
         largestSelectingIndex,
       ),
     );
+
+    // Do not select or unselect more assets if the limit has been reached.
+    if (filteredAssetList.isNotEmpty) {
+      if (addSelected && provider.selectedMaximumAssets) {
+        return;
+      }
+      if (!addSelected && !provider.isSelectedNotEmpty) {
+        return;
+      }
+    }
+
     // Toggle all filtered assets.
     for (final asset in filteredAssetList) {
       delegate.selectAsset(context, asset, currentDragIndex, !addSelected);
@@ -166,7 +183,6 @@ class AssetGridDragSelectionCoordinator {
 
     if (stopAutoScroll) {
       _autoScroller?.stopAutoScroll();
-      _autoScroller = null;
       return;
     }
 
@@ -174,7 +190,7 @@ class AssetGridDragSelectionCoordinator {
     _autoScroller?.startAutoScrollIfNecessary(
       Offset(
             (columnIndex + 1) * itemSize,
-            globalPosition.dy > MediaQuery.sizeOf(context).height * 0.8
+            globalPosition.dy > dimensionSize.height * 0.8
                 ? (rowIndex + 1) * itemSize
                 : math.max(topPadding, globalPosition.dy),
           ) &
