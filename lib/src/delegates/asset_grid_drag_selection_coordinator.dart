@@ -79,10 +79,6 @@ class AssetGridDragSelectionCoordinator {
       return;
     }
 
-    if (addSelected && provider.selectedAssets.length == provider.maxAssets) {
-      return;
-    }
-
     final scrollableState = _checkScrollableStatePresent(context);
     if (scrollableState == null) {
       return;
@@ -116,8 +112,14 @@ class AssetGridDragSelectionCoordinator {
     final currentDragIndex = rowIndex * gridCount + columnIndex;
 
     // Check the selecting index in order to diff unselecting assets.
-    largestSelectingIndex = math.max(currentDragIndex, largestSelectingIndex);
-    smallestSelectingIndex = math.min(currentDragIndex, smallestSelectingIndex);
+    smallestSelectingIndex = math.min(
+      currentDragIndex,
+      smallestSelectingIndex,
+    );
+    largestSelectingIndex = math.max(
+      currentDragIndex + 1,
+      largestSelectingIndex,
+    );
 
     // Filter out pending assets to manipulate.
     final Iterable<AssetEntity> filteredAssetList;
