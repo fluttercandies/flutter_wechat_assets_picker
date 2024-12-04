@@ -88,11 +88,13 @@ class AssetGridDragSelectionCoordinator {
       return;
     }
 
+    final view = View.of(context);
+    final dimensionSize = view.physicalSize / view.devicePixelRatio;
+
     // Calculate the coordinate of the current drag position's
     // asset representation.
-    final view = View.of(context);
     final gridCount = delegate.gridCount;
-    final itemSize = view.physicalSize.width / gridCount;
+    final itemSize = dimensionSize.width / gridCount;
     final columnIndex = _getDragPositionIndex(globalPosition.dx, itemSize);
 
     // Get the actual top padding. Since `viewPadding` represents the
