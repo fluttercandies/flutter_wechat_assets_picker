@@ -29,6 +29,10 @@ AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
     return const AssetPickerTextDelegate();
   }
   final String languageCode = locale.languageCode.toLowerCase();
+  if (languageCode == 'zh' && locale.scriptCode == 'Hant') {
+    return const TraditionalChineseAssetPickerTextDelegate();
+  }
+
   for (final AssetPickerTextDelegate delegate in assetPickerTextDelegates) {
     if (delegate.languageCode == languageCode) {
       return delegate;
@@ -1133,4 +1137,99 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get sUnitAssetCountLabel => '개';
+}
+
+/// [AssetPickerTextDelegate] implements with Traditional Chinese.
+/// Traditional Chinese Localization
+class TraditionalChineseAssetPickerTextDelegate
+    extends AssetPickerTextDelegate {
+  const TraditionalChineseAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'zh';
+
+  @override
+  String get confirm => '確認';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get edit => '編輯';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get loadFailed => '載入失敗';
+
+  @override
+  String get original => '原圖';
+
+  @override
+  String get preview => '預覽';
+
+  @override
+  String get select => '選擇';
+
+  @override
+  String get emptyList => '列表為空';
+
+  @override
+  String get unSupportedAssetType => '不支援的資源類型';
+
+  @override
+  String get unableToAccessAll => '無法存取所有資源';
+
+  @override
+  String get viewingLimitedAssetsTip => '僅顯示應用程式可存取的檔案和相簿';
+
+  @override
+  String get changeAccessibleLimitedAssets => '前往設定可被存取的檔案';
+
+  @override
+  String get accessAllTip => '應用程式只能存取裝置上的部分檔案。'
+      '請開啟系統設定，允許應用程式存取裝置上的所有檔案';
+
+  @override
+  String get goToSystemSettings => '前往系統設定';
+
+  @override
+  String get accessLimitedAssets => '繼續存取部分資源';
+
+  @override
+  String get accessiblePathName => '可存取的資源';
+
+  @override
+  String get sTypeAudioLabel => '音訊';
+
+  @override
+  String get sTypeImageLabel => '圖片';
+
+  @override
+  String get sTypeVideoLabel => '影片';
+
+  @override
+  String get sTypeOtherLabel => '其他媒體';
+
+  @override
+  String get sActionPlayHint => '播放';
+
+  @override
+  String get sActionPreviewHint => '預覽';
+
+  @override
+  String get sActionSelectHint => '選擇';
+
+  @override
+  String get sActionSwitchPathLabel => '切換路徑';
+
+  @override
+  String get sActionUseCameraHint => '使用相機';
+
+  @override
+  String get sNameDurationLabel => '時長';
+
+  @override
+  String get sUnitAssetCountLabel => '數量';
 }
