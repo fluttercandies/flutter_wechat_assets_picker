@@ -2,6 +2,8 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -29,5 +31,21 @@ void main() {
       paths[2],
       (PathWrapper<AssetPathEntity> e) => e.path.name == 'Screenshots',
     );
+  });
+
+  test('Select the correct TextDelegate for locale zh', () {
+    final delegate = assetPickerTextDelegateFromLocale(
+      const Locale.fromSubtags(languageCode: 'zh'),
+    );
+
+    expect(delegate.confirm, '确认');
+  });
+
+  test('Select the correct TextDelegate for locale zh-Hant', () {
+    final delegate = assetPickerTextDelegateFromLocale(
+      const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+    );
+
+    expect(delegate.confirm, '確認');
   });
 }
