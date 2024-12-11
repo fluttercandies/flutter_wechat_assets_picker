@@ -4,12 +4,12 @@
 
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetType;
 
 /// All text delegates.
-const List<AssetPickerTextDelegate> assetPickerTextDelegates =
-    <AssetPickerTextDelegate>[
+const assetPickerTextDelegates = <AssetPickerTextDelegate>[
   AssetPickerTextDelegate(),
   EnglishAssetPickerTextDelegate(),
   HebrewAssetPickerTextDelegate(),
@@ -28,13 +28,30 @@ AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
   if (locale == null) {
     return const AssetPickerTextDelegate();
   }
+
   final String languageCode = locale.languageCode.toLowerCase();
-  for (final AssetPickerTextDelegate delegate in assetPickerTextDelegates) {
-    if (delegate.languageCode == languageCode) {
-      return delegate;
-    }
+  final String? scriptCode = locale.scriptCode?.toLowerCase();
+  final String? countryCode = locale.countryCode?.toLowerCase();
+
+  final matchedByLanguage = assetPickerTextDelegates.where(
+    (e) => e.languageCode == languageCode,
+  );
+  if (matchedByLanguage.isEmpty) {
+    return const AssetPickerTextDelegate();
   }
-  return const AssetPickerTextDelegate();
+
+  final matchedByScript = scriptCode != null
+      ? matchedByLanguage.where((e) => e.scriptCode == scriptCode)
+      : null;
+  if (matchedByScript == null || matchedByScript.isEmpty) {
+    return matchedByLanguage.first;
+  }
+
+  final matchedByCountry = countryCode != null
+      ? matchedByScript.where((e) => e.countryCode == countryCode)
+      : null;
+
+  return matchedByCountry?.firstOrNull ?? matchedByScript.first;
 }
 
 /// Text delegate that controls text in widgets.
@@ -43,6 +60,17 @@ class AssetPickerTextDelegate {
   const AssetPickerTextDelegate();
 
   String get languageCode => 'zh';
+
+  String? get scriptCode => 'Hans';
+
+  String? get countryCode => null;
+
+  @nonVirtual
+  Locale get locale => Locale.fromSubtags(
+        languageCode: languageCode,
+        scriptCode: scriptCode,
+        countryCode: countryCode,
+      );
 
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
