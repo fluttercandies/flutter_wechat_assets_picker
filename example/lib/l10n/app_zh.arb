@@ -28,6 +28,8 @@
   "pickMethodCustomFilterOptionsDescription": "为选择器添加自定义过滤条件。",
   "pickMethodPrependItemName": "往网格前插入 widget",
   "pickMethodPrependItemDescription": "网格的靠前位置会添加一个自定义的 widget。",
+  "pickMethodMultiSpecialItemsName": "多个特殊 widget",
+  "pickMethodMultiSpecialItemsDescription": "网格的靠前或靠后位置会可以多个自定义的 widget。",
   "pickMethodNoPreviewName": "禁止预览",
   "pickMethodNoPreviewDescription": "无法预览选择的资源，与 WhatsApp/MegaTok 的行为类似。",
   "pickMethodKeepScrollOffsetName": "保持滚动位置",

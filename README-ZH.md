@@ -295,8 +295,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | themeColor                        | `Color?`                                         | 选择器的主题色                                              | `Color(0xff00bc56)`         |
 | pickerTheme                       | `ThemeData?`                                     | 选择器的主题提供，包括查看器                                       | `null`                      |
 | textDelegate                      | `AssetPickerTextDelegate?`                       | 选择器的文本代理构建，用于自定义文本                                   | `AssetPickerTextDelegate()` |
-| specialItemPosition               | `SpecialItemPosition`                            | 允许用户在选择器中添加一个自定义item，并指定位置。                          | `SpecialPosition.none`      |
-| specialItemBuilder                | `SpecialItemBuilder?`                            | 自定义item的构造方法                                         | `null`                      |
+| specialItems                      | `List<SpecialItem>`                              | 自定义item列表                           | `const []`  |
 | loadingIndicatorBuilder           | `IndicatorBuilder?`                              | 加载器的实现                                               | `null`                      |
 | selectPredicate                   | `AssetSelectPredicate`                           | 判断资源可否被选择                                            | `null`                      |
 | shouldRevertGrid                  | `bool?`                                          | 判断资源网格是否需要倒序排列                                       | `null`                      |
