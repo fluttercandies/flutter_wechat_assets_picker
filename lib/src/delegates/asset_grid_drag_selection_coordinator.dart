@@ -102,16 +102,29 @@ class AssetGridDragSelectionCoordinator {
     // to adjust for padding and scrolling. This gives the actual row index.
     final gridRevert = delegate.effectiveShouldRevertGrid(context);
     int columnIndex = _getDragPositionIndex(globalPosition.dx, itemSize);
+    final maxRow = (provider.currentAssets.length / delegate.gridCount).ceil();
+    final maxRowPerPage =
+        ((dimensionSize.height - bottomPadding) / itemSize).ceil();
+
     if (gridRevert) {
-      columnIndex = gridCount - columnIndex - 2;
+      columnIndex = gridCount - columnIndex;
+      if (maxRow > maxRowPerPage) {
+        columnIndex -= 1;
+      }
     }
-    final rowIndex = _getDragPositionIndex(
+
+    int rowIndex = _getDragPositionIndex(
       switch (gridRevert) {
         true => dimensionSize.height - bottomPadding - globalPosition.dy,
         false => globalPosition.dy - topPadding,
       },
       itemSize,
     );
+
+    // Correct the row index when asset length is less than one page
+    if (maxRowPerPage > maxRow) {
+      rowIndex = maxRow - (maxRowPerPage - rowIndex);
+    }
 
     final currentDragIndex = rowIndex * gridCount + columnIndex;
 
@@ -125,7 +138,12 @@ class AssetGridDragSelectionCoordinator {
       currentDragIndex + 1,
       largestSelectingIndex,
     );
-    largestSelectingIndex = math.max(0, largestSelectingIndex);
+
+    // To avoid array indexed out of bounds
+    largestSelectingIndex = math.min(
+      math.max(0, largestSelectingIndex),
+      provider.currentAssets.length,
+    );
 
     // Filter out pending assets to manipulate.
     final Iterable<AssetEntity> filteredAssetList;
