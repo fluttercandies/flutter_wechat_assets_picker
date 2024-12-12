@@ -11,16 +11,17 @@ import 'package:photo_manager/photo_manager.dart' show AssetType;
 /// All text delegates.
 const assetPickerTextDelegates = <AssetPickerTextDelegate>[
   AssetPickerTextDelegate(),
-  EnglishAssetPickerTextDelegate(),
-  HebrewAssetPickerTextDelegate(),
-  GermanAssetPickerTextDelegate(),
-  RussianAssetPickerTextDelegate(),
-  JapaneseAssetPickerTextDelegate(),
   ArabicAssetPickerTextDelegate(),
+  EnglishAssetPickerTextDelegate(),
   FrenchAssetPickerTextDelegate(),
-  VietnameseAssetPickerTextDelegate(),
-  TurkishAssetPickerTextDelegate(),
+  GermanAssetPickerTextDelegate(),
+  HebrewAssetPickerTextDelegate(),
+  JapaneseAssetPickerTextDelegate(),
   KoreanAssetPickerTextDelegate(),
+  RussianAssetPickerTextDelegate(),
+  TraditionalChineseAssetPickerTextDelegate(),
+  TurkishAssetPickerTextDelegate(),
+  VietnameseAssetPickerTextDelegate(),
 ];
 
 /// Obtain the text delegate from the given locale.
@@ -29,9 +30,9 @@ AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
     return const AssetPickerTextDelegate();
   }
 
-  final String languageCode = locale.languageCode.toLowerCase();
-  final String? scriptCode = locale.scriptCode?.toLowerCase();
-  final String? countryCode = locale.countryCode?.toLowerCase();
+  final String languageCode = locale.languageCode;
+  final String? scriptCode = locale.scriptCode;
+  final String? countryCode = locale.countryCode;
 
   final matchedByLanguage = assetPickerTextDelegates.where(
     (e) => e.languageCode == languageCode,
@@ -1161,4 +1162,98 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get sUnitAssetCountLabel => '개';
+}
+
+/// [AssetPickerTextDelegate] implements with Traditional Chinese.
+/// 繁體中文文字實現
+class TraditionalChineseAssetPickerTextDelegate
+    extends AssetPickerTextDelegate {
+  const TraditionalChineseAssetPickerTextDelegate();
+
+  @override
+  String get scriptCode => 'Hant';
+
+  @override
+  String get confirm => '確認';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get edit => '編輯';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get loadFailed => '載入失敗';
+
+  @override
+  String get original => '原圖';
+
+  @override
+  String get preview => '預覽';
+
+  @override
+  String get select => '選擇';
+
+  @override
+  String get emptyList => '列表為空';
+
+  @override
+  String get unSupportedAssetType => '不支援的媒體類型';
+
+  @override
+  String get unableToAccessAll => '無法存取相簿中的照片';
+
+  @override
+  String get viewingLimitedAssetsTip => '僅顯示可存取的相簿和照片';
+
+  @override
+  String get changeAccessibleLimitedAssets => '前往設定可被存取的照片';
+
+  @override
+  String get accessAllTip => '應用程式只能存取相簿部分相片，建議允許存取「所有照片」。';
+
+  @override
+  String get goToSystemSettings => '前往系統設定';
+
+  @override
+  String get accessLimitedAssets => '繼續存取部分資源';
+
+  @override
+  String get accessiblePathName => '可存取的資源';
+
+  @override
+  String get sTypeAudioLabel => '音訊';
+
+  @override
+  String get sTypeImageLabel => '照片';
+
+  @override
+  String get sTypeVideoLabel => '影片';
+
+  @override
+  String get sTypeOtherLabel => '其他媒體';
+
+  @override
+  String get sActionPlayHint => '播放';
+
+  @override
+  String get sActionPreviewHint => '預覽';
+
+  @override
+  String get sActionSelectHint => '選擇';
+
+  @override
+  String get sActionSwitchPathLabel => '切換路徑';
+
+  @override
+  String get sActionUseCameraHint => '使用相機';
+
+  @override
+  String get sNameDurationLabel => '時長';
+
+  @override
+  String get sUnitAssetCountLabel => '數量';
 }
