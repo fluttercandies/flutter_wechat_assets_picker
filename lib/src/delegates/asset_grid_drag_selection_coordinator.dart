@@ -102,9 +102,16 @@ class AssetGridDragSelectionCoordinator {
     // to adjust for padding and scrolling. This gives the actual row index.
     final gridRevert = delegate.effectiveShouldRevertGrid(context);
     int columnIndex = _getDragPositionIndex(globalPosition.dx, itemSize);
-    final maxRow = (provider.currentAssets.length / delegate.gridCount).ceil();
+    final maxRow = (provider.currentAssets.length / gridCount).ceil();
     final maxRowPerPage =
         ((dimensionSize.height - bottomPadding) / itemSize).ceil();
+
+    // // Get the total asset count of the current Asset path
+    // final totalCount = provider.currentPath?.assetCount ?? 0;
+    // // Check if special item does exist
+    // final specialItemExist = delegate.shouldBuildSpecialItem;
+    // final lastRowCount = (totalCount + (specialItemExist ? 1 : 0)) % gridCount;
+    // final placeholderCount = gridCount - lastRowCount;
 
     if (gridRevert) {
       columnIndex = gridCount - columnIndex;
@@ -115,8 +122,12 @@ class AssetGridDragSelectionCoordinator {
 
     int rowIndex = _getDragPositionIndex(
       switch (gridRevert) {
-        true => dimensionSize.height - bottomPadding - globalPosition.dy,
-        false => globalPosition.dy - topPadding,
+        true => dimensionSize.height -
+            bottomPadding -
+            globalPosition.dy +
+            -delegate.gridScrollController.offset,
+        false =>
+          globalPosition.dy - topPadding + delegate.gridScrollController.offset,
       },
       itemSize,
     );
@@ -173,16 +184,6 @@ class AssetGridDragSelectionCoordinator {
         largestSelectingIndex,
       ),
     );
-
-    // Do not select or unselect more assets if the limit has been reached.
-    if (filteredAssetList.isNotEmpty) {
-      if (addSelected && provider.selectedMaximumAssets) {
-        return;
-      }
-      if (!addSelected && !provider.isSelectedNotEmpty) {
-        return;
-      }
-    }
 
     // Toggle all filtered assets.
     for (final asset in filteredAssetList) {
