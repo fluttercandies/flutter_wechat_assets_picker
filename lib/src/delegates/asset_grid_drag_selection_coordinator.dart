@@ -106,15 +106,25 @@ class AssetGridDragSelectionCoordinator {
     final maxRowPerPage =
         ((dimensionSize.height - bottomPadding) / itemSize).ceil();
 
-    // // Get the total asset count of the current Asset path
-    // final totalCount = provider.currentPath?.assetCount ?? 0;
-    // // Check if special item does exist
-    // final specialItemExist = delegate.shouldBuildSpecialItem;
-    // final lastRowCount = (totalCount + (specialItemExist ? 1 : 0)) % gridCount;
-    // final placeholderCount = gridCount - lastRowCount;
+    final int placeholderCount;
+    if (gridRevert) {
+      // Get the total asset count of the current Asset path
+      final totalCount = provider.currentPath?.assetCount ?? 0;
+      // Check if special item does exist
+      final specialItemExist = delegate.shouldBuildSpecialItem;
+      final lastRowCount =
+          (totalCount + (specialItemExist ? 1 : 0)) % gridCount;
+      placeholderCount = gridCount - lastRowCount;
+    } else {
+      placeholderCount = 0;
+    }
+
+    final bottomGap = MediaQuery.paddingOf(context).bottom +
+        delegate.bottomSectionHeight -
+        (delegate.isAppleOS(context) ? delegate.permissionLimitedBarHeight : 0);
 
     if (gridRevert) {
-      columnIndex = gridCount - columnIndex;
+      columnIndex = gridCount - columnIndex - placeholderCount;
       if (maxRow > maxRowPerPage) {
         columnIndex -= 1;
       }
@@ -123,8 +133,9 @@ class AssetGridDragSelectionCoordinator {
     int rowIndex = _getDragPositionIndex(
       switch (gridRevert) {
         true => dimensionSize.height -
-            bottomPadding -
+            topPadding -
             globalPosition.dy +
+            (delegate.gridScrollController.offset <= 0 ? bottomGap : 0) +
             -delegate.gridScrollController.offset,
         false =>
           globalPosition.dy - topPadding + delegate.gridScrollController.offset,
@@ -132,12 +143,19 @@ class AssetGridDragSelectionCoordinator {
       itemSize,
     );
 
+    if (placeholderCount > 0) {
+      rowIndex -= 1;
+    }
+
     // Correct the row index when asset length is less than one page
     if (maxRowPerPage > maxRow) {
       rowIndex = maxRow - (maxRowPerPage - rowIndex);
     }
 
     final currentDragIndex = rowIndex * gridCount + columnIndex;
+
+    print(
+        "Check drag index: $currentDragIndex | $initialSelectingIndex | $rowIndex | $columnIndex");
 
     // Check the selecting index in order to diff unselecting assets.
     smallestSelectingIndex = math.min(
