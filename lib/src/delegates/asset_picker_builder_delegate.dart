@@ -18,6 +18,7 @@ import 'package:wechat_picker_library/wechat_picker_library.dart';
 import '../constants/constants.dart';
 import '../constants/enums.dart';
 import '../constants/typedefs.dart';
+import '../delegates/asset_grid_drag_selection_coordinator.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../internals/singleton.dart';
 import '../models/path_wrapper.dart';
@@ -760,11 +761,13 @@ class DefaultAssetPickerBuilderDelegate
     this.specialPickerType,
     this.keepScrollOffset = false,
     this.shouldAutoplayPreview = false,
+    this.dragToSelect,
   }) {
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
       gridScrollController.addListener(keepScrollOffsetListener);
     }
+    dragSelectCoordinator = AssetGridDragSelectionCoordinator(delegate: this);
   }
 
   /// [ChangeNotifier] for asset picker.
@@ -810,6 +813,10 @@ class DefaultAssetPickerBuilderDelegate
   /// * [SpecialPickerType.noPreview] 禁用资源预览。多选时单击资产将直接选中，单选时选中并返回。
   final SpecialPickerType? specialPickerType;
 
+  /// Drag select aggregator.
+  /// 拖拽选择协调器
+  late final AssetGridDragSelectionCoordinator dragSelectCoordinator;
+
   /// Whether the picker should save the scroll offset between pushes and pops.
   /// 选择器是否可以从同样的位置开始选择
   final bool keepScrollOffset;
@@ -817,6 +824,9 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the preview should auto play.
   /// 预览是否自动播放
   final bool shouldAutoplayPreview;
+
+  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.dragToSelect}
+  final bool? dragToSelect;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
@@ -1267,7 +1277,10 @@ class DefaultAssetPickerBuilderDelegate
         final double topPadding =
             context.topPadding + appBarPreferredSize!.height;
 
-        final textDirection = Directionality.of(context);
+        // Obtain the text direction from the correct context and apply to
+        // the grid item before it gets manipulated by the grid revert.
+        final textDirectionCorrection = Directionality.of(context);
+
         Widget sliverGrid(BuildContext context, List<AssetEntity> assets) {
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
@@ -1278,15 +1291,82 @@ class DefaultAssetPickerBuilderDelegate
                   }
                   index -= placeholderCount;
                 }
+
+                Widget child = assetGridItemBuilder(
+                  context,
+                  index,
+                  assets,
+                  specialItem: specialItem,
+                );
+
+                if (dragToSelect ??
+                    !MediaQuery.accessibleNavigationOf(context)) {
+                  child = GestureDetector(
+                    excludeFromSemantics: true,
+                    onHorizontalDragStart: (d) {
+                      dragSelectCoordinator.onSelectionStart(
+                        context,
+                        d.globalPosition,
+                        index,
+                        assets[index],
+                      );
+                    },
+                    onHorizontalDragUpdate: (d) {
+                      dragSelectCoordinator.onSelectionUpdate(
+                        context,
+                        d.globalPosition,
+                      );
+                    },
+                    onHorizontalDragCancel:
+                        dragSelectCoordinator.resetDraggingStatus,
+                    onHorizontalDragEnd: (d) {
+                      dragSelectCoordinator.onDragEnd(d.globalPosition);
+                    },
+                    onLongPressStart: (d) {
+                      dragSelectCoordinator.onSelectionStart(
+                        context,
+                        d.globalPosition,
+                        index,
+                        assets[index],
+                      );
+                    },
+                    onLongPressMoveUpdate: (d) {
+                      dragSelectCoordinator.onSelectionUpdate(
+                        context,
+                        d.globalPosition,
+                      );
+                    },
+                    onLongPressCancel:
+                        dragSelectCoordinator.resetDraggingStatus,
+                    onLongPressEnd: (d) {
+                      dragSelectCoordinator.onDragEnd(d.globalPosition);
+                    },
+                    onPanStart: (d) {
+                      dragSelectCoordinator.onSelectionStart(
+                        context,
+                        d.globalPosition,
+                        index,
+                        assets[index],
+                      );
+                    },
+                    onPanUpdate: (d) {
+                      dragSelectCoordinator.onSelectionUpdate(
+                        context,
+                        d.globalPosition,
+                      );
+                    },
+                    onPanCancel: dragSelectCoordinator.resetDraggingStatus,
+                    onPanEnd: (d) {
+                      dragSelectCoordinator.onDragEnd(d.globalPosition);
+                    },
+                    child: child,
+                  );
+                }
+
                 return MergeSemantics(
                   child: Directionality(
-                    textDirection: textDirection,
-                    child: assetGridItemBuilder(
-                      context,
-                      index,
-                      assets,
-                      specialItem: specialItem,
-                    ),
+                    textDirection: textDirectionCorrection,
+                    child: child,
                   ),
                 );
               },
@@ -1453,7 +1533,7 @@ class DefaultAssetPickerBuilderDelegate
         builder,
         selectedBackdrop(context, currentIndex, asset),
         if (!isWeChatMoment || asset.type != AssetType.video)
-          selectIndicator(context, index, asset),
+          selectIndicator(context, currentIndex, asset),
         itemBannedIndicator(context, asset),
       ],
     );
