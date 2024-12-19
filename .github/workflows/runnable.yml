@@ -46,9 +46,7 @@ jobs:
       - name: Run tests
         run: flutter test
       - name: Generate docs
-        run: |
-          dart pub global activate dartdoc
-          dart pub global run dartdoc .
+        run: dart doc --dry-run .
 
   test_iOS:
     needs: analyze
