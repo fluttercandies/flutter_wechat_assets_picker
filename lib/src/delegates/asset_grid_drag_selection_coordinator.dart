@@ -130,15 +130,6 @@ class AssetGridDragSelectionCoordinator {
       }
     }
 
-    final double dividedSpacing = delegate.itemSpacing / gridCount;
-    final double anchor = math.min(
-      (maxRow * (itemSize + dividedSpacing) +
-              topPadding -
-              delegate.itemSpacing) /
-          dimensionSize.height,
-      1,
-    );
-
     int rowIndex = _getDragPositionIndex(
       switch (gridRevert) {
         true => dimensionSize.height -
@@ -152,18 +143,19 @@ class AssetGridDragSelectionCoordinator {
       itemSize,
     );
 
-    final double initialFirstPosition = dimensionSize.height * anchor;
-    if (gridRevert && dimensionSize.height > initialFirstPosition) {
-      final deductedRow =
-          (dimensionSize.height - initialFirstPosition) ~/ itemSize;
-      rowIndex -= deductedRow;
-    }
-
-    if (placeholderCount > 0 && maxRow > maxRowPerPage) {
+    if (placeholderCount > 0) {
       rowIndex -= 1;
     }
 
+    // Correct the row index when asset length is less than one page
+    if (maxRowPerPage > maxRow) {
+      rowIndex = maxRow - (maxRowPerPage - rowIndex);
+    }
+
     final currentDragIndex = rowIndex * gridCount + columnIndex;
+
+    print(
+        "Check drag index: $currentDragIndex | $initialSelectingIndex | $rowIndex | $columnIndex");
 
     // Check the selecting index in order to diff unselecting assets.
     smallestSelectingIndex = math.min(
@@ -172,7 +164,7 @@ class AssetGridDragSelectionCoordinator {
     );
     smallestSelectingIndex = math.max(0, smallestSelectingIndex);
     largestSelectingIndex = math.max(
-      currentDragIndex,
+      currentDragIndex + 1,
       largestSelectingIndex,
     );
 
@@ -199,7 +191,7 @@ class AssetGridDragSelectionCoordinator {
       filteredAssetList = provider.currentAssets.getRange(
         math.max(0, initialSelectingIndex),
         math.min(
-          currentDragIndex + (maxRow > maxRowPerPage ? 1 : 0),
+          currentDragIndex + 1,
           provider.currentAssets.length,
         ),
       );
