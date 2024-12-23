@@ -36,6 +36,7 @@ class PickMethod {
           pickerConfig: AssetPickerConfig(
             maxAssets: maxAssetsCount,
             selectedAssets: assets,
+            // shouldRevertGrid: true,
           ),
         );
       },
