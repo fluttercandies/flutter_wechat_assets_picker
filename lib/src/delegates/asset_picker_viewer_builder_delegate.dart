@@ -737,7 +737,11 @@ class DefaultAssetPickerViewerBuilderDelegate
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           icon: Icon(
             Icons.arrow_back_ios_new,
-            semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+            semanticLabel: switch (Theme.of(context).platform) {
+              TargetPlatform.android =>
+                MaterialLocalizations.of(context).backButtonTooltip,
+              _ => null,
+            },
           ),
         ),
       ),

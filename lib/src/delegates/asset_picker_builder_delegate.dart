@@ -620,7 +620,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
         icon: Icon(
           Icons.close,
-          semanticLabel: MaterialLocalizations.of(context).closeButtonTooltip,
+          semanticLabel: switch (Theme.of(context).platform) {
+            TargetPlatform.android =>
+              MaterialLocalizations.of(context).closeButtonTooltip,
+            _ => null,
+          },
         ),
       ),
     );
