@@ -9,7 +9,9 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+### Fixes
+
+- Fixes semantics issues.
 
 ## 9.4.2
 
@@ -146,7 +148,7 @@ that can be found in the LICENSE file. -->
 
 ### Improvements
 
-- Improve code formatting. 
+- Improve code formatting.
 
 ## 9.0.0
 
@@ -900,7 +902,7 @@ To know more about breaking changes, see [Migration Guide][].
 
 ## 1.4.1
 
-- Remove the loading indicator for the  image widget.
+- Remove the loading indicator for the image widget.
 - Refactor the video page's initialization for ratio update.
 - Using constants to store text delegate.
 - Add error catching for main methods.
