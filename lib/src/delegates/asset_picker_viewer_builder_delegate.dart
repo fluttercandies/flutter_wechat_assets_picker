@@ -460,20 +460,18 @@ class DefaultAssetPickerViewerBuilderDelegate
           final bool isSelected =
               (p?.currentlySelectedAssets ?? selectedAssets)?.contains(asset) ??
                   false;
-          String hint = '';
-          if (asset.type == AssetType.audio || asset.type == AssetType.video) {
-            hint += '${semanticsTextDelegate.sNameDurationLabel}: ';
-            hint += textDelegate.durationIndicatorBuilder(asset.videoDuration);
-          }
-          if (asset.title?.isNotEmpty ?? false) {
-            hint += ', ${asset.title}';
-          }
+          final labels = <String>[
+            '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
+                '${index + 1}',
+            asset.createDateTime.toString().replaceAll('.000', ''),
+            if (asset.type == AssetType.audio || asset.type == AssetType.video)
+              '${semanticsTextDelegate.sNameDurationLabel}: '
+                  '${semanticsTextDelegate.durationIndicatorBuilder(asset.videoDuration)}',
+            if (asset.title case final title? when title.isNotEmpty) title,
+          ];
           return Semantics(
-            label: '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
-                '${index + 1}, '
-                '${asset.createDateTime.toString().replaceAll('.000', '')}',
+            label: labels.join(', '),
             selected: isSelected,
-            hint: hint,
             image:
                 asset.type == AssetType.image || asset.type == AssetType.video,
             child: w,
