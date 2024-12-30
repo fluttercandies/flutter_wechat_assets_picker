@@ -119,10 +119,6 @@ class AssetGridDragSelectionCoordinator {
       placeholderCount = 0;
     }
 
-    final bottomGap = MediaQuery.paddingOf(context).bottom +
-        delegate.bottomSectionHeight -
-        (delegate.isAppleOS(context) ? delegate.permissionLimitedBarHeight : 0);
-
     if (gridRevert) {
       columnIndex = gridCount - columnIndex - placeholderCount;
       if (maxRow > maxRowPerPage) {
@@ -138,6 +134,14 @@ class AssetGridDragSelectionCoordinator {
           dimensionSize.height,
       1,
     );
+
+    final bottomGap = anchor == 1.0 && delegate.isAppleOS(context) && gridRevert
+        ? delegate.bottomActionBarHeight
+        : MediaQuery.paddingOf(context).bottom +
+            delegate.bottomSectionHeight -
+            (delegate.isAppleOS(context)
+                ? delegate.permissionLimitedBarHeight
+                : 0);
 
     int rowIndex = _getDragPositionIndex(
       switch (gridRevert) {
@@ -206,8 +210,8 @@ class AssetGridDragSelectionCoordinator {
     }
     final touchedAssets = List<AssetEntity>.from(
       provider.currentAssets.getRange(
-        smallestSelectingIndex,
-        largestSelectingIndex,
+        math.max(0, smallestSelectingIndex),
+        math.min(largestSelectingIndex + 1, provider.currentAssets.length),
       ),
     );
 
