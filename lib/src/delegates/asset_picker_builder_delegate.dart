@@ -1447,13 +1447,14 @@ class DefaultAssetPickerBuilderDelegate
                           ),
                         sliverGrid(context, assets),
                         // Ignore the gap when the [anchor] is not equal to 1.
-                        if (gridRevert && anchor == 1) bottomGap,
+                        if (gridRevert && isAppleOS(context) && anchor == 1)
+                          bottomGap,
                         if (gridRevert)
                           SliverToBoxAdapter(
                             key: gridRevertKey,
                             child: const SizedBox.shrink(),
                           ),
-                        if (isAppleOS(context) && !gridRevert) bottomGap,
+                        if (!gridRevert && isAppleOS(context)) bottomGap,
                       ],
                     );
                   },
