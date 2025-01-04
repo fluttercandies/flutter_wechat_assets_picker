@@ -163,7 +163,10 @@ class AssetGridDragSelectionCoordinator {
       rowIndex -= deductedRow;
     }
 
-    if (placeholderCount > 0 && maxRow > maxRowPerPage) {
+    if (placeholderCount > 0 &&
+        maxRow > maxRowPerPage &&
+        rowIndex > 0 &&
+        anchor < 1.0) {
       rowIndex -= 1;
     }
 
@@ -226,7 +229,8 @@ class AssetGridDragSelectionCoordinator {
     }
 
     final stopAutoScroll = switch (addSelected) {
-      true => provider.selectedAssets.length == provider.maxAssets,
+      true => provider.selectedAssets.length == provider.maxAssets ||
+          (gridRevert && delegate.gridScrollController.offset == 0.0),
       false => provider.selectedAssets.isEmpty,
     };
 
