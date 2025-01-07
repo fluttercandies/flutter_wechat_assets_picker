@@ -167,6 +167,7 @@ class AssetGridDragSelectionCoordinator {
     final int placeholderCount = delegate.assetsGridItemPlaceholderCount(
       context: context,
       pathWrapper: provider.currentPath,
+      onlyOneScreen: onlyOneScreen,
     );
 
     int columnIndex = getDragAxisIndex(globalPosition.dx, itemSize);

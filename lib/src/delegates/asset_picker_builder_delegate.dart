@@ -341,7 +341,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int assetsGridItemPlaceholderCount({
     required BuildContext context,
     required PathWrapper<Path>? pathWrapper,
+    required bool onlyOneScreen,
   }) {
+    if (onlyOneScreen) {
+      return 0;
+    }
     final bool gridRevert = effectiveShouldRevertGrid(context);
     int totalCount = pathWrapper?.assetCount ?? 0;
     // If user chose a special item's position, add 1 count.
@@ -1288,13 +1292,6 @@ class DefaultAssetPickerBuilderDelegate
         if (totalCount == 0 && specialItem == null) {
           return loadingIndicator(context);
         }
-        // Then we use the [totalCount] to calculate placeholders we need.
-        final placeholderCount = assetsGridItemPlaceholderCount(
-          context: context,
-          pathWrapper: wrapper,
-        );
-        // Calculate rows count.
-        final int row = (totalCount + placeholderCount) ~/ gridCount;
         // Here we got a magic calculation. [itemSpacing] needs to be divided by
         // [gridCount] since every grid item is squeezed by the [itemSpacing],
         // and it's actual size is reduced with [itemSpacing / gridCount].
@@ -1306,11 +1303,21 @@ class DefaultAssetPickerBuilderDelegate
         // the grid item before it gets manipulated by the grid revert.
         final textDirectionCorrection = Directionality.of(context);
 
-        Widget sliverGrid(BuildContext context, List<AssetEntity> assets) {
+        Widget sliverGrid(
+          BuildContext context,
+          List<AssetEntity> assets,
+          bool onlyOneScreen,
+        ) {
+          // Then we use the [totalCount] to calculate placeholders we need.
+          final placeholderCount = assetsGridItemPlaceholderCount(
+            context: context,
+            pathWrapper: wrapper,
+            onlyOneScreen: onlyOneScreen,
+          );
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
               (context, int index) {
-                if (gridRevert) {
+                if (placeholderCount > 0) {
                   if (index < placeholderCount) {
                     return const SizedBox.shrink();
                   }
@@ -1424,6 +1431,8 @@ class DefaultAssetPickerBuilderDelegate
 
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
+            // Calculate rows count.
+            final int row = (totalCount / gridCount).ceil();
             final double itemSize = constraints.maxWidth / gridCount;
             // Check whether all rows can be placed at the same time.
             final bool onlyOneScreen = row * itemSize <=
@@ -1453,8 +1462,11 @@ class DefaultAssetPickerBuilderDelegate
               );
             }
 
+            final reverted = gridRevert && !onlyOneScreen;
             return Directionality(
-              textDirection: effectiveGridDirection(context),
+              textDirection: reverted
+                  ? effectiveGridDirection(context)
+                  : Directionality.of(context),
               child: ColoredBox(
                 color: theme.canvasColor,
                 child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
@@ -1476,7 +1488,7 @@ class DefaultAssetPickerBuilderDelegate
                           SliverGap.v(
                             context.topPadding + appBarPreferredSize!.height,
                           ),
-                        sliverGrid(context, assets),
+                        sliverGrid(context, assets, onlyOneScreen),
                         // Append the extra bottom padding for Apple OS.
                         if (anchor == 1 && isAppleOS(context)) bottomGap,
                         if (gridRevert && !onlyOneScreen)
