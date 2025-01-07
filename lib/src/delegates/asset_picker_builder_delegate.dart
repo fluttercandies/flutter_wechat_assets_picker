@@ -337,6 +337,36 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     int placeholderCount = 0,
   });
 
+  /// Calculates the placeholder count in the assets grid.
+  int assetsGridItemPlaceholderCount({
+    required BuildContext context,
+    required PathWrapper<Path>? pathWrapper,
+  }) {
+    final bool gridRevert = effectiveShouldRevertGrid(context);
+    int totalCount = pathWrapper?.assetCount ?? 0;
+    // If user chose a special item's position, add 1 count.
+    if (specialItemPosition != SpecialItemPosition.none) {
+      final specialItem = specialItemBuilder?.call(
+        context,
+        pathWrapper?.path,
+        totalCount,
+      );
+      if (specialItem != null) {
+        totalCount += 1;
+      }
+    }
+    final int result;
+    if (gridRevert && totalCount % gridCount != 0) {
+      // When there are left items that not filled into one row,
+      // filled the row with placeholders.
+      result = gridCount - totalCount % gridCount;
+    } else {
+      // Otherwise, we don't need placeholders.
+      result = 0;
+    }
+    return result;
+  }
+
   /// The item builder for the assets' grid.
   /// 资源列表项的构建
   Widget assetGridItemBuilder(
@@ -1259,15 +1289,10 @@ class DefaultAssetPickerBuilderDelegate
           return loadingIndicator(context);
         }
         // Then we use the [totalCount] to calculate placeholders we need.
-        final int placeholderCount;
-        if (gridRevert && totalCount % gridCount != 0) {
-          // When there are left items that not filled into one row,
-          // filled the row with placeholders.
-          placeholderCount = gridCount - totalCount % gridCount;
-        } else {
-          // Otherwise, we don't need placeholders.
-          placeholderCount = 0;
-        }
+        final placeholderCount = assetsGridItemPlaceholderCount(
+          context: context,
+          pathWrapper: wrapper,
+        );
         // Calculate rows count.
         final int row = (totalCount + placeholderCount) ~/ gridCount;
         // Here we got a magic calculation. [itemSpacing] needs to be divided by
@@ -1415,13 +1440,18 @@ class DefaultAssetPickerBuilderDelegate
             }
             // Use [ScrollView.anchor] to determine where is the first place of
             // the [SliverGrid]. Each row needs [dividedSpacing] to calculate,
-            // then minus one times of [itemSpacing] because spacing's count in the
-            // cross axis is always less than the rows.
-            final double anchor = math.min(
-              (row * (itemSize + dividedSpacing) + topPadding - itemSpacing) /
-                  height,
-              1,
-            );
+            // then minus one times of [itemSpacing] because spacing's count
+            // in the cross axis is always less than the rows.
+            final double anchor;
+            if (!gridRevert || onlyOneScreen) {
+              anchor = 0.0;
+            } else {
+              anchor = math.min(
+                (row * (itemSize + dividedSpacing) + topPadding - itemSpacing) /
+                    height,
+                1.0,
+              );
+            }
 
             return Directionality(
               textDirection: effectiveGridDirection(context),
@@ -1438,18 +1468,18 @@ class DefaultAssetPickerBuilderDelegate
                     return CustomScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       controller: gridScrollController,
-                      anchor: gridRevert ? anchor : 0,
-                      center: gridRevert ? gridRevertKey : null,
+                      anchor: anchor,
+                      center:
+                          gridRevert && !onlyOneScreen ? gridRevertKey : null,
                       slivers: <Widget>[
                         if (isAppleOS(context))
                           SliverGap.v(
                             context.topPadding + appBarPreferredSize!.height,
                           ),
                         sliverGrid(context, assets),
-                        // Ignore the gap when the [anchor] is not equal to 1.
-                        if (gridRevert && isAppleOS(context) && anchor == 1)
-                          bottomGap,
-                        if (gridRevert)
+                        // Append the extra bottom padding for Apple OS.
+                        if (anchor == 1 && isAppleOS(context)) bottomGap,
+                        if (gridRevert && !onlyOneScreen)
                           SliverToBoxAdapter(
                             key: gridRevertKey,
                             child: const SizedBox.shrink(),
@@ -2531,6 +2561,7 @@ class DefaultAssetPickerBuilderDelegate
                 else
                   androidLayout(context),
                 permissionOverlay(context),
+                dragSelectCoordinator.buildDebugInfo(context),
               ],
             ),
           ),

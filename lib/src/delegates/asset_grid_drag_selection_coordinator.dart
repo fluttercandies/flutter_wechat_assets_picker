@@ -47,6 +47,22 @@ class AssetGridDragSelectionCoordinator {
 
   DefaultAssetPickerProvider get provider => delegate.provider;
 
+  bool get _debug => false;
+  final _debugLastPosition = ValueNotifier<(int, int)?>(null);
+
+  /// 复原拖拽状态
+  /// Reset dragging status
+  void resetDraggingStatus() {
+    _autoScroller?.stopAutoScroll();
+    _autoScroller = null;
+    dragging = false;
+    addSelected = true;
+    initialSelectingIndex = -1;
+    largestSelectingIndex = -1;
+    smallestSelectingIndex = -1;
+    _debugLastPosition.value = null;
+  }
+
   /// 长按启动拖拽
   /// Long Press to enable drag and select
   void onSelectionStart(
@@ -55,12 +71,16 @@ class AssetGridDragSelectionCoordinator {
     int index,
     AssetEntity entity,
   ) {
-    dragging = true;
-
     final scrollableState = _checkScrollableStatePresent(context);
     if (scrollableState == null) {
       return;
     }
+
+    if (delegate.gridScrollController.position.isScrollingNotifier.value) {
+      return;
+    }
+
+    dragging = true;
 
     _autoScroller = EdgeDraggingAutoScroller(
       scrollableState,
@@ -82,74 +102,55 @@ class AssetGridDragSelectionCoordinator {
     final view = View.of(context);
     final dimensionSize = view.physicalSize / view.devicePixelRatio;
 
-    // Calculate the coordinate of the current drag position's
-    // asset representation.
-    final gridCount = delegate.gridCount;
-    final itemSize = dimensionSize.width / gridCount;
-
     // Get the actual top padding. Since `viewPadding` represents the
     // physical pixels, it should be divided by the device pixel ratio
     // to get the logical pixels.
     final appBarSize =
         delegate.appBarPreferredSize ?? delegate.appBar(context).preferredSize;
-    final topPadding =
-        appBarSize.height + view.viewPadding.top / view.devicePixelRatio;
-    final bottomPadding = delegate.bottomActionBarHeight +
-        view.viewPadding.bottom / view.devicePixelRatio;
+    final viewPaddingTop = view.viewPadding.top / view.devicePixelRatio;
+    final viewPaddingBottom = view.viewPadding.bottom / view.devicePixelRatio;
+    final topPadding = appBarSize.height + viewPaddingTop;
+    final bottomPadding = delegate.bottomActionBarHeight + viewPaddingBottom;
+    final gridViewport = dimensionSize.height - topPadding - bottomPadding;
+
+    // Calculate the coordinate of the current drag position's
+    // asset representation.
+    final gridCount = delegate.gridCount;
+    final itemSize = dimensionSize.width / gridCount;
+    final dividedSpacing = delegate.itemSpacing / gridCount;
 
     // Row index is calculated based on the drag's global position.
     // The AppBar height, status bar height, and scroll offset are subtracted
     // to adjust for padding and scrolling. This gives the actual row index.
     final gridRevert = delegate.effectiveShouldRevertGrid(context);
-    int columnIndex = _getDragPositionIndex(globalPosition.dx, itemSize);
     final maxRow = (provider.currentAssets.length / gridCount).ceil();
-    final maxRowPerPage =
-        ((dimensionSize.height - bottomPadding) / itemSize).ceil();
+    final maxRowPerPage = (gridViewport / itemSize).ceil();
+    final bool onlyOneScreen = maxRow * itemSize <= gridViewport;
 
-    final int placeholderCount;
-    if (gridRevert) {
-      // Get the total asset count of the current Asset path
-      final totalCount = provider.currentPath?.assetCount ?? 0;
-      // Check if special item does exist
-      final specialItemExist = delegate.shouldBuildSpecialItem;
-      final lastRowCount =
-          (totalCount + (specialItemExist ? 1 : 0)) % gridCount;
-      placeholderCount = gridCount - lastRowCount;
+    final double anchor;
+    if (!gridRevert || onlyOneScreen) {
+      anchor = 0.0;
     } else {
-      placeholderCount = 0;
+      anchor = math.min(
+        (maxRow * (itemSize + dividedSpacing) +
+                topPadding -
+                delegate.itemSpacing) /
+            dimensionSize.height,
+        1.0,
+      );
     }
 
-    if (gridRevert) {
-      columnIndex = gridCount - columnIndex - placeholderCount;
-      if (maxRow > maxRowPerPage) {
-        columnIndex -= 1;
-      }
+    int getDragAxisIndex(double delta, double itemSize) {
+      return delta ~/ (itemSize + dividedSpacing);
     }
 
-    final double dividedSpacing = delegate.itemSpacing / gridCount;
-    final double anchor = math.min(
-      (maxRow * (itemSize + dividedSpacing) +
-              topPadding -
-              delegate.itemSpacing) /
-          dimensionSize.height,
-      1,
-    );
-
-    final bottomGap = anchor == 1.0 && delegate.isAppleOS(context) && gridRevert
-        ? delegate.bottomActionBarHeight
-        : MediaQuery.paddingOf(context).bottom +
-            delegate.bottomSectionHeight -
-            (delegate.isAppleOS(context)
-                ? delegate.permissionLimitedBarHeight
-                : 0);
-
-    int rowIndex = _getDragPositionIndex(
-      switch (gridRevert) {
+    int rowIndex = getDragAxisIndex(
+      switch (gridRevert && !onlyOneScreen) {
         true => dimensionSize.height -
             topPadding -
             globalPosition.dy +
-            (delegate.gridScrollController.offset <= 0 ? bottomGap : 0) +
-            -delegate.gridScrollController.offset,
+            delegate.bottomSectionHeight -
+            delegate.gridScrollController.offset,
         false =>
           globalPosition.dy - topPadding + delegate.gridScrollController.offset,
       },
@@ -163,13 +164,28 @@ class AssetGridDragSelectionCoordinator {
       rowIndex -= deductedRow;
     }
 
+    final int placeholderCount = delegate.assetsGridItemPlaceholderCount(
+      context: context,
+      pathWrapper: provider.currentPath,
+    );
+
+    int columnIndex = getDragAxisIndex(globalPosition.dx, itemSize);
+    if (gridRevert) {
+      columnIndex = gridCount - columnIndex - placeholderCount;
+      if (maxRow > maxRowPerPage) {
+        // The grid is actually being reverted.
+        columnIndex -= 1;
+      }
+    }
+
     if (placeholderCount > 0 &&
-        maxRow > maxRowPerPage &&
+        !onlyOneScreen &&
         rowIndex > 0 &&
         anchor < 1.0) {
       rowIndex -= 1;
     }
 
+    _debugLastPosition.value = (rowIndex, columnIndex);
     final currentDragIndex = rowIndex * gridCount + columnIndex;
 
     // Check the selecting index in order to diff unselecting assets.
@@ -195,10 +211,7 @@ class AssetGridDragSelectionCoordinator {
       filteredAssetList = provider.currentAssets
           .getRange(
             math.max(0, currentDragIndex),
-            math.min(
-              initialSelectingIndex + 1,
-              provider.currentAssets.length,
-            ),
+            math.min(initialSelectingIndex + 1, provider.currentAssets.length),
           )
           .toList()
           .reversed;
@@ -255,18 +268,6 @@ class AssetGridDragSelectionCoordinator {
     resetDraggingStatus();
   }
 
-  /// 复原拖拽状态
-  /// Reset dragging status
-  void resetDraggingStatus() {
-    _autoScroller?.stopAutoScroll();
-    _autoScroller = null;
-    dragging = false;
-    addSelected = true;
-    initialSelectingIndex = -1;
-    largestSelectingIndex = -1;
-    smallestSelectingIndex = -1;
-  }
-
   /// 检查 [Scrollable] state是否存在
   /// Check if the [Scrollable] state is exist
   ///
@@ -291,9 +292,21 @@ class AssetGridDragSelectionCoordinator {
     return scrollable;
   }
 
-  /// 获取坐标
-  /// Get Coordinate Helper
-  int _getDragPositionIndex(double delta, double itemSize) {
-    return delta ~/ itemSize;
+  Widget buildDebugInfo(BuildContext context) {
+    if (!_debug) {
+      return const SizedBox.shrink();
+    }
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: ValueListenableBuilder(
+        valueListenable: _debugLastPosition,
+        builder: (_, value, __) => Text(
+          value?.toString() ?? '',
+          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+            shadows: const [Shadow(blurRadius: 8.0)],
+          ),
+        ),
+      ),
+    );
   }
 }
