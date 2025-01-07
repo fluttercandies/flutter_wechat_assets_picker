@@ -371,6 +371,49 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     return result;
   }
 
+  /// Calculates the grid anchor when reverting items.
+  double assetGridAnchor({
+    required BuildContext context,
+    required BoxConstraints constraints,
+    required PathWrapper<Path>? pathWrapper,
+  }) {
+    int totalCount = pathWrapper?.assetCount ?? 0;
+    // If user chose a special item's position, add 1 count.
+    if (specialItemPosition != SpecialItemPosition.none) {
+      final specialItem = specialItemBuilder?.call(
+        context,
+        pathWrapper?.path,
+        totalCount,
+      );
+      if (specialItem != null) {
+        totalCount += 1;
+      }
+    }
+    // Here we got a magic calculation. [itemSpacing] needs to be divided by
+    // [gridCount] since every grid item is squeezed by the [itemSpacing],
+    // and it's actual size is reduced with [itemSpacing / gridCount].
+    final double dividedSpacing = itemSpacing / gridCount;
+    final double topPadding = context.topPadding + appBarPreferredSize!.height;
+    // Calculate rows count.
+    final int row = (totalCount / gridCount).ceil();
+    final double itemSize = constraints.maxWidth / gridCount;
+    // Check whether all rows can be placed at the same time.
+    final bool gridRevert = effectiveShouldRevertGrid(context);
+    final bool onlyOneScreen =
+        row * (itemSize + itemSpacing) <= constraints.maxHeight;
+    final double anchor;
+    if (!gridRevert || onlyOneScreen) {
+      anchor = 0.0;
+    } else {
+      anchor = math.min(
+        (row * (itemSize + dividedSpacing) + topPadding - itemSpacing) /
+            constraints.maxHeight,
+        1.0,
+      );
+    }
+    return anchor;
+  }
+
   /// The item builder for the assets' grid.
   /// 资源列表项的构建
   Widget assetGridItemBuilder(
@@ -1292,12 +1335,6 @@ class DefaultAssetPickerBuilderDelegate
         if (totalCount == 0 && specialItem == null) {
           return loadingIndicator(context);
         }
-        // Here we got a magic calculation. [itemSpacing] needs to be divided by
-        // [gridCount] since every grid item is squeezed by the [itemSpacing],
-        // and it's actual size is reduced with [itemSpacing / gridCount].
-        final double dividedSpacing = itemSpacing / gridCount;
-        final double topPadding =
-            context.topPadding + appBarPreferredSize!.height;
 
         // Obtain the text direction from the correct context and apply to
         // the grid item before it gets manipulated by the grid revert.
@@ -1305,6 +1342,7 @@ class DefaultAssetPickerBuilderDelegate
 
         Widget sliverGrid(
           BuildContext context,
+          BoxConstraints constraints,
           List<AssetEntity> assets,
           bool onlyOneScreen,
         ) {
@@ -1331,65 +1369,75 @@ class DefaultAssetPickerBuilderDelegate
                   specialItem: specialItem,
                 );
 
+                // Enables drag-to-select.
                 if (dragToSelect ??
                     !MediaQuery.accessibleNavigationOf(context)) {
                   child = GestureDetector(
                     excludeFromSemantics: true,
                     onHorizontalDragStart: (d) {
                       dragSelectCoordinator.onSelectionStart(
-                        context,
-                        d.globalPosition,
-                        index,
-                        assets[index],
+                        context: context,
+                        globalPosition: d.globalPosition,
+                        index: index,
+                        asset: assets[index],
                       );
                     },
                     onHorizontalDragUpdate: (d) {
                       dragSelectCoordinator.onSelectionUpdate(
-                        context,
-                        d.globalPosition,
+                        context: context,
+                        globalPosition: d.globalPosition,
+                        constraints: constraints,
                       );
                     },
                     onHorizontalDragCancel:
                         dragSelectCoordinator.resetDraggingStatus,
                     onHorizontalDragEnd: (d) {
-                      dragSelectCoordinator.onDragEnd(d.globalPosition);
+                      dragSelectCoordinator.onDragEnd(
+                        globalPosition: d.globalPosition,
+                      );
                     },
                     onLongPressStart: (d) {
                       dragSelectCoordinator.onSelectionStart(
-                        context,
-                        d.globalPosition,
-                        index,
-                        assets[index],
+                        context: context,
+                        globalPosition: d.globalPosition,
+                        index: index,
+                        asset: assets[index],
                       );
                     },
                     onLongPressMoveUpdate: (d) {
                       dragSelectCoordinator.onSelectionUpdate(
-                        context,
-                        d.globalPosition,
+                        context: context,
+                        globalPosition: d.globalPosition,
+                        constraints: constraints,
                       );
                     },
                     onLongPressCancel:
                         dragSelectCoordinator.resetDraggingStatus,
                     onLongPressEnd: (d) {
-                      dragSelectCoordinator.onDragEnd(d.globalPosition);
+                      dragSelectCoordinator.onDragEnd(
+                        globalPosition: d.globalPosition,
+                      );
                     },
                     onPanStart: (d) {
                       dragSelectCoordinator.onSelectionStart(
-                        context,
-                        d.globalPosition,
-                        index,
-                        assets[index],
+                        context: context,
+                        globalPosition: d.globalPosition,
+                        index: index,
+                        asset: assets[index],
                       );
                     },
                     onPanUpdate: (d) {
                       dragSelectCoordinator.onSelectionUpdate(
-                        context,
-                        d.globalPosition,
+                        context: context,
+                        globalPosition: d.globalPosition,
+                        constraints: constraints,
                       );
                     },
                     onPanCancel: dragSelectCoordinator.resetDraggingStatus,
                     onPanEnd: (d) {
-                      dragSelectCoordinator.onDragEnd(d.globalPosition);
+                      dragSelectCoordinator.onDragEnd(
+                        globalPosition: d.globalPosition,
+                      );
                     },
                     child: child,
                   );
@@ -1435,32 +1483,18 @@ class DefaultAssetPickerBuilderDelegate
             final int row = (totalCount / gridCount).ceil();
             final double itemSize = constraints.maxWidth / gridCount;
             // Check whether all rows can be placed at the same time.
-            final bool onlyOneScreen = row * itemSize <=
-                constraints.maxHeight -
-                    context.bottomPadding -
-                    topPadding -
-                    permissionLimitedBarHeight;
-            final double height;
-            if (onlyOneScreen) {
-              height = constraints.maxHeight;
-            } else {
-              // Reduce [permissionLimitedBarHeight] for the final height.
-              height = constraints.maxHeight - permissionLimitedBarHeight;
-            }
+            final bool onlyOneScreen =
+                row * (itemSize + itemSpacing) <= constraints.maxHeight;
+
             // Use [ScrollView.anchor] to determine where is the first place of
             // the [SliverGrid]. Each row needs [dividedSpacing] to calculate,
             // then minus one times of [itemSpacing] because spacing's count
             // in the cross axis is always less than the rows.
-            final double anchor;
-            if (!gridRevert || onlyOneScreen) {
-              anchor = 0.0;
-            } else {
-              anchor = math.min(
-                (row * (itemSize + dividedSpacing) + topPadding - itemSpacing) /
-                    height,
-                1.0,
-              );
-            }
+            final double anchor = assetGridAnchor(
+              context: context,
+              constraints: constraints,
+              pathWrapper: wrapper,
+            );
 
             final reverted = gridRevert && !onlyOneScreen;
             return Directionality(
@@ -1488,7 +1522,7 @@ class DefaultAssetPickerBuilderDelegate
                           SliverGap.v(
                             context.topPadding + appBarPreferredSize!.height,
                           ),
-                        sliverGrid(context, assets, onlyOneScreen),
+                        sliverGrid(context, constraints, assets, onlyOneScreen),
                         // Append the extra bottom padding for Apple OS.
                         if (anchor == 1 && isAppleOS(context)) bottomGap,
                         if (gridRevert && !onlyOneScreen)
