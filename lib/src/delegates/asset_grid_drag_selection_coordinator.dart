@@ -108,7 +108,7 @@ class AssetGridDragSelectionCoordinator {
     final viewPaddingBottom = view.viewPadding.bottom / view.devicePixelRatio;
     final topSectionHeight = appBarSize.height + viewPaddingTop;
     final bottomSectionHeight =
-        delegate.bottomActionBarHeight + viewPaddingBottom;
+        delegate.bottomSectionHeight + viewPaddingBottom;
     final gridViewport =
         dimensionSize.height - topSectionHeight - bottomSectionHeight;
 
@@ -132,24 +132,22 @@ class AssetGridDragSelectionCoordinator {
       constraints: constraints,
       pathWrapper: provider.currentPath,
     );
+    final scrolledOffset = delegate.gridScrollController.offset
+        .abs(); // Offset is negative when reverted.
+
+    // Corrects the Y position according the reverted status.
+    final correctedY = switch (reverted) {
+          true =>
+            dimensionSize.height - bottomSectionHeight - globalPosition.dy,
+          false => globalPosition.dy - topSectionHeight,
+        } +
+        scrolledOffset;
 
     int getDragAxisIndex(double delta, double itemSize) {
       return delta ~/ (itemSize + dividedSpacing);
     }
 
-    int rowIndex = getDragAxisIndex(
-      switch (reverted) {
-        true => dimensionSize.height -
-            delegate.bottomSectionHeight -
-            delegate.gridScrollController.offset -
-            globalPosition.dy,
-        false => globalPosition.dy -
-            topSectionHeight +
-            delegate.gridScrollController.offset,
-      },
-      itemSize,
-    );
-
+    int rowIndex = getDragAxisIndex(correctedY, itemSize);
     final initialFirstPosition = dimensionSize.height * anchor;
     if (reverted && dimensionSize.height > initialFirstPosition) {
       final deductedRow = getDragAxisIndex(
@@ -227,26 +225,27 @@ class AssetGridDragSelectionCoordinator {
       delegate.selectAsset(context, asset, currentDragIndex, addSelected);
     }
 
-    final stopAutoScroll = switch (addSelected) {
-      true => provider.selectedAssets.length == provider.maxAssets ||
-          (gridRevert && delegate.gridScrollController.offset == 0.0),
-      false => provider.selectedAssets.isEmpty,
-    };
-    if (stopAutoScroll) {
+    if (filteredAssetList.isEmpty) {
+      return;
+    }
+
+    if (provider.selectedAssets.isEmpty ||
+        provider.selectedAssets.length == provider.maxAssets) {
       _autoScroller?.stopAutoScroll();
       return;
     }
 
     // Enable auto-scrolling if the pointer is at the edge.
-    _autoScroller?.startAutoScrollIfNecessary(
-      Offset(
-            (columnIndex + 1) * itemSize,
-            globalPosition.dy > constraints.maxHeight * 0.8
-                ? (rowIndex + 1) * itemSize
-                : math.max(topSectionHeight, globalPosition.dy),
-          ) &
-          Size.square(itemSize),
+    final dragOffset = Offset(
+      columnIndex * itemSize,
+      correctedY -
+          scrolledOffset +
+          itemSize +
+          viewPaddingTop +
+          viewPaddingBottom,
     );
+    final dragTarget = dragOffset & Size.square(itemSize);
+    _autoScroller?.startAutoScrollIfNecessary(dragTarget);
   }
 
   void onDragEnd({required Offset globalPosition}) {
