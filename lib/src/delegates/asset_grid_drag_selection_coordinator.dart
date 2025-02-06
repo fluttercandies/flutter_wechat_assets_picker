@@ -236,13 +236,12 @@ class AssetGridDragSelectionCoordinator {
     }
 
     // Enable auto-scrolling if the pointer is at the edge.
-    final dragOffset = Offset(
+    final Offset dragOffset = Offset(
       columnIndex * itemSize,
-      correctedY -
-          scrolledOffset +
-          itemSize +
-          viewPaddingTop +
-          viewPaddingBottom,
+      globalPosition.dy +
+          (globalPosition.dy > (dimensionSize.height / 2)
+              ? bottomSectionHeight
+              : -topSectionHeight),
     );
     final dragTarget = dragOffset & Size.square(itemSize);
     _autoScroller?.startAutoScrollIfNecessary(dragTarget);
