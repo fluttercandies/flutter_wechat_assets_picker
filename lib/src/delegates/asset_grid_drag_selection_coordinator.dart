@@ -42,9 +42,6 @@ class AssetGridDragSelectionCoordinator {
 
   DefaultAssetPickerProvider get provider => delegate.provider;
 
-  bool get _debug => true;
-  final _debugLastPosition = ValueNotifier<(int, int)?>(null);
-
   /// Reset all dragging status.
   void resetDraggingStatus() {
     _autoScroller?.stopAutoScroll();
@@ -54,7 +51,6 @@ class AssetGridDragSelectionCoordinator {
     initialSelectingIndex = -1;
     largestSelectingIndex = -1;
     smallestSelectingIndex = -1;
-    _debugLastPosition.value = null;
   }
 
   /// Long Press or horizontal drag to start the selection.
@@ -172,7 +168,6 @@ class AssetGridDragSelectionCoordinator {
       columnIndex = gridCount - columnIndex - placeholderCount - 1;
     }
 
-    _debugLastPosition.value = (rowIndex, columnIndex);
     final currentDragIndex = rowIndex * gridCount + columnIndex;
 
     // Check the selecting index in order to diff unselecting assets.
@@ -271,23 +266,5 @@ class AssetGridDragSelectionCoordinator {
     }
 
     return scrollable;
-  }
-
-  Widget buildDebugInfo(BuildContext context) {
-    if (!_debug) {
-      return const SizedBox.shrink();
-    }
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: ValueListenableBuilder(
-        valueListenable: _debugLastPosition,
-        builder: (_, value, __) => Text(
-          value?.toString() ?? '',
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-            shadows: const [Shadow(blurRadius: 8.0)],
-          ),
-        ),
-      ),
-    );
   }
 }

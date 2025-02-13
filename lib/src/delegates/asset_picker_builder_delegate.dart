@@ -2607,7 +2607,6 @@ class DefaultAssetPickerBuilderDelegate
                 else
                   androidLayout(context),
                 permissionOverlay(context),
-                dragSelectCoordinator.buildDebugInfo(context),
               ],
             ),
           ),
