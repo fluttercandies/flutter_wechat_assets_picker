@@ -36,14 +36,13 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
 The package only guarantees to be working on **the stable version of Flutter**.
 We won't update it in real-time to align with other channels of Flutter.
 
-|        | 3.0 | 3.3 | 3.7 | 3.10 | 3.13 | 3.16 |
-|--------|:---:|:---:|:---:|:----:|:----:|:----:|
-| 8.9.0+ |  ❌  |  ❌  |  ❌  |  ❌   |  ❌   |  ✅   |
-| 8.7.0+ |  ❌  |  ❌  |  ❌  |  ❌   |  ✅   |  ❌   |
-| 8.5.0+ |  ❌  |  ❌  |  ❌  |  ✅   |  ❌   |  ❌   |
-| 8.4.0+ |  ❌  |  ❌  |  ✅  |  ❌   |  ❌   |  ❌   |
-| 8.0.0+ |  ✅  |  ✅  |  ❌  |  ❌   |  ❌   |  ❌   |
-| 7.3.0+ |  ✅  |  ✅  |  ❌  |  ❌   |  ❌   |  ❌   |
+|        | 3.7 | 3.10 | 3.13 | 3.16 | 3.22 |
+|--------|:---:|:----:|:----:|:----:|:----:|
+| 9.5.0+ |  ❌  |  ❌   |  ❌   |  ❌   |  ✅   |
+| 8.9.0+ |  ❌  |  ❌   |  ❌   |  ✅   |  ❌   |
+| 8.7.0+ |  ❌  |  ❌   |  ✅   |  ❌   |  ❌   |
+| 8.5.0+ |  ❌  |  ✅   |  ❌   |  ❌   |  ❌   |
+| 8.4.0+ |  ✅  |  ❌   |  ❌   |  ❌   |  ❌   |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
 please use `dependency_overrides` to fix it.
@@ -314,6 +313,7 @@ Fields in `AssetPickerConfig`:
 | assetsChangeCallback              | `AssetsChangeCallback<AssetPathEntity>?`         | The callback that will be called when the system notifies assets changes.                      | `null`                      |
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | Whether assets changing should call refresh with the given call and the current selected path. | `null`                      |
 | shouldAutoPlayPreview             | `bool`                                           | Whether the preview should auto play.                                                          | `false`                     |
+| dragToSelect                      | `bool`                                           | Whether assets selection can be done with drag gestures.                                       | `true`                      |
 
 - When `maxAssets` equals to `1` (a.k.a. single picking mode),
   use `SpecialPickerType.noPreview` will immediately select asset

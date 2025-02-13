@@ -4,16 +4,12 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "**.md"
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - "**.md"
 
 env:
-  MINIMUM_FLUTTER_VERSION: '3.16.0'
+  MINIMUM_FLUTTER_VERSION: '3.22.3'
 
 jobs:
   analyze:
@@ -29,10 +25,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
-      - uses: subosito/flutter-action@v2
+      - uses: flutter-actions/setup-flutter@v4
         with:
-          channel: 'stable'
-          flutter-version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || '' }}
+          channel: stable
+          version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || 'latest' }}
       - name: Log Dart/Flutter versions
         run: |
           dart --version
@@ -40,13 +36,20 @@ jobs:
       - name: Prepare dependencies
         run: flutter pub get
       - name: Check Dart code formatting
+        if: matrix.flutter-version != 'min'
         run: dart format . -o none --set-exit-if-changed
       - name: Analyze Dart code
         run: flutter analyze .
       - name: Run tests
         run: flutter test
+      - name: Publish dry-run
+        if: matrix.flutter-version != 'min'
+        run: dart pub publish --dry-run
       - name: Generate docs
-        run: dart doc --dry-run .
+        if: matrix.flutter-version != 'min'
+        run: |
+          dart pub global activate dartdoc
+          dart pub global run dartdoc
 
   test_iOS:
     needs: analyze
@@ -61,10 +64,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
-      - uses: subosito/flutter-action@v2.8.0
+      - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          flutter-version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || '' }}
+          version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || 'latest' }}
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
@@ -83,10 +86,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
-      - uses: subosito/flutter-action@v2.8.0
+      - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          flutter-version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || '' }}
+          version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || 'latest' }}
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
