@@ -47,7 +47,9 @@ jobs:
         run: dart pub publish --dry-run
       - name: Generate docs
         if: matrix.flutter-version != 'min'
-        run: dart doc --dry-run .
+        run: |
+          dart pub global activate dartdoc
+          dart pub global run dartdoc
 
   test_iOS:
     needs: analyze
@@ -65,7 +67,7 @@ jobs:
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || '' }}
+          version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || 'latest' }}
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
@@ -87,7 +89,7 @@ jobs:
       - uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || '' }}
+          version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || 'latest' }}
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
