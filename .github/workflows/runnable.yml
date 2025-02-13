@@ -47,7 +47,7 @@ jobs:
         run: dart pub publish --dry-run
       - name: Generate docs
         if: matrix.flutter-version != 'min'
-        run: dart doc .
+        run: dart doc --dry-run .
 
   test_iOS:
     needs: analyze

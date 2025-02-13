@@ -352,7 +352,7 @@ class DefaultAssetPickerProvider
       )..merge(fog);
     } else if (fog == null && Platform.isAndroid) {
       options = AdvancedCustomFilter(
-        orderBy: [OrderByItem.desc(CustomColumns.android.dateTaken)],
+        orderBy: [OrderByItem.desc(CustomColumns.android.modifiedDate)],
       );
     } else {
       options = fog;

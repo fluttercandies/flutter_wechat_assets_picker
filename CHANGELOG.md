@@ -9,7 +9,16 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+### Fixes
+
+- Fixes semantics issues.
+
+## 9.4.2
+
+### Improvements
+
+- Add Traditional Chinese language text delegate. (Thanks to @Gasol)
+- Improves the default sort conditions on Android.
 
 ## 9.4.1
 
@@ -139,7 +148,7 @@ that can be found in the LICENSE file. -->
 
 ### Improvements
 
-- Improve code formatting. 
+- Improve code formatting.
 
 ## 9.0.0
 
@@ -169,7 +178,7 @@ that can be found in the LICENSE file. -->
 
 ### New features
 
-- Add Korean language support. (#494)
+- Add Korean language support. (Thanks to @LIMMIHEE)
 
 ### Improvements
 
@@ -223,7 +232,7 @@ that can be found in the LICENSE file. -->
 ### New features
 
 - Sync all UI details from WeChat 8.3.x. (#458)
-- Add Turkish language text delegate. (#331).
+- Add Turkish language text delegate. (Thanks to @cevheri).
 - Allow to confirm 0 assets if there are selected assets previously. (#461)
 
 ### Improvements
@@ -245,7 +254,7 @@ that can be found in the LICENSE file. -->
 
 ### New features
 
-- Add Vietnamese language text delegate. (#424).
+- Add Vietnamese language text delegate. (Thanks to @nploi).
 
 ### Improvements
 
@@ -893,7 +902,7 @@ To know more about breaking changes, see [Migration Guide][].
 
 ## 1.4.1
 
-- Remove the loading indicator for the  image widget.
+- Remove the loading indicator for the image widget.
 - Refactor the video page's initialization for ratio update.
 - Using constants to store text delegate.
 - Add error catching for main methods.

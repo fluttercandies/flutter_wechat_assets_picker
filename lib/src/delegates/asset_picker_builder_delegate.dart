@@ -698,7 +698,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
         icon: Icon(
           Icons.close,
-          semanticLabel: MaterialLocalizations.of(context).closeButtonTooltip,
+          semanticLabel: switch (Theme.of(context).platform) {
+            TargetPlatform.android =>
+              MaterialLocalizations.of(context).closeButtonTooltip,
+            _ => null,
+          },
         ),
       ),
     );
@@ -1645,28 +1649,24 @@ class DefaultAssetPickerBuilderDelegate
               asset.toString(),
             );
             final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
-            String hint = '';
-            if (asset.type == AssetType.audio ||
-                asset.type == AssetType.video) {
-              hint += '${semanticsTextDelegate.sNameDurationLabel}: ';
-              hint += semanticsTextDelegate.durationIndicatorBuilder(
-                asset.videoDuration,
-              );
-            }
-            if (asset.title?.isNotEmpty ?? false) {
-              hint += ', ${asset.title}';
-            }
+            final labels = <String>[
+              '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
+                  '${semanticIndex(index)}',
+              asset.createDateTime.toString().replaceAll('.000', ''),
+              if (asset.type == AssetType.audio ||
+                  asset.type == AssetType.video)
+                '${semanticsTextDelegate.sNameDurationLabel}: '
+                    '${semanticsTextDelegate.durationIndicatorBuilder(asset.videoDuration)}',
+              if (asset.title case final title? when title.isNotEmpty) title,
+            ];
             return Semantics(
               key: ValueKey('${asset.id}-semantics'),
               button: false,
               enabled: !isBanned,
               excludeSemantics: true,
               focusable: !isSwitchingPath,
-              label: '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
-                  '${semanticIndex(index)}, '
-                  '${asset.createDateTime.toString().replaceAll('.000', '')}',
+              label: labels.join(', '),
               hidden: isSwitchingPath,
-              hint: hint,
               image: asset.type == AssetType.image ||
                   asset.type == AssetType.video,
               onTap: () {
