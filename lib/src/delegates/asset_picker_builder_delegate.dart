@@ -848,7 +848,6 @@ class DefaultAssetPickerBuilderDelegate
     if (keepScrollOffset) {
       gridScrollController.addListener(keepScrollOffsetListener);
     }
-    dragSelectCoordinator = AssetGridDragSelectionCoordinator(delegate: this);
   }
 
   /// [ChangeNotifier] for asset picker.
@@ -896,7 +895,8 @@ class DefaultAssetPickerBuilderDelegate
 
   /// Drag select aggregator.
   /// 拖拽选择协调器
-  late final AssetGridDragSelectionCoordinator dragSelectCoordinator;
+  late final AssetGridDragSelectionCoordinator dragSelectCoordinator =
+      AssetGridDragSelectionCoordinator(delegate: this);
 
   /// Whether the picker should save the scroll offset between pushes and pops.
   /// 选择器是否可以从同样的位置开始选择
