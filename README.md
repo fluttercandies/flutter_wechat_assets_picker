@@ -313,6 +313,7 @@ Fields in `AssetPickerConfig`:
 | assetsChangeCallback              | `AssetsChangeCallback<AssetPathEntity>?`         | The callback that will be called when the system notifies assets changes.                      | `null`                      |
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | Whether assets changing should call refresh with the given call and the current selected path. | `null`                      |
 | shouldAutoPlayPreview             | `bool`                                           | Whether the preview should auto play.                                                          | `false`                     |
+| dragToSelect                      | `bool`                                           | Whether assets selection can be done with drag gestures.                                       | `true`                      |
 
 - When `maxAssets` equals to `1` (a.k.a. single picking mode),
   use `SpecialPickerType.noPreview` will immediately select asset

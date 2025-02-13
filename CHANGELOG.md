@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+### New features
+
+- Support drag to select.
+
 ### Fixes
 
 - Fixes semantics issues.

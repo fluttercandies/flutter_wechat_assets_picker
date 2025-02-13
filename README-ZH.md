@@ -304,6 +304,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | assetsChangeCallback              | `AssetsChangeCallback<AssetPathEntity>?`         | 当系统通知资源变化时将调用的回调                                     | `null`                      |
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | 判断资源变化是否根据 call 和当前选中的路径进行更新                         | `null`                      |
 | shouldAutoplayPreview             | `bool`                                           | 预览是否应自动播放                                            | `false`                     |
+| dragToSelect                      | `bool`                                           | 是否开启拖拽选择                                             | `true`                      |
 
 - 当 `maxAssets` 等于 `1`（即单选模式），搭配
   `SpecialPickerType.noPreview` 使用会在用户点选资源换时立刻选中并返回。
