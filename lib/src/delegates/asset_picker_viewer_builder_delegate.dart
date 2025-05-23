@@ -733,14 +733,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             Navigator.maybeOf(context)?.maybePop();
           },
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            semanticLabel: switch (Theme.of(context).platform) {
-              TargetPlatform.android =>
-                MaterialLocalizations.of(context).backButtonTooltip,
-              _ => null,
-            },
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new),
         ),
       ),
       centerTitle: true,

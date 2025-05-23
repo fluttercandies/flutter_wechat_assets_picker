@@ -40,9 +40,11 @@ class _MethodListViewState extends State<MethodListView> {
               width: 48,
               height: 48,
               child: Center(
-                child: Text(
-                  model.icon,
-                  style: const TextStyle(fontSize: 28.0),
+                child: ExcludeSemantics(
+                  child: Text(
+                    model.icon,
+                    style: const TextStyle(fontSize: 28.0),
+                  ),
                 ),
               ),
             ),
