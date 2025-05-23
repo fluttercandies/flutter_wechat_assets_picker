@@ -23,6 +23,7 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
     this.maintainState = true,
     this.opaque = true,
     this.canTransitionFromPredicate,
+    super.settings,
   });
 
   final WidgetBuilder builder;
