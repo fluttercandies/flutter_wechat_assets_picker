@@ -25,6 +25,7 @@ import '../models/path_wrapper.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_app_bar.dart';
+import '../widget/asset_picker_page_route.dart';
 import '../widget/asset_picker_viewer.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
 
@@ -48,6 +49,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.pathNameBuilder,
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
+    this.viewerUseRootNavigator = false,
+    this.viewerPageRouteSettings,
+    this.viewerPageRouteBuilder,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
@@ -130,6 +134,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
   final AssetsChangeRefreshPredicate<AssetPathEntity>?
       assetsChangeRefreshPredicate;
+
+  final bool viewerUseRootNavigator;
+  final RouteSettings? viewerPageRouteSettings;
+  final AssetPickerViewerPageRouteBuilder<List<Asset>>? viewerPageRouteBuilder;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -828,6 +836,9 @@ class DefaultAssetPickerBuilderDelegate
     super.pathNameBuilder,
     super.assetsChangeCallback,
     super.assetsChangeRefreshPredicate,
+    super.viewerUseRootNavigator,
+    super.viewerPageRouteSettings,
+    super.viewerPageRouteBuilder,
     super.themeColor,
     super.textDelegate,
     super.locale,
@@ -1175,6 +1186,9 @@ class DefaultAssetPickerBuilderDelegate
       maxAssets: p.maxAssets,
       shouldReversePreview: revert,
       shouldAutoplayPreview: shouldAutoplayPreview,
+      useRootNavigator: viewerUseRootNavigator,
+      pageRouteSettings: viewerPageRouteSettings,
+      pageRouteBuilder: viewerPageRouteBuilder,
     );
     if (result != null) {
       Navigator.maybeOf(context)?.maybePop(result);
