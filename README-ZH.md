@@ -136,7 +136,7 @@ Language: [English](README.md) | 中文
 |----------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
 | ![4](screenshots/README_4.webp)                          | ![5](screenshots/README_5.webp)                          | ![6](screenshots/README_6.webp)                          |
 | ![7](screenshots/README_7.webp)                          | ![8](screenshots/README_8.webp)                          | ![9](screenshots/README_9.webp)                          |
-| ![10](https://pic.alexv525.com/2021-07-05-picker_10.png) | ![10](https://pic.alexv525.com/2021-07-05-picker_11.png) | ![12](https://pic.alexv525.com/2021-07-05-picker_12.png) |
+| ![10](screenshots/README_10.webp)                        | ![11](screenshots/README_11.webp)                        | ![12](screenshots/README_12.webp)                         |
 
 ## 开始前的注意事项 ‼️
 
