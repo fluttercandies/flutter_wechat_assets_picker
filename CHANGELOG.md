@@ -9,7 +9,9 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+**Improvements**
+
+- Improve how `MediaQuery` is being listened.
 
 ## 9.5.1
 

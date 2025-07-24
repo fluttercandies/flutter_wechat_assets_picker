@@ -717,6 +717,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// The overlay when the permission is limited.
   Widget permissionOverlay(BuildContext context) {
     final Size size = MediaQuery.sizeOf(context);
+    final EdgeInsets padding = MediaQuery.paddingOf(context);
     final Widget closeButton = Container(
       margin: const EdgeInsetsDirectional.only(start: 16, top: 4),
       alignment: AlignmentDirectional.centerStart,
@@ -793,7 +794,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           child: Semantics(
             sortKey: const OrdinalSortKey(0),
             child: Container(
-              padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
+              padding: EdgeInsets.only(top: padding.top),
               color: context.theme.canvasColor,
               child: Column(
                 children: <Widget>[
@@ -803,10 +804,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
                   SizedBox(height: size.height / 18),
                   accessLimitedButton,
                   SizedBox(
-                    height: math.max(
-                      MediaQuery.paddingOf(context).bottom,
-                      24.0,
-                    ),
+                    height: math.max(padding.bottom, 24.0),
                   ),
                 ],
               ),
@@ -1317,6 +1315,7 @@ class DefaultAssetPickerBuilderDelegate
   Widget assetsGridBuilder(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
     final bool gridRevert = effectiveShouldRevertGrid(context);
+    final accessibleNavigation = MediaQuery.accessibleNavigationOf(context);
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
       builder: (context, wrapper, _) {
@@ -1374,8 +1373,7 @@ class DefaultAssetPickerBuilderDelegate
                 );
 
                 // Enables drag-to-select.
-                if (dragToSelect ??
-                    !MediaQuery.accessibleNavigationOf(context)) {
+                if (dragToSelect ?? !accessibleNavigation) {
                   child = GestureDetector(
                     excludeFromSemantics: true,
                     onHorizontalDragStart: (d) {
