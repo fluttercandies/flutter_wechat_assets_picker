@@ -14,6 +14,10 @@ that can be found in the LICENSE file. -->
 - Improve how `MediaQuery` is being listened.
 - Stop enabling drag to select when `maxAssets == 1`.
 
+**Fixes**
+
+- Fix semantics with the close button.
+
 ## 9.5.1
 
 **Improvements**
