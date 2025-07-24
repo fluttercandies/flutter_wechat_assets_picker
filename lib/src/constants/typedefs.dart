@@ -13,8 +13,8 @@ import 'package:provider/provider.dart';
 typedef CNP<T extends ChangeNotifier?> = ChangeNotifierProvider<T>;
 
 /// {@template wechat_assets_picker.LoadingIndicatorBuilder}
-/// Build the loading indicator with the given [isAssetsEmpty].
-/// 根据给定的 [isAssetsEmpty] 构建加载指示器。
+/// Build the loading indicator with the given `isAssetsEmpty`.
+/// 根据给定的 `isAssetsEmpty` 构建加载指示器。
 /// {@endtemplate}
 typedef LoadingIndicatorBuilder = Widget Function(
   BuildContext context,
@@ -66,9 +66,9 @@ typedef AssetsChangeCallback<Path> = void Function(
 );
 
 /// {@template wechat_assets_picker.AssetsChangeRefreshPredicate}
-/// Whether assets changing should call refresh with the given [call]
-/// and the current selected [path].
-/// 判断资源变化是否根据 [call] 和当前选中的 [path] 进行更新。
+/// Whether assets changing should call refresh with the given `call`
+/// and the current selected `path`.
+/// 判断资源变化是否根据 `call` 和当前选中的 `path` 进行更新。
 /// {@endtemplate}
 typedef AssetsChangeRefreshPredicate<Path> = bool Function(
   PermissionState permission,

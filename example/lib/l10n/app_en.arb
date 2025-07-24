@@ -14,6 +14,8 @@
   "pickMethodVideoDescription": "Only pick video from device. (Includes Live Photos on iOS and macOS.)",
   "pickMethodAudioName": "Audio picker",
   "pickMethodAudioDescription": "Only pick audio from device.",
+  "pickMethodLivePhotoName": "Live Photo picker",
+  "pickMethodLivePhotoDescription": "Only pick Live Photos from device.",
   "pickMethodCameraName": "Pick from camera",
   "pickMethodCameraDescription": "Allow to pick an asset through camera.",
   "pickMethodCameraAndStayName": "Pick from camera and stay",

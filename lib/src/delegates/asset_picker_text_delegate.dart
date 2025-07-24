@@ -4,23 +4,25 @@
 
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetType;
 
 /// All text delegates.
-const List<AssetPickerTextDelegate> assetPickerTextDelegates =
-    <AssetPickerTextDelegate>[
+const assetPickerTextDelegates = <AssetPickerTextDelegate>[
   AssetPickerTextDelegate(),
-  EnglishAssetPickerTextDelegate(),
-  HebrewAssetPickerTextDelegate(),
-  GermanAssetPickerTextDelegate(),
-  RussianAssetPickerTextDelegate(),
-  JapaneseAssetPickerTextDelegate(),
   ArabicAssetPickerTextDelegate(),
+  EnglishAssetPickerTextDelegate(),
   FrenchAssetPickerTextDelegate(),
-  VietnameseAssetPickerTextDelegate(),
-  TurkishAssetPickerTextDelegate(),
+  GermanAssetPickerTextDelegate(),
+  HebrewAssetPickerTextDelegate(),
+  JapaneseAssetPickerTextDelegate(),
   KoreanAssetPickerTextDelegate(),
+  PersianAssetPickerTextDelegate(),
+  RussianAssetPickerTextDelegate(),
+  TraditionalChineseAssetPickerTextDelegate(),
+  TurkishAssetPickerTextDelegate(),
+  VietnameseAssetPickerTextDelegate(),
 ];
 
 /// Obtain the text delegate from the given locale.
@@ -28,13 +30,30 @@ AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
   if (locale == null) {
     return const AssetPickerTextDelegate();
   }
-  final String languageCode = locale.languageCode.toLowerCase();
-  for (final AssetPickerTextDelegate delegate in assetPickerTextDelegates) {
-    if (delegate.languageCode == languageCode) {
-      return delegate;
-    }
+
+  final String languageCode = locale.languageCode;
+  final String? scriptCode = locale.scriptCode;
+  final String? countryCode = locale.countryCode;
+
+  final matchedByLanguage = assetPickerTextDelegates.where(
+    (e) => e.languageCode == languageCode,
+  );
+  if (matchedByLanguage.isEmpty) {
+    return const AssetPickerTextDelegate();
   }
-  return const AssetPickerTextDelegate();
+
+  final matchedByScript = scriptCode != null
+      ? matchedByLanguage.where((e) => e.scriptCode == scriptCode)
+      : null;
+  if (matchedByScript == null || matchedByScript.isEmpty) {
+    return matchedByLanguage.first;
+  }
+
+  final matchedByCountry = countryCode != null
+      ? matchedByScript.where((e) => e.countryCode == countryCode)
+      : null;
+
+  return matchedByCountry?.firstOrNull ?? matchedByScript.first;
 }
 
 /// Text delegate that controls text in widgets.
@@ -43,6 +62,17 @@ class AssetPickerTextDelegate {
   const AssetPickerTextDelegate();
 
   String get languageCode => 'zh';
+
+  String? get scriptCode => 'Hans';
+
+  String? get countryCode => null;
+
+  @nonVirtual
+  Locale get locale => Locale.fromSubtags(
+        languageCode: languageCode,
+        scriptCode: scriptCode,
+        countryCode: countryCode,
+      );
 
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
@@ -59,6 +89,10 @@ class AssetPickerTextDelegate {
   /// GIF indicator string.
   /// GIF指示的字段
   String get gifIndicator => 'GIF';
+
+  /// Live-Photo image indicator string.
+  /// 实况图片指示的字段
+  String get livePhotoIndicator => '实况';
 
   /// Load failed string for item.
   /// 资源加载失败时的字段
@@ -181,6 +215,9 @@ class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get gifIndicator => 'GIF';
+
+  @override
+  String get livePhotoIndicator => 'LIVE';
 
   @override
   String get loadFailed => 'Load failed';
@@ -1128,6 +1165,103 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get sUnitAssetCountLabel => '개';
 }
 
+/// [AssetPickerTextDelegate] implements with Traditional Chinese.
+/// 繁體中文文字實現
+class TraditionalChineseAssetPickerTextDelegate
+    extends AssetPickerTextDelegate {
+  const TraditionalChineseAssetPickerTextDelegate();
+
+  @override
+  String get scriptCode => 'Hant';
+
+  @override
+  String get confirm => '確認';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get edit => '編輯';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get livePhotoIndicator => '實況';
+
+  @override
+  String get loadFailed => '載入失敗';
+
+  @override
+  String get original => '原圖';
+
+  @override
+  String get preview => '預覽';
+
+  @override
+  String get select => '選擇';
+
+  @override
+  String get emptyList => '列表為空';
+
+  @override
+  String get unSupportedAssetType => '不支援的媒體類型';
+
+  @override
+  String get unableToAccessAll => '無法存取相簿中的照片';
+
+  @override
+  String get viewingLimitedAssetsTip => '僅顯示可存取的相簿和照片';
+
+  @override
+  String get changeAccessibleLimitedAssets => '前往設定可被存取的照片';
+
+  @override
+  String get accessAllTip => '應用程式只能存取相簿部分相片，建議允許存取「所有照片」。';
+
+  @override
+  String get goToSystemSettings => '前往系統設定';
+
+  @override
+  String get accessLimitedAssets => '繼續存取部分資源';
+
+  @override
+  String get accessiblePathName => '可存取的資源';
+
+  @override
+  String get sTypeAudioLabel => '音訊';
+
+  @override
+  String get sTypeImageLabel => '照片';
+
+  @override
+  String get sTypeVideoLabel => '影片';
+
+  @override
+  String get sTypeOtherLabel => '其他媒體';
+
+  @override
+  String get sActionPlayHint => '播放';
+
+  @override
+  String get sActionPreviewHint => '預覽';
+
+  @override
+  String get sActionSelectHint => '選擇';
+
+  @override
+  String get sActionSwitchPathLabel => '切換路徑';
+
+  @override
+  String get sActionUseCameraHint => '使用相機';
+
+  @override
+  String get sNameDurationLabel => '時長';
+
+  @override
+  String get sUnitAssetCountLabel => '數量';
+}
+
 /// [AssetPickerTextDelegate] implements with Persian (Farsi).
 /// فارسی (ایرانی) محلی‌سازی
 class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
@@ -1147,6 +1281,9 @@ class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
 
   @override
   String get gifIndicator => 'GIF';
+
+  @override
+  String get livePhotoIndicator => 'عکس‌های زنده';
 
   @override
   String get loadFailed => 'بارگذاری ناموفق';
@@ -1170,13 +1307,16 @@ class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unableToAccessAll => 'دسترسی به همه رسانه‌های دستگاه ممکن نیست.';
 
   @override
-  String get viewingLimitedAssetsTip => 'فقط رسانه‌ها و آلبوم‌های قابل دسترسی را می‌توانید ببینید.';
+  String get viewingLimitedAssetsTip =>
+      'فقط رسانه‌ها و آلبوم‌های قابل دسترسی را می‌توانید ببینید.';
 
   @override
-  String get changeAccessibleLimitedAssets => 'برای به‌روزرسانی رسانه‌های قابل دسترسی کلیک کنید.';
+  String get changeAccessibleLimitedAssets =>
+      'برای به‌روزرسانی رسانه‌های قابل دسترسی کلیک کنید.';
 
   @override
-  String get accessAllTip => 'برنامه فقط به بخشی از رسانه‌های دستگاه دسترسی دارد. '
+  String get accessAllTip =>
+      'برنامه فقط به بخشی از رسانه‌های دستگاه دسترسی دارد. '
       'به تنظیمات سیستم بروید و اجازه دسترسی برنامه به همه رسانه‌های دستگاه را بدهید.';
 
   @override
@@ -1221,7 +1361,6 @@ class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get sUnitAssetCountLabel => 'عدد';
 
-
   @override
   AssetPickerTextDelegate get semanticsTextDelegate {
     if (Platform.isAndroid) {
@@ -1229,5 +1368,4 @@ class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
     }
     return this;
   }
-
 }

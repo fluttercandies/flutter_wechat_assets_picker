@@ -14,13 +14,13 @@ that can be found in the LICENSE file. -->
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
 
 [![Awesome Flutter](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/Solido/awesome-flutter)
-<a target="_blank" href="https://jq.qq.com/?_wv=1027&k=5bcc0gy"><img border="0" src="https://pub.idqqimg.com/wpa/images/group.png" alt="FlutterCandies" title="FlutterCandies"></a>
+<a href="https://qm.qq.com/q/ZyJbSVjfSU"><img src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Ffluttercandies%2F.github%2Frefs%2Fheads%2Fmain%2Fdata.yml&query=%24.qq_group_number&label=QQ%E7%BE%A4&logo=qq&style=flat&color=1DACE8" /></a>
 
 Language: [English](README.md) | 中文
 
 基于 **微信 UI** 的 Flutter **图片选择器（同时支持视频和音频）**。
 
-当前的界面设计基于的微信版本：**8.3.x**
+当前的界面设计基于的微信版本：**8.0.51**
 界面更新将在微信版本更新后随时进行跟进。
 
 如果你需要拍照及录制视频，请先查看示例的详细用法，
@@ -34,14 +34,13 @@ Language: [English](README.md) | 中文
 该插件仅保证能与 **stable 渠道的 Flutter SDK** 配合使用。
 我们不会为其他渠道的 Flutter SDK 做实时支持。
 
-|        | 3.0 | 3.3 | 3.7 | 3.10 | 3.13 | 3.16 |
-|--------|:---:|:---:|:---:|:----:|:----:|:----:|
-| 8.9.0+ |  ❌  |  ❌  |  ❌  |  ❌   |  ❌   |  ✅   |
-| 8.7.0+ |  ❌  |  ❌  |  ❌  |  ❌   |  ✅   |  ❌   |
-| 8.5.0+ |  ❌  |  ❌  |  ❌  |  ✅   |  ❌   |  ❌   |
-| 8.4.0+ |  ❌  |  ❌  |  ✅  |  ❌   |  ❌   |  ❌   |
-| 8.0.0+ |  ✅  |  ✅  |  ❌  |  ❌   |  ❌   |  ❌   |
-| 7.3.0+ |  ✅  |  ✅  |  ❌  |  ❌   |  ❌   |  ❌   |
+|        | 3.7 | 3.10 | 3.13 | 3.16 | 3.22 |
+|--------|:---:|:----:|:----:|:----:|:----:|
+| 9.5.0+ |  ❌  |  ❌   |  ❌   |  ❌   |  ✅   |
+| 8.9.0+ |  ❌  |  ❌   |  ❌   |  ✅   |  ❌   |
+| 8.7.0+ |  ❌  |  ❌   |  ✅   |  ❌   |  ❌   |
+| 8.5.0+ |  ❌  |  ✅   |  ❌   |  ❌   |  ❌   |
+| 8.4.0+ |  ✅  |  ❌   |  ❌   |  ❌   |  ❌   |
 
 如果在 `flutter pub get` 时遇到了 `resolve conflict` 失败问题，
 请使用 `dependency_overrides` 解决。
@@ -90,7 +89,8 @@ Language: [English](README.md) | 中文
         * [使用 `dio`](#使用-dio)
     * [自定义选择器](#自定义选择器)
   * [常见问题 ❔](#常见问题-)
-    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photomanagercompiledebugkotlin)
+    * [修改默认相册名称（将 `Recent` 改为其他）](#修改默认相册名称将-recent-改为其他)
+    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photo_managercompiledebugkotlin)
     * [从 `File` 或 `Uint8List` 创建 `AssetEntity` 的方法](#从-file-或-uint8list-创建-assetentity-的方法)
     * [控制台提示 'Failed to find GeneratedAppGlideModule'](#控制台提示-failed-to-find-generatedappglidemodule)
   * [致谢](#致谢)
@@ -303,7 +303,8 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`              | 基于路径（相册）构建自定义名称的方法                                   | `null`                      |
 | assetsChangeCallback              | `AssetsChangeCallback<AssetPathEntity>?`         | 当系统通知资源变化时将调用的回调                                     | `null`                      |
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | 判断资源变化是否根据 call 和当前选中的路径进行更新                         | `null`                      |
-| shouldAutoplayPreview             | `bool`                               | 预览是否应自动播放                                                        | `false`                     |
+| shouldAutoplayPreview             | `bool`                                           | 预览是否应自动播放                                            | `false`                     |
+| dragToSelect                      | `bool`                                           | 是否开启拖拽选择                                             | `true`                      |
 
 - 当 `maxAssets` 等于 `1`（即单选模式），搭配
   `SpecialPickerType.noPreview` 使用会在用户点选资源换时立刻选中并返回。
@@ -452,6 +453,25 @@ Future<dio.MultipartFile> multipartFileFromAssetEntity(AssetEntity entity) async
 更多细节请阅读 [贡献自定义实现][]。
 
 ## 常见问题 ❔
+
+### 修改默认相册名称（将 `Recent` 改为其他）
+
+在 Android 上 `Recent` 是总相册的默认名称，
+总相册是一个实际不存在的概念，它只是原始媒体数据的记录集合。
+
+想要在 Android 上解决这个问题，你可以像这样使用 `pathNameBuilder`：
+```dart
+AssetPickerConfig(
+  pathNameBuilder: (AssetPathEntity path) => switch (path) {
+    final p when p.isAll => '最近',
+    // 你也可以将类似的逻辑应用在其他常见的相册上。
+    _ => path.name,
+  },
+)
+```
+
+其他相册或者其他平台 (iOS/macOS) 上的相册会根据系统语言和配置支持的语言来进行展示。
+`pathNameBuilder` 可以用于任何的相册。
 
 ### Execution failed for task ':photo_manager:compileDebugKotlin'
 

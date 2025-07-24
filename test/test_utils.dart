@@ -1,7 +1,6 @@
-//
-// [Author] Alex (https://github.com/AlexV525)
-// [Date] 2022/09/20 16:35
-//
+// Copyright 2019 The FlutterCandies author. All rights reserved.
+// Use of this source code is governed by an Apache license that can be found
+// in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -87,6 +86,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     PermissionRequestOption? permissionRequestOption,
     bool useRootNavigator = true,
+    RouteSettings? pageRouteSettings,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     permissionRequestOption ??= PermissionRequestOption(
@@ -150,7 +150,10 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       rootNavigator: useRootNavigator,
     ).push<List<AssetEntity>>(
       pageRouteBuilder?.call(picker) ??
-          AssetPickerPageRoute<List<AssetEntity>>(builder: (_) => picker),
+          AssetPickerPageRoute<List<AssetEntity>>(
+            builder: (_) => picker,
+            settings: pageRouteSettings,
+          ),
     );
     return result;
   }

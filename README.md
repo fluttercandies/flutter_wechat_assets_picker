@@ -14,14 +14,14 @@ that can be found in the LICENSE file. -->
 [![GitHub forks](https://img.shields.io/github/forks/fluttercandies/flutter_wechat_assets_picker?logo=github&style=flat-square)](https://github.com/fluttercandies/flutter_wechat_assets_picker/network)
 
 [![Awesome Flutter](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/Solido/awesome-flutter)
-[![Flutter Candies QQ群](https://pub.idqqimg.com/wpa/images/group.png)](https://jq.qq.com/?_wv=1027&k=5bcc0gy)
+<a href="https://qm.qq.com/q/ZyJbSVjfSU"><img src="https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Ffluttercandies%2F.github%2Frefs%2Fheads%2Fmain%2Fdata.yml&query=%24.qq_group_number&label=QQ%E7%BE%A4&logo=qq&style=flat&color=1DACE8" /></a>
 
 Language: English | [中文](README-ZH.md)
 
 An **image picker (also with videos and audios)**
 for Flutter projects based on the WeChat's UI.
 
-Current WeChat version that UI based on: **8.3.x**
+Current WeChat version that UI based on: **8.0.51**
 UI designs will be updated following the WeChat update in anytime.
 
 To take a photo or a video for assets,
@@ -36,14 +36,13 @@ See the [Migration Guide][] to learn how to migrate between breaking changes.
 The package only guarantees to be working on **the stable version of Flutter**.
 We won't update it in real-time to align with other channels of Flutter.
 
-|        | 3.0 | 3.3 | 3.7 | 3.10 | 3.13 | 3.16 |
-|--------|:---:|:---:|:---:|:----:|:----:|:----:|
-| 8.9.0+ |  ❌  |  ❌  |  ❌  |  ❌   |  ❌   |  ✅   |
-| 8.7.0+ |  ❌  |  ❌  |  ❌  |  ❌   |  ✅   |  ❌   |
-| 8.5.0+ |  ❌  |  ❌  |  ❌  |  ✅   |  ❌   |  ❌   |
-| 8.4.0+ |  ❌  |  ❌  |  ✅  |  ❌   |  ❌   |  ❌   |
-| 8.0.0+ |  ✅  |  ✅  |  ❌  |  ❌   |  ❌   |  ❌   |
-| 7.3.0+ |  ✅  |  ✅  |  ❌  |  ❌   |  ❌   |  ❌   |
+|        | 3.7 | 3.10 | 3.13 | 3.16 | 3.22 |
+|--------|:---:|:----:|:----:|:----:|:----:|
+| 9.5.0+ |  ❌  |  ❌   |  ❌   |  ❌   |  ✅   |
+| 8.9.0+ |  ❌  |  ❌   |  ❌   |  ✅   |  ❌   |
+| 8.7.0+ |  ❌  |  ❌   |  ✅   |  ❌   |  ❌   |
+| 8.5.0+ |  ❌  |  ✅   |  ❌   |  ❌   |  ❌   |
+| 8.4.0+ |  ✅  |  ❌   |  ❌   |  ❌   |  ❌   |
 
 If you got a `resolve conflict` error when running `flutter pub get`,
 please use `dependency_overrides` to fix it.
@@ -92,7 +91,8 @@ submit issues to our issue tracker first.
         * [With `dio`](#with-dio)
     * [Custom pickers](#custom-pickers)
   * [Frequently asked question ❔](#frequently-asked-question-)
-    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photomanagercompiledebugkotlin)
+    * [Changing the default album name (`Recent` to others)](#changing-the-default-album-name-recent-to-others)
+    * [Execution failed for task ':photo_manager:compileDebugKotlin'](#execution-failed-for-task-photo_managercompiledebugkotlin)
     * [Create `AssetEntity` from `File` or `Uint8List` (rawData)](#create-assetentity-from-file-or-uint8list-rawdata)
     * [Glide warning 'Failed to find GeneratedAppGlideModule'](#glide-warning-failed-to-find-generatedappglidemodule)
   * [Contributors ✨](#contributors-)
@@ -312,7 +312,8 @@ Fields in `AssetPickerConfig`:
 | pathNameBuilder                   | `PathNameBuilder<AssetPathEntity>?`              | Build customized path (album) name with the given path entity.                                 | `null`                      |
 | assetsChangeCallback              | `AssetsChangeCallback<AssetPathEntity>?`         | The callback that will be called when the system notifies assets changes.                      | `null`                      |
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | Whether assets changing should call refresh with the given call and the current selected path. | `null`                      |
-| shouldAutoPlayPreview             | `bool`                               | Whether the preview should auto play.                                                        | `false`                      |
+| shouldAutoPlayPreview             | `bool`                                           | Whether the preview should auto play.                                                          | `false`                     |
+| dragToSelect                      | `bool`                                           | Whether assets selection can be done with drag gestures.                                       | `true`                      |
 
 - When `maxAssets` equals to `1` (a.k.a. single picking mode),
   use `SpecialPickerType.noPreview` will immediately select asset
@@ -468,6 +469,26 @@ See [Contribute custom implementations][] for more details.
 
 ## Frequently asked question ❔
 
+### Changing the default album name (`Recent` to others)
+
+`Recent` is the fix album name for the ALL assets on Android
+since the all assets' album is not an actual album, it only represents all media data records.
+
+To solve that on Android, use `pathNameBuilder`, for example:
+```dart
+AssetPickerConfig(
+  pathNameBuilder: (AssetPathEntity path) => switch (path) {
+    final p when p.isAll => '最近',
+    // You can apply similar conditions to other common paths.
+    _ => path.name,
+  },
+)
+```
+
+Other albums or albums on other platforms (iOS/macOS) will follow
+the configured system localization and supported localizations.
+`pathNameBuilder` is available for all albums.
+
 ### Execution failed for task ':photo_manager:compileDebugKotlin'
 
 See [photo_manager#561][] for more details.
@@ -563,6 +584,11 @@ Many thanks to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://sqlturk.wordpress.com/"><img src="https://avatars.githubusercontent.com/u/12383547?v=4?s=50" width="50px;" alt="Cevheri"/><br /><sub><b>Cevheri</b></sub></a><br /><a href="#translation-cevheri" title="Translation">🌍</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://velog.io/@hee_mm_"><img src="https://avatars.githubusercontent.com/u/48482259?v=4?s=50" width="50px;" alt="mirimhee"/><br /><sub><b>mirimhee</b></sub></a><br /><a href="#translation-LIMMIHEE" title="Translation">🌍</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://amoshk.top"><img src="https://avatars.githubusercontent.com/u/32262985?v=4?s=50" width="50px;" alt="Amos"/><br /><sub><b>Amos</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/issues?q=author%3AAmosHuKe" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Dimilkalathiya"><img src="https://avatars.githubusercontent.com/u/102401667?v=4?s=50" width="50px;" alt="Dimil Kalathiya"/><br /><sub><b>Dimil Kalathiya</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=Dimilkalathiya" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://about.me/gasol"><img src="https://avatars.githubusercontent.com/u/108053?v=4?s=50" width="50px;" alt="Gasol Wu"/><br /><sub><b>Gasol Wu</b></sub></a><br /><a href="#translation-Gasol" title="Translation">🌍</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/WeiJun0507"><img src="https://avatars.githubusercontent.com/u/66726409?v=4?s=50" width="50px;" alt="Wei Jun"/><br /><sub><b>Wei Jun</b></sub></a><br /><a href="#business-WeiJun0507" title="Business development">💼</a> <a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=WeiJun0507" title="Code">💻</a> <a href="#ideas-WeiJun0507" title="Ideas, Planning, & Feedback">🤔</a></td>
     </tr>
   </tbody>
 </table>
