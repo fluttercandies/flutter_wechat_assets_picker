@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+**New features**
+
+- Expose more route settings. Users are now be able to control the route settings for the picker and viewer.
+
 **Improvements**
 
 - Improve how `MediaQuery` is being listened.
