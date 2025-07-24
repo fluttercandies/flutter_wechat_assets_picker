@@ -17,6 +17,7 @@ that can be found in the LICENSE file. -->
 
 - Improve how `MediaQuery` is being listened.
 - Stop enabling drag to select when `maxAssets == 1`.
+- Extract `DefaultAssetPickerProvider.init`.
 
 **Fixes**
 
