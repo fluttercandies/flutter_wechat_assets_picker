@@ -1372,8 +1372,12 @@ class DefaultAssetPickerBuilderDelegate
                   specialItem: specialItem,
                 );
 
-                // Enables drag-to-select.
-                if (dragToSelect ?? !accessibleNavigation) {
+                // Enables drag-to-select when:
+                // 1. The feature is enabled manually.
+                // 2. The accessibility service is not being used.
+                // 3. The picker is not in single asset mode.
+                if ((dragToSelect ?? !accessibleNavigation) &&
+                    !isSingleAssetMode) {
                   child = GestureDetector(
                     excludeFromSemantics: true,
                     onHorizontalDragStart: (d) {

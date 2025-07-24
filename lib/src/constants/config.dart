@@ -213,6 +213,9 @@ class AssetPickerConfig {
   ///
   /// The feature enables by default if no accessibility service is being used.
   /// 在未使用辅助功能的情况下会默认启用该功能。
+  ///
+  /// The feature is not available when `maxAssets` is `1`.
+  /// 当 `maxAssets` 为 `1` 时，该功能不可用。
   /// {@endtemplate}
   final bool? dragToSelect;
 }

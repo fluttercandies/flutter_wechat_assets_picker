@@ -12,6 +12,7 @@ that can be found in the LICENSE file. -->
 **Improvements**
 
 - Improve how `MediaQuery` is being listened.
+- Stop enabling drag to select when `maxAssets == 1`.
 
 ## 9.5.1
 
