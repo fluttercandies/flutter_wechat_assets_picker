@@ -311,13 +311,13 @@ class DefaultAssetPickerProvider
     Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
     // Call [getAssetList] with route duration when constructing.
     Future<void>.delayed(initializeDelayDuration, () async {
-      if (_mounted) {
+      if (!_mounted) {
         return;
       }
 
       await getPaths(onlyAll: true);
 
-      if (_mounted) {
+      if (!_mounted) {
         return;
       }
 
