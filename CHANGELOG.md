@@ -22,6 +22,7 @@ that can be found in the LICENSE file. -->
 **Fixes**
 
 - Fix semantics with the close button.
+- Fix `selectPredicate` not being called when selecting the video asset under the WeChat Moment mode.
 
 ## 9.5.1
 

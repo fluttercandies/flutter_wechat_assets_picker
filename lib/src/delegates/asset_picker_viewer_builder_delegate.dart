@@ -793,13 +793,17 @@ class DefaultAssetPickerViewerBuilderDelegate
           );
           Future<void> onPressed() async {
             if (isWeChatMoment && hasVideo) {
-              Navigator.maybeOf(context)?.pop(<AssetEntity>[currentAsset]);
+              if (await onChangingSelected(context, currentAsset, false)) {
+                Navigator.maybeOf(context)?.pop(<AssetEntity>[currentAsset]);
+              }
               return;
             }
+
             if (provider!.isSelectedNotEmpty) {
               Navigator.maybeOf(context)?.pop(provider.currentlySelectedAssets);
               return;
             }
+
             if (await onChangingSelected(context, currentAsset, false)) {
               Navigator.maybeOf(context)?.pop(
                 selectedAssets ?? <AssetEntity>[currentAsset],
