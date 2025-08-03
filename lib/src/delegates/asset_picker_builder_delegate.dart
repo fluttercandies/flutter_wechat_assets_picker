@@ -937,6 +937,9 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the bottom actions bar should display.
   bool get hasBottomActions => isPreviewEnabled || !isSingleAssetMode;
 
+  /// The tap gesture recognizer.
+  TapGestureRecognizer? _tapGestureRecognizer;
+
   /// The listener to track the scroll position of the [gridScrollController]
   /// if [keepScrollOffset] is true.
   /// 当 [keepScrollOffset] 为 true 时，跟踪 [gridScrollController] 位置的监听。
@@ -944,6 +947,13 @@ class DefaultAssetPickerBuilderDelegate
     if (gridScrollController.hasClients) {
       Singleton.scrollPosition = gridScrollController.position;
     }
+  }
+
+  @override
+  void initState(AssetPickerState<AssetEntity, AssetPathEntity> state) {
+    super.initState(state);
+    _tapGestureRecognizer = TapGestureRecognizer()
+      ..onTap = PhotoManager.presentLimited;
   }
 
   /// Be aware that the method will do nothing when [keepScrollOffset] is true.
@@ -955,6 +965,7 @@ class DefaultAssetPickerBuilderDelegate
       return;
     }
     provider.dispose();
+    _tapGestureRecognizer?.dispose();
     super.dispose();
   }
 
@@ -2032,8 +2043,7 @@ class DefaultAssetPickerBuilderDelegate
                         text: ' '
                             '${textDelegate.changeAccessibleLimitedAssets}',
                         style: TextStyle(color: interactiveTextColor(context)),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = PhotoManager.presentLimited,
+                        recognizer: _tapGestureRecognizer,
                       ),
                     ],
                   ),
