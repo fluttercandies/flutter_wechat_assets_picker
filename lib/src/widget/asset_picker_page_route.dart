@@ -74,7 +74,8 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    _curvedAnimation ??= CurvedAnimation(curve: transitionCurve, parent: animation);
+    _curvedAnimation ??=
+        CurvedAnimation(curve: transitionCurve, parent: animation);
     return SlideTransition(
       position: Tween<Offset>(
         begin: const Offset(0, 1),
