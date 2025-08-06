@@ -937,8 +937,8 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the bottom actions bar should display.
   bool get hasBottomActions => isPreviewEnabled || !isSingleAssetMode;
 
-  /// The tap gesture recognizer.
-  TapGestureRecognizer? _tapGestureRecognizer;
+  /// The tap gesture recognizer for present limited assets.
+  TapGestureRecognizer? presentLimitedTapGestureRecognizer;
 
   /// The listener to track the scroll position of the [gridScrollController]
   /// if [keepScrollOffset] is true.
@@ -952,7 +952,7 @@ class DefaultAssetPickerBuilderDelegate
   @override
   void initState(AssetPickerState<AssetEntity, AssetPathEntity> state) {
     super.initState(state);
-    _tapGestureRecognizer = TapGestureRecognizer()
+    presentLimitedTapGestureRecognizer = TapGestureRecognizer()
       ..onTap = PhotoManager.presentLimited;
   }
 
@@ -965,7 +965,7 @@ class DefaultAssetPickerBuilderDelegate
       return;
     }
     provider.dispose();
-    _tapGestureRecognizer?.dispose();
+    presentLimitedTapGestureRecognizer?.dispose();
     super.dispose();
   }
 
@@ -2043,7 +2043,7 @@ class DefaultAssetPickerBuilderDelegate
                         text: ' '
                             '${textDelegate.changeAccessibleLimitedAssets}',
                         style: TextStyle(color: interactiveTextColor(context)),
-                        recognizer: _tapGestureRecognizer,
+                        recognizer: presentLimitedTapGestureRecognizer,
                       ),
                     ],
                   ),
