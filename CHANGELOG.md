@@ -17,6 +17,7 @@ that can be found in the LICENSE file. -->
 
 - Expose more route settings.
   Users will now be able to control the route settings for the picker and viewer.
+- Add Persian (Farsi) language support. (Thanks to @Ho3einTahan)
 
 **Improvements**
 
