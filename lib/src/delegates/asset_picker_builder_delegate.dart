@@ -1836,7 +1836,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     );
   }
 
-  /// It'll pop with [T.selectedAssets]
+  /// It'll pop with provider's `selectedAssets`
   /// when there are any assets were chosen.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   @override

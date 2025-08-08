@@ -96,36 +96,38 @@ class AssetPickerViewer<
 
   /// Call the viewer with provided delegate and provider.
   /// 通过指定的 [delegate] 调用查看器
-  static Future<List<A>?> pushToViewerWithDelegate<
-      A,
-      P,
-      Provider extends AssetPickerViewerProvider<A>,
-      Delegate extends AssetPickerViewerBuilderDelegate<A, P, Provider>>(
+  static Future<List<Asset>?> pushToViewerWithDelegate<
+      Asset,
+      Path,
+      Provider extends AssetPickerViewerProvider<Asset>,
+      Delegate extends AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>(
     BuildContext context, {
     required Delegate delegate,
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
     bool useRootNavigator = false,
     RouteSettings? pageRouteSettings,
-    AssetPickerViewerPageRouteBuilder<List<A>>? pageRouteBuilder,
+    AssetPickerViewerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
     await AssetPicker.permissionCheck(requestOption: permissionRequestOption);
-    final viewer = AssetPickerViewer<A, P, Provider, Delegate>(
+    final viewer = AssetPickerViewer<Asset, Path, Provider, Delegate>(
       builder: delegate,
     );
     final pageRoute = pageRouteBuilder?.call(viewer) ??
         AssetPickerViewerPageRoute(builder: (context) => viewer);
-    final result = await Navigator.maybeOf(context)?.push<List<A>>(pageRoute);
+    final result =
+        await Navigator.maybeOf(context)?.push<List<Asset>>(pageRoute);
     return result;
   }
 }
 
 class AssetPickerViewerState<
-        A,
-        P,
-        Provider extends AssetPickerViewerProvider<A>,
-        Delegate extends AssetPickerViewerBuilderDelegate<A, P, Provider>>
-    extends State<AssetPickerViewer<A, P, Provider, Delegate>>
+        Asset,
+        Path,
+        Provider extends AssetPickerViewerProvider<Asset>,
+        Delegate extends AssetPickerViewerBuilderDelegate<Asset, Path,
+            Provider>>
+    extends State<AssetPickerViewer<Asset, Path, Provider, Delegate>>
     with TickerProviderStateMixin {
   Delegate get builder => widget.builder;
 
@@ -137,7 +139,7 @@ class AssetPickerViewerState<
 
   @override
   void didUpdateWidget(
-    covariant AssetPickerViewer<A, P, Provider, Delegate> oldWidget,
+    covariant AssetPickerViewer<Asset, Path, Provider, Delegate> oldWidget,
   ) {
     super.didUpdateWidget(oldWidget);
     builder.didUpdateViewer(this, oldWidget, widget);
