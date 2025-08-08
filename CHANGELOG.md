@@ -9,9 +9,14 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None.*
+
+## 9.6.0
+
 **New features**
 
-- Expose more route settings. Users are now be able to control the route settings for the picker and viewer.
+- Expose more route settings.
+  Users will now be able to control the route settings for the picker and viewer.
 
 **Improvements**
 
@@ -23,6 +28,7 @@ that can be found in the LICENSE file. -->
 
 - Fix semantics with the close button.
 - Fix `selectPredicate` not being called when selecting the video asset under the WeChat Moment mode.
+- Manually dispose memory leak objects.
 
 ## 9.5.1
 
