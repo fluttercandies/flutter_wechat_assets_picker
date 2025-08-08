@@ -112,8 +112,6 @@ class AssetPickerDelegate {
         loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
         selectPredicate: pickerConfig.selectPredicate,
         shouldRevertGrid: pickerConfig.shouldRevertGrid,
-        limitedPermissionOverlayPredicate:
-            pickerConfig.limitedPermissionOverlayPredicate,
         pathNameBuilder: pickerConfig.pathNameBuilder,
         assetsChangeCallback: pickerConfig.assetsChangeCallback,
         assetsChangeRefreshPredicate: pickerConfig.assetsChangeRefreshPredicate,

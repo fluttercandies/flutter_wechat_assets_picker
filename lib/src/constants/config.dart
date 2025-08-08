@@ -34,7 +34,6 @@ class AssetPickerConfig {
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
-    this.limitedPermissionOverlayPredicate,
     this.pathNameBuilder,
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
@@ -189,9 +188,6 @@ class AssetPickerConfig {
   /// [Null] means judging by Apple OS.
   /// 使用 [Null] 即使用是否为 Apple 系统进行判断。
   final bool? shouldRevertGrid;
-
-  /// {@macro wechat_assets_picker.LimitedPermissionOverlayPredicate}
-  final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
 
   /// {@macro wechat_assets_picker.PathNameBuilder}
   final PathNameBuilder<AssetPathEntity>? pathNameBuilder;

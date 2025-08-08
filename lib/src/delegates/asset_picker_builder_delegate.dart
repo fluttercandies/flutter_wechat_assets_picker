@@ -45,7 +45,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
-    this.limitedPermissionOverlayPredicate,
     this.pathNameBuilder,
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
@@ -121,9 +120,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// [Null] means judging by [isAppleOS].
   /// 使用 [Null] 即使用 [isAppleOS] 进行判断。
   final bool? shouldRevertGrid;
-
-  /// {@macro wechat_assets_picker.LimitedPermissionOverlayPredicate}
-  final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
 
   /// {@macro wechat_assets_picker.PathNameBuilder}
   final PathNameBuilder<AssetPathEntity>? pathNameBuilder;
@@ -206,7 +202,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// Height for the permission limited bar.
   /// 权限受限栏的高度
-  double get permissionLimitedBarHeight => isPermissionLimited ? 75 : 0;
+  double get permissionLimitedBarHeight => isPermissionLimited ? 60 : 0;
 
   @Deprecated('Use permissionNotifier instead. This will be removed in 10.0.0')
   ValueNotifier<PermissionState> get permission => permissionNotifier;
@@ -215,11 +211,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 当前 [PermissionState] 的监听
   late final permissionNotifier = ValueNotifier<PermissionState>(
     initialPermission,
-  );
-
-  late final permissionOverlayDisplay = ValueNotifier<bool>(
-    limitedPermissionOverlayPredicate?.call(permissionNotifier.value) ??
-        (permissionNotifier.value == PermissionState.limited),
   );
 
   /// Whether the permission is limited currently.
@@ -248,7 +239,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     gridScrollController.dispose();
     isSwitchingPath.dispose();
     permissionNotifier.dispose();
-    permissionOverlayDisplay.dispose();
   }
 
   /// The method to select assets. Delegates can implement this method
@@ -627,8 +617,8 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           children: <Widget>[
             const SizedBox(width: 5),
             Icon(
-              Icons.warning,
-              color: Colors.orange[400]!.withOpacity(.8),
+              Icons.error_rounded,
+              color: Colors.yellow[700]!.withOpacity(.8),
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -708,116 +698,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       ),
     );
   }
-
-  /// The overlay when the permission is limited on iOS.
-  @Deprecated('Use permissionOverlay instead. This will be removed in 10.0.0')
-  Widget iOSPermissionOverlay(BuildContext context) {
-    return permissionOverlay(context);
-  }
-
-  /// The overlay when the permission is limited.
-  Widget permissionOverlay(BuildContext context) {
-    final Size size = MediaQuery.sizeOf(context);
-    final EdgeInsets padding = MediaQuery.paddingOf(context);
-    final Widget closeButton = Container(
-      margin: const EdgeInsetsDirectional.only(start: 16, top: 4),
-      alignment: AlignmentDirectional.centerStart,
-      child: IconButton(
-        onPressed: () {
-          Navigator.maybeOf(context)?.maybePop();
-        },
-        icon: const Icon(Icons.close),
-        padding: EdgeInsets.zero,
-        constraints: BoxConstraints.tight(const Size.square(32)),
-        tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-      ),
-    );
-
-    final Widget limitedTips = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          ScaleText(
-            textDelegate.unableToAccessAll,
-            style: const TextStyle(fontSize: 22),
-            textAlign: TextAlign.center,
-            semanticsLabel: semanticsTextDelegate.unableToAccessAll,
-          ),
-          SizedBox(height: size.height / 30),
-          ScaleText(
-            textDelegate.accessAllTip,
-            style: const TextStyle(fontSize: 18),
-            textAlign: TextAlign.center,
-            semanticsLabel: semanticsTextDelegate.accessAllTip,
-          ),
-        ],
-      ),
-    );
-
-    final Widget goToSettingsButton = MaterialButton(
-      elevation: 0,
-      minWidth: size.width / 2,
-      height: appBarItemHeight * 1.25,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      color: themeColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      onPressed: PhotoManager.openSetting,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: ScaleText(
-        textDelegate.goToSystemSettings,
-        style: const TextStyle(fontSize: 17),
-        semanticsLabel: semanticsTextDelegate.goToSystemSettings,
-      ),
-    );
-
-    final Widget accessLimitedButton = Semantics(
-      label: semanticsTextDelegate.accessLimitedAssets,
-      button: true,
-      child: GestureDetector(
-        onTap: () {
-          permissionOverlayDisplay.value = false;
-        },
-        child: ScaleText(
-          textDelegate.accessLimitedAssets,
-          style: TextStyle(color: interactiveTextColor(context)),
-        ),
-      ),
-    );
-
-    return ValueListenableBuilder2<PermissionState, bool>(
-      firstNotifier: permissionNotifier,
-      secondNotifier: permissionOverlayDisplay,
-      builder: (_, PermissionState ps, bool isDisplay, __) {
-        if (ps.isAuth || !isDisplay) {
-          return const SizedBox.shrink();
-        }
-        return Positioned.fill(
-          child: Semantics(
-            sortKey: const OrdinalSortKey(0),
-            child: Container(
-              padding: EdgeInsets.only(top: padding.top),
-              color: context.theme.canvasColor,
-              child: Column(
-                children: <Widget>[
-                  closeButton,
-                  Expanded(child: limitedTips),
-                  goToSettingsButton,
-                  SizedBox(height: size.height / 18),
-                  accessLimitedButton,
-                  SizedBox(
-                    height: math.max(padding.bottom, 24.0),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
 
 class DefaultAssetPickerBuilderDelegate
@@ -832,7 +712,6 @@ class DefaultAssetPickerBuilderDelegate
     super.loadingIndicatorBuilder,
     super.selectPredicate,
     super.shouldRevertGrid,
-    super.limitedPermissionOverlayPredicate,
     super.pathNameBuilder,
     super.assetsChangeCallback,
     super.assetsChangeRefreshPredicate,
@@ -937,8 +816,8 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the bottom actions bar should display.
   bool get hasBottomActions => isPreviewEnabled || !isSingleAssetMode;
 
-  /// The tap gesture recognizer for present limited assets.
-  TapGestureRecognizer? presentLimitedTapGestureRecognizer;
+  /// The gesture recognizer for changing accessible limited assets.
+  TapGestureRecognizer? changeAccessibleLimitedAssetsGestureRecognizer;
 
   /// The listener to track the scroll position of the [gridScrollController]
   /// if [keepScrollOffset] is true.
@@ -947,13 +826,6 @@ class DefaultAssetPickerBuilderDelegate
     if (gridScrollController.hasClients) {
       Singleton.scrollPosition = gridScrollController.position;
     }
-  }
-
-  @override
-  void initState(AssetPickerState<AssetEntity, AssetPathEntity> state) {
-    super.initState(state);
-    presentLimitedTapGestureRecognizer = TapGestureRecognizer()
-      ..onTap = PhotoManager.presentLimited;
   }
 
   /// Be aware that the method will do nothing when [keepScrollOffset] is true.
@@ -965,7 +837,6 @@ class DefaultAssetPickerBuilderDelegate
       return;
     }
     provider.dispose();
-    presentLimitedTapGestureRecognizer?.dispose();
     super.dispose();
   }
 
@@ -1271,47 +1142,34 @@ class DefaultAssetPickerBuilderDelegate
       );
     }
 
-    Widget layout(BuildContext context) {
-      return Stack(
-        children: <Widget>[
-          Positioned.fill(
-            child: Consumer<DefaultAssetPickerProvider>(
-              builder: (_, DefaultAssetPickerProvider p, __) {
-                final Widget child;
-                final bool shouldDisplayAssets =
-                    p.hasAssetsToDisplay || shouldBuildSpecialItem;
-                if (shouldDisplayAssets) {
-                  child = Stack(
-                    children: <Widget>[
-                      gridLayout(context),
-                      pathEntityListBackdrop(context),
-                      pathEntityListWidget(context),
-                    ],
-                  );
-                } else {
-                  child = loadingIndicator(context);
-                }
-                return AnimatedSwitcher(
-                  duration: switchingPathDuration,
-                  child: child,
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: Consumer<DefaultAssetPickerProvider>(
+            builder: (_, DefaultAssetPickerProvider p, __) {
+              final Widget child;
+              final bool shouldDisplayAssets =
+                  p.hasAssetsToDisplay || shouldBuildSpecialItem;
+              if (shouldDisplayAssets) {
+                child = Stack(
+                  children: <Widget>[
+                    gridLayout(context),
+                    pathEntityListBackdrop(context),
+                    pathEntityListWidget(context),
+                  ],
                 );
-              },
-            ),
+              } else {
+                child = loadingIndicator(context);
+              }
+              return AnimatedSwitcher(
+                duration: switchingPathDuration,
+                child: child,
+              );
+            },
           ),
-          appBar(context),
-        ],
-      );
-    }
-
-    return ValueListenableBuilder<bool>(
-      valueListenable: permissionOverlayDisplay,
-      builder: (_, bool value, Widget? child) {
-        if (value) {
-          return ExcludeSemantics(child: child);
-        }
-        return child!;
-      },
-      child: layout(context),
+        ),
+        appBar(context),
+      ],
     );
   }
 
@@ -2043,7 +1901,8 @@ class DefaultAssetPickerBuilderDelegate
                         text: ' '
                             '${textDelegate.changeAccessibleLimitedAssets}',
                         style: TextStyle(color: interactiveTextColor(context)),
-                        recognizer: presentLimitedTapGestureRecognizer,
+                        recognizer:
+                            changeAccessibleLimitedAssetsGestureRecognizer,
                       ),
                     ],
                   ),
@@ -2533,8 +2392,8 @@ class DefaultAssetPickerBuilderDelegate
           children: <Widget>[
             const SizedBox(width: 5),
             Icon(
-              Icons.warning,
-              color: Colors.orange[400]!.withOpacity(.8),
+              Icons.error_rounded,
+              color: Colors.yellow[700]!.withOpacity(.8),
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -2628,7 +2487,6 @@ class DefaultAssetPickerBuilderDelegate
                   appleOSLayout(context)
                 else
                   androidLayout(context),
-                permissionOverlay(context),
               ],
             ),
           ),

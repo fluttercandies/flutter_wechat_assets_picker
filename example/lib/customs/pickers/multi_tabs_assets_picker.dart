@@ -456,40 +456,27 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
   @override
   Widget appleOSLayout(BuildContext context) {
-    Widget layout(BuildContext context) {
-      return Stack(
-        children: <Widget>[
-          TabBarView(
-            controller: _tabController,
-            children: <Widget>[
-              ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-                value: provider,
-                builder: (BuildContext context, _) => _buildGrid(context),
-              ),
-              ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-                value: videosProvider,
-                builder: (BuildContext context, _) => _buildGrid(context),
-              ),
-              ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
-                value: imagesProvider,
-                builder: (BuildContext context, _) => _buildGrid(context),
-              ),
-            ],
-          ),
-          appBar(context),
-        ],
-      );
-    }
-
-    return ValueListenableBuilder<bool>(
-      valueListenable: permissionOverlayDisplay,
-      builder: (_, bool value, Widget? child) {
-        if (value) {
-          return ExcludeSemantics(child: child);
-        }
-        return child!;
-      },
-      child: layout(context),
+    return Stack(
+      children: <Widget>[
+        TabBarView(
+          controller: _tabController,
+          children: <Widget>[
+            ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+              value: provider,
+              builder: (BuildContext context, _) => _buildGrid(context),
+            ),
+            ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+              value: videosProvider,
+              builder: (BuildContext context, _) => _buildGrid(context),
+            ),
+            ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
+              value: imagesProvider,
+              builder: (BuildContext context, _) => _buildGrid(context),
+            ),
+          ],
+        ),
+        appBar(context),
+      ],
     );
   }
 
@@ -561,7 +548,6 @@ class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                   appleOSLayout(context)
                 else
                   androidLayout(context),
-                permissionOverlay(context),
               ],
             ),
           ),

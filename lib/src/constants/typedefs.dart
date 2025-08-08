@@ -41,14 +41,6 @@ typedef AssetSelectPredicate<Asset> = FutureOr<bool> Function(
   bool isSelected,
 );
 
-/// {@template wechat_assets_picker.LimitedPermissionOverlayPredicate}
-/// Predicate whether the limited permission overlay should be displayed.
-/// 判断有限的权限情况下是否展示提示页面。
-/// {@endtemplate}
-typedef LimitedPermissionOverlayPredicate = bool Function(
-  PermissionState permissionState,
-);
-
 /// {@template wechat_assets_picker.PathNameBuilder}
 /// Build customized path name.
 /// 构建自定义路径名称。

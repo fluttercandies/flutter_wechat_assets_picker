@@ -119,20 +119,12 @@ class AssetPickerTextDelegate {
   /// 未支持的资源类型的字段
   String get unSupportedAssetType => '尚未支持的资源类型';
 
-  /// "Unable to access all assets in album".
-  String get unableToAccessAll => '无法访问所有资源';
-
   String get viewingLimitedAssetsTip => '应用只能访问部分资源和相册';
 
   String get changeAccessibleLimitedAssets => '点击设置可访问的资源';
 
   String get accessAllTip => '你已设置应用只能访问设备部分资源，'
       '建议允许访问「所有资源」';
-
-  String get goToSystemSettings => '前往系统设置';
-
-  /// "Continue accessing some assets".
-  String get accessLimitedAssets => '继续访问部分资源';
 
   String get accessiblePathName => '可访问的资源';
 
@@ -238,9 +230,6 @@ class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => 'Unsupported HEIC asset type.';
 
   @override
-  String get unableToAccessAll => 'Unable to access all assets on the device';
-
-  @override
   String get viewingLimitedAssetsTip =>
       'Only view assets and albums accessible to app.';
 
@@ -251,12 +240,6 @@ class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get accessAllTip => 'App can only access some assets on the device. '
       'Go to system settings and allow app to access all assets on the device.';
-
-  @override
-  String get goToSystemSettings => 'Go to system settings';
-
-  @override
-  String get accessLimitedAssets => 'Continue with limited access';
 
   @override
   String get accessiblePathName => 'Accessible assets';
@@ -334,9 +317,6 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => 'סוג קובץ HEIC אינו נתמך';
 
   @override
-  String get unableToAccessAll => 'לא ניתן לגשת לכל הקבצים במכשיר';
-
-  @override
   String get viewingLimitedAssetsTip =>
       'הצג רק קבצים ואלבומים נגישים לאפליקציה.';
 
@@ -346,12 +326,6 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get accessAllTip => 'האפליקציה יכולה לגשת רק לחלק מהקבצים במכשיר. '
       'פתח הגדרות מערכת ואפשר לאפליקציה גישה לכל הקבצים במכשיר.';
-
-  @override
-  String get goToSystemSettings => 'פתח הגדרות מערכת';
-
-  @override
-  String get accessLimitedAssets => 'המשך גישה מוגבלת';
 
   @override
   String get accessiblePathName => 'קבצים נגישים';
@@ -437,9 +411,6 @@ class GermanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => 'HEIC Format ist nicht unterstützt.';
 
   @override
-  String get unableToAccessAll => 'Zugriff nicht möglich';
-
-  @override
   String get viewingLimitedAssetsTip =>
       'Zeigen Sie nur Dateien und Alben an, auf die die App zugreifen kann';
 
@@ -448,12 +419,6 @@ class GermanAssetPickerTextDelegate extends AssetPickerTextDelegate {
       'Die App kann nur auf einige der Dateien auf dem Gerät zugreifen. '
       'Öffnen Sie die Systemeinstellungen und erlauben Sie der App, '
       'auf alle Dateien auf dem Gerät zuzugreifen';
-
-  @override
-  String get goToSystemSettings => 'Gehe zu den Systemeinstellungen';
-
-  @override
-  String get accessLimitedAssets => 'Fahre fort mit limitierten Zugriff';
 
   @override
   String get accessiblePathName => 'Verfügbare Assets';
@@ -531,9 +496,6 @@ class RussianAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => 'Неподдерживаемый формат ресурса.';
 
   @override
-  String get unableToAccessAll => 'Не все файлы доступны на устройстве';
-
-  @override
   String get viewingLimitedAssetsTip =>
       'Показать только файлы, которые доступны приложению.';
 
@@ -545,12 +507,6 @@ class RussianAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get accessAllTip =>
       'У приложения доступ только к некоторым файлам на устройстве. '
       'Откройте настройки системы и разрешите приложению доступ ко всем файлам на устройстве.';
-
-  @override
-  String get goToSystemSettings => 'Открыть настройки системы';
-
-  @override
-  String get accessLimitedAssets => 'Продолжить с ограниченным доступом';
 
   @override
   String get accessiblePathName => 'Доступные файлы';
@@ -628,9 +584,6 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => '未対応のフォーマット';
 
   @override
-  String get unableToAccessAll => 'すべてのリソースへのアクセスができない';
-
-  @override
   String get viewingLimitedAssetsTip => 'アプリは一部のリソースと'
       '写真にしかアクセスできない';
 
@@ -641,12 +594,6 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get accessAllTip => 'アプリがデバイスのリソースの一部にのみ'
       'アクセスするように設定されています。'
       '「すべてのリソース」へのアクセスを許可することを推奨します';
-
-  @override
-  String get goToSystemSettings => '「システム設定」に移動';
-
-  @override
-  String get accessLimitedAssets => 'リソースの一部へのアクセスを続行';
 
   @override
   String get accessiblePathName => 'アクセスできるリソース';
@@ -724,10 +671,6 @@ class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => 'نوع HEIC غير مدعوم';
 
   @override
-  String get unableToAccessAll =>
-      'لا يمكن الوصول إلى جميع الملفات الموجودة على الجهاز';
-
-  @override
   String get viewingLimitedAssetsTip =>
       'إظهار الملفات والألبومات التي يمكن للتطبيق الوصول إليها فقط.';
 
@@ -738,12 +681,6 @@ class ArabicAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get accessAllTip =>
       'يمكن للتطبيق الوصول فقط إلى بعض الملفات الموجودة على الجهاز. '
       'افتح إعدادات النظام واسمح للتطبيق بالوصول إلى جميع الملفات الموجودة على الجهاز.';
-
-  @override
-  String get goToSystemSettings => 'فتح إعدادات النظام';
-
-  @override
-  String get accessLimitedAssets => 'الاستمرار مع صلاحيات محدوده';
 
   @override
   String get accessiblePathName => 'ملفات يمكن الوصول إليها';
@@ -821,10 +758,6 @@ class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => 'Type de fichier non supporté';
 
   @override
-  String get unableToAccessAll =>
-      "Impossible d'accéder aux médias de votre appareil";
-
-  @override
   String get viewingLimitedAssetsTip =>
       'Affichage des médias et albums limité ';
 
@@ -837,12 +770,6 @@ class FrenchAssetPickerTextDelegate extends AssetPickerTextDelegate {
       "L'application ne peut accéder qu'à certains medias. "
       "Allez dans les paramètres système et autoriser l'application "
       "à accéder à tous les medias sur l'appareil";
-
-  @override
-  String get goToSystemSettings => 'Allez dans les paramètres système';
-
-  @override
-  String get accessLimitedAssets => 'Continuer avec un accès limité';
 
   @override
   String get accessiblePathName => 'Medias accessible';
@@ -920,10 +847,6 @@ class VietnameseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => 'Loại tệp không được hỗ trợ';
 
   @override
-  String get unableToAccessAll =>
-      'Không thể truy cập vào các tệp trên thiết bị của bạn';
-
-  @override
   String get viewingLimitedAssetsTip => 'Đang xem các tệp và thư mục hạn chế';
 
   @override
@@ -933,12 +856,6 @@ class VietnameseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get accessAllTip => 'Ứng dụng chỉ có thể truy cập một số tệp. '
       'Hãy vào cài đặt hệ thống và cho phép ứng dụng truy cập tất cả các tệp trên thiết bị';
-
-  @override
-  String get goToSystemSettings => 'Đi đến cài đặt hệ thống';
-
-  @override
-  String get accessLimitedAssets => 'Tiếp tục với quyền truy cập hạn chế';
 
   @override
   String get accessiblePathName => 'Tệp truy cập';
@@ -1016,9 +933,6 @@ class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => 'Desteklenmeyen HEIC medya tipi';
 
   @override
-  String get unableToAccessAll => 'Cihazdaki tüm varlıklara erişilemiyor';
-
-  @override
   String get viewingLimitedAssetsTip =>
       'Yalnızca uygulamanın erişebileceği dosya ve albümleri göster';
 
@@ -1027,12 +941,6 @@ class TurkishAssetPickerTextDelegate extends AssetPickerTextDelegate {
       'Uygulama, cihazdaki yalnızca bazı dosyalara erişebilir. '
       'Sistem ayarlarını açın ve uygulamanın şunları yapmasına izin verin '
       'Cihazdaki tüm dosyalara erişin';
-
-  @override
-  String get goToSystemSettings => 'Sistem ayarlarına gidin';
-
-  @override
-  String get accessLimitedAssets => 'Sınırlı erişimle devam et';
 
   @override
   String get accessiblePathName => 'Mevcut Varlıklar';
@@ -1110,9 +1018,6 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => '지원하지 않는 HEIC 미디어 유형.';
 
   @override
-  String get unableToAccessAll => '기기의 모든 미디어에 접근할 수 없습니다.';
-
-  @override
   String get viewingLimitedAssetsTip => '접근 가능한 미디어과 앨범만 볼 수 있습니다.';
 
   @override
@@ -1121,12 +1026,6 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   @override
   String get accessAllTip => '앱이 기기의 일부 미디어에만 접근할 수 있습니다. '
       '시스템 설정으로 이동하여 앱이 기기의 모든 미디어에 접근하도록 허용해 주세요.';
-
-  @override
-  String get goToSystemSettings => '시스템 설정 이동';
-
-  @override
-  String get accessLimitedAssets => '제한된 접근으로 계속';
 
   @override
   String get accessiblePathName => '접근 가능한 미디어';
@@ -1208,9 +1107,6 @@ class TraditionalChineseAssetPickerTextDelegate
   String get unSupportedAssetType => '不支援的媒體類型';
 
   @override
-  String get unableToAccessAll => '無法存取相簿中的照片';
-
-  @override
   String get viewingLimitedAssetsTip => '僅顯示可存取的相簿和照片';
 
   @override
@@ -1218,12 +1114,6 @@ class TraditionalChineseAssetPickerTextDelegate
 
   @override
   String get accessAllTip => '應用程式只能存取相簿部分相片，建議允許存取「所有照片」。';
-
-  @override
-  String get goToSystemSettings => '前往系統設定';
-
-  @override
-  String get accessLimitedAssets => '繼續存取部分資源';
 
   @override
   String get accessiblePathName => '可存取的資源';
@@ -1304,9 +1194,6 @@ class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unSupportedAssetType => 'نوع رسانه HEIC پشتیبانی نمی‌شود.';
 
   @override
-  String get unableToAccessAll => 'دسترسی به همه رسانه‌های دستگاه ممکن نیست.';
-
-  @override
   String get viewingLimitedAssetsTip =>
       'فقط رسانه‌ها و آلبوم‌های قابل دسترسی را می‌توانید ببینید.';
 
@@ -1318,12 +1205,6 @@ class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get accessAllTip =>
       'برنامه فقط به بخشی از رسانه‌های دستگاه دسترسی دارد. '
       'به تنظیمات سیستم بروید و اجازه دسترسی برنامه به همه رسانه‌های دستگاه را بدهید.';
-
-  @override
-  String get goToSystemSettings => 'برو به تنظیمات سیستم';
-
-  @override
-  String get accessLimitedAssets => 'ادامه با دسترسی محدود';
 
   @override
   String get accessiblePathName => 'رسانه‌های قابل دسترسی';

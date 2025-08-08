@@ -136,8 +136,6 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
         loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
         selectPredicate: pickerConfig.selectPredicate,
         shouldRevertGrid: pickerConfig.shouldRevertGrid,
-        limitedPermissionOverlayPredicate:
-            pickerConfig.limitedPermissionOverlayPredicate,
         pathNameBuilder: pickerConfig.pathNameBuilder,
         textDelegate: pickerConfig.textDelegate,
         themeColor: pickerConfig.themeColor,
