@@ -949,7 +949,11 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
   }
 
   @override
-  void initState(AssetPickerState<AssetEntity, AssetPathEntity> state) {
+  void initState(
+    AssetPickerState<AssetEntity, AssetPathEntity,
+            DefaultAssetPickerBuilderDelegate>
+        state,
+  ) {
     super.initState(state);
     presentLimitedTapGestureRecognizer = TapGestureRecognizer()
       ..onTap = PhotoManager.presentLimited;

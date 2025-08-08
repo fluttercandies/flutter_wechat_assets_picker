@@ -305,14 +305,6 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
     isDisplayingDetail.value = value ?? !isDisplayingDetail.value;
   }
 
-  /// Sync selected assets currently with asset picker provider.
-  /// 在预览中当前已选的图片同步到选择器的状态
-  @Deprecated(
-    'No longer used by the package. '
-    'This will be removed in 10.0.0',
-  )
-  Future<bool> syncSelectedAssetsWhenPop() async => true;
-
   /// Split page builder according to type of asset.
   /// 根据资源类型使用不同的构建页
   Widget assetPageBuilder(BuildContext context, int index);
@@ -333,7 +325,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
     };
   }
 
-  /// The item widget when [AssetEntity.thumbnailData] load failed.
+  /// The item widget when a thumb data load failed.
   /// 资源缩略数据加载失败时使用的部件
   Widget failedItemBuilder(BuildContext context) {
     return Center(
@@ -427,18 +419,6 @@ class DefaultAssetPickerViewerBuilderDelegate<
   void selectAsset(AssetEntity entity) {
     super.selectAsset(entity);
     selectedNotifier.value = selectedCount;
-  }
-
-  @Deprecated(
-    'No longer used by the package. '
-    'This will be removed in 10.0.0',
-  )
-  @override
-  Future<bool> syncSelectedAssetsWhenPop() async {
-    if (provider?.currentlySelectedAssets != null) {
-      selectorProvider?.selectedAssets = provider!.currentlySelectedAssets;
-    }
-    return true;
   }
 
   Widget assetSemanticsBuilder(BuildContext context, int index) {
