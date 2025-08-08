@@ -163,17 +163,18 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
     return GestureDetector(
       onTap: isDisplayingDetail
           ? () async {
-              final Widget viewer = AssetPickerViewer<File, Directory>(
-                builder: FileAssetPickerViewerBuilderDelegate(
+              final result = await AssetPickerViewer.pushToViewerWithDelegate<
+                  File,
+                  Directory,
+                  FileAssetPickerViewerProvider,
+                  FileAssetPickerViewerBuilderDelegate>(
+                context,
+                delegate: FileAssetPickerViewerBuilderDelegate(
                   currentIndex: index,
                   previewAssets: fileList,
                   provider: FileAssetPickerViewerProvider(fileList),
                   themeData: AssetPicker.themeData(themeColor),
                 ),
-              );
-              final List<File>? result =
-                  await Navigator.maybeOf(context)?.push<List<File>>(
-                AssetPickerViewerPageRoute(builder: (context) => viewer),
               );
               if (result != null && result != fileList) {
                 fileList
@@ -261,7 +262,8 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
   }
 }
 
-class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
+final class FileAssetPickerProvider
+    extends AssetPickerProvider<File, Directory> {
   FileAssetPickerProvider({
     required List<File> selectedAssets,
   }) : super(selectedAssets: selectedAssets) {
@@ -346,7 +348,7 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 }
 
-class FileAssetPickerBuilder
+final class FileAssetPickerBuilder
     extends AssetPickerBuilderDelegate<File, Directory> {
   FileAssetPickerBuilder({
     required this.provider,
@@ -368,8 +370,13 @@ class FileAssetPickerBuilder
     int? index,
     File currentAsset,
   ) async {
-    final Widget viewer = AssetPickerViewer<File, Directory>(
-      builder: FileAssetPickerViewerBuilderDelegate(
+    final result = await AssetPickerViewer.pushToViewerWithDelegate<
+        File,
+        Directory,
+        FileAssetPickerViewerProvider,
+        FileAssetPickerViewerBuilderDelegate>(
+      context,
+      delegate: FileAssetPickerViewerBuilderDelegate(
         currentIndex: index ?? provider.selectedAssets.indexOf(currentAsset),
         previewAssets: provider.selectedAssets,
         provider: FileAssetPickerViewerProvider(provider.selectedAssets),
@@ -378,37 +385,9 @@ class FileAssetPickerBuilder
         selectorProvider: provider,
       ),
     );
-    final List<File>? result =
-        await Navigator.maybeOf(context)?.push<List<File>?>(
-      AssetPickerViewerPageRoute(builder: (context) => viewer),
-    );
     if (result != null) {
       Navigator.maybeOf(context)?.maybePop(result);
     }
-  }
-
-  Future<List<File>?> pushToPicker(
-    BuildContext context, {
-    required int index,
-    required List<File> previewAssets,
-    List<File>? selectedAssets,
-    FileAssetPickerProvider? selectorProvider,
-  }) async {
-    final Widget viewer = AssetPickerViewer<File, Directory>(
-      builder: FileAssetPickerViewerBuilderDelegate(
-        currentIndex: index,
-        previewAssets: previewAssets,
-        provider: selectedAssets != null
-            ? FileAssetPickerViewerProvider(selectedAssets)
-            : null,
-        themeData: AssetPicker.themeData(themeColor),
-        selectedAssets: selectedAssets,
-        selectorProvider: selectorProvider,
-      ),
-    );
-    return await Navigator.maybeOf(context)?.push<List<File>?>(
-      AssetPickerViewerPageRoute(builder: (context) => viewer),
-    );
   }
 
   @override
@@ -975,23 +954,12 @@ class FileAssetPickerBuilder
 
   @override
   Widget previewButton(BuildContext context) {
-    return Selector<FileAssetPickerProvider, bool>(
-      selector: (_, FileAssetPickerProvider p) => p.isSelectedNotEmpty,
-      builder: (_, bool isSelectedNotEmpty, __) {
+    return Consumer<FileAssetPickerProvider>(
+      builder: (_, p, __) {
+        final isSelectedNotEmpty = p.isSelectedNotEmpty;
         return GestureDetector(
           onTap: isSelectedNotEmpty
-              ? () async {
-                  final List<File>? result = await pushToPicker(
-                    context,
-                    index: 0,
-                    previewAssets: provider.selectedAssets,
-                    selectedAssets: provider.selectedAssets,
-                    selectorProvider: provider,
-                  );
-                  if (result != null) {
-                    Navigator.maybeOf(context)?.pop(result);
-                  }
-                }
+              ? () => viewAsset(context, null, p.selectedAssets.first)
               : null,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -1099,15 +1067,8 @@ class FileAssetPickerBuilder
             selectedAssets.where((File f) => f.path == asset.path).isNotEmpty;
         return Positioned.fill(
           child: GestureDetector(
-            onTap: () async {
-              final List<File>? result = await pushToPicker(
-                context,
-                index: index,
-                previewAssets: provider.currentAssets,
-              );
-              if (result != null) {
-                Navigator.maybeOf(context)?.pop(result);
-              }
+            onTap: () {
+              viewAsset(context, index, asset);
             },
             child: AnimatedContainer(
               duration: switchingPathDuration,
@@ -1159,7 +1120,8 @@ class FileAssetPickerBuilder
   }
 }
 
-class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
+final class FileAssetPickerViewerProvider
+    extends AssetPickerViewerProvider<File> {
   FileAssetPickerViewerProvider(List<File> super.assets);
 
   @override
@@ -1170,18 +1132,19 @@ class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
   }
 }
 
-class FileAssetPickerViewerBuilderDelegate
-    extends AssetPickerViewerBuilderDelegate<File, Directory> {
+final class FileAssetPickerViewerBuilderDelegate
+    extends AssetPickerViewerBuilderDelegate<File, Directory,
+        FileAssetPickerViewerProvider> {
   FileAssetPickerViewerBuilderDelegate({
     required super.previewAssets,
     required super.themeData,
     required super.currentIndex,
     super.selectedAssets,
-    super.selectorProvider,
+    this.selectorProvider,
     super.provider,
-  }) : super(
-          maxAssets: selectorProvider?.maxAssets,
-        );
+  }) : super(maxAssets: selectorProvider?.maxAssets);
+
+  final FileAssetPickerProvider? selectorProvider;
 
   late final PageController _pageController = PageController(
     initialPage: currentIndex,
