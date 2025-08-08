@@ -68,6 +68,7 @@ class AssetPickerDelegate {
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     PermissionRequestOption? permissionRequestOption,
     bool useRootNavigator = true,
+    RouteSettings? pageRouteSettings,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     permissionRequestOption ??= PermissionRequestOption(
@@ -83,6 +84,7 @@ class AssetPickerDelegate {
         pageRouteBuilder?.call(const SizedBox.shrink()) ??
             AssetPickerPageRoute<List<AssetEntity>>(
               builder: (_) => const SizedBox.shrink(),
+              settings: pageRouteSettings,
             );
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       maxAssets: pickerConfig.maxAssets,
@@ -120,6 +122,7 @@ class AssetPickerDelegate {
         themeColor: pickerConfig.themeColor,
         locale: Localizations.maybeLocaleOf(context),
         shouldAutoplayPreview: pickerConfig.shouldAutoplayPreview,
+        dragToSelect: pickerConfig.dragToSelect,
       ),
     );
     final List<AssetEntity>? result = await Navigator.maybeOf(
@@ -127,7 +130,10 @@ class AssetPickerDelegate {
       rootNavigator: useRootNavigator,
     )?.push<List<AssetEntity>>(
       pageRouteBuilder?.call(picker) ??
-          AssetPickerPageRoute<List<AssetEntity>>(builder: (_) => picker),
+          AssetPickerPageRoute<List<AssetEntity>>(
+            builder: (_) => picker,
+            settings: pageRouteSettings,
+          ),
     );
     return result;
   }
@@ -160,6 +166,7 @@ class AssetPickerDelegate {
         const PermissionRequestOption(),
     Key? key,
     bool useRootNavigator = true,
+    RouteSettings? pageRouteSettings,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
     await permissionCheck(requestOption: permissionRequestOption);
@@ -173,7 +180,10 @@ class AssetPickerDelegate {
       rootNavigator: useRootNavigator,
     )?.push(
       pageRouteBuilder?.call(picker) ??
-          AssetPickerPageRoute<List<Asset>>(builder: (_) => picker),
+          AssetPickerPageRoute<List<Asset>>(
+            builder: (_) => picker,
+            settings: pageRouteSettings,
+          ),
     );
     return result;
   }

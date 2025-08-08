@@ -55,6 +55,7 @@ class AssetPicker<Asset, Path,
     PermissionRequestOption? permissionRequestOption,
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     bool useRootNavigator = true,
+    RouteSettings? pageRouteSettings,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) {
     return _pickerDelegate.pickAssets(
@@ -63,6 +64,7 @@ class AssetPicker<Asset, Path,
       pickerConfig: pickerConfig,
       permissionRequestOption: permissionRequestOption,
       useRootNavigator: useRootNavigator,
+      pageRouteSettings: pageRouteSettings,
       pageRouteBuilder: pageRouteBuilder,
     );
   }
@@ -78,6 +80,7 @@ class AssetPicker<Asset, Path,
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
     Key? key,
+    RouteSettings? pageRouteSettings,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
     bool useRootNavigator = true,
   }) {
@@ -88,6 +91,7 @@ class AssetPicker<Asset, Path,
       delegate: delegate,
       permissionRequestOption: permissionRequestOption,
       useRootNavigator: useRootNavigator,
+      pageRouteSettings: pageRouteSettings,
       pageRouteBuilder: pageRouteBuilder,
     );
   }

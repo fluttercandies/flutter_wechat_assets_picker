@@ -13,6 +13,8 @@ import '../constants/typedefs.dart';
 import '../delegates/asset_picker_viewer_builder_delegate.dart';
 import '../provider/asset_picker_provider.dart';
 import '../provider/asset_picker_viewer_provider.dart';
+import 'asset_picker.dart';
+import 'asset_picker_page_route.dart';
 
 class AssetPickerViewer<
     Asset,
@@ -47,6 +49,9 @@ class AssetPickerViewer<
     bool shouldReversePreview = false,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     bool shouldAutoplayPreview = false,
+    bool useRootNavigator = false,
+    RouteSettings? pageRouteSettings,
+    AssetPickerViewerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     if (previewAssets.isEmpty) {
       throw StateError('Previewing empty assets is not allowed.');
@@ -79,14 +84,13 @@ class AssetPickerViewer<
         shouldAutoplayPreview: shouldAutoplayPreview,
       ),
     );
-    final pageRoute = PageRouteBuilder<List<AssetEntity>>(
-      pageBuilder: (_, __, ___) => viewer,
-      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
-        return FadeTransition(opacity: animation, child: child);
-      },
+    final result = await Navigator.maybeOf(
+      context,
+      rootNavigator: useRootNavigator,
+    )?.push<List<AssetEntity>>(
+      pageRouteBuilder?.call(viewer) ??
+          AssetPickerViewerPageRoute(builder: (context) => viewer),
     );
-    final result =
-        await Navigator.maybeOf(context)?.push<List<AssetEntity>>(pageRoute);
     return result;
   }
 
@@ -99,16 +103,18 @@ class AssetPickerViewer<
       Delegate extends AssetPickerViewerBuilderDelegate<A, P, Provider>>(
     BuildContext context, {
     required Delegate delegate,
+    PermissionRequestOption permissionRequestOption =
+        const PermissionRequestOption(),
+    bool useRootNavigator = false,
+    RouteSettings? pageRouteSettings,
+    AssetPickerViewerPageRouteBuilder<List<A>>? pageRouteBuilder,
   }) async {
+    await AssetPicker.permissionCheck(requestOption: permissionRequestOption);
     final viewer = AssetPickerViewer<A, P, Provider, Delegate>(
       builder: delegate,
     );
-    final pageRoute = PageRouteBuilder<List<A>>(
-      pageBuilder: (_, __, ___) => viewer,
-      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
-        return FadeTransition(opacity: animation, child: child);
-      },
-    );
+    final pageRoute = pageRouteBuilder?.call(viewer) ??
+        AssetPickerViewerPageRoute(builder: (context) => viewer);
     final result = await Navigator.maybeOf(context)?.push<List<A>>(pageRoute);
     return result;
   }

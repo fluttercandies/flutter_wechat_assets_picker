@@ -92,6 +92,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
       ?..removeListener(videoPlayerListener)
       ..pause()
       ..dispose();
+    isPlaying.dispose();
     super.dispose();
   }
 
