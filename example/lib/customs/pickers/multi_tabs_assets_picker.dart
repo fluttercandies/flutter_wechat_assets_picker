@@ -260,7 +260,8 @@ class _MultiTabAssetPickerState extends State<MultiTabAssetPicker> {
   }
 }
 
-class MultiTabAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
+final class MultiTabAssetPickerBuilder
+    extends DefaultAssetPickerBuilderDelegate {
   MultiTabAssetPickerBuilder({
     required super.provider,
     required this.videosProvider,
