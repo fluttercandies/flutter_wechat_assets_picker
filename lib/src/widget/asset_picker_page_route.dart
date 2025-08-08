@@ -45,6 +45,15 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
 
   final bool Function(TransitionRoute<dynamic>)? canTransitionFromPredicate;
 
+  /// The curved animation.
+  CurvedAnimation? _curvedAnimation;
+
+  @override
+  void dispose() {
+    _curvedAnimation?.dispose();
+    super.dispose();
+  }
+
   @override
   bool canTransitionFrom(TransitionRoute<dynamic> previousRoute) =>
       canTransitionFromPredicate?.call(previousRoute) ?? false;
@@ -65,12 +74,14 @@ class AssetPickerPageRoute<T> extends PageRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
+    _curvedAnimation ??=
+        CurvedAnimation(curve: transitionCurve, parent: animation);
     return SlideTransition(
       position: Tween<Offset>(
         begin: const Offset(0, 1),
         end: Offset.zero,
       ).animate(
-        CurvedAnimation(curve: transitionCurve, parent: animation),
+        _curvedAnimation!,
       ),
       child: ClipRect(child: child), // Clip the overflowed part.
     );
