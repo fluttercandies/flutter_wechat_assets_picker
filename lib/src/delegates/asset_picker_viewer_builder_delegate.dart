@@ -259,21 +259,21 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
   late final ValueNotifier<int> selectedNotifier =
       ValueNotifier<int>(selectedCount);
 
-  void unSelectAsset(Asset entity) {
-    provider?.unSelectAsset(entity);
+  void unSelectAsset(Asset asset) {
+    provider?.unSelectAsset(asset);
     if (!isSelectedPreviewing) {
-      selectedAssets?.remove(entity);
+      selectedAssets?.remove(asset);
     }
     selectedNotifier.value = selectedCount;
   }
 
-  void selectAsset(Asset entity) {
+  void selectAsset(Asset asset) {
     if (maxAssets != null && selectedCount > maxAssets!) {
       return;
     }
-    provider?.selectAsset(entity);
+    provider?.selectAsset(asset);
     if (!isSelectedPreviewing) {
-      selectedAssets?.add(entity);
+      selectedAssets?.add(asset);
     }
     selectedNotifier.value = selectedCount;
   }
@@ -410,14 +410,14 @@ class DefaultAssetPickerViewerBuilderDelegate<
           false);
 
   @override
-  void unSelectAsset(AssetEntity entity) {
-    super.unSelectAsset(entity);
-    selectorProvider?.unSelectAsset(entity);
+  void unSelectAsset(AssetEntity asset) {
+    super.unSelectAsset(asset);
+    selectorProvider?.unSelectAsset(asset);
   }
 
   @override
-  void selectAsset(AssetEntity entity) {
-    super.selectAsset(entity);
+  void selectAsset(AssetEntity asset) {
+    super.selectAsset(asset);
     selectedNotifier.value = selectedCount;
   }
 

@@ -950,7 +950,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
 
   @override
   void initState(
-    AssetPickerState<AssetEntity, AssetPathEntity,
+    covariant AssetPickerState<AssetEntity, AssetPathEntity,
             DefaultAssetPickerBuilderDelegate>
         state,
   ) {
