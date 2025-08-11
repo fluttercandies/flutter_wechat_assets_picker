@@ -8,6 +8,7 @@ This document gathered all breaking changes and migrations requirement between m
 
 ## Breaking changes in versions
 
+- [10.0.0](#1000)
 - [9.2.0](#920)
 - [9.1.0](#910)
 - [9.0.0](#900)
@@ -18,6 +19,174 @@ This document gathered all breaking changes and migrations requirement between m
 - [7.0.0](#700)
 - [6.0.0](#600)
 - [5.0.0](#500)
+
+## 10.0.0
+
+### Summary
+
+> [!NOTE]
+> If you didn't extend `AssetPickerBuilderDelegate` or `AssetPickerViewerBuilderDelegate`
+> to build delegates on your own, you can stop reading.
+
+This version introduces more generic types to increase flexibility and customization.
+This means that if you have created your own custom delegates or providers,
+you will need to update their signatures.
+Specifically, `AssetPickerBuilderDelegate` and `AssetPickerViewerBuilderDelegate`
+(and their default implementations) now require more generic type arguments.
+This allows for greater control over the types of assets, paths,
+and providers used within the picker.
+
+### Details
+
+#### `AssetPickerBuilderDelegate` and `DefaultAssetPickerBuilderDelegate`
+
+`AssetPickerBuilderDelegate` and `DefaultAssetPickerBuilderDelegate` are now more generic.
+
+- `AssetPickerBuilderDelegate`'s `initState` method now takes a generic `AssetPickerState`.
+- `DefaultAssetPickerBuilderDelegate` now has a generic type `T` which should extend `DefaultAssetPickerProvider`.
+
+Before:
+
+```dart
+// In AssetPickerBuilderDelegate
+void initState(AssetPickerState<Asset, Path> state) {}
+
+// In DefaultAssetPickerBuilderDelegate
+class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity> {
+  final DefaultAssetPickerProvider provider;
+  // ...
+}
+```
+
+After:
+
+```dart
+// In AssetPickerBuilderDelegate
+void initState(
+  covariant AssetPickerState<Asset, Path,
+          AssetPickerBuilderDelegate<Asset, Path>>
+      state,
+) {}
+
+// In DefaultAssetPickerBuilderDelegate
+class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
+    extends AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity> {
+  final T provider;
+  // ...
+}
+```
+
+#### `AssetPickerViewerBuilderDelegate` and `DefaultAssetPickerViewerBuilderDelegate`
+
+Similar to the picker builder delegates, the viewer builder delegates are now more generic.
+
+- `AssetPickerViewerBuilderDelegate` now has generic types for `Asset`, `Path`, and `Provider`.
+- `DefaultAssetPickerViewerBuilderDelegate` is now generic with types `T` (extends `AssetPickerViewerProvider<AssetEntity>`) and `P` (extends `DefaultAssetPickerProvider`).
+- `initStateAndTicker` is renamed to `initState` and its signature has changed.
+- `didUpdateViewer`'s signature has changed.
+
+Before:
+
+```dart
+// In AssetPickerViewerBuilderDelegate
+abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
+  void initStateAndTicker(
+    covariant AssetPickerViewerState<Asset, Path> state,
+    TickerProvider v,
+  );
+
+  void didUpdateViewer(
+    covariant AssetPickerViewerState<Asset, Path> state,
+    covariant AssetPickerViewer<Asset, Path> oldWidget,
+    covariant AssetPickerViewer<Asset, Path> newWidget,
+  );
+}
+
+// In DefaultAssetPickerViewerBuilderDelegate
+class DefaultAssetPickerViewerBuilderDelegate
+    extends AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> {
+  // ...
+}
+```
+
+After:
+
+```dart
+// In AssetPickerViewerBuilderDelegate
+abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
+    Provider extends AssetPickerViewerProvider<Asset>> {
+  void initState(
+    covariant AssetPickerViewerState state,
+  );
+
+  void didUpdateViewer(
+    covariant AssetPickerViewerState state,
+    covariant AssetPickerViewer oldWidget,
+    covariant AssetPickerViewer newWidget,
+  );
+}
+
+// In DefaultAssetPickerViewerBuilderDelegate
+class DefaultAssetPickerViewerBuilderDelegate<
+        T extends AssetPickerViewerProvider<AssetEntity>,
+        P extends DefaultAssetPickerProvider>
+    extends AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity, T> {
+  // ...
+}
+```
+
+#### `AssetPicker` and `AssetPickerViewer`
+
+`AssetPicker`, `AssetPickerViewer` and their states are now generic.
+When using `pickAssetsWithDelegate` or `pushToViewerWithDelegate`,
+you now need to pass the delegate type.
+
+Before:
+
+```dart
+// AssetPicker.pickAssetsWithDelegate
+static Future<List<Asset>?> pickAssetsWithDelegate<Asset, Path,
+    PickerProvider extends AssetPickerProvider<Asset, Path>>(
+  BuildContext context, {
+  required AssetPickerBuilderDelegate<Asset, Path> delegate,
+});
+
+// AssetPickerViewer.pushToViewerWithDelegate
+static Future<List<A>?> pushToViewerWithDelegate<A, P>(
+  BuildContext context, {
+  required AssetPickerViewerBuilderDelegate<A, P> delegate,
+});
+```
+
+After:
+
+```dart
+// AssetPicker.pickAssetsWithDelegate
+static Future<List<Asset>?> pickAssetsWithDelegate<
+    Asset,
+    Path,
+    PickerProvider extends AssetPickerProvider<Asset, Path>,
+    Delegate extends AssetPickerBuilderDelegate<Asset, Path>>(
+  BuildContext context, {
+  required Delegate delegate,
+});
+
+// AssetPickerViewer.pushToViewerWithDelegate
+static Future<List<Asset>?> pushToViewerWithDelegate<
+    Asset,
+    Path,
+    Provider extends AssetPickerViewerProvider<Asset>,
+    Delegate extends AssetPickerViewerBuilderDelegate<Asset, Path, Provider>>(
+  BuildContext context, {
+  required Delegate delegate,
+});
+```
+
+#### `AssetPickerViewerProvider`
+
+- The generic type `A` is renamed to `Asset`.
+- Deprecated methods `selectAssetEntity` and `unselectAssetEntity` have been removed.
+  Use `selectAsset` and `unSelectAsset` instead.
 
 ## 9.2.0
 
