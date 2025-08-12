@@ -68,6 +68,7 @@ class AssetPickerDelegate {
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     PermissionRequestOption? permissionRequestOption,
     bool useRootNavigator = true,
+    RouteSettings? pageRouteSettings,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     permissionRequestOption ??= PermissionRequestOption(
@@ -83,6 +84,7 @@ class AssetPickerDelegate {
         pageRouteBuilder?.call(const SizedBox.shrink()) ??
             AssetPickerPageRoute<List<AssetEntity>>(
               builder: (_) => const SizedBox.shrink(),
+              settings: pageRouteSettings,
             );
     final DefaultAssetPickerProvider provider = DefaultAssetPickerProvider(
       maxAssets: pickerConfig.maxAssets,
@@ -94,7 +96,8 @@ class AssetPickerDelegate {
       filterOptions: pickerConfig.filterOptions,
       initializeDelayDuration: route.transitionDuration,
     );
-    final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
+    final picker = AssetPicker<AssetEntity, AssetPathEntity,
+        DefaultAssetPickerBuilderDelegate>(
       key: key,
       permissionRequestOption: permissionRequestOption,
       builder: DefaultAssetPickerBuilderDelegate(
@@ -105,6 +108,7 @@ class AssetPickerDelegate {
         gridThumbnailSize: pickerConfig.gridThumbnailSize,
         previewThumbnailSize: pickerConfig.previewThumbnailSize,
         specialPickerType: pickerConfig.specialPickerType,
+        specialItems: pickerConfig.specialItems,
         loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
         selectPredicate: pickerConfig.selectPredicate,
         shouldRevertGrid: pickerConfig.shouldRevertGrid,
@@ -117,7 +121,7 @@ class AssetPickerDelegate {
         themeColor: pickerConfig.themeColor,
         locale: Localizations.maybeLocaleOf(context),
         shouldAutoplayPreview: pickerConfig.shouldAutoplayPreview,
-        specialItems: pickerConfig.specialItems,
+        dragToSelect: pickerConfig.dragToSelect,
       ),
     );
     final List<AssetEntity>? result = await Navigator.maybeOf(
@@ -125,7 +129,10 @@ class AssetPickerDelegate {
       rootNavigator: useRootNavigator,
     )?.push<List<AssetEntity>>(
       pageRouteBuilder?.call(picker) ??
-          AssetPickerPageRoute<List<AssetEntity>>(builder: (_) => picker),
+          AssetPickerPageRoute<List<AssetEntity>>(
+            builder: (_) => picker,
+            settings: pageRouteSettings,
+          ),
     );
     return result;
   }
@@ -147,28 +154,35 @@ class AssetPickerDelegate {
   ///  * [AssetPickerBuilderDelegate] for how to customize/override widgets
   ///    during the picking process.
   /// {@endtemplate}
-  Future<List<Asset>?> pickAssetsWithDelegate<Asset, Path,
-      PickerProvider extends AssetPickerProvider<Asset, Path>>(
+  Future<List<Asset>?> pickAssetsWithDelegate<
+      Asset,
+      Path,
+      PickerProvider extends AssetPickerProvider<Asset, Path>,
+      Delegate extends AssetPickerBuilderDelegate<Asset, Path>>(
     BuildContext context, {
-    required AssetPickerBuilderDelegate<Asset, Path> delegate,
+    required Delegate delegate,
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
     Key? key,
     bool useRootNavigator = true,
+    RouteSettings? pageRouteSettings,
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
     await permissionCheck(requestOption: permissionRequestOption);
-    final Widget picker = AssetPicker<Asset, Path>(
+    final picker = AssetPicker<Asset, Path, Delegate>(
       key: key,
       permissionRequestOption: permissionRequestOption,
       builder: delegate,
     );
-    final List<Asset>? result = await Navigator.maybeOf(
+    final result = await Navigator.maybeOf(
       context,
       rootNavigator: useRootNavigator,
-    )?.push<List<Asset>>(
+    )?.push(
       pageRouteBuilder?.call(picker) ??
-          AssetPickerPageRoute<List<Asset>>(builder: (_) => picker),
+          AssetPickerPageRoute<List<Asset>>(
+            builder: (_) => picker,
+            settings: pageRouteSettings,
+          ),
     );
     return result;
   }

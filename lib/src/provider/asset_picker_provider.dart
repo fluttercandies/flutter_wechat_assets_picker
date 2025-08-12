@@ -272,12 +272,7 @@ class DefaultAssetPickerProvider
     this.filterOptions,
     Duration initializeDelayDuration = const Duration(milliseconds: 250),
   }) {
-    Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
-    // Call [getAssetList] with route duration when constructing.
-    Future<void>.delayed(initializeDelayDuration, () async {
-      await getPaths(onlyAll: true);
-      await getPaths(onlyAll: false);
-    });
+    init(initializeDelayDuration);
   }
 
   @visibleForTesting
@@ -310,6 +305,25 @@ class DefaultAssetPickerProvider
   /// Will be merged into the base configuration.
   /// 将会与基础条件进行合并。
   final PMFilter? filterOptions;
+
+  /// Initialize the provider.
+  void init(Duration initializeDelayDuration) {
+    Singleton.sortPathDelegate = sortPathDelegate ?? SortPathDelegate.common;
+    // Call [getAssetList] with route duration when constructing.
+    Future<void>.delayed(initializeDelayDuration, () async {
+      if (!_mounted) {
+        return;
+      }
+
+      await getPaths(onlyAll: true);
+
+      if (!_mounted) {
+        return;
+      }
+
+      await getPaths(onlyAll: false);
+    });
+  }
 
   @override
   set currentPath(PathWrapper<AssetPathEntity>? value) {
@@ -352,7 +366,7 @@ class DefaultAssetPickerProvider
       )..merge(fog);
     } else if (fog == null && Platform.isAndroid) {
       options = AdvancedCustomFilter(
-        orderBy: [OrderByItem.desc(CustomColumns.android.dateTaken)],
+        orderBy: [OrderByItem.desc(CustomColumns.android.modifiedDate)],
       );
     } else {
       options = fog;

@@ -1,11 +1,11 @@
 name: wechat_assets_picker_demo
 description: The demo project for the wechat_assets_picker package.
-version: 9.4.1+63
+version: 9.6.0+67
 publish_to: none
 
 environment:
-  sdk: ^3.2.0
-  flutter: '>=3.16.0'
+  sdk: ^3.4.0
+  flutter: '>=3.22.0'
 
 dependencies:
   flutter:
@@ -18,7 +18,8 @@ dependencies:
   wechat_camera_picker: ^4.2.0
 
   extended_image: any
-  package_info_plus: '>=5.0.0 <9.0.0'
+  intl: any
+  package_info_plus: '>=6.0.0 <9.0.0'
   path: ^1.8.0
   path_provider: ^2.0.15
   provider: any
@@ -28,5 +29,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
   assets:
     - assets/

@@ -16,6 +16,7 @@ import 'package:wechat_picker_library/wechat_picker_library.dart';
 import '../../constants/constants.dart';
 import '../../delegates/asset_picker_text_delegate.dart';
 import '../../delegates/asset_picker_viewer_builder_delegate.dart';
+import '../../provider/asset_picker_viewer_provider.dart';
 
 class ImagePageBuilder extends StatefulWidget {
   const ImagePageBuilder({
@@ -30,7 +31,8 @@ class ImagePageBuilder extends StatefulWidget {
   /// 展示的资源
   final AssetEntity asset;
 
-  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> delegate;
+  final AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity,
+      AssetPickerViewerProvider<AssetEntity>> delegate;
 
   final ThumbnailSize? previewThumbnailSize;
 
@@ -118,6 +120,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
         );
         if (_isLivePhoto && _livePhotoVideoController != null) {
           return _LivePhotoWidget(
+            asset: asset,
             controller: _livePhotoVideoController!,
             fit: BoxFit.contain,
             state: state,
@@ -159,12 +162,14 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
 
 class _LivePhotoWidget extends StatefulWidget {
   const _LivePhotoWidget({
+    required this.asset,
     required this.controller,
     required this.state,
     required this.fit,
     required this.textDelegate,
   });
 
+  final AssetEntity asset;
   final VideoPlayerController controller;
   final ExtendedImageState state;
   final BoxFit fit;
@@ -200,6 +205,7 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
     _scrollNotificationObserver?.removeListener(_handleScrollNotification);
     _controller.pause();
     _controller.removeListener(_notify);
+    _showVideo.dispose();
     super.dispose();
   }
 

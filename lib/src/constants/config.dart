@@ -30,6 +30,7 @@ class AssetPickerConfig {
     this.themeColor,
     this.pickerTheme,
     this.textDelegate,
+    this.specialItems = const [],
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
@@ -38,7 +39,7 @@ class AssetPickerConfig {
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
     this.shouldAutoplayPreview = false,
-    this.specialItems = const [],
+    this.dragToSelect,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'pickerTheme and themeColor cannot be set at the same time.',
@@ -160,6 +161,10 @@ class AssetPickerConfig {
 
   final AssetPickerTextDelegate? textDelegate;
 
+  /// List of special items.
+  /// 自定义 item 列表
+  final List<SpecialItem<AssetPathEntity>> specialItems;
+
   /// Indicates the loading status for the builder.
   /// 指示目前加载的状态
   final LoadingIndicatorBuilder? loadingIndicatorBuilder;
@@ -191,7 +196,15 @@ class AssetPickerConfig {
   /// 预览是否自动播放
   final bool shouldAutoplayPreview;
 
-  /// List of special items.
-  /// 自定义item列表
-  final List<SpecialItem<AssetPathEntity>> specialItems;
+  /// {@template wechat_assets_picker.constants.AssetPickerConfig.dragToSelect}
+  /// Whether assets selection can be done with drag gestures.
+  /// 是否开启拖拽选择
+  ///
+  /// The feature enables by default if no accessibility service is being used.
+  /// 在未使用辅助功能的情况下会默认启用该功能。
+  ///
+  /// The feature is not available when `maxAssets` is `1`.
+  /// 当 `maxAssets` 为 `1` 时，该功能不可用。
+  /// {@endtemplate}
+  final bool? dragToSelect;
 }
