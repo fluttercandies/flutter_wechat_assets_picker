@@ -9,7 +9,8 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+- Make delegate respect generic types as much as possible.
+  This is a breaking change for users who use custom delegates and providers.
 
 ## 9.6.0
 
