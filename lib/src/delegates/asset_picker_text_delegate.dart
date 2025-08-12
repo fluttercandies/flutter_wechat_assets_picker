@@ -26,9 +26,12 @@ const assetPickerTextDelegates = <AssetPickerTextDelegate>[
 ];
 
 /// Obtain the text delegate from the given locale.
-AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
+AssetPickerTextDelegate assetPickerTextDelegateFromLocale(
+  Locale? locale, {
+  AssetPickerTextDelegate fallback = const AssetPickerTextDelegate(),
+}) {
   if (locale == null) {
-    return const AssetPickerTextDelegate();
+    return fallback;
   }
 
   final String languageCode = locale.languageCode;
@@ -39,7 +42,7 @@ AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
     (e) => e.languageCode == languageCode,
   );
   if (matchedByLanguage.isEmpty) {
-    return const AssetPickerTextDelegate();
+    return fallback;
   }
 
   final matchedByScript = scriptCode != null
