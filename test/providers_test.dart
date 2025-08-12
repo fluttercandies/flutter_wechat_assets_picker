@@ -23,15 +23,15 @@ void main() async {
       );
       await tester.tap(defaultButtonFinder);
       await tester.pumpAndSettle();
-      final Finder pickerFinder = find.byType(
-        AssetPicker<AssetEntity, AssetPathEntity>,
+      final picker = tester.widget<
+          AssetPicker<AssetEntity, AssetPathEntity,
+              DefaultAssetPickerBuilderDelegate>>(
+        find.byType(
+          AssetPicker<AssetEntity, AssetPathEntity,
+              DefaultAssetPickerBuilderDelegate>,
+        ),
       );
-      final AssetPicker<AssetEntity, AssetPathEntity> picker = tester.widget(
-        pickerFinder,
-      );
-      final DefaultAssetPickerProvider provider =
-          (picker.builder as DefaultAssetPickerBuilderDelegate).provider;
-      expect(provider, isA<DefaultAssetPickerProvider>());
+      final provider = picker.builder.provider;
       await tester.tap(find.widgetWithIcon(IconButton, Icons.close));
       await tester.pumpAndSettle();
       expect(

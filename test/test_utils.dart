@@ -120,7 +120,8 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       )
       ..hasAssetsToDisplay = true
       ..totalAssetsCount = 1;
-    final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
+    final picker = AssetPicker<AssetEntity, AssetPathEntity,
+        DefaultAssetPickerBuilderDelegate>(
       key: key,
       permissionRequestOption: permissionRequestOption,
       builder: DefaultAssetPickerBuilderDelegate(

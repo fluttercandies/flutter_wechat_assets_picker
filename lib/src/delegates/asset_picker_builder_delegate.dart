@@ -126,14 +126,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
 
   /// {@macro wechat_assets_picker.PathNameBuilder}
-  final PathNameBuilder<AssetPathEntity>? pathNameBuilder;
+  final PathNameBuilder<Path>? pathNameBuilder;
 
   /// {@macro wechat_assets_picker.AssetsChangeCallback}
-  final AssetsChangeCallback<AssetPathEntity>? assetsChangeCallback;
+  final AssetsChangeCallback<Path>? assetsChangeCallback;
 
   /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
-  final AssetsChangeRefreshPredicate<AssetPathEntity>?
-      assetsChangeRefreshPredicate;
+  final AssetsChangeRefreshPredicate<Path>? assetsChangeRefreshPredicate;
 
   final bool viewerUseRootNavigator;
   final RouteSettings? viewerPageRouteSettings;
@@ -238,7 +237,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Keep a `initState` method to sync with [State].
   /// 保留一个 `initState` 方法与 [State] 同步。
   @mustCallSuper
-  void initState(AssetPickerState<Asset, Path> state) {}
+  void initState(
+    covariant AssetPickerState<Asset, Path,
+            AssetPickerBuilderDelegate<Asset, Path>>
+        state,
+  ) {}
 
   /// Keep a `dispose` method to sync with [State].
   /// 保留一个 `dispose` 方法与 [State] 同步。
@@ -481,11 +484,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Loading indicator.
   /// 加载指示器
   ///
-  /// Subclasses need to implement this due to the generic type limitation, and
-  /// not all delegates use [AssetPickerProvider].
-  ///
-  /// See also:
-  /// - [DefaultAssetPickerBuilderDelegate.loadingIndicator] as an example.
+  /// See [DefaultAssetPickerBuilderDelegate.loadingIndicator] as an example.
   Widget loadingIndicator(BuildContext context);
 
   /// GIF image type indicator.
@@ -820,7 +819,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   }
 }
 
-class DefaultAssetPickerBuilderDelegate
+class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     extends AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerBuilderDelegate({
     required this.provider,
@@ -857,7 +856,7 @@ class DefaultAssetPickerBuilderDelegate
 
   /// [ChangeNotifier] for asset picker.
   /// 资源选择器状态保持
-  final DefaultAssetPickerProvider provider;
+  final T provider;
 
   /// Thumbnail size in the grid.
   /// 预览时网络的缩略图大小
@@ -950,7 +949,11 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
-  void initState(AssetPickerState<AssetEntity, AssetPathEntity> state) {
+  void initState(
+    covariant AssetPickerState<AssetEntity, AssetPathEntity,
+            DefaultAssetPickerBuilderDelegate>
+        state,
+  ) {
     super.initState(state);
     presentLimitedTapGestureRecognizer = TapGestureRecognizer()
       ..onTap = PhotoManager.presentLimited;
@@ -984,8 +987,7 @@ class DefaultAssetPickerBuilderDelegate
     if (selectPredicateResult == false) {
       return;
     }
-    final DefaultAssetPickerProvider provider =
-        context.read<DefaultAssetPickerProvider>();
+    final provider = context.read<T>();
     if (selected) {
       provider.unSelectAsset(asset);
       return;
@@ -1117,7 +1119,7 @@ class DefaultAssetPickerBuilderDelegate
     int? index,
     AssetEntity currentAsset,
   ) async {
-    final p = context.read<DefaultAssetPickerProvider>();
+    final p = context.read<T>();
     // - When we reached the maximum select count and the asset is not selected,
     //   do nothing.
     // - When the special type is WeChat Moment, pictures and videos cannot
@@ -1184,7 +1186,7 @@ class DefaultAssetPickerBuilderDelegate
     if (current.isEmpty) {
       throw StateError('Previewing empty assets is not allowed. $_debugFlow');
     }
-    final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
+    final result = await AssetPickerViewer.pushToViewer<T>(
       context,
       currentIndex: effectiveIndex,
       previewAssets: current,
@@ -1224,8 +1226,8 @@ class DefaultAssetPickerBuilderDelegate
   Widget androidLayout(BuildContext context) {
     return AssetPickerAppBarWrapper(
       appBar: appBar(context),
-      body: Consumer<DefaultAssetPickerProvider>(
-        builder: (BuildContext context, DefaultAssetPickerProvider p, _) {
+      body: Consumer<T>(
+        builder: (BuildContext context, T p, _) {
           final bool shouldDisplayAssets =
               p.hasAssetsToDisplay || shouldBuildSpecialItem;
           return AnimatedSwitcher(
@@ -1275,8 +1277,8 @@ class DefaultAssetPickerBuilderDelegate
       return Stack(
         children: <Widget>[
           Positioned.fill(
-            child: Consumer<DefaultAssetPickerProvider>(
-              builder: (_, DefaultAssetPickerProvider p, __) {
+            child: Consumer<T>(
+              builder: (_, p, __) {
                 final Widget child;
                 final bool shouldDisplayAssets =
                     p.hasAssetsToDisplay || shouldBuildSpecialItem;
@@ -1317,8 +1319,8 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget loadingIndicator(BuildContext context) {
-    return Selector<DefaultAssetPickerProvider, bool>(
-      selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
+    return Selector<T, bool>(
+      selector: (_, T p) => p.isAssetsEmpty,
       builder: (BuildContext context, bool isAssetsEmpty, Widget? w) {
         if (loadingIndicatorBuilder != null) {
           return loadingIndicatorBuilder!(context, isAssetsEmpty);
@@ -1337,8 +1339,8 @@ class DefaultAssetPickerBuilderDelegate
     appBarPreferredSize ??= appBar(context).preferredSize;
     final bool gridRevert = effectiveShouldRevertGrid(context);
     final accessibleNavigation = MediaQuery.accessibleNavigationOf(context);
-    return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
-      selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
+    return Selector<T, PathWrapper<AssetPathEntity>?>(
+      selector: (_, T p) => p.currentPath,
       builder: (context, wrapper, _) {
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
@@ -1530,9 +1532,8 @@ class DefaultAssetPickerBuilderDelegate
                   : Directionality.of(context),
               child: ColoredBox(
                 color: theme.canvasColor,
-                child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-                  selector: (_, DefaultAssetPickerProvider p) =>
-                      p.currentAssets,
+                child: Selector<T, List<AssetEntity>>(
+                  selector: (_, T p) => p.currentAssets,
                   builder: (BuildContext context, List<AssetEntity> assets, _) {
                     final SliverGap bottomGap = SliverGap.v(
                       context.bottomPadding + bottomSectionHeight,
@@ -1590,8 +1591,7 @@ class DefaultAssetPickerBuilderDelegate
     List<AssetEntity> currentAssets, {
     Widget? specialItem,
   }) {
-    final DefaultAssetPickerProvider p =
-        context.read<DefaultAssetPickerProvider>();
+    final p = context.read<T>();
     final int length = currentAssets.length;
     final PathWrapper<AssetPathEntity>? currentWrapper = p.currentPath;
     final AssetPathEntity? currentPathEntity = currentWrapper?.path;
@@ -1661,8 +1661,8 @@ class DefaultAssetPickerBuilderDelegate
     return ValueListenableBuilder<bool>(
       valueListenable: isSwitchingPath,
       builder: (_, bool isSwitchingPath, Widget? child) {
-        return Consumer<DefaultAssetPickerProvider>(
-          builder: (_, DefaultAssetPickerProvider p, __) {
+        return Consumer<T>(
+          builder: (_, T p, __) {
             final bool isBanned = (!p.selectedAssets.contains(asset) &&
                     p.selectedMaximumAssets) ||
                 (isWeChatMoment &&
@@ -1750,9 +1750,9 @@ class DefaultAssetPickerBuilderDelegate
     int placeholderCount = 0,
     Widget? specialItem,
   }) {
-    final PathWrapper<AssetPathEntity>? currentWrapper = context
-        .select<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
-      (DefaultAssetPickerProvider p) => p.currentPath,
+    final PathWrapper<AssetPathEntity>? currentWrapper =
+        context.select<T, PathWrapper<AssetPathEntity>?>(
+      (T p) => p.currentPath,
     );
     final AssetPathEntity? currentPathEntity = currentWrapper?.path;
     final int length = assets.length + placeholderCount;
@@ -1836,13 +1836,13 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
-  /// It'll pop with [AssetPickerProvider.selectedAssets]
+  /// It'll pop with provider's `selectedAssets`
   /// when there are any assets were chosen.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   @override
   Widget confirmButton(BuildContext context) {
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (_, DefaultAssetPickerProvider p, __) {
+    return Consumer<T>(
+      builder: (_, T p, __) {
         final bool isSelectedNotEmpty = p.isSelectedNotEmpty;
         final bool shouldAllowConfirm =
             isSelectedNotEmpty || p.previousSelectedAssets.isNotEmpty;
@@ -2052,9 +2052,8 @@ class DefaultAssetPickerBuilderDelegate
               ),
             ),
             Flexible(
-              child: Selector<DefaultAssetPickerProvider,
-                  List<PathWrapper<AssetPathEntity>>>(
-                selector: (_, DefaultAssetPickerProvider p) => p.paths,
+              child: Selector<T, List<PathWrapper<AssetPathEntity>>>(
+                selector: (_, T p) => p.paths,
                 builder: (_, List<PathWrapper<AssetPathEntity>> paths, __) {
                   final List<PathWrapper<AssetPathEntity>> filtered = paths
                       .where(
@@ -2129,9 +2128,8 @@ class DefaultAssetPickerBuilderDelegate
             borderRadius: BorderRadius.circular(999),
             color: theme.focusColor,
           ),
-          child: Selector<DefaultAssetPickerProvider,
-              PathWrapper<AssetPathEntity>?>(
-            selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
+          child: Selector<T, PathWrapper<AssetPathEntity>?>(
+            selector: (_, T p) => p.currentPath,
             builder: (_, PathWrapper<AssetPathEntity>? p, Widget? w) {
               final AssetPathEntity? path = p?.path;
               return Row(
@@ -2224,8 +2222,8 @@ class DefaultAssetPickerBuilderDelegate
     if (semanticsCount != null) {
       labelBuffer.write(': $semanticsCount');
     }
-    return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
-      selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
+    return Selector<T, PathWrapper<AssetPathEntity>?>(
+      selector: (_, T p) => p.currentPath,
       builder: (_, PathWrapper<AssetPathEntity>? currentWrapper, __) {
         final bool isSelected = currentWrapper?.path == pathEntity;
         return Semantics(
@@ -2239,7 +2237,7 @@ class DefaultAssetPickerBuilderDelegate
               splashFactory: InkSplash.splashFactory,
               onTap: () {
                 Feedback.forTap(context);
-                context.read<DefaultAssetPickerProvider>().switchPath(wrapper);
+                context.read<T>().switchPath(wrapper);
                 isSwitchingPath.value = false;
                 gridScrollController.jumpTo(0);
               },
@@ -2287,8 +2285,8 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget previewButton(BuildContext context) {
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (_, DefaultAssetPickerProvider p, Widget? child) {
+    return Consumer<T>(
+      builder: (_, T p, Widget? child) {
         return ValueListenableBuilder<bool>(
           valueListenable: isSwitchingPath,
           builder: (_, bool isSwitchingPath, __) => Semantics(
@@ -2300,16 +2298,15 @@ class DefaultAssetPickerBuilderDelegate
           ),
         );
       },
-      child: Consumer<DefaultAssetPickerProvider>(
-        builder: (context, DefaultAssetPickerProvider p, __) => GestureDetector(
+      child: Consumer<T>(
+        builder: (context, T p, __) => GestureDetector(
           onTap: p.isSelectedNotEmpty
               ? () {
                   viewAsset(context, null, p.selectedAssets.first);
                 }
               : null,
-          child: Selector<DefaultAssetPickerProvider, String>(
-            selector: (_, DefaultAssetPickerProvider p) =>
-                p.selectedDescriptions,
+          child: Selector<T, String>(
+            selector: (_, T p) => p.selectedDescriptions,
             builder: (BuildContext c, __, ___) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: ScaleText(
@@ -2334,8 +2331,8 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget itemBannedIndicator(BuildContext context, AssetEntity asset) {
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (_, DefaultAssetPickerProvider p, __) {
+    return Consumer<T>(
+      builder: (_, T p, __) {
         final bool isDisabled =
             (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
                 (isWeChatMoment &&
@@ -2356,8 +2353,8 @@ class DefaultAssetPickerBuilderDelegate
     final double indicatorSize =
         MediaQuery.sizeOf(context).width / gridCount / 3;
     final Duration duration = switchingPathDuration * 0.75;
-    return Selector<DefaultAssetPickerProvider, String>(
-      selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
+    return Selector<T, String>(
+      selector: (_, T p) => p.selectedDescriptions,
       builder: (BuildContext context, String descriptions, __) {
         final bool selected = descriptions.contains(asset.toString());
         final Widget innerSelector = AnimatedContainer(
@@ -2422,8 +2419,8 @@ class DefaultAssetPickerBuilderDelegate
                 viewAsset(context, index, asset);
               }
             : null,
-        child: Consumer<DefaultAssetPickerProvider>(
-          builder: (_, DefaultAssetPickerProvider p, __) {
+        child: Consumer<T>(
+          builder: (_, T p, __) {
             final int index = p.selectedAssets.indexOf(asset);
             final bool selected = index != -1;
             return AnimatedContainer(
@@ -2617,7 +2614,7 @@ class DefaultAssetPickerBuilderDelegate
       data: theme,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: overlayStyle,
-        child: CNP<DefaultAssetPickerProvider>.value(
+        child: CNP<T>.value(
           value: provider,
           builder: (BuildContext context, _) => Scaffold(
             backgroundColor: theme.scaffoldBackgroundColor,
