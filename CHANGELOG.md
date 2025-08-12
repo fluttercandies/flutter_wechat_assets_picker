@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None.*
+
+## 9.7.0
+
 **Improvements**
 
 - Allows to specify the fallback text delegate through `assetPickerTextDelegateFromLocale`.
