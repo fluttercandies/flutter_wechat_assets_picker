@@ -4,7 +4,7 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Path;
 import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/constants.dart';

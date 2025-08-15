@@ -7,7 +7,7 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Path;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 

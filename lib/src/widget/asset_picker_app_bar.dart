@@ -105,7 +105,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final AppBarTheme appBarTheme = theme.appBarTheme;
+    final appBarTheme = theme.appBarTheme;
 
     final Widget? titleWidget;
     if (centerTitle) {
