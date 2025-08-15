@@ -5,9 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-import 'package:wechat_assets_picker_demo/l10n/gen/app_localizations.dart';
 
 import 'constants/extensions.dart';
+import 'l10n/gen/app_localizations.dart';
 import 'pages/splash_page.dart';
 
 const Color themeColor = Color(0xff00bc56);
@@ -28,10 +28,11 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   ThemeData _buildTheme(Brightness brightness) {
-    return ThemeData(
-      brightness: brightness,
-      primarySwatch: themeColor.swatch,
-      textSelectionTheme: const TextSelectionThemeData(cursorColor: themeColor),
+    return ThemeData.from(
+      colorScheme: ColorScheme.fromSwatch(
+        primarySwatch: themeColor.swatch,
+        brightness: brightness,
+      ),
     );
   }
 

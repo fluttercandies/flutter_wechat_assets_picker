@@ -245,7 +245,8 @@ class AssetPickerDelegate {
   ThemeData themeData(Color? themeColor, {bool light = false}) {
     themeColor ??= defaultThemeColorWeChat;
     if (light) {
-      return ThemeData.light().copyWith(
+      final base = ThemeData.light();
+      return base.copyWith(
         primaryColor: Colors.grey[50],
         primaryColorLight: Colors.grey[50],
         primaryColorDark: Colors.grey[50],
@@ -253,52 +254,54 @@ class AssetPickerDelegate {
         scaffoldBackgroundColor: Colors.grey[50],
         cardColor: Colors.grey[50],
         highlightColor: Colors.transparent,
-        textSelectionTheme: TextSelectionThemeData(
+        textSelectionTheme: base.textSelectionTheme.copyWith(
           cursorColor: themeColor,
           selectionColor: themeColor.withAlpha(100),
           selectionHandleColor: themeColor,
         ),
+        // ignore: deprecated_member_use
         indicatorColor: themeColor,
-        appBarTheme: AppBarTheme(
+        appBarTheme: base.appBarTheme.copyWith(
           backgroundColor: Colors.grey[100],
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarBrightness: Brightness.light,
             statusBarIconBrightness: Brightness.dark,
           ),
-          iconTheme: IconThemeData(color: Colors.grey[900]),
+          iconTheme:
+              base.appBarTheme.iconTheme?.copyWith(color: Colors.grey[900]) ??
+                  IconThemeData(color: Colors.grey[900]),
           elevation: 0,
         ),
-        bottomAppBarTheme: BottomAppBarTheme(
+        bottomAppBarTheme: base.bottomAppBarTheme.copyWith(
           color: Colors.grey[100],
         ),
-        buttonTheme: ButtonThemeData(buttonColor: themeColor),
-        iconTheme: IconThemeData(color: Colors.grey[900]),
-        checkboxTheme: CheckboxThemeData(
-          checkColor: MaterialStateProperty.all(Colors.black),
-          fillColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
+        buttonTheme: base.buttonTheme.copyWith(buttonColor: themeColor),
+        iconTheme: base.iconTheme.copyWith(color: Colors.grey[900]),
+        checkboxTheme: base.checkboxTheme.copyWith(
+          checkColor: WidgetStateProperty.all(Colors.black),
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
               return themeColor;
             }
             return null;
           }),
           side: const BorderSide(color: Colors.black),
         ),
-        colorScheme: ColorScheme(
+        colorScheme: base.colorScheme.copyWith(
           primary: Colors.grey[50]!,
           secondary: themeColor,
-          background: Colors.grey[50]!,
           surface: Colors.grey[50]!,
           brightness: Brightness.light,
           error: const Color(0xffcf6679),
           onPrimary: Colors.white,
           onSecondary: Colors.grey[100]!,
           onSurface: Colors.black,
-          onBackground: Colors.black,
           onError: Colors.white,
         ),
       );
     }
-    return ThemeData.dark().copyWith(
+    final base = ThemeData.dark();
+    return base.copyWith(
       primaryColor: Colors.grey[900],
       primaryColorLight: Colors.grey[900],
       primaryColorDark: Colors.grey[900],
@@ -306,47 +309,47 @@ class AssetPickerDelegate {
       scaffoldBackgroundColor: Colors.grey[900],
       cardColor: Colors.grey[900],
       highlightColor: Colors.transparent,
-      textSelectionTheme: TextSelectionThemeData(
+      textSelectionTheme: base.textSelectionTheme.copyWith(
         cursorColor: themeColor,
         selectionColor: themeColor.withAlpha(100),
         selectionHandleColor: themeColor,
       ),
+      // ignore: deprecated_member_use
       indicatorColor: themeColor,
-      appBarTheme: AppBarTheme(
+      appBarTheme: base.appBarTheme.copyWith(
         backgroundColor: Colors.grey[850],
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light,
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: base.appBarTheme.iconTheme?.copyWith(color: Colors.white) ??
+            const IconThemeData(color: Colors.white),
         elevation: 0,
       ),
-      bottomAppBarTheme: BottomAppBarTheme(
+      bottomAppBarTheme: base.bottomAppBarTheme.copyWith(
         color: Colors.grey[850],
       ),
-      buttonTheme: ButtonThemeData(buttonColor: themeColor),
-      iconTheme: const IconThemeData(color: Colors.white),
-      checkboxTheme: CheckboxThemeData(
-        checkColor: MaterialStateProperty.all(Colors.white),
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+      buttonTheme: base.buttonTheme.copyWith(buttonColor: themeColor),
+      iconTheme: base.iconTheme.copyWith(color: Colors.white),
+      checkboxTheme: base.checkboxTheme.copyWith(
+        checkColor: WidgetStateProperty.all(Colors.white),
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return themeColor;
           }
           return null;
         }),
         side: const BorderSide(color: Colors.white),
       ),
-      colorScheme: ColorScheme(
+      colorScheme: base.colorScheme.copyWith(
         primary: Colors.grey[900]!,
         secondary: themeColor,
-        background: Colors.grey[900]!,
         surface: Colors.grey[900]!,
         brightness: Brightness.dark,
         error: const Color(0xffcf6679),
         onPrimary: Colors.black,
         onSecondary: Colors.grey[850]!,
         onSurface: Colors.white,
-        onBackground: Colors.white,
         onError: Colors.black,
       ),
     );
