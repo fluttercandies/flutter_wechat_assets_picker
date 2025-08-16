@@ -28,6 +28,8 @@
   "pickMethodCustomFilterOptionsDescription": "Add filter options for the picker.",
   "pickMethodPrependItemName": "Prepend special item",
   "pickMethodPrependItemDescription": "A special item will prepend to the assets grid.",
+  "pickMethodMultiSpecialItemsName": "Multiple special items",
+  "pickMethodMultiSpecialItemsDescription": "Multiple special items will prepend or append to the assets grid",
   "pickMethodNoPreviewName": "No preview",
   "pickMethodNoPreviewDescription": "You cannot preview assets during the picking, the behavior is like the WhatsApp/MegaTok pattern.",
   "pickMethodKeepScrollOffsetName": "Keep scroll offset",

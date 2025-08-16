@@ -46,6 +46,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage>
       PickMethod.changeLanguages(context, maxAssetsCount),
       PickMethod.threeItemsGrid(context, maxAssetsCount),
       PickMethod.prependItem(context, maxAssetsCount),
+      PickMethod.multiSpecialItems(context, maxAssetsCount),
       PickMethod(
         icon: '🎭',
         name: context.l10n.pickMethodWeChatMomentName,
