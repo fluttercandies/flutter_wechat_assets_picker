@@ -28,7 +28,6 @@ typedef LoadingIndicatorBuilder = Widget Function(
 typedef SpecialItemBuilder<Path> = Widget? Function(
   BuildContext context,
   Path? path,
-  int length,
   PermissionState permissionState,
 );
 

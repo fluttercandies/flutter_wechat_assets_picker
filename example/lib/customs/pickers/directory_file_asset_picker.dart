@@ -530,7 +530,6 @@ final class FileAssetPickerBuilder
           final specialItem = item.builder?.call(
             context,
             provider.currentPath?.path,
-            totalCount,
             permissionNotifier.value,
           );
           if (specialItem != null) {

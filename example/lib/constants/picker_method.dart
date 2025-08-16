@@ -141,7 +141,6 @@ class PickMethod {
                 builder: (
                   BuildContext context,
                   AssetPathEntity? path,
-                  int length,
                   PermissionState permissionState,
                 ) {
                   if (path?.isAll != true) {
@@ -198,7 +197,6 @@ class PickMethod {
                 builder: (
                   BuildContext context,
                   AssetPathEntity? path,
-                  int length,
                   PermissionState permissionState,
                 ) {
                   if (path?.isAll != true) {
@@ -312,7 +310,6 @@ class PickMethod {
                 builder: (
                   BuildContext context,
                   AssetPathEntity? path,
-                  int length,
                   PermissionState permissionState,
                 ) {
                   return const Center(
@@ -347,7 +344,6 @@ class PickMethod {
                 builder: (
                   BuildContext context,
                   AssetPathEntity? path,
-                  int length,
                   PermissionState permissionState,
                 ) {
                   return const Center(
@@ -360,7 +356,6 @@ class PickMethod {
                 builder: (
                   BuildContext context,
                   AssetPathEntity? path,
-                  int length,
                   PermissionState permissionState,
                 ) {
                   return const Center(
@@ -374,7 +369,6 @@ class PickMethod {
                 builder: (
                   BuildContext context,
                   AssetPathEntity? path,
-                  int length,
                   PermissionState permissionState,
                 ) {
                   return null;
@@ -385,7 +379,6 @@ class PickMethod {
                 builder: (
                   BuildContext context,
                   AssetPathEntity? path,
-                  int length,
                   PermissionState permissionState,
                 ) {
                   return null;

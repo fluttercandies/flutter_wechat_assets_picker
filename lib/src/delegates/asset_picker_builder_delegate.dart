@@ -184,10 +184,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 选择器是否为单选模式
   bool get isSingleAssetMode;
 
-  /// Whether the delegate should build the special item.
-  /// 是否需要构建自定义 item
-  bool get shouldBuildSpecialItem => specialItems.isNotEmpty;
-
   /// Space between assets item widget.
   /// 资源部件之间的间隔
   double get itemSpacing => 2;
@@ -355,28 +351,45 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     int placeholderCount = 0,
   });
 
+  List<SpecialItemModel> assetsGridSpecialItemModels({
+    required BuildContext context,
+    required Path? path,
+  }) {
+    return specialItems
+        .map((item) {
+          final specialItem = item.builder?.call(
+            context,
+            path,
+            permissionNotifier.value,
+          );
+          if (specialItem != null) {
+            return SpecialItemModel(
+              position: item.position,
+              item: specialItem,
+            );
+          }
+          return null;
+        })
+        .nonNulls
+        .toList();
+  }
+
   /// Calculates the placeholder count in the assets grid.
   int assetsGridItemPlaceholderCount({
     required BuildContext context,
     required PathWrapper<Path>? pathWrapper,
     required bool onlyOneScreen,
+    required List<SpecialItemModel> specialItemModels,
   }) {
     if (onlyOneScreen) {
       return 0;
     }
+
     final bool gridRevert = effectiveShouldRevertGrid(context);
     int totalCount = pathWrapper?.assetCount ?? 0;
-    // If user chose a special item's position, add 1 count.
-    if (specialItemPosition != SpecialItemPosition.none) {
-      final specialItem = specialItemBuilder?.call(
-        context,
-        pathWrapper?.path,
-        totalCount,
-      );
-      if (specialItem != null) {
-        totalCount += 1;
-      }
-    }
+    // Add special items' count.
+    totalCount += specialItemModels.length;
+
     final int result;
     if (gridRevert && totalCount % gridCount != 0) {
       // When there are left items that not filled into one row,
@@ -386,6 +399,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       // Otherwise, we don't need placeholders.
       result = 0;
     }
+
     return result;
   }
 
@@ -394,19 +408,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required BuildContext context,
     required BoxConstraints constraints,
     required PathWrapper<Path>? pathWrapper,
+    required List<SpecialItemModel> specialItemModels,
   }) {
     int totalCount = pathWrapper?.assetCount ?? 0;
-    // If user chose a special item's position, add 1 count.
-    if (specialItemPosition != SpecialItemPosition.none) {
-      final specialItem = specialItemBuilder?.call(
-        context,
-        pathWrapper?.path,
-        totalCount,
-      );
-      if (specialItem != null) {
-        totalCount += 1;
-      }
-    }
+    // Add special items' count.
+    totalCount += specialItemModels.length;
+
     // Here we got a magic calculation. [itemSpacing] needs to be divided by
     // [gridCount] since every grid item is squeezed by the [itemSpacing],
     // and it's actual size is reduced with [itemSpacing / gridCount].
@@ -1234,9 +1241,14 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     return AssetPickerAppBarWrapper(
       appBar: appBar(context),
       body: Consumer<T>(
-        builder: (BuildContext context, T p, _) {
-          final bool shouldDisplayAssets =
-              p.hasAssetsToDisplay || shouldBuildSpecialItem;
+        builder: (context, p, _) {
+          final hasAssetsToDisplay = p.hasAssetsToDisplay;
+          final shouldBuildSpecialItems = assetsGridSpecialItemModels(
+            context: context,
+            path: p.currentPath?.path,
+          ).isNotEmpty;
+          final shouldDisplayAssets =
+              hasAssetsToDisplay || shouldBuildSpecialItems;
           return AnimatedSwitcher(
             duration: switchingPathDuration,
             child: shouldDisplayAssets
@@ -1285,10 +1297,15 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
         children: <Widget>[
           Positioned.fill(
             child: Consumer<T>(
-              builder: (_, p, __) {
+              builder: (context, p, _) {
+                final hasAssetsToDisplay = p.hasAssetsToDisplay;
+                final shouldBuildSpecialItems = assetsGridSpecialItemModels(
+                  context: context,
+                  path: p.currentPath?.path,
+                ).isNotEmpty;
+                final shouldDisplayAssets =
+                    hasAssetsToDisplay || shouldBuildSpecialItems;
                 final Widget child;
-                final bool shouldDisplayAssets =
-                    p.hasAssetsToDisplay || shouldBuildSpecialItem;
                 if (shouldDisplayAssets) {
                   child = Stack(
                     children: <Widget>[
@@ -1351,26 +1368,10 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
       builder: (context, wrapper, _) {
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
-
-        final List<SpecialItemModel> specialItemModels = specialItems
-            .map((item) {
-              final specialItem = item.builder?.call(
-                context,
-                wrapper?.path,
-                totalCount,
-                permissionNotifier.value,
-              );
-              if (specialItem != null) {
-                return SpecialItemModel(
-                  position: item.position,
-                  item: specialItem,
-                );
-              }
-              return null;
-            })
-            .whereType<SpecialItemModel>()
-            .toList();
-
+        final specialItemModels = assetsGridSpecialItemModels(
+          context: context,
+          path: wrapper?.path,
+        );
         totalCount += specialItemModels.length;
 
         if (totalCount == 0 && specialItemModels.isEmpty) {
@@ -1392,6 +1393,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
             context: context,
             pathWrapper: wrapper,
             onlyOneScreen: onlyOneScreen,
+            specialItemModels: specialItemModels,
           );
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
@@ -1539,6 +1541,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
               context: context,
               constraints: constraints,
               pathWrapper: wrapper,
+              specialItemModels: specialItemModels,
             );
 
             final reverted = gridRevert && !onlyOneScreen;
@@ -1709,7 +1712,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
             final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
             final labels = <String>[
               '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
-                  '${semanticIndex(index)}',
+                  '${semanticIndex(index, specialItemModels)}',
               asset.createDateTime.toString().replaceAll('.000', ''),
               if (asset.type == AssetType.audio ||
                   asset.type == AssetType.video)
@@ -1723,9 +1726,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
               enabled: !isBanned,
               excludeSemantics: true,
               focusable: !isSwitchingPath,
-              label: '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
-                  '${semanticIndex(index, specialItemModels)}, '
-                  '${asset.createDateTime.toString().replaceAll('.000', '')}',
+              label: labels.join(', '),
               hidden: isSwitchingPath,
               image: asset.type == AssetType.image ||
                   asset.type == AssetType.video,
