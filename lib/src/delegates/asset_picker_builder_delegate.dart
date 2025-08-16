@@ -348,6 +348,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int assetsGridItemCount({
     required BuildContext context,
     required List<Asset> assets,
+    required List<SpecialItemModel> specialItemModels,
     int placeholderCount = 0,
   });
 
@@ -441,11 +442,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// The item builder for the assets' grid.
   /// 资源列表项的构建
-  Widget assetGridItemBuilder(
-    BuildContext context,
-    int index,
-    List<Asset> currentAssets,
-  );
+  Widget assetGridItemBuilder({
+    required BuildContext context,
+    required int index,
+    required List<Asset> currentAssets,
+    required List<SpecialItemModel> specialItemModels,
+  });
 
   /// The [Semantics] builder for the assets' grid.
   /// 资源列表项的语义构建
@@ -1406,9 +1408,9 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                 }
 
                 Widget child = assetGridItemBuilder(
-                  context,
-                  index,
-                  assets,
+                  context: context,
+                  index: index,
+                  currentAssets: assets,
                   specialItemModels: specialItemModels,
                 );
 
@@ -1604,11 +1606,11 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
   ///      图片和视频类型
   ///  * 在索引到达倒数第三列的时候加载更多资源。
   @override
-  Widget assetGridItemBuilder(
-    BuildContext context,
-    int index,
-    List<AssetEntity> currentAssets, {
-    List<SpecialItemModel> specialItemModels = const [],
+  Widget assetGridItemBuilder({
+    required BuildContext context,
+    required int index,
+    required List<AssetEntity> currentAssets,
+    required List<SpecialItemModel> specialItemModels,
   }) {
     final p = context.read<T>();
     final int length = currentAssets.length;
@@ -1787,28 +1789,10 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
   int assetsGridItemCount({
     required BuildContext context,
     required List<AssetEntity> assets,
+    required List<SpecialItemModel> specialItemModels,
     int placeholderCount = 0,
-    List<SpecialItemModel> specialItemModels = const [],
   }) {
-    final PathWrapper<AssetPathEntity>? currentWrapper =
-        context.select<T, PathWrapper<AssetPathEntity>?>(
-      (T p) => p.currentPath,
-    );
-    final AssetPathEntity? currentPathEntity = currentWrapper?.path;
-    final int length = assets.length + placeholderCount;
-
-    // Return 1 if the [specialItem] build something.
-    if (currentPathEntity == null && specialItemModels.isNotEmpty) {
-      return placeholderCount + specialItemModels.length;
-    }
-
-    // Return actual length if the current path is all.
-    // 如果当前目录是全部内容，则返回实际的内容数量。
-    if (currentPathEntity?.isAll != true && specialItemModels.isEmpty) {
-      return length;
-    }
-
-    return length + specialItemModels.length;
+    return assets.length + specialItemModels.length + placeholderCount;
   }
 
   @override

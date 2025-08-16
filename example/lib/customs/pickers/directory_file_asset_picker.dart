@@ -569,13 +569,19 @@ final class FileAssetPickerBuilder
               }
               return Directionality(
                 textDirection: Directionality.of(context),
-                child: assetGridItemBuilder(c, index, assets),
+                child: assetGridItemBuilder(
+                  context: c,
+                  index: index,
+                  currentAssets: assets,
+                  specialItemModels: specialItemModels,
+                ),
               );
             },
           ),
           childCount: assetsGridItemCount(
             context: ctx,
             assets: assets,
+            specialItemModels: specialItemModels,
             placeholderCount: placeholderCount,
           ),
           findChildIndexCallback: (Key? key) {
@@ -584,11 +590,7 @@ final class FileAssetPickerBuilder
                 id: key.value,
                 assets: assets,
                 placeholderCount: placeholderCount,
-                specialItemModels: specialItemModels
-                    .where(
-                      (item) => item.position == SpecialItemPosition.prepend,
-                    )
-                    .toList(),
+                specialItemModels: specialItemModels,
               );
             }
             return null;
@@ -659,11 +661,11 @@ final class FileAssetPickerBuilder
   }
 
   @override
-  Widget assetGridItemBuilder(
-    BuildContext context,
-    int index,
-    List<File> currentAssets, {
-    List<SpecialItemModel> specialItemModels = const [],
+  Widget assetGridItemBuilder({
+    required BuildContext context,
+    required int index,
+    required List<File> currentAssets,
+    required List<SpecialItemModel> specialItemModels,
   }) {
     final int length = currentAssets.length;
 
@@ -723,6 +725,7 @@ final class FileAssetPickerBuilder
   int assetsGridItemCount({
     required BuildContext context,
     required List<File> assets,
+    required List<SpecialItemModel> specialItemModels,
     int placeholderCount = 0,
   }) {
     final int length = assets.length + specialItems.length;
