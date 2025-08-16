@@ -9,6 +9,12 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+**New features**
+
+- Support multiple append/prepend specials items.
+
+**Improvements**
+
 - Make delegate respect generic types as much as possible.
   This is a breaking change for users who use custom delegates and providers.
 
