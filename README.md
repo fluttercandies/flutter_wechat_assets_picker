@@ -303,7 +303,7 @@ Fields in `AssetPickerConfig`:
 | themeColor                        | `Color?`                                         | Main theme color for the picker.                                                               | `Color(0xff00bc56)`         |
 | pickerTheme                       | `ThemeData?`                                     | Theme data provider for the picker and the viewer.                                             | `null`                      |
 | textDelegate                      | `AssetPickerTextDelegate?`                       | Text delegate for the picker, for customize the texts.                                         | `AssetPickerTextDelegate()` |
-| specialItems                      | `List<SpecialItem>`                              | List of special items.                           | `const []`  |
+| specialItems                      | `List<SpecialItem>`                              | List of special items.                                                                         | `const <SpecialItem>[]`     |
 | loadingIndicatorBuilder           | `IndicatorBuilder?`                              | Indicates the loading status for the builder.                                                  | `null`                      |
 | selectPredicate                   | `AssetSelectPredicate`                           | Predicate whether an asset can be selected or unselected.                                      | `null`                      |
 | shouldRevertGrid                  | `bool?`                                          | Whether the assets grid should revert.                                                         | `null`                      |

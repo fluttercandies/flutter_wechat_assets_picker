@@ -677,7 +677,7 @@ final class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     return Consumer<DefaultAssetPickerProvider>(
       builder: (context, p, __) {
         final hasAssetsToDisplay = p.hasAssetsToDisplay;
-        final shouldBuildSpecialItems = assetsGridSpecialItemModels(
+        final shouldBuildSpecialItems = assetsGridSpecialItemsFinalized(
           context: context,
           path: p.currentPath?.path,
         ).isNotEmpty;

@@ -525,7 +525,7 @@ final class FileAssetPickerBuilder
     appBarPreferredSize ??= appBar(context).preferredSize;
     int totalCount = provider.currentAssets.length;
 
-    final specialItemModels = specialItems
+    final specialItemsFinalized = specialItems
         .map((item) {
           final specialItem = item.builder?.call(
             context,
@@ -543,7 +543,7 @@ final class FileAssetPickerBuilder
         .whereType<SpecialItemFinalized>()
         .toList();
 
-    totalCount += specialItemModels.length;
+    totalCount += specialItemsFinalized.length;
 
     final int placeholderCount;
     if (isAppleOS(context) && totalCount % gridCount != 0) {
@@ -573,7 +573,7 @@ final class FileAssetPickerBuilder
                   context: c,
                   index: index,
                   currentAssets: assets,
-                  specialItemModels: specialItemModels,
+                  specialItemsFinalized: specialItemsFinalized,
                 ),
               );
             },
@@ -581,7 +581,7 @@ final class FileAssetPickerBuilder
           childCount: assetsGridItemCount(
             context: ctx,
             assets: assets,
-            specialItemModels: specialItemModels,
+            specialItemsFinalized: specialItemsFinalized,
             placeholderCount: placeholderCount,
           ),
           findChildIndexCallback: (Key? key) {
@@ -590,7 +590,7 @@ final class FileAssetPickerBuilder
                 id: key.value,
                 assets: assets,
                 placeholderCount: placeholderCount,
-                specialItemModels: specialItemModels,
+                specialItemsFinalized: specialItemsFinalized,
               );
             }
             return null;
@@ -665,30 +665,30 @@ final class FileAssetPickerBuilder
     required BuildContext context,
     required int index,
     required List<File> currentAssets,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
   }) {
     final int length = currentAssets.length;
 
     final prependItems = <SpecialItemFinalized>[];
     final appendItems = <SpecialItemFinalized>[];
-    for (final model in specialItemModels) {
-      switch (model.position) {
+    for (final item in specialItemsFinalized) {
+      switch (item.position) {
         case SpecialItemPosition.prepend:
-          prependItems.add(model);
+          prependItems.add(item);
         case SpecialItemPosition.append:
-          appendItems.add(model);
+          appendItems.add(item);
       }
     }
 
     if (prependItems.isNotEmpty) {
       if (index < prependItems.length) {
-        return specialItemModels[index].item;
+        return specialItemsFinalized[index].item;
       }
     }
 
     if (appendItems.isNotEmpty) {
       if (index >= length + prependItems.length) {
-        return specialItemModels[index - length].item;
+        return specialItemsFinalized[index - length].item;
       }
     }
 
@@ -716,7 +716,7 @@ final class FileAssetPickerBuilder
     int index,
     File asset,
     Widget child,
-    List<SpecialItemFinalized> specialItemModels,
+    List<SpecialItemFinalized> specialItemsFinalized,
   ) {
     return Semantics(child: child);
   }
@@ -725,7 +725,7 @@ final class FileAssetPickerBuilder
   int assetsGridItemCount({
     required BuildContext context,
     required List<File> assets,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   }) {
     final int length = assets.length + specialItems.length;
@@ -1137,7 +1137,7 @@ final class FileAssetPickerBuilder
   int findChildIndexBuilder({
     required String id,
     required List<File> assets,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   }) {
     return assets.indexWhere((File file) => file.path == id);

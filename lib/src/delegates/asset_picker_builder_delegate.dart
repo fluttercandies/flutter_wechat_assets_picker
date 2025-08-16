@@ -326,7 +326,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int? findChildIndexBuilder({
     required String id,
     required List<Asset> assets,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   }) =>
       null;
@@ -336,11 +336,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int assetsGridItemCount({
     required BuildContext context,
     required List<Asset> assets,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   });
 
-  List<SpecialItemFinalized> assetsGridSpecialItemModels({
+  List<SpecialItemFinalized> assetsGridSpecialItemsFinalized({
     required BuildContext context,
     required Path? path,
   }) {
@@ -368,7 +368,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required BuildContext context,
     required PathWrapper<Path>? pathWrapper,
     required bool onlyOneScreen,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
   }) {
     if (onlyOneScreen) {
       return 0;
@@ -377,7 +377,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     final bool gridRevert = effectiveShouldRevertGrid(context);
     int totalCount = pathWrapper?.assetCount ?? 0;
     // Add special items' count.
-    totalCount += specialItemModels.length;
+    totalCount += specialItemsFinalized.length;
 
     final int result;
     if (gridRevert && totalCount % gridCount != 0) {
@@ -397,11 +397,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required BuildContext context,
     required BoxConstraints constraints,
     required PathWrapper<Path>? pathWrapper,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
   }) {
     int totalCount = pathWrapper?.assetCount ?? 0;
     // Add special items' count.
-    totalCount += specialItemModels.length;
+    totalCount += specialItemsFinalized.length;
 
     // Here we got a magic calculation. [itemSpacing] needs to be divided by
     // [gridCount] since every grid item is squeezed by the [itemSpacing],
@@ -434,7 +434,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required BuildContext context,
     required int index,
     required List<Asset> currentAssets,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
   });
 
   /// The [Semantics] builder for the assets' grid.
@@ -444,7 +444,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     int index,
     Asset asset,
     Widget child,
-    List<SpecialItemFinalized> specialItemModels,
+    List<SpecialItemFinalized> specialItemsFinalized,
   );
 
   /// The item builder for audio type of asset.
@@ -1233,7 +1233,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
       body: Consumer<T>(
         builder: (context, p, _) {
           final hasAssetsToDisplay = p.hasAssetsToDisplay;
-          final shouldBuildSpecialItems = assetsGridSpecialItemModels(
+          final shouldBuildSpecialItems = assetsGridSpecialItemsFinalized(
             context: context,
             path: p.currentPath?.path,
           ).isNotEmpty;
@@ -1289,7 +1289,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
             child: Consumer<T>(
               builder: (context, p, _) {
                 final hasAssetsToDisplay = p.hasAssetsToDisplay;
-                final shouldBuildSpecialItems = assetsGridSpecialItemModels(
+                final shouldBuildSpecialItems = assetsGridSpecialItemsFinalized(
                   context: context,
                   path: p.currentPath?.path,
                 ).isNotEmpty;
@@ -1358,13 +1358,13 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
       builder: (context, wrapper, _) {
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
-        final specialItemModels = assetsGridSpecialItemModels(
+        final specialItemsFinalized = assetsGridSpecialItemsFinalized(
           context: context,
           path: wrapper?.path,
         );
-        totalCount += specialItemModels.length;
+        totalCount += specialItemsFinalized.length;
 
-        if (totalCount == 0 && specialItemModels.isEmpty) {
+        if (totalCount == 0 && specialItemsFinalized.isEmpty) {
           return loadingIndicator(context);
         }
 
@@ -1383,7 +1383,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
             context: context,
             pathWrapper: wrapper,
             onlyOneScreen: onlyOneScreen,
-            specialItemModels: specialItemModels,
+            specialItemsFinalized: specialItemsFinalized,
           );
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
@@ -1399,7 +1399,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                   context: context,
                   index: index,
                   currentAssets: assets,
-                  specialItemModels: specialItemModels,
+                  specialItemsFinalized: specialItemsFinalized,
                 );
 
                 // Enables drag-to-select when:
@@ -1490,7 +1490,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                 context: context,
                 assets: assets,
                 placeholderCount: placeholderCount,
-                specialItemModels: specialItemModels,
+                specialItemsFinalized: specialItemsFinalized,
               ),
               findChildIndexCallback: (Key? key) {
                 if (key is ValueKey<String>) {
@@ -1498,7 +1498,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                     id: key.value,
                     assets: assets,
                     placeholderCount: placeholderCount,
-                    specialItemModels: specialItemModels,
+                    specialItemsFinalized: specialItemsFinalized,
                   );
                 }
                 return null;
@@ -1531,7 +1531,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
               context: context,
               constraints: constraints,
               pathWrapper: wrapper,
-              specialItemModels: specialItemModels,
+              specialItemsFinalized: specialItemsFinalized,
             );
 
             final reverted = gridRevert && !onlyOneScreen;
@@ -1598,7 +1598,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     required BuildContext context,
     required int index,
     required List<AssetEntity> currentAssets,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
   }) {
     final p = context.read<T>();
     final int length = currentAssets.length;
@@ -1607,7 +1607,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
 
     final prependItems = <SpecialItemFinalized>[];
     final appendItems = <SpecialItemFinalized>[];
-    for (final model in specialItemModels) {
+    for (final model in specialItemsFinalized) {
       switch (model.position) {
         case SpecialItemPosition.prepend:
           prependItems.add(model);
@@ -1618,13 +1618,13 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
 
     if (prependItems.isNotEmpty) {
       if (index < prependItems.length) {
-        return specialItemModels[index].item;
+        return specialItemsFinalized[index].item;
       }
     }
 
     if (appendItems.isNotEmpty) {
       if (index >= length + prependItems.length) {
-        return specialItemModels[index - length].item;
+        return specialItemsFinalized[index - length].item;
       }
     }
 
@@ -1664,19 +1664,18 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
       index,
       asset,
       content,
-      specialItemModels,
+      specialItemsFinalized,
     );
   }
 
-  int semanticIndex(
+  int assetGridItemSemanticIndex(
     int index,
-    List<SpecialItemFinalized> specialItemModels,
+    List<SpecialItemFinalized> specialItemsFinalized,
   ) {
-    final prependSpecialItemModels = specialItemModels.where(
-      (SpecialItemFinalized model) =>
-          model.position == SpecialItemPosition.prepend,
+    final prependItems = specialItemsFinalized.where(
+      (model) => model.position == SpecialItemPosition.prepend,
     );
-    return index - prependSpecialItemModels.length;
+    return index - prependItems.length;
   }
 
   @override
@@ -1685,7 +1684,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     int index,
     AssetEntity asset,
     Widget child,
-    List<SpecialItemFinalized> specialItemModels,
+    List<SpecialItemFinalized> specialItemsFinalized,
   ) {
     return ValueListenableBuilder<bool>(
       valueListenable: isSwitchingPath,
@@ -1703,7 +1702,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
             final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
             final labels = <String>[
               '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
-                  '${semanticIndex(index, specialItemModels)}',
+                  '${assetGridItemSemanticIndex(index, specialItemsFinalized)}',
               asset.createDateTime.toString().replaceAll('.000', ''),
               if (asset.type == AssetType.audio ||
                   asset.type == AssetType.video)
@@ -1733,7 +1732,8 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
               onLongPressHint: semanticsTextDelegate.sActionPreviewHint,
               selected: isSelected,
               sortKey: OrdinalSortKey(
-                semanticIndex(index, specialItemModels).toDouble(),
+                assetGridItemSemanticIndex(index, specialItemsFinalized)
+                    .toDouble(),
                 name: 'GridItem',
               ),
               value: selectedIndex > 0 ? '$selectedIndex' : null,
@@ -1746,7 +1746,8 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                       }
                     : null,
                 child: IndexedSemantics(
-                  index: semanticIndex(index, specialItemModels),
+                  index:
+                      assetGridItemSemanticIndex(index, specialItemsFinalized),
                   child: child,
                 ),
               ),
@@ -1762,15 +1763,14 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
   int findChildIndexBuilder({
     required String id,
     required List<AssetEntity> assets,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   }) {
-    final prependSpecialItemModels = specialItemModels.where(
-      (SpecialItemFinalized model) =>
-          model.position == SpecialItemPosition.prepend,
+    final prependItems = specialItemsFinalized.where(
+      (model) => model.position == SpecialItemPosition.prepend,
     );
     int index = assets.indexWhere((AssetEntity e) => e.id == id);
-    index += prependSpecialItemModels.length;
+    index += prependItems.length;
     index += placeholderCount;
     return index;
   }
@@ -1779,10 +1779,10 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
   int assetsGridItemCount({
     required BuildContext context,
     required List<AssetEntity> assets,
-    required List<SpecialItemFinalized> specialItemModels,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   }) {
-    return assets.length + specialItemModels.length + placeholderCount;
+    return assets.length + specialItemsFinalized.length + placeholderCount;
   }
 
   @override

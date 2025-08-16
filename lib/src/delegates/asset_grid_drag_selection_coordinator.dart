@@ -123,7 +123,7 @@ class AssetGridDragSelectionCoordinator {
         totalRows * (itemSize + delegate.itemSpacing) <= gridViewport;
     final reverted = gridRevert && !onlyOneScreen;
 
-    final specialItems = delegate.assetsGridSpecialItemModels(
+    final specialItems = delegate.assetsGridSpecialItemsFinalized(
       context: context,
       path: provider.currentPath?.path,
     );
@@ -132,7 +132,7 @@ class AssetGridDragSelectionCoordinator {
       context: context,
       constraints: constraints,
       pathWrapper: provider.currentPath,
-      specialItemModels: specialItems,
+      specialItemsFinalized: specialItems,
     );
     final scrolledOffset = delegate.gridScrollController.offset
         .abs(); // Offset is negative when reverted.
@@ -163,7 +163,7 @@ class AssetGridDragSelectionCoordinator {
       context: context,
       pathWrapper: provider.currentPath,
       onlyOneScreen: onlyOneScreen,
-      specialItemModels: specialItems,
+      specialItemsFinalized: specialItems,
     );
     // Make the index starts with the bottom if the grid is reverted.
     if (reverted && placeholderCount > 0 && rowIndex > 0 && anchor < 1.0) {
