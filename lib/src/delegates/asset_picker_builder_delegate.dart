@@ -30,18 +30,6 @@ import '../widget/asset_picker_page_route.dart';
 import '../widget/asset_picker_viewer.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
 
-/// Class which contains non-null special item widget and its position which derived from the [SpecialItem]
-/// 包含非空自定义item，并指定其位置。
-class SpecialItemModel {
-  const SpecialItemModel({
-    required this.position,
-    required this.item,
-  });
-
-  final SpecialItemPosition position;
-  final Widget item;
-}
-
 /// The delegate to build the whole picker's components.
 ///
 /// By extending the delegate, you can customize every components on you own.
@@ -338,7 +326,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int? findChildIndexBuilder({
     required String id,
     required List<Asset> assets,
-    required List<SpecialItemModel> specialItemModels,
+    required List<SpecialItemFinalized> specialItemModels,
     int placeholderCount = 0,
   }) =>
       null;
@@ -348,11 +336,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int assetsGridItemCount({
     required BuildContext context,
     required List<Asset> assets,
-    required List<SpecialItemModel> specialItemModels,
+    required List<SpecialItemFinalized> specialItemModels,
     int placeholderCount = 0,
   });
 
-  List<SpecialItemModel> assetsGridSpecialItemModels({
+  List<SpecialItemFinalized> assetsGridSpecialItemModels({
     required BuildContext context,
     required Path? path,
   }) {
@@ -364,7 +352,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
             permissionNotifier.value,
           );
           if (specialItem != null) {
-            return SpecialItemModel(
+            return SpecialItemFinalized(
               position: item.position,
               item: specialItem,
             );
@@ -380,7 +368,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required BuildContext context,
     required PathWrapper<Path>? pathWrapper,
     required bool onlyOneScreen,
-    required List<SpecialItemModel> specialItemModels,
+    required List<SpecialItemFinalized> specialItemModels,
   }) {
     if (onlyOneScreen) {
       return 0;
@@ -409,7 +397,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required BuildContext context,
     required BoxConstraints constraints,
     required PathWrapper<Path>? pathWrapper,
-    required List<SpecialItemModel> specialItemModels,
+    required List<SpecialItemFinalized> specialItemModels,
   }) {
     int totalCount = pathWrapper?.assetCount ?? 0;
     // Add special items' count.
@@ -446,7 +434,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required BuildContext context,
     required int index,
     required List<Asset> currentAssets,
-    required List<SpecialItemModel> specialItemModels,
+    required List<SpecialItemFinalized> specialItemModels,
   });
 
   /// The [Semantics] builder for the assets' grid.
@@ -456,7 +444,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     int index,
     Asset asset,
     Widget child,
-    List<SpecialItemModel> specialItemModels,
+    List<SpecialItemFinalized> specialItemModels,
   );
 
   /// The item builder for audio type of asset.
@@ -1610,15 +1598,15 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     required BuildContext context,
     required int index,
     required List<AssetEntity> currentAssets,
-    required List<SpecialItemModel> specialItemModels,
+    required List<SpecialItemFinalized> specialItemModels,
   }) {
     final p = context.read<T>();
     final int length = currentAssets.length;
     final PathWrapper<AssetPathEntity>? currentWrapper = p.currentPath;
     final AssetPathEntity? currentPathEntity = currentWrapper?.path;
 
-    final prependItems = <SpecialItemModel>[];
-    final appendItems = <SpecialItemModel>[];
+    final prependItems = <SpecialItemFinalized>[];
+    final appendItems = <SpecialItemFinalized>[];
     for (final model in specialItemModels) {
       switch (model.position) {
         case SpecialItemPosition.prepend:
@@ -1682,10 +1670,11 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
 
   int semanticIndex(
     int index,
-    List<SpecialItemModel> specialItemModels,
+    List<SpecialItemFinalized> specialItemModels,
   ) {
     final prependSpecialItemModels = specialItemModels.where(
-      (SpecialItemModel model) => model.position == SpecialItemPosition.prepend,
+      (SpecialItemFinalized model) =>
+          model.position == SpecialItemPosition.prepend,
     );
     return index - prependSpecialItemModels.length;
   }
@@ -1696,7 +1685,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     int index,
     AssetEntity asset,
     Widget child,
-    List<SpecialItemModel> specialItemModels,
+    List<SpecialItemFinalized> specialItemModels,
   ) {
     return ValueListenableBuilder<bool>(
       valueListenable: isSwitchingPath,
@@ -1773,11 +1762,12 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
   int findChildIndexBuilder({
     required String id,
     required List<AssetEntity> assets,
-    required List<SpecialItemModel> specialItemModels,
+    required List<SpecialItemFinalized> specialItemModels,
     int placeholderCount = 0,
   }) {
     final prependSpecialItemModels = specialItemModels.where(
-      (SpecialItemModel model) => model.position == SpecialItemPosition.prepend,
+      (SpecialItemFinalized model) =>
+          model.position == SpecialItemPosition.prepend,
     );
     int index = assets.indexWhere((AssetEntity e) => e.id == id);
     index += prependSpecialItemModels.length;
@@ -1789,7 +1779,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
   int assetsGridItemCount({
     required BuildContext context,
     required List<AssetEntity> assets,
-    required List<SpecialItemModel> specialItemModels,
+    required List<SpecialItemFinalized> specialItemModels,
     int placeholderCount = 0,
   }) {
     return assets.length + specialItemModels.length + placeholderCount;
@@ -2077,11 +2067,8 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
               child: Selector<T, List<PathWrapper<AssetPathEntity>>>(
                 selector: (_, T p) => p.paths,
                 builder: (_, List<PathWrapper<AssetPathEntity>> paths, __) {
-                  final List<PathWrapper<AssetPathEntity>> filtered = paths
-                      .where(
-                        (PathWrapper<AssetPathEntity> p) => p.assetCount != 0,
-                      )
-                      .toList();
+                  final filtered =
+                      paths.where((p) => p.assetCount != 0).toList();
                   return ListView.separated(
                     padding: const EdgeInsetsDirectional.only(top: 1),
                     shrinkWrap: true,
