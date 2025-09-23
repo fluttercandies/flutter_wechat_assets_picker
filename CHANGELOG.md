@@ -11,52 +11,97 @@ that can be found in the LICENSE file. -->
 
 *None.*
 
+## 9.8.0
+
+> [!NOTE]
+> Be aware of potential minor theme changes since the base theme has taken place in the picker's theme.
+
+**Improvements**
+
+- Improve themes by inheriting the base theme rather than standalone constructors.
+
+**Fixes**
+
+- Enabling using the package on Flutter 3.35.
+
+## 9.7.0
+
+**Improvements**
+
+- Allows specifying the fallback text delegate through `assetPickerTextDelegateFromLocale`.
+
+## 9.6.0
+
+**New features**
+
+- Expose more route settings.
+  Users will now be able to control the route settings for the picker and viewer.
+- Add Persian (Farsi) language support. (Thanks to @Ho3einTahan)
+
+**Improvements**
+
+- Improve how `MediaQuery` is being listened.
+- Stop enabling drag to select when `maxAssets == 1`.
+- Extract `DefaultAssetPickerProvider.init`.
+
+**Fixes**
+
+- Fix semantics with the close button.
+- Fix `selectPredicate` not being called when selecting the video asset under the WeChat Moment mode.
+- Manually dispose memory leak objects.
+
+## 9.5.1
+
+**Improvements**
+
+- Allow `extended_image` v10.
+
 ## 9.5.0
 
-### New features
+**New features**
 
 - Support drag to select.
 
-### Fixes
+**Fixes**
 
 - Fixes semantics issues.
 
 ## 9.4.2
 
-### Improvements
+**Improvements**
 
 - Add Traditional Chinese language text delegate. (Thanks to @Gasol)
 - Improves the default sort conditions on Android.
 
 ## 9.4.1
 
-### Improvements
+**Improvements**
 
 - Improves the default sort conditions.
 
-### Fixes
+**Fixes**
 
 - Fixes selecting when reached the max asset limit in the preview.
 
 ## 9.4.0
 
-### Improvements
+**Improvements**
 
 - Allows `extended_image: ^9.0.0`.
 
-### Fixes
+**Fixes**
 
 - Allows assets changing when no path previously.
 
 ## 9.3.3
 
-### Fixes
+**Fixes**
 
 - Recovers the compatibility with Flutter 3.16.
 
 ## 9.3.2
 
-### Improvements
+**Improvements**
 
 - Adapt the file type getter from the image provider to get a precise file type in grid.
 - Adds the identifier for grid item's semantics.
@@ -64,28 +109,28 @@ that can be found in the LICENSE file. -->
 
 ## 9.3.1
 
-### Improvements
+**Improvements**
 
 - Do not mute the Live Photo during the preview.
 
-### Fixes
+**Fixes**
 
 - Fix the GIF indicator's layout.
 - Fix the directionality with the reverted grid item.
 
 ## 9.3.0
 
-### New features
+**New features**
 
 - Add explicit Live Photos indicator for assets.
 
-### Improvements
+**Improvements**
 
 - Make Live Photos gesture consistent when scaling and panning.
 - Integrate `LocallyAvailableBuilder` with thumbnail options to improve the thumbnail loading speed.
 - Use `visibility_detector` and scroll observer to improve media playing experiences.
 
-### Fixes
+**Fixes**
 
 - Fix the bottom actions bar display conditions.
 
@@ -100,13 +145,13 @@ that can be found in the LICENSE file. -->
 
 ## 9.2.0
 
-### New features
+**New features**
 
 - Introduce `AssetsChangeCallback` and `AssetsChangeRefreshPredicate`
   to help users act according to asset changes.
 - Add `shouldAutoplayPreview` to the picker config.
 
-### Fixes
+**Fixes**
 
 - Raise detailed negative range error.
 - Fix viewer confirm button predication.
@@ -115,7 +160,7 @@ that can be found in the LICENSE file. -->
 
 ## 9.1.0
 
-### Improvements
+**Improvements**
 
 - Support limited permission displays on Android.
 - Improves the limited overlay padding on Android.
@@ -123,14 +168,14 @@ that can be found in the LICENSE file. -->
 - Speeding up by splitting asset loading into separate steps.
 - Speeding up using `AdvancedCustomFilter` rather than `FilterOptionGroup` by default.
 
-### Fixes
+**Fixes**
 
 - Fix reverted index when previewing assets on Android.
 - Requests with the correct options with the picker.
 
 ## 9.0.4
 
-### Fixes
+**Fixes**
 
 - Fix the app bar of the viewer that is not animating.
 - Fix loading when no assets are in the path.
@@ -138,42 +183,42 @@ that can be found in the LICENSE file. -->
 
 ## 9.0.3
 
-### Fixes
+**Fixes**
 
 - Fix index reverting in `viewAsset`.
 
 ## 9.0.2
 
-### Fixes
+**Fixes**
 
 - Fix the index with bottom items in the preview.
 
 ## 9.0.1
 
-### Fixes
+**Fixes**
 
 - Fix the current asset in the picker viewer.
 
-### Improvements
+**Improvements**
 
 - Improve code formatting.
 
 ## 9.0.0
 
-### Breaking changes
+**Breaking changes**
 
 - Migrate to Flutter 3.16, and drop supports for previous Flutter versions.
 - Bump `photo_manager` to v3.x.
 - Export `photo_manager_image_provider`.
 - Integrate `PermissionRequestOption` for callers.
 
-### Improvements
+**Improvements**
 
 - Adapt `ThemeData` usages.
 - Use `wechat_picker_library`.
 - Make the first asset count not blocking loads.
 
-### Fixes
+**Fixes**
 
 - Fix unhandled child semantics with the app bar title.
 - Fix styles around the app bar and other widgets.
@@ -184,204 +229,204 @@ that can be found in the LICENSE file. -->
 
 ## 8.8.0
 
-### New features
+**New features**
 
 - Add Korean language support. (Thanks to @LIMMIHEE)
 
-### Improvements
+**Improvements**
 
 - Use `viewAsset` in the preview button.
 
-### Fixes
+**Fixes**
 
 - Fix disposed provider throwing error when fetching assets. (#493)
 
 ## 8.7.1
 
-### Improvements
+**Improvements**
 
 - Improve README docs and add topics for pub.
 
 ## 8.7.0
 
-### Breaking changes
+**Breaking changes**
 
 - Migrate to Flutter 3.13, and drop supports for previous Flutter versions.
 
 ## 8.6.3
 
-### Improvements
+**Improvements**
 
 - Improve `AssetPickerProvider.paths`.
 
 ## 8.6.2
 
-### Improvements
+**Improvements**
 
 - Add `appBarPreferredSize` in the picker delegate to help with padding calculations.
 - Improve the performance with `MediaQuery` callers.
 
 ## 8.6.1
 
-### Improvements
+**Improvements**
 
 - Remove `needTitle` for image filter options.
 
-### Fixes
+**Fixes**
 
 - Fix hit test when previewing videos.
 
 ## 8.6.0
 
-### Breaking changes
+**Breaking changes**
 
 - Use `TargetPlatform` for the `isAppleOS` method in delegates, which relies on a `BuildContext`.
 
-### New features
+**New features**
 
 - Sync all UI details from WeChat 8.3.x. (#458)
 - Add Turkish language text delegate. (Thanks to @cevheri).
 - Allow to confirm 0 assets if there are selected assets previously. (#461)
 
-### Improvements
+**Improvements**
 
 - Silent part of thumbnail request exceptions.
 
-### Fixes
+**Fixes**
 
 - Fix semantics interactions for video preview. (#458)
 - Be able to update the items builder page. (#417)
 
 ## 8.5.0
 
-### Breaking changes
+**Breaking changes**
 
 - Migrate to Flutter 3.10, and drop supports for previous Flutter versions.
 
 ## 8.4.3
 
-### New features
+**New features**
 
 - Add Vietnamese language text delegate. (Thanks to @nploi).
 
-### Improvements
+**Improvements**
 
 - Expand `FilterOptionGroup` to `PMFilter`. (#436)
 
 ## 8.4.2
 
-### Fixes
+**Fixes**
 
 - Avoid clearing selected assets when disposing the provider. (#428)
 
 ## 8.4.1
 
-### Fixes
+**Fixes**
 
 - Call `AssetPickerProvider.dispose` when disposing the builder delegate. (#421)
 
 ## 8.4.0
 
-### Breaking changes
+**Breaking changes**
 
 - Migrate to Flutter 3.7, and drop supports for previous Flutter versions.
 
 ## 8.3.2+1
 
-### Improvements
+**Improvements**
 
 - Add more assertions. (#411)
 
 ## 8.3.2
 
-### Fixes
+**Fixes**
 
 - Use `Completer` and more accurate conditions to avoid duplicate load assets
   when `AssetPickerConfig.pageSize` is smaller than a complete page. (#407)
 
 ## 8.3.1+1
 
-### Improvements
+**Improvements**
 
 - Fix images and descriptions in `README`s.
 
 ## 8.3.1
 
-### New features
+**New features**
 
 - Add `didUpdateViewer` and `initAnimations` in the `AssetPickerViewerBuilderDelegate`. (#403)
 - Add insta_assets_picker as a custom delegate example. (#403)
 
 ## 8.3.0
 
-### New features
+**New features**
 
 - Add `index` argument to `selectAsset` in the `AssetPickerBuilderDelegate`. (#399)
 
-### Improvements
+**Improvements**
 
 - Improve UI details in the `AssetPickerAppBar`. (#400)
 
 ## 8.2.0
 
-### New features
+**New features**
 
 - Allow overrides `viewAsset` in the `AssetPickerBuilderDelegate`. (#391)
 
-### Fixes
+**Fixes**
 
 - Correct behaviors when the access is limited on iOS. (#392)
 
 ## 8.1.4
 
-### Fixes
+**Fixes**
 
 - Fix conditions with the confirm button on iOS. (#376)
 
 ## 8.1.3
 
-### Improvements
+**Improvements**
 
 - Bump `photo_manager` to explicitly remove the requirements of `requiredLegacyExternalStorage`.
 
 ## 8.1.2
 
-### Fixes
+**Fixes**
 
 - Fix conditions with the confirm button. (#371)
 
 ## 8.1.1
 
-### Fixes
+**Fixes**
 
 - Fix conditions with the confirm button. (#367)
 
 ## 8.1.0
 
-### New features
+**New features**
 
 - Upgrade `photo_manager` for Android 13. (#365)
 
-### Improvements
+**Improvements**
 
 - Improve `BuildContext` usages to obtain the correct directionality for the assets grid. (#359)
 - Provide a better condition to the confirm button
   to make sure it displays correctly in all cases on iOS/macOS. (#359)
 - Improve `bottomActionBar` in `DefaultAssetPickerBuilderDelegate`. (#359)
 
-### Fixes
+**Fixes**
 
 - Fix invalid path sort. (#364)
 
 ## 8.0.2
 
-### Improvements
+**Improvements**
 
 - Adapt Flutter 3.3. (#354)
 
 ## 8.0.1
 
-### Fixes
+**Fixes**
 
 - Fix not updated empty flag in `DefaultAssetPickerProvider`. (#353)
 
@@ -389,7 +434,7 @@ that can be found in the LICENSE file. -->
 
 To know more about breaking changes, see [Migration Guide][].
 
-### New Features
+**New features**
 
 - Introduce `PathWrapper` in delegates to improve the overall loading speed. (#338)
 - Allow using `Key` during picking. (#339)
@@ -397,100 +442,100 @@ To know more about breaking changes, see [Migration Guide][].
 - Prevent race conditions with paths. (#342)
 - Expose `sortPathsByModifiedDate`. (#343)
 
-### Fixes
+**Fixes**
 
 - Unify indicator usage to avoid accidental indicator switching. (#344)
 
 ## 7.3.2
 
-### Improvements
+**Improvements**
 
 - Improve `onChangingSelected` in `AssetPickerViewerBuilderDelegate`. (#332)
 - Fix typo in `README.md`. (#333)
 
-### Fixes
+**Fixes**
 
 - Fix behaviors when unselecting all assets in the viewer. (#335)
 
 ## 7.3.1
 
-### Improvements
+**Improvements**
 
 - Improve selection callers between picker and viewer. (#327)
 
 ## 7.3.0
 
-### Breaking changes
+**Breaking changes**
 
 - Migrate to Flutter 3, and drop supports for previous Flutter versions.
 
 ## 7.2.0
 
-### New features
+**New features**
 
 - Separate `AssetPickerDelegate` (#315),
   which provides the ability to override methods within the `AssetPicker`.
 
-### Improvements
+**Improvements**
 
 - Improve `specialItemBuilder`. (#314)
 
 ## 7.1.2
 
-### Fixes
+**Fixes**
 
 - Fix context usages for inherited theme data.
 - Fix unlinked path name builder.
 
-### Improvements
+**Improvements**
 
 - Update how paths get updated. (#312)
 - Expose `DefaultAssetPickerProvider.forTest`.
 
 ## 7.1.1
 
-### Fixes
+**Fixes**
 
 - Fix `selectPredicate` with the viewer. (#307)
 
 ## 7.1.0
 
-### New features
+**New features**
 
 - Add `PathNameBuilder`. (#303)
 - Add `LimitedPermissionOverlayPredicate`. (#287)
 
 ## 7.0.5
 
-### Improvements
+**Improvements**
 
 - Support compile on the Web. (#273)
 
 ## 7.0.4
 
-### Improvements
+**Improvements**
 
 - Make all text delegates const.
 
 ## 7.0.3
 
-### Fixes
+**Fixes**
 
 - Fix the broken semantics on iOS/macOS. (#272)
 
 ## 7.0.2
 
-### Fixes
+**Fixes**
 
 - Fix wrong conditions judging when obtaining path thumbnails.
 
 ## 7.0.1
 
-### Improvements
+**Improvements**
 
 - Support semantics with Japanese text delegates. (#266).
 
-### Fixes
+**Fixes**
 
 - Obtain the path thumbnail only when the asset is an image or video.
 
@@ -498,19 +543,19 @@ To know more about breaking changes, see [Migration Guide][].
 
 To know more about breaking changes, see [Migration Guide][].
 
-### New features
+**New features**
 
 - Support predictable special item display. (#264)
 - Support Live-Photos display. (#251)
 - Expose `AssetPickerPageRoute` for customization. (#248)
 - Add full semantics support. (#232, #235, #240, #242, #243, #245, #254)
 
-### Improvements
+**Improvements**
 
 - Improve scaling with select indicators and numbers.
 - Implement the default light theme. (#234)
 
-### Fixes
+**Fixes**
 
 - Fix `LocallyAvailableBuilder` with more edge conditions. (#263)
 - Fix potential "No elements" error with thumbnails.
@@ -596,7 +641,7 @@ To know more about breaking changes, see [Migration Guide][].
 
 ## 6.0.0
 
-### New features
+**New features**
 
 - Sync all UI details from WeChat 8.0.x.
 - Integrate iCloud progress overview in previews.
@@ -607,7 +652,7 @@ To know more about breaking changes, see [Migration Guide][].
 - Allow using `AssetPicker` and `AssetPickerViewer` directly with delegates.
 - Add `keepScrollOffset` feature for the `AssetPickerBuilderDelegate`.
 
-### Improvements
+**Improvements**
 
 - Items that are being banned from select (reached max assets or type conflict)
   will have a stronger color cover to indicate.
@@ -761,7 +806,7 @@ To know more about breaking changes, see [Migration Guide][].
 - Allow users to build their own picker with custom asset types. (See example for custom delegate.)
 - Slightly reduce performance consumption with layout.
 
-### Breaking changes
+**Breaking changes**
 
 - Migrate to non-nullable by default.
 - `CustomItemBuilder` -> `SpecialItemBuilder`, `CustomItemPosition` -> `SpecialItemPosition`.
@@ -815,7 +860,7 @@ To know more about breaking changes, see [Migration Guide][].
 - Experimenting status bar hidden on iOS.
 - Remove the video player listener before pausing.
 
-### Breaking changes
+**Breaking changes**
 
 - `TextDelegate` -> `AssetsPickerTextDelegate`.
 
@@ -878,7 +923,7 @@ To know more about breaking changes, see [Migration Guide][].
 - Enlarge the preview button's detector area size.
 - Fix wrong properties' usage causing infinite build when the page reaches the end.
 
-### Breaking changes
+**Breaking changes**
 
 - `videoIndicatorBuilder` -> `durationIndicatorBuilder`.
 

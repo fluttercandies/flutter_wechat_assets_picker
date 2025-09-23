@@ -86,6 +86,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
     AssetPickerConfig pickerConfig = const AssetPickerConfig(),
     PermissionRequestOption? permissionRequestOption,
     bool useRootNavigator = true,
+    RouteSettings? pageRouteSettings,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     permissionRequestOption ??= PermissionRequestOption(
@@ -149,7 +150,10 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
       rootNavigator: useRootNavigator,
     ).push<List<AssetEntity>>(
       pageRouteBuilder?.call(picker) ??
-          AssetPickerPageRoute<List<AssetEntity>>(builder: (_) => picker),
+          AssetPickerPageRoute<List<AssetEntity>>(
+            builder: (_) => picker,
+            settings: pageRouteSettings,
+          ),
     );
     return result;
   }

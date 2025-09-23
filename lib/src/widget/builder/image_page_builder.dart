@@ -200,6 +200,7 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
     _scrollNotificationObserver?.removeListener(_handleScrollNotification);
     _controller.pause();
     _controller.removeListener(_notify);
+    _showVideo.dispose();
     super.dispose();
   }
 

@@ -105,7 +105,7 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final AppBarTheme appBarTheme = theme.appBarTheme;
+    final appBarTheme = theme.appBarTheme;
 
     final Widget? titleWidget;
     if (centerTitle) {
@@ -113,10 +113,12 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     } else {
       titleWidget = title;
     }
+
+    final EdgeInsets padding = MediaQuery.paddingOf(context);
     Widget child = Container(
       width: double.maxFinite,
-      height: _barHeight + MediaQuery.paddingOf(context).top,
-      padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
+      height: _barHeight + padding.top,
+      padding: EdgeInsets.only(top: padding.top),
       child: Stack(
         children: <Widget>[
           if (canPop(context))

@@ -1,5 +1,9 @@
 name: Runnable (stable)
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -88,9 +92,11 @@ jobs:
           java-version: '17'
       - uses: flutter-actions/setup-flutter@v4
         with:
+          cache: true
           channel: stable
           version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || 'latest' }}
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
-      - run: cd example; flutter build apk --debug
+      - run: flutter build apk --debug
+        working-directory: ${{ github.workspace }}/example

@@ -2,41 +2,48 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "kotlin-kapt"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader('UTF-8') { reader ->
+def flutterVersionCode = null
+def flutterVersionName = null
+if (flutter.hasProperty('versionCode')) {
+    flutterVersionCode = flutter.versionCode
+}
+if (flutter.hasProperty('versionName')) {
+    flutterVersionName = flutter.versionName
+}
+
+if (flutterVersionCode == null || flutterVersionName == null) {
+    def localProperties = new Properties()
+    rootProject.file('local.properties').withReader('UTF-8') { reader ->
         localProperties.load(reader)
     }
-}
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
+    if (flutterVersionCode == null) {
+        flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+    }
+    if (flutterVersionName == null) {
+        flutterVersionName = localProperties.getProperty('flutter.versionName')
+    }
 }
 
 android {
     namespace "com.fluttercandies.wechatAssetsPickerExample"
     compileSdk flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    defaultConfig {
+        applicationId = "com.fluttercandies.wechatAssetsPickerExample"
+        minSdk 21
+        targetSdk flutter.targetSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-    }
-
-    defaultConfig {
-        applicationId "com.fluttercandies.wechatAssetsPickerExample"
-        minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
     }
 
     kotlinOptions {

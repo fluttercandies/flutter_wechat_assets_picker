@@ -22,6 +22,7 @@ const assetPickerTextDelegates = <AssetPickerTextDelegate>[
   HebrewAssetPickerTextDelegate(),
   JapaneseAssetPickerTextDelegate(),
   KoreanAssetPickerTextDelegate(),
+  PersianAssetPickerTextDelegate(),
   RussianAssetPickerTextDelegate(),
   TraditionalChineseAssetPickerTextDelegate(),
   TurkishAssetPickerTextDelegate(),
@@ -29,9 +30,12 @@ const assetPickerTextDelegates = <AssetPickerTextDelegate>[
 ];
 
 /// Obtain the text delegate from the given locale.
-AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
+AssetPickerTextDelegate assetPickerTextDelegateFromLocale(
+  Locale? locale, {
+  AssetPickerTextDelegate fallback = const AssetPickerTextDelegate(),
+}) {
   if (locale == null) {
-    return const AssetPickerTextDelegate();
+    return fallback;
   }
 
   final String languageCode = locale.languageCode;
@@ -42,7 +46,7 @@ AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
     (e) => e.languageCode == languageCode,
   );
   if (matchedByLanguage.isEmpty) {
-    return const AssetPickerTextDelegate();
+    return fallback;
   }
 
   final matchedByScript = scriptCode != null
@@ -72,10 +76,10 @@ class AssetPickerTextDelegate {
 
   @nonVirtual
   Locale get locale => Locale.fromSubtags(
-        languageCode: languageCode,
-        scriptCode: scriptCode,
-        countryCode: countryCode,
-      );
+    languageCode: languageCode,
+    scriptCode: scriptCode,
+    countryCode: countryCode,
+  );
 
   /// Confirm string for the confirm button.
   /// 确认按钮的字段
@@ -129,7 +133,8 @@ class AssetPickerTextDelegate {
 
   String get changeAccessibleLimitedAssets => '点击设置可访问的资源';
 
-  String get accessAllTip => '你已设置应用只能访问设备部分资源，'
+  String get accessAllTip =>
+      '你已设置应用只能访问设备部分资源，'
       '建议允许访问「所有资源」';
 
   String get goToSystemSettings => '前往系统设置';
@@ -252,7 +257,8 @@ class EnglishAssetPickerTextDelegate extends AssetPickerTextDelegate {
       'Click to update accessible assets';
 
   @override
-  String get accessAllTip => 'App can only access some assets on the device. '
+  String get accessAllTip =>
+      'App can only access some assets on the device. '
       'Go to system settings and allow app to access all assets on the device.';
 
   @override
@@ -347,7 +353,8 @@ class HebrewAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get changeAccessibleLimitedAssets => 'אפשר גישה לקבצים נוספים';
 
   @override
-  String get accessAllTip => 'האפליקציה יכולה לגשת רק לחלק מהקבצים במכשיר. '
+  String get accessAllTip =>
+      'האפליקציה יכולה לגשת רק לחלק מהקבצים במכשיר. '
       'פתח הגדרות מערכת ואפשר לאפליקציה גישה לכל הקבצים במכשיר.';
 
   @override
@@ -634,14 +641,16 @@ class JapaneseAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get unableToAccessAll => 'すべてのリソースへのアクセスができない';
 
   @override
-  String get viewingLimitedAssetsTip => 'アプリは一部のリソースと'
+  String get viewingLimitedAssetsTip =>
+      'アプリは一部のリソースと'
       '写真にしかアクセスできない';
 
   @override
   String get changeAccessibleLimitedAssets => 'アクセスできるリソースを設定する';
 
   @override
-  String get accessAllTip => 'アプリがデバイスのリソースの一部にのみ'
+  String get accessAllTip =>
+      'アプリがデバイスのリソースの一部にのみ'
       'アクセスするように設定されています。'
       '「すべてのリソース」へのアクセスを許可することを推奨します';
 
@@ -934,7 +943,8 @@ class VietnameseAssetPickerTextDelegate extends AssetPickerTextDelegate {
       'Thay đổi quyền truy cập tệp hạn chế';
 
   @override
-  String get accessAllTip => 'Ứng dụng chỉ có thể truy cập một số tệp. '
+  String get accessAllTip =>
+      'Ứng dụng chỉ có thể truy cập một số tệp. '
       'Hãy vào cài đặt hệ thống và cho phép ứng dụng truy cập tất cả các tệp trên thiết bị';
 
   @override
@@ -1124,7 +1134,8 @@ class SpanishAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get changeAccessibleLimitedAssets => 'Actualizar archivos';
 
   @override
-  String get accessAllTip => 'Solo algunos archivos están disponibles. '
+  String get accessAllTip =>
+      'Solo algunos archivos están disponibles. '
       'Acceda a las configuraciones del sistema y permita que la aplicación acceda a todos los archivos del dispositivo.';
 
   @override
@@ -1215,7 +1226,8 @@ class KoreanAssetPickerTextDelegate extends AssetPickerTextDelegate {
   String get changeAccessibleLimitedAssets => '접근 가능한 미디어을 업데이트하려면 클릭하세요.';
 
   @override
-  String get accessAllTip => '앱이 기기의 일부 미디어에만 접근할 수 있습니다. '
+  String get accessAllTip =>
+      '앱이 기기의 일부 미디어에만 접근할 수 있습니다. '
       '시스템 설정으로 이동하여 앱이 기기의 모든 미디어에 접근하도록 허용해 주세요.';
 
   @override
@@ -1281,6 +1293,9 @@ class TraditionalChineseAssetPickerTextDelegate
 
   @override
   String get gifIndicator => 'GIF';
+
+  @override
+  String get livePhotoIndicator => '實況';
 
   @override
   String get loadFailed => '載入失敗';
@@ -1403,7 +1418,8 @@ class BrazilianPortugueseAssetPickerTextDelegate
   String get changeAccessibleLimitedAssets => 'Atualizar arquivos';
 
   @override
-  String get accessAllTip => 'Apenas alguns arquivos estão disponíveis. '
+  String get accessAllTip =>
+      'Apenas alguns arquivos estão disponíveis. '
       'Acesse as configurações do sistema e permita que o aplicativo acesse todos os arquivos do dispositivo.';
 
   @override
@@ -1447,4 +1463,112 @@ class BrazilianPortugueseAssetPickerTextDelegate
 
   @override
   String get sUnitAssetCountLabel => 'quantidade';
+}
+
+/// [AssetPickerTextDelegate] implements with Persian (Farsi).
+/// فارسی (ایرانی) محلی‌سازی
+class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const PersianAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'fa';
+
+  @override
+  String get confirm => 'تأیید';
+
+  @override
+  String get cancel => 'لغو';
+
+  @override
+  String get edit => 'ویرایش';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get livePhotoIndicator => 'عکس‌های زنده';
+
+  @override
+  String get loadFailed => 'بارگذاری ناموفق';
+
+  @override
+  String get original => 'اصل';
+
+  @override
+  String get preview => 'پیش‌نمایش';
+
+  @override
+  String get select => 'انتخاب';
+
+  @override
+  String get emptyList => 'لیست خالی';
+
+  @override
+  String get unSupportedAssetType => 'نوع رسانه HEIC پشتیبانی نمی‌شود.';
+
+  @override
+  String get unableToAccessAll => 'دسترسی به همه رسانه‌های دستگاه ممکن نیست.';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'فقط رسانه‌ها و آلبوم‌های قابل دسترسی را می‌توانید ببینید.';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'برای به‌روزرسانی رسانه‌های قابل دسترسی کلیک کنید.';
+
+  @override
+  String get accessAllTip =>
+      'برنامه فقط به بخشی از رسانه‌های دستگاه دسترسی دارد. '
+      'به تنظیمات سیستم بروید و اجازه دسترسی برنامه به همه رسانه‌های دستگاه را بدهید.';
+
+  @override
+  String get goToSystemSettings => 'برو به تنظیمات سیستم';
+
+  @override
+  String get accessLimitedAssets => 'ادامه با دسترسی محدود';
+
+  @override
+  String get accessiblePathName => 'رسانه‌های قابل دسترسی';
+
+  @override
+  String get sTypeAudioLabel => 'صوتی';
+
+  @override
+  String get sTypeImageLabel => 'تصویر';
+
+  @override
+  String get sTypeVideoLabel => 'ویدیو';
+
+  @override
+  String get sTypeOtherLabel => 'سایر رسانه‌ها';
+
+  @override
+  String get sActionPlayHint => 'پخش';
+
+  @override
+  String get sActionPreviewHint => 'پیش‌نمایش';
+
+  @override
+  String get sActionSelectHint => 'انتخاب';
+
+  @override
+  String get sActionSwitchPathLabel => 'تغییر مسیر';
+
+  @override
+  String get sActionUseCameraHint => 'استفاده از دوربین';
+
+  @override
+  String get sNameDurationLabel => 'مدت';
+
+  @override
+  String get sUnitAssetCountLabel => 'عدد';
+
+  @override
+  AssetPickerTextDelegate get semanticsTextDelegate {
+    if (Platform.isAndroid) {
+      return const EnglishAssetPickerTextDelegate();
+    }
+    return this;
+  }
 }
