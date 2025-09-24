@@ -14,7 +14,6 @@ dependencies:
     sdk: flutter
 
   wechat_assets_picker:
-    path: ../
   wechat_camera_picker: ^4.2.0
 
   extended_image: any
@@ -25,6 +24,11 @@ dependencies:
 
 dev_dependencies:
   flutter_lints: any
+
+dependency_overrides:
+  wechat_assets_picker:
+    path: ../
+
 
 flutter:
   uses-material-design: true
