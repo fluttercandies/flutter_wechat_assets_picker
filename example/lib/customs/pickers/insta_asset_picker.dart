@@ -403,8 +403,9 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     BuildContext context,
     AssetEntity asset,
     int index,
-    bool selected,
-  ) async {
+    bool selected, {
+    bool directSelect = false,
+  }) async {
     final double thumbnailPosition = indexPosition(context, index);
     final int prevCount = provider.selectedAssets.length;
     await super.selectAsset(context, asset, index, selected);

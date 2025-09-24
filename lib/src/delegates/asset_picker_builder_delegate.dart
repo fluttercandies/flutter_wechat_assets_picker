@@ -926,6 +926,10 @@ class DefaultAssetPickerBuilderDelegate
   /// 资源的预览是否启用
   bool get isPreviewEnabled => specialPickerType != SpecialPickerType.noPreview;
 
+  /// Whether the direct select is enabled.
+  bool get isDirectSelectEnabled =>
+      specialPickerType == SpecialPickerType.directSelect;
+
   @override
   bool get isSingleAssetMode => provider.maxAssets == 1;
 
@@ -958,8 +962,9 @@ class DefaultAssetPickerBuilderDelegate
     BuildContext context,
     AssetEntity asset,
     int index,
-    bool selected,
-  ) async {
+    bool selected, {
+    bool directSelect = false,
+  }) async {
     final bool? selectPredicateResult = await selectPredicate?.call(
       context,
       asset,
@@ -978,6 +983,10 @@ class DefaultAssetPickerBuilderDelegate
       provider.selectedAssets.clear();
     }
     provider.selectAsset(asset);
+    if (provider.selectedAssets.length == 1 && directSelect) {
+      Navigator.maybeOf(context)?.maybePop(provider.selectedAssets);
+      return;
+    }
     if (isSingleAssetMode && !isPreviewEnabled) {
       Navigator.maybeOf(context)?.maybePop(provider.selectedAssets);
     }
@@ -2395,11 +2404,15 @@ class DefaultAssetPickerBuilderDelegate
         MediaQuery.sizeOf(context).width / gridCount / 3;
     return Positioned.fill(
       child: GestureDetector(
-        onTap: isPreviewEnabled
+        onTap: isDirectSelectEnabled
             ? () {
-                viewAsset(context, index, asset);
+                selectAsset(context, asset, index, false, directSelect: true);
               }
-            : null,
+            : isPreviewEnabled
+                ? () {
+                    viewAsset(context, index, asset);
+                  }
+                : null,
         child: Consumer<DefaultAssetPickerProvider>(
           builder: (_, DefaultAssetPickerProvider p, __) {
             final int index = p.selectedAssets.indexOf(asset);
