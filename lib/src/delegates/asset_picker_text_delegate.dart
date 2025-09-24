@@ -18,6 +18,7 @@ const assetPickerTextDelegates = <AssetPickerTextDelegate>[
   HebrewAssetPickerTextDelegate(),
   JapaneseAssetPickerTextDelegate(),
   KoreanAssetPickerTextDelegate(),
+  PersianAssetPickerTextDelegate(),
   RussianAssetPickerTextDelegate(),
   TraditionalChineseAssetPickerTextDelegate(),
   TurkishAssetPickerTextDelegate(),
@@ -25,9 +26,12 @@ const assetPickerTextDelegates = <AssetPickerTextDelegate>[
 ];
 
 /// Obtain the text delegate from the given locale.
-AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
+AssetPickerTextDelegate assetPickerTextDelegateFromLocale(
+  Locale? locale, {
+  AssetPickerTextDelegate fallback = const AssetPickerTextDelegate(),
+}) {
   if (locale == null) {
-    return const AssetPickerTextDelegate();
+    return fallback;
   }
 
   final String languageCode = locale.languageCode;
@@ -38,7 +42,7 @@ AssetPickerTextDelegate assetPickerTextDelegateFromLocale(Locale? locale) {
     (e) => e.languageCode == languageCode,
   );
   if (matchedByLanguage.isEmpty) {
-    return const AssetPickerTextDelegate();
+    return fallback;
   }
 
   final matchedByScript = scriptCode != null
@@ -1186,6 +1190,9 @@ class TraditionalChineseAssetPickerTextDelegate
   String get gifIndicator => 'GIF';
 
   @override
+  String get livePhotoIndicator => '實況';
+
+  @override
   String get loadFailed => '載入失敗';
 
   @override
@@ -1256,4 +1263,112 @@ class TraditionalChineseAssetPickerTextDelegate
 
   @override
   String get sUnitAssetCountLabel => '數量';
+}
+
+/// [AssetPickerTextDelegate] implements with Persian (Farsi).
+/// فارسی (ایرانی) محلی‌سازی
+class PersianAssetPickerTextDelegate extends AssetPickerTextDelegate {
+  const PersianAssetPickerTextDelegate();
+
+  @override
+  String get languageCode => 'fa';
+
+  @override
+  String get confirm => 'تأیید';
+
+  @override
+  String get cancel => 'لغو';
+
+  @override
+  String get edit => 'ویرایش';
+
+  @override
+  String get gifIndicator => 'GIF';
+
+  @override
+  String get livePhotoIndicator => 'عکس‌های زنده';
+
+  @override
+  String get loadFailed => 'بارگذاری ناموفق';
+
+  @override
+  String get original => 'اصل';
+
+  @override
+  String get preview => 'پیش‌نمایش';
+
+  @override
+  String get select => 'انتخاب';
+
+  @override
+  String get emptyList => 'لیست خالی';
+
+  @override
+  String get unSupportedAssetType => 'نوع رسانه HEIC پشتیبانی نمی‌شود.';
+
+  @override
+  String get unableToAccessAll => 'دسترسی به همه رسانه‌های دستگاه ممکن نیست.';
+
+  @override
+  String get viewingLimitedAssetsTip =>
+      'فقط رسانه‌ها و آلبوم‌های قابل دسترسی را می‌توانید ببینید.';
+
+  @override
+  String get changeAccessibleLimitedAssets =>
+      'برای به‌روزرسانی رسانه‌های قابل دسترسی کلیک کنید.';
+
+  @override
+  String get accessAllTip =>
+      'برنامه فقط به بخشی از رسانه‌های دستگاه دسترسی دارد. '
+      'به تنظیمات سیستم بروید و اجازه دسترسی برنامه به همه رسانه‌های دستگاه را بدهید.';
+
+  @override
+  String get goToSystemSettings => 'برو به تنظیمات سیستم';
+
+  @override
+  String get accessLimitedAssets => 'ادامه با دسترسی محدود';
+
+  @override
+  String get accessiblePathName => 'رسانه‌های قابل دسترسی';
+
+  @override
+  String get sTypeAudioLabel => 'صوتی';
+
+  @override
+  String get sTypeImageLabel => 'تصویر';
+
+  @override
+  String get sTypeVideoLabel => 'ویدیو';
+
+  @override
+  String get sTypeOtherLabel => 'سایر رسانه‌ها';
+
+  @override
+  String get sActionPlayHint => 'پخش';
+
+  @override
+  String get sActionPreviewHint => 'پیش‌نمایش';
+
+  @override
+  String get sActionSelectHint => 'انتخاب';
+
+  @override
+  String get sActionSwitchPathLabel => 'تغییر مسیر';
+
+  @override
+  String get sActionUseCameraHint => 'استفاده از دوربین';
+
+  @override
+  String get sNameDurationLabel => 'مدت';
+
+  @override
+  String get sUnitAssetCountLabel => 'عدد';
+
+  @override
+  AssetPickerTextDelegate get semanticsTextDelegate {
+    if (Platform.isAndroid) {
+      return const EnglishAssetPickerTextDelegate();
+    }
+    return this;
+  }
 }

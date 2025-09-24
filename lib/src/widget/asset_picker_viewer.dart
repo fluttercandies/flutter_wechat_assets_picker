@@ -4,7 +4,7 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Path;
 import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/constants.dart';
@@ -14,6 +14,7 @@ import '../delegates/asset_picker_viewer_builder_delegate.dart';
 import '../provider/asset_picker_provider.dart';
 import '../provider/asset_picker_viewer_provider.dart';
 import 'asset_picker.dart';
+import 'asset_picker_page_route.dart';
 
 class AssetPickerViewer<Asset, Path> extends StatefulWidget {
   const AssetPickerViewer({
@@ -44,6 +45,9 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
     bool shouldAutoplayPreview = false,
+    bool useRootNavigator = false,
+    RouteSettings? pageRouteSettings,
+    AssetPickerViewerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
   }) async {
     if (previewAssets.isEmpty) {
       throw StateError('Previewing empty assets is not allowed.');
@@ -72,15 +76,13 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
         shouldAutoplayPreview: shouldAutoplayPreview,
       ),
     );
-    final PageRouteBuilder<List<AssetEntity>> pageRoute =
-        PageRouteBuilder<List<AssetEntity>>(
-      pageBuilder: (_, __, ___) => viewer,
-      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
-        return FadeTransition(opacity: animation, child: child);
-      },
+    final List<AssetEntity>? result = await Navigator.maybeOf(
+      context,
+      rootNavigator: useRootNavigator,
+    )?.push<List<AssetEntity>>(
+      pageRouteBuilder?.call(viewer) ??
+          AssetPickerViewerPageRoute(builder: (context) => viewer),
     );
-    final List<AssetEntity>? result =
-        await Navigator.maybeOf(context)?.push<List<AssetEntity>>(pageRoute);
     return result;
   }
 
@@ -91,17 +93,19 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
     required AssetPickerViewerBuilderDelegate<A, P> delegate,
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
+    bool useRootNavigator = false,
+    RouteSettings? pageRouteSettings,
+    AssetPickerViewerPageRouteBuilder<List<A>>? pageRouteBuilder,
   }) async {
     await AssetPicker.permissionCheck(requestOption: permissionRequestOption);
     final Widget viewer = AssetPickerViewer<A, P>(builder: delegate);
-    final PageRouteBuilder<List<A>> pageRoute = PageRouteBuilder<List<A>>(
-      pageBuilder: (_, __, ___) => viewer,
-      transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
-        return FadeTransition(opacity: animation, child: child);
-      },
+    final List<A>? result = await Navigator.maybeOf(
+      context,
+      rootNavigator: useRootNavigator,
+    )?.push<List<A>>(
+      pageRouteBuilder?.call(viewer) ??
+          AssetPickerViewerPageRoute(builder: (context) => viewer),
     );
-    final List<A>? result =
-        await Navigator.maybeOf(context)?.push<List<A>>(pageRoute);
     return result;
   }
 }

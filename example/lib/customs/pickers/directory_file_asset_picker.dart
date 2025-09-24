@@ -171,26 +171,10 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
                   themeData: AssetPicker.themeData(themeColor),
                 ),
               );
-              final PageRouteBuilder<List<File>> pageRoute =
-                  PageRouteBuilder<List<File>>(
-                pageBuilder: (
-                  BuildContext context,
-                  Animation<double> animation,
-                  Animation<double> secondaryAnimation,
-                ) {
-                  return viewer;
-                },
-                transitionsBuilder: (
-                  BuildContext context,
-                  Animation<double> animation,
-                  Animation<double> secondaryAnimation,
-                  Widget child,
-                ) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
-              );
               final List<File>? result =
-                  await Navigator.maybeOf(context)?.push<List<File>>(pageRoute);
+                  await Navigator.maybeOf(context)?.push<List<File>>(
+                AssetPickerViewerPageRoute(builder: (context) => viewer),
+              );
               if (result != null && result != fileList) {
                 fileList
                   ..clear()
@@ -384,27 +368,19 @@ class FileAssetPickerBuilder
     int? index,
     File currentAsset,
   ) async {
+    final Widget viewer = AssetPickerViewer<File, Directory>(
+      builder: FileAssetPickerViewerBuilderDelegate(
+        currentIndex: index ?? provider.selectedAssets.indexOf(currentAsset),
+        previewAssets: provider.selectedAssets,
+        provider: FileAssetPickerViewerProvider(provider.selectedAssets),
+        themeData: AssetPicker.themeData(themeColor),
+        selectedAssets: provider.selectedAssets,
+        selectorProvider: provider,
+      ),
+    );
     final List<File>? result =
         await Navigator.maybeOf(context)?.push<List<File>?>(
-      PageRouteBuilder<List<File>>(
-        pageBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-        ) {
-          return AssetPickerViewer<File, Directory>(
-            builder: FileAssetPickerViewerBuilderDelegate(
-              currentIndex:
-                  index ?? provider.selectedAssets.indexOf(currentAsset),
-              previewAssets: provider.selectedAssets,
-              provider: FileAssetPickerViewerProvider(provider.selectedAssets),
-              themeData: AssetPicker.themeData(themeColor),
-              selectedAssets: provider.selectedAssets,
-              selectorProvider: provider,
-            ),
-          );
-        },
-      ),
+      AssetPickerViewerPageRoute(builder: (context) => viewer),
     );
     if (result != null) {
       Navigator.maybeOf(context)?.maybePop(result);
@@ -430,24 +406,9 @@ class FileAssetPickerBuilder
         selectorProvider: selectorProvider,
       ),
     );
-    final PageRouteBuilder<List<File>> pageRoute = PageRouteBuilder<List<File>>(
-      pageBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-      ) {
-        return viewer;
-      },
-      transitionsBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-        Widget child,
-      ) {
-        return FadeTransition(opacity: animation, child: child);
-      },
+    return await Navigator.maybeOf(context)?.push<List<File>?>(
+      AssetPickerViewerPageRoute(builder: (context) => viewer),
     );
-    return await Navigator.maybeOf(context)?.push<List<File>?>(pageRoute);
   }
 
   @override
@@ -845,7 +806,7 @@ class FileAssetPickerBuilder
               borderRadius: isAppleOS(context)
                   ? const BorderRadius.vertical(bottom: Radius.circular(10.0))
                   : null,
-              color: theme.colorScheme.background,
+              color: theme.colorScheme.surface,
             ),
             child: w,
           ),

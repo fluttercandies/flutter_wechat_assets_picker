@@ -7,7 +7,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Path;
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -25,6 +25,7 @@ import '../models/path_wrapper.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_app_bar.dart';
+import '../widget/asset_picker_page_route.dart';
 import '../widget/asset_picker_viewer.dart';
 import '../widget/builder/asset_entity_grid_item_builder.dart';
 
@@ -48,6 +49,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     this.pathNameBuilder,
     this.assetsChangeCallback,
     this.assetsChangeRefreshPredicate,
+    this.viewerUseRootNavigator = false,
+    this.viewerPageRouteSettings,
+    this.viewerPageRouteBuilder,
     Color? themeColor,
     AssetPickerTextDelegate? textDelegate,
     Locale? locale,
@@ -130,6 +134,10 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
   final AssetsChangeRefreshPredicate<AssetPathEntity>?
       assetsChangeRefreshPredicate;
+
+  final bool viewerUseRootNavigator;
+  final RouteSettings? viewerPageRouteSettings;
+  final AssetPickerViewerPageRouteBuilder<List<Asset>>? viewerPageRouteBuilder;
 
   /// [ThemeData] for the picker.
   /// 选择器使用的主题
@@ -556,7 +564,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       builder: (_, AssetPickerProvider<Asset, Path> p, __) {
         if (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) {
           return Container(
-            color: theme.colorScheme.background.withOpacity(.85),
+            color: theme.colorScheme.surface.withOpacity(.85),
           );
         }
         return const SizedBox.shrink();
@@ -696,14 +704,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           Navigator.maybeOf(context)?.maybePop();
         },
         tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-        icon: Icon(
-          Icons.close,
-          semanticLabel: switch (Theme.of(context).platform) {
-            TargetPlatform.android =>
-              MaterialLocalizations.of(context).closeButtonTooltip,
-            _ => null,
-          },
-        ),
+        icon: const Icon(Icons.close),
       ),
     );
   }
@@ -717,6 +718,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// The overlay when the permission is limited.
   Widget permissionOverlay(BuildContext context) {
     final Size size = MediaQuery.sizeOf(context);
+    final EdgeInsets padding = MediaQuery.paddingOf(context);
     final Widget closeButton = Container(
       margin: const EdgeInsetsDirectional.only(start: 16, top: 4),
       alignment: AlignmentDirectional.centerStart,
@@ -771,14 +773,17 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       ),
     );
 
-    final Widget accessLimitedButton = GestureDetector(
-      onTap: () {
-        permissionOverlayDisplay.value = false;
-      },
-      child: ScaleText(
-        textDelegate.accessLimitedAssets,
-        style: TextStyle(color: interactiveTextColor(context)),
-        semanticsLabel: semanticsTextDelegate.accessLimitedAssets,
+    final Widget accessLimitedButton = Semantics(
+      label: semanticsTextDelegate.accessLimitedAssets,
+      button: true,
+      child: GestureDetector(
+        onTap: () {
+          permissionOverlayDisplay.value = false;
+        },
+        child: ScaleText(
+          textDelegate.accessLimitedAssets,
+          style: TextStyle(color: interactiveTextColor(context)),
+        ),
       ),
     );
 
@@ -793,7 +798,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
           child: Semantics(
             sortKey: const OrdinalSortKey(0),
             child: Container(
-              padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
+              padding: EdgeInsets.only(top: padding.top),
               color: context.theme.canvasColor,
               child: Column(
                 children: <Widget>[
@@ -803,10 +808,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
                   SizedBox(height: size.height / 18),
                   accessLimitedButton,
                   SizedBox(
-                    height: math.max(
-                      MediaQuery.paddingOf(context).bottom,
-                      24.0,
-                    ),
+                    height: math.max(padding.bottom, 24.0),
                   ),
                 ],
               ),
@@ -834,6 +836,9 @@ class DefaultAssetPickerBuilderDelegate
     super.pathNameBuilder,
     super.assetsChangeCallback,
     super.assetsChangeRefreshPredicate,
+    super.viewerUseRootNavigator,
+    super.viewerPageRouteSettings,
+    super.viewerPageRouteBuilder,
     super.themeColor,
     super.textDelegate,
     super.locale,
@@ -936,6 +941,9 @@ class DefaultAssetPickerBuilderDelegate
   /// Whether the bottom actions bar should display.
   bool get hasBottomActions => isPreviewEnabled || !isSingleAssetMode;
 
+  /// The tap gesture recognizer for present limited assets.
+  TapGestureRecognizer? presentLimitedTapGestureRecognizer;
+
   /// The listener to track the scroll position of the [gridScrollController]
   /// if [keepScrollOffset] is true.
   /// 当 [keepScrollOffset] 为 true 时，跟踪 [gridScrollController] 位置的监听。
@@ -943,6 +951,13 @@ class DefaultAssetPickerBuilderDelegate
     if (gridScrollController.hasClients) {
       Singleton.scrollPosition = gridScrollController.position;
     }
+  }
+
+  @override
+  void initState(AssetPickerState<AssetEntity, AssetPathEntity> state) {
+    super.initState(state);
+    presentLimitedTapGestureRecognizer = TapGestureRecognizer()
+      ..onTap = PhotoManager.presentLimited;
   }
 
   /// Be aware that the method will do nothing when [keepScrollOffset] is true.
@@ -954,6 +969,7 @@ class DefaultAssetPickerBuilderDelegate
       return;
     }
     provider.dispose();
+    presentLimitedTapGestureRecognizer?.dispose();
     super.dispose();
   }
 
@@ -1190,6 +1206,9 @@ class DefaultAssetPickerBuilderDelegate
       maxAssets: p.maxAssets,
       shouldReversePreview: revert,
       shouldAutoplayPreview: shouldAutoplayPreview,
+      useRootNavigator: viewerUseRootNavigator,
+      pageRouteSettings: viewerPageRouteSettings,
+      pageRouteBuilder: viewerPageRouteBuilder,
     );
     if (result != null) {
       Navigator.maybeOf(context)?.maybePop(result);
@@ -1326,6 +1345,7 @@ class DefaultAssetPickerBuilderDelegate
   Widget assetsGridBuilder(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
     final bool gridRevert = effectiveShouldRevertGrid(context);
+    final accessibleNavigation = MediaQuery.accessibleNavigationOf(context);
     return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
       selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
       builder: (context, wrapper, _) {
@@ -1382,9 +1402,12 @@ class DefaultAssetPickerBuilderDelegate
                   specialItem: specialItem,
                 );
 
-                // Enables drag-to-select.
-                if (dragToSelect ??
-                    !MediaQuery.accessibleNavigationOf(context)) {
+                // Enables drag-to-select when:
+                // 1. The feature is enabled manually.
+                // 2. The accessibility service is not being used.
+                // 3. The picker is not in single asset mode.
+                if ((dragToSelect ?? !accessibleNavigation) &&
+                    !isSingleAssetMode) {
                   child = GestureDetector(
                     excludeFromSemantics: true,
                     onHorizontalDragStart: (d) {
@@ -1992,7 +2015,7 @@ class DefaultAssetPickerBuilderDelegate
                     maxHeight: MediaQuery.sizeOf(context).height *
                         (isAppleOS(context) ? .6 : .8),
                   ),
-                  color: theme.colorScheme.background,
+                  color: theme.colorScheme.surface,
                   child: child,
                 ),
               ),
@@ -2029,8 +2052,7 @@ class DefaultAssetPickerBuilderDelegate
                         text: ' '
                             '${textDelegate.changeAccessibleLimitedAssets}',
                         style: TextStyle(color: interactiveTextColor(context)),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = PhotoManager.presentLimited,
+                        recognizer: presentLimitedTapGestureRecognizer,
                       ),
                     ],
                   ),
@@ -2330,7 +2352,7 @@ class DefaultAssetPickerBuilderDelegate
                     p.selectedAssets.isNotEmpty);
         if (isDisabled) {
           return Container(
-            color: theme.colorScheme.background.withOpacity(.85),
+            color: theme.colorScheme.surface.withOpacity(.85),
           );
         }
         return const SizedBox.shrink();
@@ -2422,7 +2444,7 @@ class DefaultAssetPickerBuilderDelegate
               padding: EdgeInsets.all(indicatorSize * .35),
               color: selected
                   ? theme.colorScheme.primary.withOpacity(.45)
-                  : theme.colorScheme.background.withOpacity(.1),
+                  : theme.colorScheme.surface.withOpacity(.1),
               child: selected && !isSingleAssetMode
                   ? Align(
                       alignment: AlignmentDirectional.topStart,

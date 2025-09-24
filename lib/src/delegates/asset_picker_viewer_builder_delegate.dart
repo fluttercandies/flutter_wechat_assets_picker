@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Path;
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -733,14 +733,7 @@ class DefaultAssetPickerViewerBuilderDelegate
             Navigator.maybeOf(context)?.maybePop();
           },
           tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            semanticLabel: switch (Theme.of(context).platform) {
-              TargetPlatform.android =>
-                MaterialLocalizations.of(context).backButtonTooltip,
-              _ => null,
-            },
-          ),
+          icon: const Icon(Icons.arrow_back_ios_new),
         ),
       ),
       centerTitle: true,
@@ -800,13 +793,17 @@ class DefaultAssetPickerViewerBuilderDelegate
           );
           Future<void> onPressed() async {
             if (isWeChatMoment && hasVideo) {
-              Navigator.maybeOf(context)?.pop(<AssetEntity>[currentAsset]);
+              if (await onChangingSelected(context, currentAsset, false)) {
+                Navigator.maybeOf(context)?.pop(<AssetEntity>[currentAsset]);
+              }
               return;
             }
+
             if (provider!.isSelectedNotEmpty) {
               Navigator.maybeOf(context)?.pop(provider.currentlySelectedAssets);
               return;
             }
+
             if (await onChangingSelected(context, currentAsset, false)) {
               Navigator.maybeOf(context)?.pop(
                 selectedAssets ?? <AssetEntity>[currentAsset],
