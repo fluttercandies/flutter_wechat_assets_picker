@@ -36,7 +36,7 @@ android {
 
     defaultConfig {
         applicationId = "com.fluttercandies.wechatAssetsPickerExample"
-        minSdk 21
+        minSdkVersion flutter.minSdkVersion
         targetSdk flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

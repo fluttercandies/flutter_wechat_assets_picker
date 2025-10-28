@@ -1076,6 +1076,9 @@ class DefaultAssetPickerBuilderDelegate
       if (updateIds.isNotEmpty && createIds.isEmpty && deleteIds.isEmpty) {
         await Future.wait(
           updateIds.map((id) async {
+            if (provider.currentAssets.isEmpty) {
+              return;
+            }
             final i = provider.currentAssets.indexWhere((e) => e.id == id);
             if (i != -1) {
               final asset =
