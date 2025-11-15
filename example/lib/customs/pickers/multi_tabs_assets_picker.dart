@@ -523,9 +523,14 @@ final class MultiTabAssetPickerBuilder
 
   Widget _buildGrid(BuildContext context) {
     return Consumer<DefaultAssetPickerProvider>(
-      builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
-        final bool shouldDisplayAssets =
-            p.hasAssetsToDisplay || shouldBuildSpecialItem;
+      builder: (context, p, __) {
+        final hasAssetsToDisplay = p.hasAssetsToDisplay;
+        final shouldBuildSpecialItems = assetsGridSpecialItemsFinalized(
+          context: context,
+          path: p.currentPath?.path,
+        ).isNotEmpty;
+        final shouldDisplayAssets =
+            hasAssetsToDisplay || shouldBuildSpecialItems;
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: shouldDisplayAssets

@@ -297,7 +297,6 @@ final class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     super.keepScrollOffset,
   }) : super(
           shouldRevertGrid: false,
-          specialItemPosition: SpecialItemPosition.none,
         );
 
   /// Save last position of the grid view scroll controller
@@ -677,8 +676,14 @@ final class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     appBarPreferredSize ??= appBar(context).preferredSize;
     return Consumer<DefaultAssetPickerProvider>(
       builder: (context, p, __) {
-        final bool shouldDisplayAssets =
-            p.hasAssetsToDisplay || shouldBuildSpecialItem;
+        final hasAssetsToDisplay = p.hasAssetsToDisplay;
+        final shouldBuildSpecialItems = assetsGridSpecialItemsFinalized(
+          context: context,
+          path: p.currentPath?.path,
+        ).isNotEmpty;
+        final shouldDisplayAssets =
+            hasAssetsToDisplay || shouldBuildSpecialItems;
+
         _initializePreviewAsset(p, shouldDisplayAssets);
 
         return AnimatedSwitcher(
