@@ -2,14 +2,13 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:async';
-import 'dart:io';
-import 'dart:math' as math;
-import 'dart:typed_data';
+import 'dart:async' show Completer;
+import 'dart:io' as io show Platform;
+import 'dart:math' as math show max;
+import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/material.dart' hide Path;
 import 'package:photo_manager/photo_manager.dart';
-import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../delegates/sort_path_delegate.dart';
@@ -364,7 +363,7 @@ class DefaultAssetPickerProvider
         createTimeCond: DateTimeCond.def().copyWith(ignore: true),
         updateTimeCond: DateTimeCond.def().copyWith(ignore: true),
       )..merge(fog);
-    } else if (fog == null && Platform.isAndroid) {
+    } else if (fog == null && io.Platform.isAndroid) {
       options = AdvancedCustomFilter(
         orderBy: [OrderByItem.desc(CustomColumns.android.modifiedDate)],
       );

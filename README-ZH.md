@@ -34,13 +34,13 @@ Language: [English](README.md) | 中文
 该插件仅保证能与 **stable 渠道的 Flutter SDK** 配合使用。
 我们不会为其他渠道的 Flutter SDK 做实时支持。
 
-|        | 3.7 | 3.10 | 3.13 | 3.16 | 3.22 |
-|--------|:---:|:----:|:----:|:----:|:----:|
-| 9.5.0+ |  ❌  |  ❌   |  ❌   |  ❌   |  ✅   |
-| 8.9.0+ |  ❌  |  ❌   |  ❌   |  ✅   |  ❌   |
-| 8.7.0+ |  ❌  |  ❌   |  ✅   |  ❌   |  ❌   |
-| 8.5.0+ |  ❌  |  ✅   |  ❌   |  ❌   |  ❌   |
-| 8.4.0+ |  ✅  |  ❌   |  ❌   |  ❌   |  ❌   |
+|         | 3.10 | 3.13 | 3.16 | 3.22 | 3.27 |
+|---------|:----:|:----:|:----:|:----:|:----:|
+| 10.0.0+ |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |
+| 9.5.0+  |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |
+| 8.9.0+  |  ❌   |  ❌   |  ✅   |  ❌   |  ❌   |
+| 8.7.0+  |  ❌   |  ✅   |  ❌   |  ❌   |  ❌   |
+| 8.5.0+  |  ✅   |  ❌   |  ❌   |  ❌   |  ❌   |
 
 如果在 `flutter pub get` 时遇到了 `resolve conflict` 失败问题，
 请使用 `dependency_overrides` 解决。
@@ -294,8 +294,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | themeColor                        | `Color?`                                         | 选择器的主题色                                              | `Color(0xff00bc56)`         |
 | pickerTheme                       | `ThemeData?`                                     | 选择器的主题提供，包括查看器                                       | `null`                      |
 | textDelegate                      | `AssetPickerTextDelegate?`                       | 选择器的文本代理构建，用于自定义文本                                   | `AssetPickerTextDelegate()` |
-| specialItemPosition               | `SpecialItemPosition`                            | 允许用户在选择器中添加一个自定义item，并指定位置。                          | `SpecialPosition.none`      |
-| specialItemBuilder                | `SpecialItemBuilder?`                            | 自定义item的构造方法                                         | `null`                      |
+| specialItems                      | `List<SpecialItem>`                              | 自定义item列表                                            | `const <SpecialItem>[]`     |
 | loadingIndicatorBuilder           | `IndicatorBuilder?`                              | 加载器的实现                                               | `null`                      |
 | selectPredicate                   | `AssetSelectPredicate`                           | 判断资源可否被选择                                            | `null`                      |
 | shouldRevertGrid                  | `bool?`                                          | 判断资源网格是否需要倒序排列                                       | `null`                      |
@@ -305,6 +304,7 @@ final List<AssetEntity>? result = await AssetPicker.pickAssets(
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | 判断资源变化是否根据 call 和当前选中的路径进行更新                         | `null`                      |
 | shouldAutoplayPreview             | `bool`                                           | 预览是否应自动播放                                            | `false`                     |
 | dragToSelect                      | `bool`                                           | 是否开启拖拽选择                                             | `true`                      |
+| enableLivePhoto                   | `bool`                                           | 是否启用实况图片的功能                                          | `true`                      |
 
 - 当 `maxAssets` 等于 `1`（即单选模式），搭配
   `SpecialPickerType.noPreview` 使用会在用户点选资源换时立刻选中并返回。

@@ -266,6 +266,18 @@ abstract class AppLocalizations {
   /// **'A special item will prepend to the assets grid.'**
   String get pickMethodPrependItemDescription;
 
+  /// No description provided for @pickMethodMultiSpecialItemsName.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple special items'**
+  String get pickMethodMultiSpecialItemsName;
+
+  /// No description provided for @pickMethodMultiSpecialItemsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple special items will prepend or append to the assets grid'**
+  String get pickMethodMultiSpecialItemsDescription;
+
   /// No description provided for @pickMethodNoPreviewName.
   ///
   /// In en, this message translates to:
@@ -361,6 +373,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can reduce the thumb size to get faster load speed.'**
   String get pickMethodCustomImagePreviewThumbSizeDescription;
+
+  /// No description provided for @pickMethodDisableLivePhotoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Live-Photo'**
+  String get pickMethodDisableLivePhotoName;
+
+  /// No description provided for @pickMethodDisableLivePhotoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Not showing Live-Photo\'s indicator and interactions.'**
+  String get pickMethodDisableLivePhotoDescription;
 
   /// No description provided for @customPickerNotice.
   ///

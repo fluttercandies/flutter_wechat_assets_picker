@@ -2,17 +2,18 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:async';
+import 'dart:async' show Completer;
 import 'dart:math' as math;
+import 'dart:typed_data' show Uint8List;
 import 'dart:ui' as ui;
 
-import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/material.dart' hide Path;
-import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/semantics.dart' show OrdinalSortKey;
+import 'package:flutter/services.dart' show MethodCall, SystemUiOverlayStyle;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' show Consumer, ReadContext, Selector;
 import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../constants/constants.dart';
@@ -22,6 +23,7 @@ import '../delegates/asset_grid_drag_selection_coordinator.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../internals/singleton.dart';
 import '../models/path_wrapper.dart';
+import '../models/special_item.dart';
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_app_bar.dart';
@@ -40,8 +42,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required this.initialPermission,
     this.gridCount = 4,
     this.pickerTheme,
-    this.specialItemPosition = SpecialItemPosition.none,
-    this.specialItemBuilder,
+    this.specialItems = const [],
     this.loadingIndicatorBuilder,
     this.selectPredicate,
     this.shouldRevertGrid,
@@ -89,13 +90,9 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 但某些情况下开发者需要亮色或自定义主题。
   final ThemeData? pickerTheme;
 
-  /// Allow users set a special item in the picker with several positions.
-  /// 允许用户在选择器中添加一个自定义 item，并指定位置
-  final SpecialItemPosition specialItemPosition;
-
-  /// The widget builder for the the special item.
-  /// 自定义 item 的构造方法
-  final SpecialItemBuilder<Path>? specialItemBuilder;
+  /// List of special items.
+  /// 自定义item列表
+  final List<SpecialItem<Path>> specialItems;
 
   /// Indicates the loading status for the builder.
   /// 指示目前加载的状态
@@ -126,14 +123,13 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   final LimitedPermissionOverlayPredicate? limitedPermissionOverlayPredicate;
 
   /// {@macro wechat_assets_picker.PathNameBuilder}
-  final PathNameBuilder<AssetPathEntity>? pathNameBuilder;
+  final PathNameBuilder<Path>? pathNameBuilder;
 
   /// {@macro wechat_assets_picker.AssetsChangeCallback}
-  final AssetsChangeCallback<AssetPathEntity>? assetsChangeCallback;
+  final AssetsChangeCallback<Path>? assetsChangeCallback;
 
   /// {@macro wechat_assets_picker.AssetsChangeRefreshPredicate}
-  final AssetsChangeRefreshPredicate<AssetPathEntity>?
-      assetsChangeRefreshPredicate;
+  final AssetsChangeRefreshPredicate<Path>? assetsChangeRefreshPredicate;
 
   final bool viewerUseRootNavigator;
   final RouteSettings? viewerPageRouteSettings;
@@ -177,12 +173,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 选择器是否为单选模式
   bool get isSingleAssetMode;
 
-  /// Whether the delegate should build the special item.
-  /// 是否需要构建自定义 item
-  bool get shouldBuildSpecialItem =>
-      specialItemPosition != SpecialItemPosition.none &&
-      specialItemBuilder != null;
-
   /// Space between assets item widget.
   /// 资源部件之间的间隔
   double get itemSpacing => 2;
@@ -207,9 +197,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Height for the permission limited bar.
   /// 权限受限栏的高度
   double get permissionLimitedBarHeight => isPermissionLimited ? 75 : 0;
-
-  @Deprecated('Use permissionNotifier instead. This will be removed in 10.0.0')
-  ValueNotifier<PermissionState> get permission => permissionNotifier;
 
   /// Notifier for the current [PermissionState].
   /// 当前 [PermissionState] 的监听
@@ -238,7 +225,11 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Keep a `initState` method to sync with [State].
   /// 保留一个 `initState` 方法与 [State] 同步。
   @mustCallSuper
-  void initState(AssetPickerState<Asset, Path> state) {}
+  void initState(
+    covariant AssetPickerState<Asset, Path,
+            AssetPickerBuilderDelegate<Asset, Path>>
+        state,
+  ) {}
 
   /// Keep a `dispose` method to sync with [State].
   /// 保留一个 `dispose` 方法与 [State] 同步。
@@ -333,6 +324,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int? findChildIndexBuilder({
     required String id,
     required List<Asset> assets,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   }) =>
       null;
@@ -342,31 +334,49 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   int assetsGridItemCount({
     required BuildContext context,
     required List<Asset> assets,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   });
+
+  List<SpecialItemFinalized> assetsGridSpecialItemsFinalized({
+    required BuildContext context,
+    required Path? path,
+  }) {
+    return specialItems
+        .map((item) {
+          final specialItem = item.builder?.call(
+            context,
+            path,
+            permissionNotifier.value,
+          );
+          if (specialItem != null) {
+            return SpecialItemFinalized(
+              position: item.position,
+              item: specialItem,
+            );
+          }
+          return null;
+        })
+        .nonNulls
+        .toList();
+  }
 
   /// Calculates the placeholder count in the assets grid.
   int assetsGridItemPlaceholderCount({
     required BuildContext context,
     required PathWrapper<Path>? pathWrapper,
     required bool onlyOneScreen,
+    required List<SpecialItemFinalized> specialItemsFinalized,
   }) {
     if (onlyOneScreen) {
       return 0;
     }
+
     final bool gridRevert = effectiveShouldRevertGrid(context);
     int totalCount = pathWrapper?.assetCount ?? 0;
-    // If user chose a special item's position, add 1 count.
-    if (specialItemPosition != SpecialItemPosition.none) {
-      final specialItem = specialItemBuilder?.call(
-        context,
-        pathWrapper?.path,
-        totalCount,
-      );
-      if (specialItem != null) {
-        totalCount += 1;
-      }
-    }
+    // Add special items' count.
+    totalCount += specialItemsFinalized.length;
+
     final int result;
     if (gridRevert && totalCount % gridCount != 0) {
       // When there are left items that not filled into one row,
@@ -376,6 +386,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       // Otherwise, we don't need placeholders.
       result = 0;
     }
+
     return result;
   }
 
@@ -384,19 +395,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     required BuildContext context,
     required BoxConstraints constraints,
     required PathWrapper<Path>? pathWrapper,
+    required List<SpecialItemFinalized> specialItemsFinalized,
   }) {
     int totalCount = pathWrapper?.assetCount ?? 0;
-    // If user chose a special item's position, add 1 count.
-    if (specialItemPosition != SpecialItemPosition.none) {
-      final specialItem = specialItemBuilder?.call(
-        context,
-        pathWrapper?.path,
-        totalCount,
-      );
-      if (specialItem != null) {
-        totalCount += 1;
-      }
-    }
+    // Add special items' count.
+    totalCount += specialItemsFinalized.length;
+
     // Here we got a magic calculation. [itemSpacing] needs to be divided by
     // [gridCount] since every grid item is squeezed by the [itemSpacing],
     // and it's actual size is reduced with [itemSpacing / gridCount].
@@ -424,11 +428,12 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
 
   /// The item builder for the assets' grid.
   /// 资源列表项的构建
-  Widget assetGridItemBuilder(
-    BuildContext context,
-    int index,
-    List<Asset> currentAssets,
-  );
+  Widget assetGridItemBuilder({
+    required BuildContext context,
+    required int index,
+    required List<Asset> currentAssets,
+    required List<SpecialItemFinalized> specialItemsFinalized,
+  });
 
   /// The [Semantics] builder for the assets' grid.
   /// 资源列表项的语义构建
@@ -437,6 +442,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     int index,
     Asset asset,
     Widget child,
+    List<SpecialItemFinalized> specialItemsFinalized,
   );
 
   /// The item builder for audio type of asset.
@@ -481,11 +487,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// Loading indicator.
   /// 加载指示器
   ///
-  /// Subclasses need to implement this due to the generic type limitation, and
-  /// not all delegates use [AssetPickerProvider].
-  ///
-  /// See also:
-  /// - [DefaultAssetPickerBuilderDelegate.loadingIndicator] as an example.
+  /// See [DefaultAssetPickerBuilderDelegate.loadingIndicator] as an example.
   Widget loadingIndicator(BuildContext context);
 
   /// GIF image type indicator.
@@ -709,12 +711,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
     );
   }
 
-  /// The overlay when the permission is limited on iOS.
-  @Deprecated('Use permissionOverlay instead. This will be removed in 10.0.0')
-  Widget iOSPermissionOverlay(BuildContext context) {
-    return permissionOverlay(context);
-  }
-
   /// The overlay when the permission is limited.
   Widget permissionOverlay(BuildContext context) {
     final Size size = MediaQuery.sizeOf(context);
@@ -820,15 +816,14 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   }
 }
 
-class DefaultAssetPickerBuilderDelegate
+class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     extends AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerBuilderDelegate({
     required this.provider,
     required super.initialPermission,
     super.gridCount,
     super.pickerTheme,
-    super.specialItemPosition,
-    super.specialItemBuilder,
+    super.specialItems = const [],
     super.loadingIndicatorBuilder,
     super.selectPredicate,
     super.shouldRevertGrid,
@@ -848,6 +843,7 @@ class DefaultAssetPickerBuilderDelegate
     this.keepScrollOffset = false,
     this.shouldAutoplayPreview = false,
     this.dragToSelect,
+    this.enableLivePhoto = true,
   }) {
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
@@ -857,7 +853,7 @@ class DefaultAssetPickerBuilderDelegate
 
   /// [ChangeNotifier] for asset picker.
   /// 资源选择器状态保持
-  final DefaultAssetPickerProvider provider;
+  final T provider;
 
   /// Thumbnail size in the grid.
   /// 预览时网络的缩略图大小
@@ -914,6 +910,9 @@ class DefaultAssetPickerBuilderDelegate
   /// {@macro wechat_assets_picker.constants.AssetPickerConfig.dragToSelect}
   final bool? dragToSelect;
 
+  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
+  final bool enableLivePhoto;
+
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
   Duration get switchingPathDuration => const Duration(milliseconds: 300);
@@ -950,7 +949,11 @@ class DefaultAssetPickerBuilderDelegate
   }
 
   @override
-  void initState(AssetPickerState<AssetEntity, AssetPathEntity> state) {
+  void initState(
+    covariant AssetPickerState<AssetEntity, AssetPathEntity,
+            DefaultAssetPickerBuilderDelegate>
+        state,
+  ) {
     super.initState(state);
     presentLimitedTapGestureRecognizer = TapGestureRecognizer()
       ..onTap = PhotoManager.presentLimited;
@@ -984,8 +987,7 @@ class DefaultAssetPickerBuilderDelegate
     if (selectPredicateResult == false) {
       return;
     }
-    final DefaultAssetPickerProvider provider =
-        context.read<DefaultAssetPickerProvider>();
+    final provider = context.read<T>();
     if (selected) {
       provider.unSelectAsset(asset);
       return;
@@ -1117,7 +1119,7 @@ class DefaultAssetPickerBuilderDelegate
     int? index,
     AssetEntity currentAsset,
   ) async {
-    final p = context.read<DefaultAssetPickerProvider>();
+    final p = context.read<T>();
     // - When we reached the maximum select count and the asset is not selected,
     //   do nothing.
     // - When the special type is WeChat Moment, pictures and videos cannot
@@ -1184,7 +1186,7 @@ class DefaultAssetPickerBuilderDelegate
     if (current.isEmpty) {
       throw StateError('Previewing empty assets is not allowed. $_debugFlow');
     }
-    final List<AssetEntity>? result = await AssetPickerViewer.pushToViewer(
+    final result = await AssetPickerViewer.pushToViewer<T>(
       context,
       currentIndex: effectiveIndex,
       previewAssets: current,
@@ -1197,6 +1199,7 @@ class DefaultAssetPickerBuilderDelegate
       maxAssets: p.maxAssets,
       shouldReversePreview: revert,
       shouldAutoplayPreview: shouldAutoplayPreview,
+      enableLivePhoto: enableLivePhoto,
       useRootNavigator: viewerUseRootNavigator,
       pageRouteSettings: viewerPageRouteSettings,
       pageRouteBuilder: viewerPageRouteBuilder,
@@ -1224,10 +1227,15 @@ class DefaultAssetPickerBuilderDelegate
   Widget androidLayout(BuildContext context) {
     return AssetPickerAppBarWrapper(
       appBar: appBar(context),
-      body: Consumer<DefaultAssetPickerProvider>(
-        builder: (BuildContext context, DefaultAssetPickerProvider p, _) {
-          final bool shouldDisplayAssets =
-              p.hasAssetsToDisplay || shouldBuildSpecialItem;
+      body: Consumer<T>(
+        builder: (context, p, _) {
+          final hasAssetsToDisplay = p.hasAssetsToDisplay;
+          final shouldBuildSpecialItems = assetsGridSpecialItemsFinalized(
+            context: context,
+            path: p.currentPath?.path,
+          ).isNotEmpty;
+          final shouldDisplayAssets =
+              hasAssetsToDisplay || shouldBuildSpecialItems;
           return AnimatedSwitcher(
             duration: switchingPathDuration,
             child: shouldDisplayAssets
@@ -1275,11 +1283,16 @@ class DefaultAssetPickerBuilderDelegate
       return Stack(
         children: <Widget>[
           Positioned.fill(
-            child: Consumer<DefaultAssetPickerProvider>(
-              builder: (_, DefaultAssetPickerProvider p, __) {
+            child: Consumer<T>(
+              builder: (context, p, _) {
+                final hasAssetsToDisplay = p.hasAssetsToDisplay;
+                final shouldBuildSpecialItems = assetsGridSpecialItemsFinalized(
+                  context: context,
+                  path: p.currentPath?.path,
+                ).isNotEmpty;
+                final shouldDisplayAssets =
+                    hasAssetsToDisplay || shouldBuildSpecialItems;
                 final Widget child;
-                final bool shouldDisplayAssets =
-                    p.hasAssetsToDisplay || shouldBuildSpecialItem;
                 if (shouldDisplayAssets) {
                   child = Stack(
                     children: <Widget>[
@@ -1317,8 +1330,8 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget loadingIndicator(BuildContext context) {
-    return Selector<DefaultAssetPickerProvider, bool>(
-      selector: (_, DefaultAssetPickerProvider p) => p.isAssetsEmpty,
+    return Selector<T, bool>(
+      selector: (_, T p) => p.isAssetsEmpty,
       builder: (BuildContext context, bool isAssetsEmpty, Widget? w) {
         if (loadingIndicatorBuilder != null) {
           return loadingIndicatorBuilder!(context, isAssetsEmpty);
@@ -1337,26 +1350,18 @@ class DefaultAssetPickerBuilderDelegate
     appBarPreferredSize ??= appBar(context).preferredSize;
     final bool gridRevert = effectiveShouldRevertGrid(context);
     final accessibleNavigation = MediaQuery.accessibleNavigationOf(context);
-    return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
-      selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
+    return Selector<T, PathWrapper<AssetPathEntity>?>(
+      selector: (_, T p) => p.currentPath,
       builder: (context, wrapper, _) {
         // First, we need the count of the assets.
         int totalCount = wrapper?.assetCount ?? 0;
-        final Widget? specialItem;
-        // If user chose a special item's position, add 1 count.
-        if (specialItemPosition != SpecialItemPosition.none) {
-          specialItem = specialItemBuilder?.call(
-            context,
-            wrapper?.path,
-            totalCount,
-          );
-          if (specialItem != null) {
-            totalCount += 1;
-          }
-        } else {
-          specialItem = null;
-        }
-        if (totalCount == 0 && specialItem == null) {
+        final specialItemsFinalized = assetsGridSpecialItemsFinalized(
+          context: context,
+          path: wrapper?.path,
+        );
+        totalCount += specialItemsFinalized.length;
+
+        if (totalCount == 0 && specialItemsFinalized.isEmpty) {
           return loadingIndicator(context);
         }
 
@@ -1375,6 +1380,7 @@ class DefaultAssetPickerBuilderDelegate
             context: context,
             pathWrapper: wrapper,
             onlyOneScreen: onlyOneScreen,
+            specialItemsFinalized: specialItemsFinalized,
           );
           return SliverGrid(
             delegate: SliverChildBuilderDelegate(
@@ -1387,10 +1393,10 @@ class DefaultAssetPickerBuilderDelegate
                 }
 
                 Widget child = assetGridItemBuilder(
-                  context,
-                  index,
-                  assets,
-                  specialItem: specialItem,
+                  context: context,
+                  index: index,
+                  currentAssets: assets,
+                  specialItemsFinalized: specialItemsFinalized,
                 );
 
                 // Enables drag-to-select when:
@@ -1481,7 +1487,7 @@ class DefaultAssetPickerBuilderDelegate
                 context: context,
                 assets: assets,
                 placeholderCount: placeholderCount,
-                specialItem: specialItem,
+                specialItemsFinalized: specialItemsFinalized,
               ),
               findChildIndexCallback: (Key? key) {
                 if (key is ValueKey<String>) {
@@ -1489,6 +1495,7 @@ class DefaultAssetPickerBuilderDelegate
                     id: key.value,
                     assets: assets,
                     placeholderCount: placeholderCount,
+                    specialItemsFinalized: specialItemsFinalized,
                   );
                 }
                 return null;
@@ -1521,6 +1528,7 @@ class DefaultAssetPickerBuilderDelegate
               context: context,
               constraints: constraints,
               pathWrapper: wrapper,
+              specialItemsFinalized: specialItemsFinalized,
             );
 
             final reverted = gridRevert && !onlyOneScreen;
@@ -1530,9 +1538,8 @@ class DefaultAssetPickerBuilderDelegate
                   : Directionality.of(context),
               child: ColoredBox(
                 color: theme.canvasColor,
-                child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-                  selector: (_, DefaultAssetPickerProvider p) =>
-                      p.currentAssets,
+                child: Selector<T, List<AssetEntity>>(
+                  selector: (_, T p) => p.currentAssets,
                   builder: (BuildContext context, List<AssetEntity> assets, _) {
                     final SliverGap bottomGap = SliverGap.v(
                       context.bottomPadding + bottomSectionHeight,
@@ -1584,33 +1591,41 @@ class DefaultAssetPickerBuilderDelegate
   ///      图片和视频类型
   ///  * 在索引到达倒数第三列的时候加载更多资源。
   @override
-  Widget assetGridItemBuilder(
-    BuildContext context,
-    int index,
-    List<AssetEntity> currentAssets, {
-    Widget? specialItem,
+  Widget assetGridItemBuilder({
+    required BuildContext context,
+    required int index,
+    required List<AssetEntity> currentAssets,
+    required List<SpecialItemFinalized> specialItemsFinalized,
   }) {
-    final DefaultAssetPickerProvider p =
-        context.read<DefaultAssetPickerProvider>();
+    final p = context.read<T>();
     final int length = currentAssets.length;
     final PathWrapper<AssetPathEntity>? currentWrapper = p.currentPath;
     final AssetPathEntity? currentPathEntity = currentWrapper?.path;
 
-    if (specialItem != null) {
-      if ((index == 0 && specialItemPosition == SpecialItemPosition.prepend) ||
-          (index == length &&
-              specialItemPosition == SpecialItemPosition.append)) {
-        return specialItem;
+    final prependItems = <SpecialItemFinalized>[];
+    final appendItems = <SpecialItemFinalized>[];
+    for (final model in specialItemsFinalized) {
+      switch (model.position) {
+        case SpecialItemPosition.prepend:
+          prependItems.add(model);
+        case SpecialItemPosition.append:
+          appendItems.add(model);
       }
     }
 
-    final int currentIndex;
-    if (specialItem != null &&
-        specialItemPosition == SpecialItemPosition.prepend) {
-      currentIndex = index - 1;
-    } else {
-      currentIndex = index;
+    if (prependItems.isNotEmpty) {
+      if (index < prependItems.length) {
+        return specialItemsFinalized[index].item;
+      }
     }
+
+    if (appendItems.isNotEmpty) {
+      if (index >= length + prependItems.length) {
+        return specialItemsFinalized[index - length].item;
+      }
+    }
+
+    final currentIndex = index - prependItems.length;
 
     if (currentPathEntity == null) {
       return const SizedBox.shrink();
@@ -1641,14 +1656,23 @@ class DefaultAssetPickerBuilderDelegate
         itemBannedIndicator(context, asset),
       ],
     );
-    return assetGridItemSemanticsBuilder(context, index, asset, content);
+    return assetGridItemSemanticsBuilder(
+      context,
+      index,
+      asset,
+      content,
+      specialItemsFinalized,
+    );
   }
 
-  int semanticIndex(int index) {
-    if (specialItemPosition != SpecialItemPosition.prepend) {
-      return index + 1;
-    }
-    return index;
+  int assetGridItemSemanticIndex(
+    int index,
+    List<SpecialItemFinalized> specialItemsFinalized,
+  ) {
+    final prependItems = specialItemsFinalized.where(
+      (model) => model.position == SpecialItemPosition.prepend,
+    );
+    return index - prependItems.length;
   }
 
   @override
@@ -1657,12 +1681,13 @@ class DefaultAssetPickerBuilderDelegate
     int index,
     AssetEntity asset,
     Widget child,
+    List<SpecialItemFinalized> specialItemsFinalized,
   ) {
     return ValueListenableBuilder<bool>(
       valueListenable: isSwitchingPath,
       builder: (_, bool isSwitchingPath, Widget? child) {
-        return Consumer<DefaultAssetPickerProvider>(
-          builder: (_, DefaultAssetPickerProvider p, __) {
+        return Consumer<T>(
+          builder: (_, T p, __) {
             final bool isBanned = (!p.selectedAssets.contains(asset) &&
                     p.selectedMaximumAssets) ||
                 (isWeChatMoment &&
@@ -1674,7 +1699,7 @@ class DefaultAssetPickerBuilderDelegate
             final int selectedIndex = p.selectedAssets.indexOf(asset) + 1;
             final labels = <String>[
               '${semanticsTextDelegate.semanticTypeLabel(asset.type)}'
-                  '${semanticIndex(index)}',
+                  '${assetGridItemSemanticIndex(index, specialItemsFinalized)}',
               asset.createDateTime.toString().replaceAll('.000', ''),
               if (asset.type == AssetType.audio ||
                   asset.type == AssetType.video)
@@ -1704,7 +1729,8 @@ class DefaultAssetPickerBuilderDelegate
               onLongPressHint: semanticsTextDelegate.sActionPreviewHint,
               selected: isSelected,
               sortKey: OrdinalSortKey(
-                semanticIndex(index).toDouble(),
+                assetGridItemSemanticIndex(index, specialItemsFinalized)
+                    .toDouble(),
                 name: 'GridItem',
               ),
               value: selectedIndex > 0 ? '$selectedIndex' : null,
@@ -1717,7 +1743,8 @@ class DefaultAssetPickerBuilderDelegate
                       }
                     : null,
                 child: IndexedSemantics(
-                  index: semanticIndex(index),
+                  index:
+                      assetGridItemSemanticIndex(index, specialItemsFinalized),
                   child: child,
                 ),
               ),
@@ -1733,12 +1760,14 @@ class DefaultAssetPickerBuilderDelegate
   int findChildIndexBuilder({
     required String id,
     required List<AssetEntity> assets,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   }) {
+    final prependItems = specialItemsFinalized.where(
+      (model) => model.position == SpecialItemPosition.prepend,
+    );
     int index = assets.indexWhere((AssetEntity e) => e.id == id);
-    if (specialItemPosition == SpecialItemPosition.prepend) {
-      index += 1;
-    }
+    index += prependItems.length;
     index += placeholderCount;
     return index;
   }
@@ -1747,30 +1776,10 @@ class DefaultAssetPickerBuilderDelegate
   int assetsGridItemCount({
     required BuildContext context,
     required List<AssetEntity> assets,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
-    Widget? specialItem,
   }) {
-    final PathWrapper<AssetPathEntity>? currentWrapper = context
-        .select<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
-      (DefaultAssetPickerProvider p) => p.currentPath,
-    );
-    final AssetPathEntity? currentPathEntity = currentWrapper?.path;
-    final int length = assets.length + placeholderCount;
-
-    // Return 1 if the [specialItem] build something.
-    if (currentPathEntity == null && specialItem != null) {
-      return placeholderCount + 1;
-    }
-
-    // Return actual length if the current path is all.
-    // 如果当前目录是全部内容，则返回实际的内容数量。
-    if (currentPathEntity?.isAll != true && specialItem == null) {
-      return length;
-    }
-    return switch (specialItemPosition) {
-      SpecialItemPosition.none => length,
-      SpecialItemPosition.prepend || SpecialItemPosition.append => length + 1,
-    };
+    return assets.length + specialItemsFinalized.length + placeholderCount;
   }
 
   @override
@@ -1836,13 +1845,13 @@ class DefaultAssetPickerBuilderDelegate
     );
   }
 
-  /// It'll pop with [AssetPickerProvider.selectedAssets]
+  /// It'll pop with provider's `selectedAssets`
   /// when there are any assets were chosen.
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   @override
   Widget confirmButton(BuildContext context) {
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (_, DefaultAssetPickerProvider p, __) {
+    return Consumer<T>(
+      builder: (_, T p, __) {
         final bool isSelectedNotEmpty = p.isSelectedNotEmpty;
         final bool shouldAllowConfirm =
             isSelectedNotEmpty || p.previousSelectedAssets.isNotEmpty;
@@ -1921,7 +1930,8 @@ class DefaultAssetPickerBuilderDelegate
             ),
             if (asset.type == AssetType.video) // 如果为视频则显示标识
               videoIndicator(context, asset),
-            if (asset.isLivePhoto) buildLivePhotoIndicator(context, asset),
+            if (enableLivePhoto && asset.isLivePhoto)
+              buildLivePhotoIndicator(context, asset),
           ],
         );
       },
@@ -2052,15 +2062,11 @@ class DefaultAssetPickerBuilderDelegate
               ),
             ),
             Flexible(
-              child: Selector<DefaultAssetPickerProvider,
-                  List<PathWrapper<AssetPathEntity>>>(
-                selector: (_, DefaultAssetPickerProvider p) => p.paths,
+              child: Selector<T, List<PathWrapper<AssetPathEntity>>>(
+                selector: (_, T p) => p.paths,
                 builder: (_, List<PathWrapper<AssetPathEntity>> paths, __) {
-                  final List<PathWrapper<AssetPathEntity>> filtered = paths
-                      .where(
-                        (PathWrapper<AssetPathEntity> p) => p.assetCount != 0,
-                      )
-                      .toList();
+                  final filtered =
+                      paths.where((p) => p.assetCount != 0).toList();
                   return ListView.separated(
                     padding: const EdgeInsetsDirectional.only(top: 1),
                     shrinkWrap: true,
@@ -2129,9 +2135,8 @@ class DefaultAssetPickerBuilderDelegate
             borderRadius: BorderRadius.circular(999),
             color: theme.focusColor,
           ),
-          child: Selector<DefaultAssetPickerProvider,
-              PathWrapper<AssetPathEntity>?>(
-            selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
+          child: Selector<T, PathWrapper<AssetPathEntity>?>(
+            selector: (_, T p) => p.currentPath,
             builder: (_, PathWrapper<AssetPathEntity>? p, Widget? w) {
               final AssetPathEntity? path = p?.path;
               return Row(
@@ -2224,8 +2229,8 @@ class DefaultAssetPickerBuilderDelegate
     if (semanticsCount != null) {
       labelBuffer.write(': $semanticsCount');
     }
-    return Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
-      selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
+    return Selector<T, PathWrapper<AssetPathEntity>?>(
+      selector: (_, T p) => p.currentPath,
       builder: (_, PathWrapper<AssetPathEntity>? currentWrapper, __) {
         final bool isSelected = currentWrapper?.path == pathEntity;
         return Semantics(
@@ -2239,7 +2244,7 @@ class DefaultAssetPickerBuilderDelegate
               splashFactory: InkSplash.splashFactory,
               onTap: () {
                 Feedback.forTap(context);
-                context.read<DefaultAssetPickerProvider>().switchPath(wrapper);
+                context.read<T>().switchPath(wrapper);
                 isSwitchingPath.value = false;
                 gridScrollController.jumpTo(0);
               },
@@ -2287,8 +2292,8 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget previewButton(BuildContext context) {
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (_, DefaultAssetPickerProvider p, Widget? child) {
+    return Consumer<T>(
+      builder: (_, T p, Widget? child) {
         return ValueListenableBuilder<bool>(
           valueListenable: isSwitchingPath,
           builder: (_, bool isSwitchingPath, __) => Semantics(
@@ -2300,16 +2305,15 @@ class DefaultAssetPickerBuilderDelegate
           ),
         );
       },
-      child: Consumer<DefaultAssetPickerProvider>(
-        builder: (context, DefaultAssetPickerProvider p, __) => GestureDetector(
+      child: Consumer<T>(
+        builder: (context, T p, __) => GestureDetector(
           onTap: p.isSelectedNotEmpty
               ? () {
                   viewAsset(context, null, p.selectedAssets.first);
                 }
               : null,
-          child: Selector<DefaultAssetPickerProvider, String>(
-            selector: (_, DefaultAssetPickerProvider p) =>
-                p.selectedDescriptions,
+          child: Selector<T, String>(
+            selector: (_, T p) => p.selectedDescriptions,
             builder: (BuildContext c, __, ___) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: ScaleText(
@@ -2334,8 +2338,8 @@ class DefaultAssetPickerBuilderDelegate
 
   @override
   Widget itemBannedIndicator(BuildContext context, AssetEntity asset) {
-    return Consumer<DefaultAssetPickerProvider>(
-      builder: (_, DefaultAssetPickerProvider p, __) {
+    return Consumer<T>(
+      builder: (_, T p, __) {
         final bool isDisabled =
             (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) ||
                 (isWeChatMoment &&
@@ -2356,8 +2360,8 @@ class DefaultAssetPickerBuilderDelegate
     final double indicatorSize =
         MediaQuery.sizeOf(context).width / gridCount / 3;
     final Duration duration = switchingPathDuration * 0.75;
-    return Selector<DefaultAssetPickerProvider, String>(
-      selector: (_, DefaultAssetPickerProvider p) => p.selectedDescriptions,
+    return Selector<T, String>(
+      selector: (_, T p) => p.selectedDescriptions,
       builder: (BuildContext context, String descriptions, __) {
         final bool selected = descriptions.contains(asset.toString());
         final Widget innerSelector = AnimatedContainer(
@@ -2422,8 +2426,8 @@ class DefaultAssetPickerBuilderDelegate
                 viewAsset(context, index, asset);
               }
             : null,
-        child: Consumer<DefaultAssetPickerProvider>(
-          builder: (_, DefaultAssetPickerProvider p, __) {
+        child: Consumer<T>(
+          builder: (_, T p, __) {
             final int index = p.selectedAssets.indexOf(asset);
             final bool selected = index != -1;
             return AnimatedContainer(
@@ -2617,7 +2621,7 @@ class DefaultAssetPickerBuilderDelegate
       data: theme,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: overlayStyle,
-        child: CNP<DefaultAssetPickerProvider>.value(
+        child: CNP<T>.value(
           value: provider,
           builder: (BuildContext context, _) => Scaffold(
             backgroundColor: theme.scaffoldBackgroundColor,

@@ -2,12 +2,13 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:async';
+import 'dart:async' show FutureOr;
 
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart' show ChangeNotifier;
+import 'package:flutter/services.dart' show MethodCall;
+import 'package:flutter/widgets.dart' show BuildContext, Widget;
 import 'package:photo_manager/photo_manager.dart' show PermissionState;
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' show ChangeNotifierProvider;
 
 /// Mirroring [ChangeNotifierProvider].
 typedef CNP<T extends ChangeNotifier?> = ChangeNotifierProvider<T>;
@@ -28,7 +29,7 @@ typedef LoadingIndicatorBuilder = Widget Function(
 typedef SpecialItemBuilder<Path> = Widget? Function(
   BuildContext context,
   Path? path,
-  int length,
+  PermissionState permissionState,
 );
 
 /// {@template wechat_assets_picker.AssetSelectPredicate}

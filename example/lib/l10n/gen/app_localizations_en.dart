@@ -104,6 +104,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'A special item will prepend to the assets grid.';
 
   @override
+  String get pickMethodMultiSpecialItemsName => 'Multiple special items';
+
+  @override
+  String get pickMethodMultiSpecialItemsDescription =>
+      'Multiple special items will prepend or append to the assets grid';
+
+  @override
   String get pickMethodNoPreviewName => 'No preview';
 
   @override
@@ -159,6 +166,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pickMethodCustomImagePreviewThumbSizeDescription =>
       'You can reduce the thumb size to get faster load speed.';
+
+  @override
+  String get pickMethodDisableLivePhotoName => 'Disable Live-Photo';
+
+  @override
+  String get pickMethodDisableLivePhotoDescription =>
+      'Not showing Live-Photo\'s indicator and interactions.';
 
   @override
   String get customPickerNotice =>

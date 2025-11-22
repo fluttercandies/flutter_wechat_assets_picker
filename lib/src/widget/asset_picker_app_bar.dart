@@ -5,9 +5,8 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
-import 'package:wechat_picker_library/wechat_picker_library.dart';
+import 'package:flutter/semantics.dart' show OrdinalSortKey;
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 
 /// A custom app bar.
 /// 自定义的顶栏
@@ -202,11 +201,14 @@ class AssetPickerAppBar extends StatelessWidget implements PreferredSizeWidget {
     final Brightness effectiveBrightness = brightness ??
         appBarTheme.systemOverlayStyle?.statusBarBrightness ??
         theme.brightness;
-    final SystemUiOverlayStyle overlayStyle = appBarTheme.systemOverlayStyle ??
+    final overlayStyle = appBarTheme.systemOverlayStyle ??
         SystemUiOverlayStyle(
           statusBarColor: effectiveBackgroundColor,
           systemNavigationBarIconBrightness: Brightness.light,
-          statusBarIconBrightness: effectiveBrightness.reverse,
+          statusBarIconBrightness: switch (effectiveBrightness) {
+            Brightness.light => Brightness.dark,
+            Brightness.dark => Brightness.light,
+          },
           statusBarBrightness: effectiveBrightness,
         );
     child = AnnotatedRegion<SystemUiOverlayStyle>(

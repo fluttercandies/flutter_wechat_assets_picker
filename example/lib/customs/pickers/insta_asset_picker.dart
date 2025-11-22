@@ -286,7 +286,7 @@ class _InstaAssetPickerState extends State<InstaAssetPicker> {
   }
 }
 
-class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
+final class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   InstaAssetPickerBuilder({
     required super.provider,
     required super.initialPermission,
@@ -297,7 +297,6 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     super.keepScrollOffset,
   }) : super(
           shouldRevertGrid: false,
-          specialItemPosition: SpecialItemPosition.none,
         );
 
   /// Save last position of the grid view scroll controller
@@ -488,8 +487,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           width: MediaQuery.sizeOf(context).width,
           height: previewHeight(context),
           child: Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-            selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
-            builder: (_, List<AssetEntity> selected, __) {
+            selector: (_, p) => p.selectedAssets,
+            builder: (_, selected, __) {
               if (previewAsset == null && selected.isEmpty) {
                 return loadingIndicator(context);
               }
@@ -499,10 +498,13 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
               if (previewAsset != null) {
                 effectiveIndex = selected.indexOf(previewAsset);
               }
-              final List<AssetEntity> assets =
-                  selected.isEmpty ? <AssetEntity>[previewAsset!] : selected;
+              final assets = selected.isEmpty ? [previewAsset!] : selected;
 
-              return AssetPickerViewer<AssetEntity, AssetPathEntity>(
+              return AssetPickerViewer<
+                  AssetEntity,
+                  AssetPathEntity,
+                  AssetPickerViewerProvider<AssetEntity>,
+                  InstaAssetPickerViewerBuilder>(
                 builder: InstaAssetPickerViewerBuilder(
                   currentIndex: effectiveIndex == -1 ? 0 : effectiveIndex,
                   previewAssets: assets,
@@ -645,7 +647,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   Widget _buildListAlbums(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
     return Consumer<DefaultAssetPickerProvider>(
-      builder: (BuildContext context, DefaultAssetPickerProvider provider, __) {
+      builder: (context, provider, __) {
         if (isAppleOS(context)) {
           return pathEntityListWidget(context);
         }
@@ -673,9 +675,15 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   Widget _buildGrid(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
     return Consumer<DefaultAssetPickerProvider>(
-      builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
-        final bool shouldDisplayAssets =
-            p.hasAssetsToDisplay || shouldBuildSpecialItem;
+      builder: (context, p, __) {
+        final hasAssetsToDisplay = p.hasAssetsToDisplay;
+        final shouldBuildSpecialItems = assetsGridSpecialItemsFinalized(
+          context: context,
+          path: p.currentPath?.path,
+        ).isNotEmpty;
+        final shouldDisplayAssets =
+            hasAssetsToDisplay || shouldBuildSpecialItems;
+
         _initializePreviewAsset(p, shouldDisplayAssets);
 
         return AnimatedSwitcher(
@@ -767,7 +775,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       const SizedBox.shrink();
 }
 
-class InstaAssetPickerViewerBuilder
+final class InstaAssetPickerViewerBuilder
     extends DefaultAssetPickerViewerBuilderDelegate {
   InstaAssetPickerViewerBuilder({
     required super.currentIndex,

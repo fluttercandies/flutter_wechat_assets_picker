@@ -2,9 +2,9 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:math' as math;
+import 'dart:math' as math show max, min;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetEntity;
 
 import '../provider/asset_picker_provider.dart';
@@ -123,10 +123,16 @@ class AssetGridDragSelectionCoordinator {
         totalRows * (itemSize + delegate.itemSpacing) <= gridViewport;
     final reverted = gridRevert && !onlyOneScreen;
 
+    final specialItems = delegate.assetsGridSpecialItemsFinalized(
+      context: context,
+      path: provider.currentPath?.path,
+    );
+
     final double anchor = delegate.assetGridAnchor(
       context: context,
       constraints: constraints,
       pathWrapper: provider.currentPath,
+      specialItemsFinalized: specialItems,
     );
     final scrolledOffset = delegate.gridScrollController.offset
         .abs(); // Offset is negative when reverted.
@@ -157,6 +163,7 @@ class AssetGridDragSelectionCoordinator {
       context: context,
       pathWrapper: provider.currentPath,
       onlyOneScreen: onlyOneScreen,
+      specialItemsFinalized: specialItems,
     );
     // Make the index starts with the bottom if the grid is reverted.
     if (reverted && placeholderCount > 0 && rowIndex > 0 && anchor < 1.0) {

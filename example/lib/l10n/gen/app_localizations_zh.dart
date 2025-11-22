@@ -98,6 +98,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pickMethodPrependItemDescription => '网格的靠前位置会添加一个自定义的 widget。';
 
   @override
+  String get pickMethodMultiSpecialItemsName => '多个特殊 widget';
+
+  @override
+  String get pickMethodMultiSpecialItemsDescription =>
+      '网格的靠前或靠后位置会可以多个自定义的 widget。';
+
+  @override
   String get pickMethodNoPreviewName => '禁止预览';
 
   @override
@@ -148,6 +155,12 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get pickMethodCustomImagePreviewThumbSizeDescription =>
       '通过降低缩略图的质量来获得更快的加载速度。';
+
+  @override
+  String get pickMethodDisableLivePhotoName => '禁用实况照片 (Live-Photo)';
+
+  @override
+  String get pickMethodDisableLivePhotoDescription => '不显示实况照片的图标和相关交互。';
 
   @override
   String get customPickerNotice =>

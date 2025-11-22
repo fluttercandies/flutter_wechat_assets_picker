@@ -3,13 +3,13 @@
 // in the LICENSE file.
 
 import 'package:flutter/material.dart' hide Path;
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show MethodCall;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:wechat_picker_library/wechat_picker_library.dart'
     show buildTheme;
 
 import '../constants/config.dart';
-import '../constants/constants.dart';
+import '../constants/constants.dart' show packageName;
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_page_route.dart';
@@ -97,7 +97,8 @@ class AssetPickerDelegate {
       filterOptions: pickerConfig.filterOptions,
       initializeDelayDuration: route.transitionDuration,
     );
-    final Widget picker = AssetPicker<AssetEntity, AssetPathEntity>(
+    final picker = AssetPicker<AssetEntity, AssetPathEntity,
+        DefaultAssetPickerBuilderDelegate>(
       key: key,
       permissionRequestOption: permissionRequestOption,
       builder: DefaultAssetPickerBuilderDelegate(
@@ -108,8 +109,7 @@ class AssetPickerDelegate {
         gridThumbnailSize: pickerConfig.gridThumbnailSize,
         previewThumbnailSize: pickerConfig.previewThumbnailSize,
         specialPickerType: pickerConfig.specialPickerType,
-        specialItemPosition: pickerConfig.specialItemPosition,
-        specialItemBuilder: pickerConfig.specialItemBuilder,
+        specialItems: pickerConfig.specialItems,
         loadingIndicatorBuilder: pickerConfig.loadingIndicatorBuilder,
         selectPredicate: pickerConfig.selectPredicate,
         shouldRevertGrid: pickerConfig.shouldRevertGrid,
@@ -123,6 +123,7 @@ class AssetPickerDelegate {
         locale: Localizations.maybeLocaleOf(context),
         shouldAutoplayPreview: pickerConfig.shouldAutoplayPreview,
         dragToSelect: pickerConfig.dragToSelect,
+        enableLivePhoto: pickerConfig.enableLivePhoto,
       ),
     );
     final List<AssetEntity>? result = await Navigator.maybeOf(
@@ -155,10 +156,13 @@ class AssetPickerDelegate {
   ///  * [AssetPickerBuilderDelegate] for how to customize/override widgets
   ///    during the picking process.
   /// {@endtemplate}
-  Future<List<Asset>?> pickAssetsWithDelegate<Asset, Path,
-      PickerProvider extends AssetPickerProvider<Asset, Path>>(
+  Future<List<Asset>?> pickAssetsWithDelegate<
+      Asset,
+      Path,
+      PickerProvider extends AssetPickerProvider<Asset, Path>,
+      Delegate extends AssetPickerBuilderDelegate<Asset, Path>>(
     BuildContext context, {
-    required AssetPickerBuilderDelegate<Asset, Path> delegate,
+    required Delegate delegate,
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
     Key? key,
@@ -167,15 +171,15 @@ class AssetPickerDelegate {
     AssetPickerPageRouteBuilder<List<Asset>>? pageRouteBuilder,
   }) async {
     await permissionCheck(requestOption: permissionRequestOption);
-    final Widget picker = AssetPicker<Asset, Path>(
+    final picker = AssetPicker<Asset, Path, Delegate>(
       key: key,
       permissionRequestOption: permissionRequestOption,
       builder: delegate,
     );
-    final List<Asset>? result = await Navigator.maybeOf(
+    final result = await Navigator.maybeOf(
       context,
       rootNavigator: useRootNavigator,
-    )?.push<List<Asset>>(
+    )?.push(
       pageRouteBuilder?.call(picker) ??
           AssetPickerPageRoute<List<Asset>>(
             builder: (_) => picker,

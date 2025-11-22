@@ -163,17 +163,18 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
     return GestureDetector(
       onTap: isDisplayingDetail
           ? () async {
-              final Widget viewer = AssetPickerViewer<File, Directory>(
-                builder: FileAssetPickerViewerBuilderDelegate(
+              final result = await AssetPickerViewer.pushToViewerWithDelegate<
+                  File,
+                  Directory,
+                  FileAssetPickerViewerProvider,
+                  FileAssetPickerViewerBuilderDelegate>(
+                context,
+                delegate: FileAssetPickerViewerBuilderDelegate(
                   currentIndex: index,
                   previewAssets: fileList,
                   provider: FileAssetPickerViewerProvider(fileList),
                   themeData: AssetPicker.themeData(themeColor),
                 ),
-              );
-              final List<File>? result =
-                  await Navigator.maybeOf(context)?.push<List<File>>(
-                AssetPickerViewerPageRoute(builder: (context) => viewer),
               );
               if (result != null && result != fileList) {
                 fileList
@@ -261,7 +262,8 @@ class _DirectoryFileAssetPickerState extends State<DirectoryFileAssetPicker> {
   }
 }
 
-class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
+final class FileAssetPickerProvider
+    extends AssetPickerProvider<File, Directory> {
   FileAssetPickerProvider({
     required List<File> selectedAssets,
   }) : super(selectedAssets: selectedAssets) {
@@ -346,7 +348,7 @@ class FileAssetPickerProvider extends AssetPickerProvider<File, Directory> {
   }
 }
 
-class FileAssetPickerBuilder
+final class FileAssetPickerBuilder
     extends AssetPickerBuilderDelegate<File, Directory> {
   FileAssetPickerBuilder({
     required this.provider,
@@ -368,8 +370,13 @@ class FileAssetPickerBuilder
     int? index,
     File currentAsset,
   ) async {
-    final Widget viewer = AssetPickerViewer<File, Directory>(
-      builder: FileAssetPickerViewerBuilderDelegate(
+    final result = await AssetPickerViewer.pushToViewerWithDelegate<
+        File,
+        Directory,
+        FileAssetPickerViewerProvider,
+        FileAssetPickerViewerBuilderDelegate>(
+      context,
+      delegate: FileAssetPickerViewerBuilderDelegate(
         currentIndex: index ?? provider.selectedAssets.indexOf(currentAsset),
         previewAssets: provider.selectedAssets,
         provider: FileAssetPickerViewerProvider(provider.selectedAssets),
@@ -378,37 +385,9 @@ class FileAssetPickerBuilder
         selectorProvider: provider,
       ),
     );
-    final List<File>? result =
-        await Navigator.maybeOf(context)?.push<List<File>?>(
-      AssetPickerViewerPageRoute(builder: (context) => viewer),
-    );
     if (result != null) {
       Navigator.maybeOf(context)?.maybePop(result);
     }
-  }
-
-  Future<List<File>?> pushToPicker(
-    BuildContext context, {
-    required int index,
-    required List<File> previewAssets,
-    List<File>? selectedAssets,
-    FileAssetPickerProvider? selectorProvider,
-  }) async {
-    final Widget viewer = AssetPickerViewer<File, Directory>(
-      builder: FileAssetPickerViewerBuilderDelegate(
-        currentIndex: index,
-        previewAssets: previewAssets,
-        provider: selectedAssets != null
-            ? FileAssetPickerViewerProvider(selectedAssets)
-            : null,
-        themeData: AssetPicker.themeData(themeColor),
-        selectedAssets: selectedAssets,
-        selectorProvider: selectorProvider,
-      ),
-    );
-    return await Navigator.maybeOf(context)?.push<List<File>?>(
-      AssetPickerViewerPageRoute(builder: (context) => viewer),
-    );
   }
 
   @override
@@ -545,9 +524,27 @@ class FileAssetPickerBuilder
   Widget assetsGridBuilder(BuildContext context) {
     appBarPreferredSize ??= appBar(context).preferredSize;
     int totalCount = provider.currentAssets.length;
-    if (specialItemPosition != SpecialItemPosition.none) {
-      totalCount += 1;
-    }
+
+    final specialItemsFinalized = specialItems
+        .map((item) {
+          final specialItem = item.builder?.call(
+            context,
+            provider.currentPath?.path,
+            permissionNotifier.value,
+          );
+          if (specialItem != null) {
+            return SpecialItemFinalized(
+              position: item.position,
+              item: specialItem,
+            );
+          }
+          return null;
+        })
+        .whereType<SpecialItemFinalized>()
+        .toList();
+
+    totalCount += specialItemsFinalized.length;
+
     final int placeholderCount;
     if (isAppleOS(context) && totalCount % gridCount != 0) {
       placeholderCount = gridCount - totalCount % gridCount;
@@ -572,13 +569,19 @@ class FileAssetPickerBuilder
               }
               return Directionality(
                 textDirection: Directionality.of(context),
-                child: assetGridItemBuilder(c, index, assets),
+                child: assetGridItemBuilder(
+                  context: c,
+                  index: index,
+                  currentAssets: assets,
+                  specialItemsFinalized: specialItemsFinalized,
+                ),
               );
             },
           ),
           childCount: assetsGridItemCount(
             context: ctx,
             assets: assets,
+            specialItemsFinalized: specialItemsFinalized,
             placeholderCount: placeholderCount,
           ),
           findChildIndexCallback: (Key? key) {
@@ -587,6 +590,7 @@ class FileAssetPickerBuilder
                 id: key.value,
                 assets: assets,
                 placeholderCount: placeholderCount,
+                specialItemsFinalized: specialItemsFinalized,
               );
             }
             return null;
@@ -657,15 +661,39 @@ class FileAssetPickerBuilder
   }
 
   @override
-  Widget assetGridItemBuilder(
-    BuildContext context,
-    int index,
-    List<File> currentAssets,
-  ) {
-    final int currentIndex = switch (specialItemPosition) {
-      SpecialItemPosition.none || SpecialItemPosition.append => index,
-      SpecialItemPosition.prepend => index - 1,
-    };
+  Widget assetGridItemBuilder({
+    required BuildContext context,
+    required int index,
+    required List<File> currentAssets,
+    required List<SpecialItemFinalized> specialItemsFinalized,
+  }) {
+    final int length = currentAssets.length;
+
+    final prependItems = <SpecialItemFinalized>[];
+    final appendItems = <SpecialItemFinalized>[];
+    for (final item in specialItemsFinalized) {
+      switch (item.position) {
+        case SpecialItemPosition.prepend:
+          prependItems.add(item);
+        case SpecialItemPosition.append:
+          appendItems.add(item);
+      }
+    }
+
+    if (prependItems.isNotEmpty) {
+      if (index < prependItems.length) {
+        return specialItemsFinalized[index].item;
+      }
+    }
+
+    if (appendItems.isNotEmpty) {
+      if (index >= length + prependItems.length) {
+        return specialItemsFinalized[index - length].item;
+      }
+    }
+
+    final currentIndex = index - prependItems.length;
+
     final File asset = currentAssets.elementAt(currentIndex);
     final Widget builder = imageAndVideoItemBuilder(
       context,
@@ -688,6 +716,7 @@ class FileAssetPickerBuilder
     int index,
     File asset,
     Widget child,
+    List<SpecialItemFinalized> specialItemsFinalized,
   ) {
     return Semantics(child: child);
   }
@@ -696,14 +725,10 @@ class FileAssetPickerBuilder
   int assetsGridItemCount({
     required BuildContext context,
     required List<File> assets,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   }) {
-    final int length = switch (specialItemPosition) {
-      SpecialItemPosition.none => assets.length,
-      SpecialItemPosition.prepend ||
-      SpecialItemPosition.append =>
-        assets.length + 1,
-    };
+    final int length = assets.length + specialItems.length;
     return length + placeholderCount;
   }
 
@@ -975,23 +1000,12 @@ class FileAssetPickerBuilder
 
   @override
   Widget previewButton(BuildContext context) {
-    return Selector<FileAssetPickerProvider, bool>(
-      selector: (_, FileAssetPickerProvider p) => p.isSelectedNotEmpty,
-      builder: (_, bool isSelectedNotEmpty, __) {
+    return Consumer<FileAssetPickerProvider>(
+      builder: (_, p, __) {
+        final isSelectedNotEmpty = p.isSelectedNotEmpty;
         return GestureDetector(
           onTap: isSelectedNotEmpty
-              ? () async {
-                  final List<File>? result = await pushToPicker(
-                    context,
-                    index: 0,
-                    previewAssets: provider.selectedAssets,
-                    selectedAssets: provider.selectedAssets,
-                    selectorProvider: provider,
-                  );
-                  if (result != null) {
-                    Navigator.maybeOf(context)?.pop(result);
-                  }
-                }
+              ? () => viewAsset(context, null, p.selectedAssets.first)
               : null,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -1099,15 +1113,8 @@ class FileAssetPickerBuilder
             selectedAssets.where((File f) => f.path == asset.path).isNotEmpty;
         return Positioned.fill(
           child: GestureDetector(
-            onTap: () async {
-              final List<File>? result = await pushToPicker(
-                context,
-                index: index,
-                previewAssets: provider.currentAssets,
-              );
-              if (result != null) {
-                Navigator.maybeOf(context)?.pop(result);
-              }
+            onTap: () {
+              viewAsset(context, index, asset);
             },
             child: AnimatedContainer(
               duration: switchingPathDuration,
@@ -1130,6 +1137,7 @@ class FileAssetPickerBuilder
   int findChildIndexBuilder({
     required String id,
     required List<File> assets,
+    required List<SpecialItemFinalized> specialItemsFinalized,
     int placeholderCount = 0,
   }) {
     return assets.indexWhere((File file) => file.path == id);
@@ -1159,7 +1167,8 @@ class FileAssetPickerBuilder
   }
 }
 
-class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
+final class FileAssetPickerViewerProvider
+    extends AssetPickerViewerProvider<File> {
   FileAssetPickerViewerProvider(List<File> super.assets);
 
   @override
@@ -1170,18 +1179,19 @@ class FileAssetPickerViewerProvider extends AssetPickerViewerProvider<File> {
   }
 }
 
-class FileAssetPickerViewerBuilderDelegate
-    extends AssetPickerViewerBuilderDelegate<File, Directory> {
+final class FileAssetPickerViewerBuilderDelegate
+    extends AssetPickerViewerBuilderDelegate<File, Directory,
+        FileAssetPickerViewerProvider> {
   FileAssetPickerViewerBuilderDelegate({
     required super.previewAssets,
     required super.themeData,
     required super.currentIndex,
     super.selectedAssets,
-    super.selectorProvider,
+    this.selectorProvider,
     super.provider,
-  }) : super(
-          maxAssets: selectorProvider?.maxAssets,
-        );
+  }) : super(maxAssets: selectorProvider?.maxAssets);
+
+  final FileAssetPickerProvider? selectorProvider;
 
   late final PageController _pageController = PageController(
     initialPage: currentIndex,

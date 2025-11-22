@@ -13,7 +13,7 @@ on:
       - main
 
 env:
-  MINIMUM_FLUTTER_VERSION: '3.22.3'
+  MINIMUM_FLUTTER_VERSION: '3.27.4'
 
 jobs:
   analyze:
@@ -48,7 +48,9 @@ jobs:
         run: flutter test
       - name: Publish dry-run
         if: matrix.flutter-version != 'min'
-        run: dart pub publish --dry-run
+        run: |
+          git --no-pager diff
+          dart pub publish --dry-run
       - name: Generate docs
         if: matrix.flutter-version != 'min'
         run: |

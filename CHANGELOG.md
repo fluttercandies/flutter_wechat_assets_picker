@@ -9,7 +9,40 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+*None*.
+
+## 10.0.0
+
+**Breaking changes**
+
+- Migrate to Flutter 3.27 and drop support for previous Flutter versions.
+- Make delegate respect generic types as much as possible.
+  This is a breaking change for users who use custom delegates and providers.
+  See the migration guide for more details.
+- Remove deprecated methods.
+
+**New features**
+
+- Support multiple append/prepend specials items.
+
+## 9.8.0
+
+> [!NOTE]
+> Be aware of potential minor theme changes since the base theme has taken place in the picker's theme.
+
+**Improvements**
+
+- Improve themes by inheriting the base theme rather than standalone constructors.
+
+**Fixes**
+
+- Enabling using the package on Flutter 3.35.
+
+## 9.7.0
+
+**Improvements**
+
+- Allows specifying the fallback text delegate through `assetPickerTextDelegateFromLocale`.
 
 ## 9.8.0
 

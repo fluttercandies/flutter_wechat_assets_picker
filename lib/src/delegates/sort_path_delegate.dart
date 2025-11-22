@@ -2,7 +2,7 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager/photo_manager.dart' show AssetPathEntity;
 
 import '../models/path_wrapper.dart';
 
