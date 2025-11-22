@@ -48,7 +48,9 @@ jobs:
         run: flutter test
       - name: Publish dry-run
         if: matrix.flutter-version != 'min'
-        run: dart pub publish --dry-run
+        run: |
+          git --no-pager diff
+          dart pub publish --dry-run
       - name: Generate docs
         if: matrix.flutter-version != 'min'
         run: |
