@@ -589,6 +589,7 @@ Many thanks to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/WeiJun0507"><img src="https://avatars.githubusercontent.com/u/66726409?v=4?s=50" width="50px;" alt="Wei Jun"/><br /><sub><b>Wei Jun</b></sub></a><br /><a href="#business-WeiJun0507" title="Business development">💼</a> <a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=WeiJun0507" title="Code">💻</a> <a href="#ideas-WeiJun0507" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yujune"><img src="https://avatars.githubusercontent.com/u/56582497?v=4?s=50" width="50px;" alt="JuNe"/><br /><sub><b>JuNe</b></sub></a><br /><a href="https://github.com/fluttercandies/flutter_wechat_assets_picker/commits?author=yujune" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
