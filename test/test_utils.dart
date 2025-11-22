@@ -159,7 +159,7 @@ class TestAssetPickerDelegate extends AssetPickerDelegate {
   }
 }
 
-const AssetEntity testAssetEntity = AssetEntity(
+final AssetEntity testAssetEntity = AssetEntity(
   id: 'test',
   typeInt: 0,
   width: 0,
