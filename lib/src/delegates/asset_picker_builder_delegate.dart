@@ -7,7 +7,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Path;
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -568,7 +568,7 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
       builder: (_, AssetPickerProvider<Asset, Path> p, __) {
         if (!p.selectedAssets.contains(asset) && p.selectedMaximumAssets) {
           return Container(
-            color: theme.colorScheme.background.withOpacity(.85),
+            color: theme.colorScheme.surface.withOpacity(.85),
           );
         }
         return const SizedBox.shrink();
@@ -851,6 +851,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     this.keepScrollOffset = false,
     this.shouldAutoplayPreview = false,
     this.dragToSelect,
+    this.enableLivePhoto = true,
   }) {
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
@@ -916,6 +917,9 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
 
   /// {@macro wechat_assets_picker.constants.AssetPickerConfig.dragToSelect}
   final bool? dragToSelect;
+
+  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
+  final bool enableLivePhoto;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
@@ -1203,6 +1207,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
       maxAssets: p.maxAssets,
       shouldReversePreview: revert,
       shouldAutoplayPreview: shouldAutoplayPreview,
+      enableLivePhoto: enableLivePhoto,
       useRootNavigator: viewerUseRootNavigator,
       pageRouteSettings: viewerPageRouteSettings,
       pageRouteBuilder: viewerPageRouteBuilder,
@@ -1933,7 +1938,8 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
             ),
             if (asset.type == AssetType.video) // 如果为视频则显示标识
               videoIndicator(context, asset),
-            if (asset.isLivePhoto) buildLivePhotoIndicator(context, asset),
+            if (enableLivePhoto && asset.isLivePhoto)
+              buildLivePhotoIndicator(context, asset),
           ],
         );
       },
@@ -2018,7 +2024,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                     maxHeight: MediaQuery.sizeOf(context).height *
                         (isAppleOS(context) ? .6 : .8),
                   ),
-                  color: theme.colorScheme.background,
+                  color: theme.colorScheme.surface,
                   child: child,
                 ),
               ),
@@ -2349,7 +2355,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                     p.selectedAssets.isNotEmpty);
         if (isDisabled) {
           return Container(
-            color: theme.colorScheme.background.withOpacity(.85),
+            color: theme.colorScheme.surface.withOpacity(.85),
           );
         }
         return const SizedBox.shrink();
@@ -2437,7 +2443,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
               padding: EdgeInsets.all(indicatorSize * .35),
               color: selected
                   ? theme.colorScheme.primary.withOpacity(.45)
-                  : theme.colorScheme.background.withOpacity(.1),
+                  : theme.colorScheme.surface.withOpacity(.1),
               child: selected && !isSingleAssetMode
                   ? Align(
                       alignment: AlignmentDirectional.topStart,

@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Path;
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -376,11 +376,15 @@ class DefaultAssetPickerViewerBuilderDelegate<
     super.shouldReversePreview,
     super.selectPredicate,
     this.shouldAutoplayPreview = false,
+    this.enableLivePhoto = true,
   });
 
   /// Provider for [AssetPicker].
   /// 资源选择器的状态保持
   final P? selectorProvider;
+
+  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
+  final bool enableLivePhoto;
 
   /// Thumb size for the preview of images in the viewer.
   /// 预览时图片的缩略图大小
@@ -468,6 +472,7 @@ class DefaultAssetPickerViewerBuilderDelegate<
           delegate: this,
           previewThumbnailSize: previewThumbnailSize,
           shouldAutoplayPreview: shouldAutoplayPreview,
+          enableLivePhoto: enableLivePhoto,
         ),
       AssetType.video => VideoPageBuilder(
           asset: asset,

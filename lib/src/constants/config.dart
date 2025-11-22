@@ -40,6 +40,7 @@ class AssetPickerConfig {
     this.assetsChangeRefreshPredicate,
     this.shouldAutoplayPreview = false,
     this.dragToSelect,
+    this.enableLivePhoto = true,
   })  : assert(
           pickerTheme == null || themeColor == null,
           'pickerTheme and themeColor cannot be set at the same time.',
@@ -207,4 +208,14 @@ class AssetPickerConfig {
   /// 当 `maxAssets` 为 `1` 时，该功能不可用。
   /// {@endtemplate}
   final bool? dragToSelect;
+
+  /// {@template wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
+  /// Whether to enable Live-Photo functionality in the picker.
+  /// 是否启用实况图片的功能
+  ///
+  /// When set to `false`, Live-Photo indicators and interactions will not be
+  /// displayed throughout the picker.
+  /// 当设置为 `false` 时，选择器中将不会显示实况图片相关的标识和交互。
+  /// {@endtemplate}
+  final bool enableLivePhoto;
 }

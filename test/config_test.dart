@@ -33,4 +33,21 @@ void main() {
       expect(find.text('testPathNameBuilder'), findsOneWidget);
     });
   });
+
+  group('enableLivePhoto', () {
+    test('defaults to true', () {
+      const config = AssetPickerConfig();
+      expect(config.enableLivePhoto, true);
+    });
+
+    test('can be set to false', () {
+      const config = AssetPickerConfig(enableLivePhoto: false);
+      expect(config.enableLivePhoto, false);
+    });
+
+    test('can be set to true explicitly', () {
+      const config = AssetPickerConfig(enableLivePhoto: true);
+      expect(config.enableLivePhoto, true);
+    });
+  });
 }

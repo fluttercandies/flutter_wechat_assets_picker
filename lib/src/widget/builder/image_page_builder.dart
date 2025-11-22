@@ -25,6 +25,7 @@ class ImagePageBuilder extends StatefulWidget {
     required this.delegate,
     this.previewThumbnailSize,
     this.shouldAutoplayPreview = false,
+    this.enableLivePhoto = true,
   });
 
   /// Asset currently displayed.
@@ -40,6 +41,9 @@ class ImagePageBuilder extends StatefulWidget {
   /// 预览是否自动播放
   final bool shouldAutoplayPreview;
 
+  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
+  final bool enableLivePhoto;
+
   @override
   State<ImagePageBuilder> createState() => _ImagePageBuilderState();
 }
@@ -50,7 +54,10 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
 
   bool get _isOriginal => widget.previewThumbnailSize == null;
 
-  bool get _isLivePhoto => widget.asset.isLivePhoto;
+  /// Whether the asset should be treated as a Live Photo.
+  /// Checks both the global enableLivePhoto flag and the asset's isLivePhoto
+  /// property to determine if Live Photo functionality should be active.
+  bool get _isLivePhoto => widget.enableLivePhoto && widget.asset.isLivePhoto;
 
   @override
   void didUpdateWidget(ImagePageBuilder oldWidget) {

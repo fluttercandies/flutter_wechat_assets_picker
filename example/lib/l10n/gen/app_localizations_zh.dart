@@ -157,6 +157,12 @@ class AppLocalizationsZh extends AppLocalizations {
       '通过降低缩略图的质量来获得更快的加载速度。';
 
   @override
+  String get pickMethodDisableLivePhotoName => '禁用实况照片 (Live-Photo)';
+
+  @override
+  String get pickMethodDisableLivePhotoDescription => '不显示实况照片的图标和相关交互。';
+
+  @override
   String get customPickerNotice =>
       '本页面包含了多种方式、不同界面和特定应用的自定义选择器。欢迎贡献添加你自定义的选择器。\n该页面的所有选择器的代码位于 lib/customs/pickers 目录。';
 

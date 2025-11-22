@@ -168,6 +168,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'You can reduce the thumb size to get faster load speed.';
 
   @override
+  String get pickMethodDisableLivePhotoName => 'Disable Live-Photo';
+
+  @override
+  String get pickMethodDisableLivePhotoDescription =>
+      'Not showing Live-Photo\'s indicator and interactions.';
+
+  @override
   String get customPickerNotice =>
       'This page contains customized pickers with different asset types, different UI layouts, or some use case for specific apps. Contribute to add your custom picker are welcomed.\nPickers in this page are located at the lib/customs/pickers folder.';
 

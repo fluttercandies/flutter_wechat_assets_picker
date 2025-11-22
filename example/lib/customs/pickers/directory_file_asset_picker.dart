@@ -831,7 +831,7 @@ final class FileAssetPickerBuilder
               borderRadius: isAppleOS(context)
                   ? const BorderRadius.vertical(bottom: Radius.circular(10.0))
                   : null,
-              color: theme.colorScheme.background,
+              color: theme.colorScheme.surface,
             ),
             child: w,
           ),

@@ -313,6 +313,7 @@ Fields in `AssetPickerConfig`:
 | assetsChangeRefreshPredicate      | `AssetsChangeRefreshPredicate<AssetPathEntity>?` | Whether assets changing should call refresh with the given call and the current selected path. | `null`                      |
 | shouldAutoPlayPreview             | `bool`                                           | Whether the preview should auto play.                                                          | `false`                     |
 | dragToSelect                      | `bool`                                           | Whether assets selection can be done with drag gestures.                                       | `true`                      |
+| enableLivePhoto                   | `bool`                                           | Whether to enable Live-Photo functionality in the picker.                                      | `true`                      |
 
 - When `maxAssets` equals to `1` (a.k.a. single picking mode),
   use `SpecialPickerType.noPreview` will immediately select asset

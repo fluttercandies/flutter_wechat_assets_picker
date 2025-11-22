@@ -18,6 +18,25 @@ that can be found in the LICENSE file. -->
 - Make delegate respect generic types as much as possible.
   This is a breaking change for users who use custom delegates and providers.
 
+## 9.8.0
+
+> [!NOTE]
+> Be aware of potential minor theme changes since the base theme has taken place in the picker's theme.
+
+**Improvements**
+
+- Improve themes by inheriting the base theme rather than standalone constructors.
+
+**Fixes**
+
+- Enabling using the package on Flutter 3.35.
+
+## 9.7.0
+
+**Improvements**
+
+- Allows specifying the fallback text delegate through `assetPickerTextDelegateFromLocale`.
+
 ## 9.6.0
 
 **New features**

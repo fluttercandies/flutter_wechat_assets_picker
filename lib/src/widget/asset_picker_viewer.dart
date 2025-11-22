@@ -4,7 +4,7 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Path;
 import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/constants.dart';
@@ -49,6 +49,7 @@ class AssetPickerViewer<
     bool shouldReversePreview = false,
     AssetSelectPredicate<AssetEntity>? selectPredicate,
     bool shouldAutoplayPreview = false,
+    bool enableLivePhoto = true,
     bool useRootNavigator = false,
     RouteSettings? pageRouteSettings,
     AssetPickerViewerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
@@ -82,6 +83,7 @@ class AssetPickerViewer<
         shouldReversePreview: shouldReversePreview,
         selectPredicate: selectPredicate,
         shouldAutoplayPreview: shouldAutoplayPreview,
+        enableLivePhoto: enableLivePhoto,
       ),
     );
     final result = await Navigator.maybeOf(

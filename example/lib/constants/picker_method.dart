@@ -518,6 +518,27 @@ class PickMethod {
     );
   }
 
+  factory PickMethod.disableLivePhoto(
+    BuildContext context,
+    int maxAssetsCount,
+  ) {
+    return PickMethod(
+      icon: '❄️',
+      name: context.l10n.pickMethodDisableLivePhotoName,
+      description: context.l10n.pickMethodDisableLivePhotoDescription,
+      method: (BuildContext context, List<AssetEntity> assets) {
+        return AssetPicker.pickAssets(
+          context,
+          pickerConfig: AssetPickerConfig(
+            maxAssets: maxAssetsCount,
+            selectedAssets: assets,
+            enableLivePhoto: false,
+          ),
+        );
+      },
+    );
+  }
+
   final String icon;
   final String name;
   final String description;
