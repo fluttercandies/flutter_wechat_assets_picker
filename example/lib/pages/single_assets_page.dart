@@ -48,6 +48,7 @@ class _SingleAssetPageState extends State<SingleAssetPage>
       PickMethod.prependItem(context, maxAssetsCount),
       PickMethod.customFilterOptions(context, maxAssetsCount),
       PickMethod.preventGIFPicked(context, maxAssetsCount),
+      PickMethod.disableLivePhoto(context, maxAssetsCount),
       PickMethod.noPreview(context, maxAssetsCount),
       PickMethod.customizableTheme(context, maxAssetsCount),
       PickMethod.pathNameBuilder(context, maxAssetsCount),

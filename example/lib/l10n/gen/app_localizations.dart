@@ -362,6 +362,18 @@ abstract class AppLocalizations {
   /// **'You can reduce the thumb size to get faster load speed.'**
   String get pickMethodCustomImagePreviewThumbSizeDescription;
 
+  /// No description provided for @pickMethodDisableLivePhotoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Live-Photo'**
+  String get pickMethodDisableLivePhotoName;
+
+  /// No description provided for @pickMethodDisableLivePhotoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Not showing Live-Photo\'s indicator and interactions.'**
+  String get pickMethodDisableLivePhotoDescription;
+
   /// No description provided for @customPickerNotice.
   ///
   /// In en, this message translates to:

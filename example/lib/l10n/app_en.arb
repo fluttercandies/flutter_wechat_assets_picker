@@ -44,6 +44,8 @@
   "pickMethodWeChatMomentDescription": "Pick assets with images or only 1 video.",
   "pickMethodCustomImagePreviewThumbSizeName": "Custom image preview thumb size",
   "pickMethodCustomImagePreviewThumbSizeDescription": "You can reduce the thumb size to get faster load speed.",
+  "pickMethodDisableLivePhotoName": "Disable Live-Photo",
+  "pickMethodDisableLivePhotoDescription": "Not showing Live-Photo's indicator and interactions.",
   "customPickerNotice": "This page contains customized pickers with different asset types, different UI layouts, or some use case for specific apps. Contribute to add your custom picker are welcomed.\nPickers in this page are located at the lib/customs/pickers folder.",
   "customPickerCallThePickerButton": "\uD83C\uDF81 Call the Picker",
   "customPickerDirectoryAndFileName": "Directory+File picker",
