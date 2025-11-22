@@ -6,6 +6,21 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+fun Any.safeGetVersionProperty(name: String): Any? {
+    val klass = this::class.java
+    runCatching {
+        return klass.getMethod(name).invoke(this)
+    }
+    runCatching {
+        val getterName = "get" + name.capitalize()
+        return klass.getMethod(getterName).invoke(this)
+    }
+    runCatching {
+        return klass.getField(name).get(this)
+    }
+    return null
+}
+
 val packageName = "com.fluttercandies.wechatAssetsPickerExample"
 
 android {
@@ -17,8 +32,8 @@ android {
         applicationId = packageName
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionCode = flutter.safeGetVersionProperty("versionCode") as Int?
+        versionName = flutter.safeGetVersionProperty("versionName") as String?
     }
 
     compileOptions {
