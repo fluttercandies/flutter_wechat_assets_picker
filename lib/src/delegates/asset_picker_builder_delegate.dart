@@ -198,9 +198,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
   /// 权限受限栏的高度
   double get permissionLimitedBarHeight => isPermissionLimited ? 75 : 0;
 
-  @Deprecated('Use permissionNotifier instead. This will be removed in 10.0.0')
-  ValueNotifier<PermissionState> get permission => permissionNotifier;
-
   /// Notifier for the current [PermissionState].
   /// 当前 [PermissionState] 的监听
   late final permissionNotifier = ValueNotifier<PermissionState>(
@@ -712,12 +709,6 @@ abstract class AssetPickerBuilderDelegate<Asset, Path> {
         icon: const Icon(Icons.close),
       ),
     );
-  }
-
-  /// The overlay when the permission is limited on iOS.
-  @Deprecated('Use permissionOverlay instead. This will be removed in 10.0.0')
-  Widget iOSPermissionOverlay(BuildContext context) {
-    return permissionOverlay(context);
   }
 
   /// The overlay when the permission is limited.
