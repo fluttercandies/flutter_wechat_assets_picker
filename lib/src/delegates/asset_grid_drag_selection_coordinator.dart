@@ -2,9 +2,9 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:math' as math;
+import 'dart:math' as math show max, min;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetEntity;
 
 import '../provider/asset_picker_provider.dart';

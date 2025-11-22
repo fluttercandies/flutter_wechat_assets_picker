@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart' show Widget;
+import 'package:meta/meta.dart' show immutable;
 
 import '../constants/enums.dart';
 import '../constants/typedefs.dart';
@@ -40,6 +41,6 @@ final class SpecialItemFinalized {
 
   @override
   String toString() {
-    return 'SpecialItemFinalized$Path(position: $position, item: $item)';
+    return 'SpecialItemFinalized(position: $position, item: $item)';
   }
 }

@@ -3,13 +3,13 @@
 // in the LICENSE file.
 
 import 'package:flutter/material.dart' hide Path;
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show MethodCall;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:wechat_picker_library/wechat_picker_library.dart'
     show buildTheme;
 
 import '../constants/config.dart';
-import '../constants/constants.dart';
+import '../constants/constants.dart' show packageName;
 import '../provider/asset_picker_provider.dart';
 import '../widget/asset_picker.dart';
 import '../widget/asset_picker_page_route.dart';

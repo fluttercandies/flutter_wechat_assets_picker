@@ -2,11 +2,11 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:async';
-import 'dart:io';
+import 'dart:async' show Completer;
+import 'dart:io' as io show Platform;
 
 import 'package:flutter/material.dart' hide Path;
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show MethodCall;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:wechat_picker_library/wechat_picker_library.dart';
 
@@ -139,7 +139,7 @@ class AssetPickerState<Asset, Path,
           return;
         }
         widget.builder.permissionNotifier.value = ps;
-        if (ps == PermissionState.limited && Platform.isAndroid) {
+        if (ps == PermissionState.limited && io.Platform.isAndroid) {
           _onAssetsUpdated(const MethodCall(''));
         }
       });

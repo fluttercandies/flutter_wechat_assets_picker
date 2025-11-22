@@ -2,7 +2,7 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Color, ThemeData;
 import 'package:photo_manager/photo_manager.dart';
 
 import '../constants/typedefs.dart';

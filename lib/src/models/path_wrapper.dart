@@ -2,9 +2,9 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:typed_data' as typed_data;
+import 'dart:typed_data' show Uint8List;
 
-import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart' show immutable;
 
 /// A wrapper that holds [Path] with it's nullable (late initialize) fields.
 ///
@@ -39,7 +39,7 @@ class PathWrapper<Path> {
   /// See also:
   ///  * [AssetEntity.thumbnailData] API document:
   ///    https://pub.dev/documentation/photo_manager/latest/photo_manager/AssetEntity/thumbnailData.html
-  final typed_data.Uint8List? thumbnailData;
+  final Uint8List? thumbnailData;
 
   /// Creates a modified copy of the object.
   ///
@@ -47,7 +47,7 @@ class PathWrapper<Path> {
   /// the same value of the current object.
   PathWrapper<Path> copyWith({
     int? assetCount,
-    typed_data.Uint8List? thumbnailData,
+    Uint8List? thumbnailData,
   }) {
     return PathWrapper<Path>(
       path: path,

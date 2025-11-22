@@ -2,7 +2,7 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' show ScrollPosition;
 
 import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';

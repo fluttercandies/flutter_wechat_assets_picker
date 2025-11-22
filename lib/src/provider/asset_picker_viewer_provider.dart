@@ -2,7 +2,7 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart' show ChangeNotifier;
 
 import '../constants/constants.dart';
 

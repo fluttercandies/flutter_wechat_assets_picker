@@ -3,9 +3,9 @@
 // in the LICENSE file.
 
 import 'dart:io' show Platform;
+import 'dart:ui' show Locale;
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart';
+import 'package:meta/meta.dart' show nonVirtual;
 import 'package:photo_manager/photo_manager.dart' show AssetType;
 
 /// All text delegates.

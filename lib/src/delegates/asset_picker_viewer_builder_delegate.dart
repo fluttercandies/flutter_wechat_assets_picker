@@ -2,16 +2,16 @@
 // Use of this source code is governed by an Apache license that can be found
 // in the LICENSE file.
 
-import 'dart:async';
-import 'dart:math' as math;
+import 'dart:async' show StreamController;
+import 'dart:math' as math show max;
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart' hide Path;
-import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/semantics.dart' show OrdinalSortKey;
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' show Consumer, Selector;
 import 'package:wechat_picker_library/wechat_picker_library.dart';
 
 import '../constants/custom_scroll_physics.dart';
