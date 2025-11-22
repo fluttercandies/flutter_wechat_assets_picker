@@ -221,12 +221,12 @@ class AssetPickerConfig {
   final bool? dragToSelect;
 
   /// {@template wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
-  /// Whether to enable Live Photo functionality in the picker.
-  /// 是否启用 Live Photo 功能
+  /// Whether to enable Live-Photo functionality in the picker.
+  /// 是否启用实况图片的功能
   ///
-  /// When set to `false`, Live Photo indicators and interactions will not be
+  /// When set to `false`, Live-Photo indicators and interactions will not be
   /// displayed throughout the picker.
-  /// 当设置为 `false` 时，选择器中将不会显示 Live Photo 相关的标识和交互。
+  /// 当设置为 `false` 时，选择器中将不会显示实况图片相关的标识和交互。
   /// {@endtemplate}
   final bool enableLivePhoto;
 }
