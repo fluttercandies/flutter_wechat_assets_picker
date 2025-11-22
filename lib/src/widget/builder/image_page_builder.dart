@@ -52,6 +52,9 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
 
   bool get _isOriginal => widget.previewThumbnailSize == null;
 
+  /// Whether the asset should be treated as a Live Photo.
+  /// Checks both the global enableLivePhoto flag and the asset's isLivePhoto
+  /// property to determine if Live Photo functionality should be active.
   bool get _isLivePhoto =>
       widget.enableLivePhoto && widget.asset.isLivePhoto;
 
