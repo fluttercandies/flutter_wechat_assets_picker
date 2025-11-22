@@ -9,14 +9,21 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None*.
+
+## 10.0.0
+
+**Breaking changes**
+
+- Migrate to Flutter 3.27 and drop support for previous Flutter versions.
+- Make delegate respect generic types as much as possible.
+  This is a breaking change for users who use custom delegates and providers.
+  See the migration guide for more details.
+- Remove deprecated methods.
+
 **New features**
 
 - Support multiple append/prepend specials items.
-
-**Improvements**
-
-- Make delegate respect generic types as much as possible.
-  This is a breaking change for users who use custom delegates and providers.
 
 ## 9.8.0
 
