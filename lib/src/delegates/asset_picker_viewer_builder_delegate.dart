@@ -392,11 +392,15 @@ class DefaultAssetPickerViewerBuilderDelegate
     super.shouldReversePreview,
     super.selectPredicate,
     this.shouldAutoplayPreview = false,
+    this.enableLivePhoto = true,
   });
 
   /// Whether the preview should auto play.
   /// 预览是否自动播放
   final bool shouldAutoplayPreview;
+
+  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
+  final bool enableLivePhoto;
 
   /// Thumb size for the preview of images in the viewer.
   /// 预览时图片的缩略图大小
@@ -436,6 +440,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           delegate: this,
           previewThumbnailSize: previewThumbnailSize,
           shouldAutoplayPreview: shouldAutoplayPreview,
+          enableLivePhoto: enableLivePhoto,
         ),
       AssetType.video => VideoPageBuilder(
           asset: asset,

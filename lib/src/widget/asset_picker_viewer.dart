@@ -45,6 +45,7 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
     PermissionRequestOption permissionRequestOption =
         const PermissionRequestOption(),
     bool shouldAutoplayPreview = false,
+    bool enableLivePhoto = true,
     bool useRootNavigator = false,
     RouteSettings? pageRouteSettings,
     AssetPickerViewerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
@@ -74,6 +75,7 @@ class AssetPickerViewer<Asset, Path> extends StatefulWidget {
         shouldReversePreview: shouldReversePreview,
         selectPredicate: selectPredicate,
         shouldAutoplayPreview: shouldAutoplayPreview,
+        enableLivePhoto: enableLivePhoto,
       ),
     );
     final List<AssetEntity>? result = await Navigator.maybeOf(

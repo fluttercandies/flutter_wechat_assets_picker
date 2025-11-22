@@ -848,6 +848,7 @@ class DefaultAssetPickerBuilderDelegate
     this.keepScrollOffset = false,
     this.shouldAutoplayPreview = false,
     this.dragToSelect,
+    this.enableLivePhoto = true,
   }) {
     // Add the listener if [keepScrollOffset] is true.
     if (keepScrollOffset) {
@@ -913,6 +914,9 @@ class DefaultAssetPickerBuilderDelegate
 
   /// {@macro wechat_assets_picker.constants.AssetPickerConfig.dragToSelect}
   final bool? dragToSelect;
+
+  /// {@macro wechat_assets_picker.constants.AssetPickerConfig.enableLivePhoto}
+  final bool enableLivePhoto;
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
@@ -1197,6 +1201,7 @@ class DefaultAssetPickerBuilderDelegate
       maxAssets: p.maxAssets,
       shouldReversePreview: revert,
       shouldAutoplayPreview: shouldAutoplayPreview,
+      enableLivePhoto: enableLivePhoto,
       useRootNavigator: viewerUseRootNavigator,
       pageRouteSettings: viewerPageRouteSettings,
       pageRouteBuilder: viewerPageRouteBuilder,
@@ -1921,7 +1926,8 @@ class DefaultAssetPickerBuilderDelegate
             ),
             if (asset.type == AssetType.video) // 如果为视频则显示标识
               videoIndicator(context, asset),
-            if (asset.isLivePhoto) buildLivePhotoIndicator(context, asset),
+            if (enableLivePhoto && asset.isLivePhoto)
+              buildLivePhotoIndicator(context, asset),
           ],
         );
       },
