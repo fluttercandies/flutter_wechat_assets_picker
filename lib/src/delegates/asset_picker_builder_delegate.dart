@@ -1392,89 +1392,16 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                   index -= placeholderCount;
                 }
 
-                Widget child = assetGridItemBuilder(
+                final Widget child = assetGridItemBuilder(
                   context: context,
                   index: index,
                   currentAssets: assets,
                   specialItemsFinalized: specialItemsFinalized,
                 );
 
-                // Enables drag-to-select when:
-                // 1. The feature is enabled manually.
-                // 2. The accessibility service is not being used.
-                // 3. The picker is not in single asset mode.
-                if ((dragToSelect ?? !accessibleNavigation) &&
-                    !isSingleAssetMode) {
-                  child = GestureDetector(
-                    excludeFromSemantics: true,
-                    onHorizontalDragStart: (d) {
-                      dragSelectCoordinator.onSelectionStart(
-                        context: context,
-                        globalPosition: d.globalPosition,
-                        index: index,
-                        asset: assets[index],
-                      );
-                    },
-                    onHorizontalDragUpdate: (d) {
-                      dragSelectCoordinator.onSelectionUpdate(
-                        context: context,
-                        globalPosition: d.globalPosition,
-                        constraints: constraints,
-                      );
-                    },
-                    onHorizontalDragCancel:
-                        dragSelectCoordinator.resetDraggingStatus,
-                    onHorizontalDragEnd: (d) {
-                      dragSelectCoordinator.onDragEnd(
-                        globalPosition: d.globalPosition,
-                      );
-                    },
-                    onLongPressStart: (d) {
-                      dragSelectCoordinator.onSelectionStart(
-                        context: context,
-                        globalPosition: d.globalPosition,
-                        index: index,
-                        asset: assets[index],
-                      );
-                    },
-                    onLongPressMoveUpdate: (d) {
-                      dragSelectCoordinator.onSelectionUpdate(
-                        context: context,
-                        globalPosition: d.globalPosition,
-                        constraints: constraints,
-                      );
-                    },
-                    onLongPressCancel:
-                        dragSelectCoordinator.resetDraggingStatus,
-                    onLongPressEnd: (d) {
-                      dragSelectCoordinator.onDragEnd(
-                        globalPosition: d.globalPosition,
-                      );
-                    },
-                    onPanStart: (d) {
-                      dragSelectCoordinator.onSelectionStart(
-                        context: context,
-                        globalPosition: d.globalPosition,
-                        index: index,
-                        asset: assets[index],
-                      );
-                    },
-                    onPanUpdate: (d) {
-                      dragSelectCoordinator.onSelectionUpdate(
-                        context: context,
-                        globalPosition: d.globalPosition,
-                        constraints: constraints,
-                      );
-                    },
-                    onPanCancel: dragSelectCoordinator.resetDraggingStatus,
-                    onPanEnd: (d) {
-                      dragSelectCoordinator.onDragEnd(
-                        globalPosition: d.globalPosition,
-                      );
-                    },
-                    child: child,
-                  );
-                }
+                // Per-item gesture detectors removed - now handled globally
+                // at the scroll view level to support drag selection across
+                // all items including those not yet mounted.
 
                 return MergeSemantics(
                   child: Directionality(
@@ -1545,7 +1472,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                       context.bottomPadding + bottomSectionHeight,
                     );
                     appBarPreferredSize ??= appBar(context).preferredSize;
-                    return CustomScrollView(
+                    final scrollView = CustomScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       controller: gridScrollController,
                       anchor: anchor,
@@ -1567,6 +1494,78 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                         if (!gridRevert && isAppleOS(context)) bottomGap,
                       ],
                     );
+                    
+                    // Wrap with gesture detector for drag-to-select when enabled
+                    if ((dragToSelect ?? !accessibleNavigation) &&
+                        !isSingleAssetMode) {
+                      return GestureDetector(
+                        excludeFromSemantics: true,
+                        onHorizontalDragStart: (d) {
+                          dragSelectCoordinator.onSelectionStart(
+                            context: context,
+                            globalPosition: d.globalPosition,
+                            constraints: constraints,
+                          );
+                        },
+                        onHorizontalDragUpdate: (d) {
+                          dragSelectCoordinator.onSelectionUpdate(
+                            context: context,
+                            globalPosition: d.globalPosition,
+                            constraints: constraints,
+                          );
+                        },
+                        onHorizontalDragCancel:
+                            dragSelectCoordinator.resetDraggingStatus,
+                        onHorizontalDragEnd: (d) {
+                          dragSelectCoordinator.onDragEnd(
+                            globalPosition: d.globalPosition,
+                          );
+                        },
+                        onLongPressStart: (d) {
+                          dragSelectCoordinator.onSelectionStart(
+                            context: context,
+                            globalPosition: d.globalPosition,
+                            constraints: constraints,
+                          );
+                        },
+                        onLongPressMoveUpdate: (d) {
+                          dragSelectCoordinator.onSelectionUpdate(
+                            context: context,
+                            globalPosition: d.globalPosition,
+                            constraints: constraints,
+                          );
+                        },
+                        onLongPressCancel:
+                            dragSelectCoordinator.resetDraggingStatus,
+                        onLongPressEnd: (d) {
+                          dragSelectCoordinator.onDragEnd(
+                            globalPosition: d.globalPosition,
+                          );
+                        },
+                        onPanStart: (d) {
+                          dragSelectCoordinator.onSelectionStart(
+                            context: context,
+                            globalPosition: d.globalPosition,
+                            constraints: constraints,
+                          );
+                        },
+                        onPanUpdate: (d) {
+                          dragSelectCoordinator.onSelectionUpdate(
+                            context: context,
+                            globalPosition: d.globalPosition,
+                            constraints: constraints,
+                          );
+                        },
+                        onPanCancel: dragSelectCoordinator.resetDraggingStatus,
+                        onPanEnd: (d) {
+                          dragSelectCoordinator.onDragEnd(
+                            globalPosition: d.globalPosition,
+                          );
+                        },
+                        child: scrollView,
+                      );
+                    }
+                    return scrollView;
                   },
                 ),
               ),
