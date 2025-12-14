@@ -1081,6 +1081,9 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
       }
 
       await provider.getPaths(keepPreviousCount: true);
+      if (provider.paths.isEmpty) {
+        return;
+      }
       provider.currentPath = provider.paths.first;
       final currentWrapper = provider.currentPath;
       if (currentWrapper != null) {
