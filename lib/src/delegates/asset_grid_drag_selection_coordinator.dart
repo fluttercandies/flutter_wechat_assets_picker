@@ -59,11 +59,6 @@ class AssetGridDragSelectionCoordinator {
     required Offset globalPosition,
     required BoxConstraints constraints,
   }) {
-    final scrollableState = _checkScrollableStatePresent(context);
-    if (scrollableState == null) {
-      return;
-    }
-
     if (delegate.gridScrollController.position.isScrollingNotifier.value) {
       return;
     }
@@ -82,10 +77,17 @@ class AssetGridDragSelectionCoordinator {
 
     dragging = true;
 
-    _autoScroller = EdgeDraggingAutoScroller(
-      scrollableState,
-      velocityScalar: _kDefaultAutoScrollVelocityScalar,
-    );
+    // Get ScrollableState from the scroll controller's position
+    final scrollPosition = delegate.gridScrollController.position;
+    if (scrollPosition.context.notificationContext case final notificationContext?) {
+      final scrollableState = Scrollable.maybeOf(notificationContext);
+      if (scrollableState != null) {
+        _autoScroller = EdgeDraggingAutoScroller(
+          scrollableState,
+          velocityScalar: _kDefaultAutoScrollVelocityScalar,
+        );
+      }
+    }
 
     initialSelectingIndex = index;
     largestSelectingIndex = index;
@@ -296,27 +298,5 @@ class AssetGridDragSelectionCoordinator {
 
   void onDragEnd({required Offset globalPosition}) {
     resetDraggingStatus();
-  }
-
-  /// Check if the [Scrollable] state is exist.
-  ///
-  /// Ensures that the edge auto scrolling is functioning and the drag function
-  /// is placed correctly inside the [Scrollable].
-  ScrollableState? _checkScrollableStatePresent(BuildContext context) {
-    final scrollable = Scrollable.maybeOf(context);
-    assert(
-      scrollable != null,
-      'The drag select feature must use along with scrollables.',
-    );
-    assert(
-      scrollable?.position.axis == Axis.vertical,
-      'The drag select feature must use along with vertical scrollables.',
-    );
-    if (scrollable == null || scrollable.position.axis != Axis.vertical) {
-      resetDraggingStatus();
-      return null;
-    }
-
-    return scrollable;
   }
 }
