@@ -53,6 +53,157 @@ class AssetGridDragSelectionCoordinator {
     smallestSelectingIndex = -1;
   }
 
+  /// Long Press or horizontal drag to start the selection.
+  void onSelectionStart({
+    required BuildContext context,
+    required Offset globalPosition,
+    required BoxConstraints constraints,
+  }) {
+    final scrollableState = _checkScrollableStatePresent(context);
+    if (scrollableState == null) {
+      return;
+    }
+
+    if (delegate.gridScrollController.position.isScrollingNotifier.value) {
+      return;
+    }
+
+    final index = _calculateIndexFromPosition(
+      context: context,
+      globalPosition: globalPosition,
+      constraints: constraints,
+    );
+
+    if (index == null || index >= provider.currentAssets.length) {
+      return;
+    }
+
+    final asset = provider.currentAssets[index];
+
+    dragging = true;
+
+    _autoScroller = EdgeDraggingAutoScroller(
+      scrollableState,
+      velocityScalar: _kDefaultAutoScrollVelocityScalar,
+    );
+
+    initialSelectingIndex = index;
+    largestSelectingIndex = index;
+    smallestSelectingIndex = index;
+
+    addSelected = !delegate.provider.selectedAssets.contains(asset);
+  }
+
+  void onSelectionUpdate({
+    required BuildContext context,
+    required Offset globalPosition,
+    required BoxConstraints constraints,
+  }) {
+    if (!dragging) {
+      return;
+    }
+
+    final currentDragIndex = _calculateIndexFromPosition(
+      context: context,
+      globalPosition: globalPosition,
+      constraints: constraints,
+    );
+
+    if (currentDragIndex == null) {
+      return;
+    }
+
+    final view = View.of(context);
+    final dimensionSize = view.physicalSize / view.devicePixelRatio;
+    final appBarSize =
+        delegate.appBarPreferredSize ?? delegate.appBar(context).preferredSize;
+    final viewPaddingTop = view.viewPadding.top / view.devicePixelRatio;
+    final viewPaddingBottom = view.viewPadding.bottom / view.devicePixelRatio;
+    final topSectionHeight = appBarSize.height + viewPaddingTop;
+    final bottomSectionHeight =
+        delegate.bottomSectionHeight + viewPaddingBottom;
+    final gridCount = delegate.gridCount;
+    final itemSize = dimensionSize.width / gridCount;
+    final dividedSpacing = delegate.itemSpacing / gridCount;
+
+    // Calculate column index for auto-scroll
+    int getDragAxisIndex(double delta, double itemSize) {
+      return delta ~/ (itemSize + dividedSpacing);
+    }
+    final columnIndex = getDragAxisIndex(globalPosition.dx, itemSize);
+
+    // Check the selecting index in order to diff unselecting assets.
+    smallestSelectingIndex = math.min(
+      currentDragIndex,
+      smallestSelectingIndex,
+    );
+    smallestSelectingIndex = math.max(0, smallestSelectingIndex);
+    largestSelectingIndex = math.max(
+      currentDragIndex,
+      largestSelectingIndex,
+    );
+
+    // Avoid index overflow.
+    largestSelectingIndex = math.min(
+      math.max(0, largestSelectingIndex),
+      provider.currentAssets.length,
+    );
+
+    // Filter out pending assets to manipulate.
+    final Iterable<AssetEntity> filteredAssetList;
+    if (currentDragIndex < initialSelectingIndex) {
+      filteredAssetList = provider.currentAssets
+          .getRange(
+        math.max(0, currentDragIndex),
+        math.min(initialSelectingIndex + 1, provider.currentAssets.length),
+      )
+          .toList()
+          .reversed;
+    } else {
+      filteredAssetList = provider.currentAssets.getRange(
+        math.max(0, initialSelectingIndex),
+        math.min(currentDragIndex + 1, provider.currentAssets.length),
+      );
+    }
+    final touchedAssets = List<AssetEntity>.from(
+      provider.currentAssets.getRange(
+        math.max(0, smallestSelectingIndex),
+        math.min(largestSelectingIndex + 1, provider.currentAssets.length),
+      ),
+    );
+
+    // Toggle all filtered assets.
+    for (final asset in filteredAssetList) {
+      delegate.selectAsset(context, asset, currentDragIndex, !addSelected);
+      touchedAssets.remove(asset);
+    }
+    // Revert the selection of touched but not filtered assets.
+    for (final asset in touchedAssets) {
+      delegate.selectAsset(context, asset, currentDragIndex, addSelected);
+    }
+
+    if (filteredAssetList.isEmpty) {
+      return;
+    }
+
+    if (provider.selectedAssets.isEmpty ||
+        provider.selectedAssets.length == provider.maxAssets) {
+      _autoScroller?.stopAutoScroll();
+      return;
+    }
+
+    // Enable auto-scrolling if the pointer is at the edge.
+    final Offset dragOffset = Offset(
+      columnIndex * itemSize,
+      globalPosition.dy +
+          (globalPosition.dy > (dimensionSize.height / 2)
+              ? bottomSectionHeight
+              : -topSectionHeight),
+    );
+    final dragTarget = dragOffset & Size.square(itemSize);
+    _autoScroller?.startAutoScrollIfNecessary(dragTarget);
+  }
+
   /// Calculate the asset index from global position.
   /// Returns null if the position is out of bounds.
   int? _calculateIndexFromPosition({
@@ -133,165 +284,14 @@ class AssetGridDragSelectionCoordinator {
     }
 
     final currentDragIndex = rowIndex * gridCount + columnIndex;
-    
+
     // Clamp to valid range
-    if (currentDragIndex < 0 || 
+    if (currentDragIndex < 0 ||
         currentDragIndex >= provider.currentAssets.length) {
       return null;
     }
-    
+
     return currentDragIndex;
-  }
-
-  /// Long Press or horizontal drag to start the selection.
-  void onSelectionStart({
-    required BuildContext context,
-    required Offset globalPosition,
-    required BoxConstraints constraints,
-  }) {
-    final scrollableState = _checkScrollableStatePresent(context);
-    if (scrollableState == null) {
-      return;
-    }
-
-    if (delegate.gridScrollController.position.isScrollingNotifier.value) {
-      return;
-    }
-
-    final index = _calculateIndexFromPosition(
-      context: context,
-      globalPosition: globalPosition,
-      constraints: constraints,
-    );
-    
-    if (index == null || index >= provider.currentAssets.length) {
-      return;
-    }
-
-    final asset = provider.currentAssets[index];
-
-    dragging = true;
-
-    _autoScroller = EdgeDraggingAutoScroller(
-      scrollableState,
-      velocityScalar: _kDefaultAutoScrollVelocityScalar,
-    );
-
-    initialSelectingIndex = index;
-    largestSelectingIndex = index;
-    smallestSelectingIndex = index;
-
-    addSelected = !delegate.provider.selectedAssets.contains(asset);
-  }
-
-  void onSelectionUpdate({
-    required BuildContext context,
-    required Offset globalPosition,
-    required BoxConstraints constraints,
-  }) {
-    if (!dragging) {
-      return;
-    }
-
-    final currentDragIndex = _calculateIndexFromPosition(
-      context: context,
-      globalPosition: globalPosition,
-      constraints: constraints,
-    );
-
-    if (currentDragIndex == null) {
-      return;
-    }
-
-    final view = View.of(context);
-    final dimensionSize = view.physicalSize / view.devicePixelRatio;
-    final appBarSize =
-        delegate.appBarPreferredSize ?? delegate.appBar(context).preferredSize;
-    final viewPaddingTop = view.viewPadding.top / view.devicePixelRatio;
-    final viewPaddingBottom = view.viewPadding.bottom / view.devicePixelRatio;
-    final topSectionHeight = appBarSize.height + viewPaddingTop;
-    final bottomSectionHeight =
-        delegate.bottomSectionHeight + viewPaddingBottom;
-    final gridCount = delegate.gridCount;
-    final itemSize = dimensionSize.width / gridCount;
-    final dividedSpacing = delegate.itemSpacing / gridCount;
-    
-    // Calculate column index for auto-scroll
-    int getDragAxisIndex(double delta, double itemSize) {
-      return delta ~/ (itemSize + dividedSpacing);
-    }
-    final columnIndex = getDragAxisIndex(globalPosition.dx, itemSize);
-
-    // Check the selecting index in order to diff unselecting assets.
-    smallestSelectingIndex = math.min(
-      currentDragIndex,
-      smallestSelectingIndex,
-    );
-    smallestSelectingIndex = math.max(0, smallestSelectingIndex);
-    largestSelectingIndex = math.max(
-      currentDragIndex,
-      largestSelectingIndex,
-    );
-
-    // Avoid index overflow.
-    largestSelectingIndex = math.min(
-      math.max(0, largestSelectingIndex),
-      provider.currentAssets.length,
-    );
-
-    // Filter out pending assets to manipulate.
-    final Iterable<AssetEntity> filteredAssetList;
-    if (currentDragIndex < initialSelectingIndex) {
-      filteredAssetList = provider.currentAssets
-          .getRange(
-            math.max(0, currentDragIndex),
-            math.min(initialSelectingIndex + 1, provider.currentAssets.length),
-          )
-          .toList()
-          .reversed;
-    } else {
-      filteredAssetList = provider.currentAssets.getRange(
-        math.max(0, initialSelectingIndex),
-        math.min(currentDragIndex + 1, provider.currentAssets.length),
-      );
-    }
-    final touchedAssets = List<AssetEntity>.from(
-      provider.currentAssets.getRange(
-        math.max(0, smallestSelectingIndex),
-        math.min(largestSelectingIndex + 1, provider.currentAssets.length),
-      ),
-    );
-
-    // Toggle all filtered assets.
-    for (final asset in filteredAssetList) {
-      delegate.selectAsset(context, asset, currentDragIndex, !addSelected);
-      touchedAssets.remove(asset);
-    }
-    // Revert the selection of touched but not filtered assets.
-    for (final asset in touchedAssets) {
-      delegate.selectAsset(context, asset, currentDragIndex, addSelected);
-    }
-
-    if (filteredAssetList.isEmpty) {
-      return;
-    }
-
-    if (provider.selectedAssets.isEmpty ||
-        provider.selectedAssets.length == provider.maxAssets) {
-      _autoScroller?.stopAutoScroll();
-      return;
-    }
-
-    // Enable auto-scrolling if the pointer is at the edge.
-    final Offset dragOffset = Offset(
-      columnIndex * itemSize,
-      globalPosition.dy +
-          (globalPosition.dy > (dimensionSize.height / 2)
-              ? bottomSectionHeight
-              : -topSectionHeight),
-    );
-    final dragTarget = dragOffset & Size.square(itemSize);
-    _autoScroller?.startAutoScrollIfNecessary(dragTarget);
   }
 
   void onDragEnd({required Offset globalPosition}) {
