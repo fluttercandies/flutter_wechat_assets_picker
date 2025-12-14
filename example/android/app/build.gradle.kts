@@ -25,13 +25,13 @@ val packageName = "com.fluttercandies.wechatAssetsPickerExample"
 
 android {
     namespace = packageName
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
         applicationId = packageName
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.safeGetVersionProperty("versionCode") as Int?
         versionName = flutter.safeGetVersionProperty("versionName") as String?
     }
