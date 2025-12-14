@@ -79,8 +79,8 @@ class AssetGridDragSelectionCoordinator {
 
     // Get ScrollableState from the scroll controller's position
     final scrollPosition = delegate.gridScrollController.position;
-    if (scrollPosition.context.notificationContext case final notificationContext?) {
-      final scrollableState = Scrollable.maybeOf(notificationContext);
+    if (scrollPosition.context.notificationContext case final context?) {
+      final scrollableState = Scrollable.maybeOf(context);
       if (scrollableState != null) {
         _autoScroller = EdgeDraggingAutoScroller(
           scrollableState,
@@ -132,6 +132,7 @@ class AssetGridDragSelectionCoordinator {
     int getDragAxisIndex(double delta, double itemSize) {
       return delta ~/ (itemSize + dividedSpacing);
     }
+
     final columnIndex = getDragAxisIndex(globalPosition.dx, itemSize);
 
     // Check the selecting index in order to diff unselecting assets.
@@ -156,9 +157,9 @@ class AssetGridDragSelectionCoordinator {
     if (currentDragIndex < initialSelectingIndex) {
       filteredAssetList = provider.currentAssets
           .getRange(
-        math.max(0, currentDragIndex),
-        math.min(initialSelectingIndex + 1, provider.currentAssets.length),
-      )
+            math.max(0, currentDragIndex),
+            math.min(initialSelectingIndex + 1, provider.currentAssets.length),
+          )
           .toList()
           .reversed;
     } else {

@@ -1467,12 +1467,12 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                 color: theme.canvasColor,
                 child: Selector<T, List<AssetEntity>>(
                   selector: (_, T p) => p.currentAssets,
-                  builder: (BuildContext context, List<AssetEntity> assets, _) {
-                    final SliverGap bottomGap = SliverGap.v(
+                  builder: (context, assets, _) {
+                    final bottomGap = SliverGap.v(
                       context.bottomPadding + bottomSectionHeight,
                     );
                     appBarPreferredSize ??= appBar(context).preferredSize;
-                    final scrollView = CustomScrollView(
+                    Widget result = CustomScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       controller: gridScrollController,
                       anchor: anchor,
@@ -1494,11 +1494,11 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                         if (!gridRevert && isAppleOS(context)) bottomGap,
                       ],
                     );
-                    
-                    // Wrap with gesture detector for drag-to-select when enabled
+
+                    // Wrap for drag-to-select when enabled
                     if ((dragToSelect ?? !accessibleNavigation) &&
                         !isSingleAssetMode) {
-                      return GestureDetector(
+                      result = GestureDetector(
                         excludeFromSemantics: true,
                         onHorizontalDragStart: (d) {
                           dragSelectCoordinator.onSelectionStart(
@@ -1562,10 +1562,11 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
                             globalPosition: d.globalPosition,
                           );
                         },
-                        child: scrollView,
+                        child: result,
                       );
                     }
-                    return scrollView;
+
+                    return result;
                   },
                 ),
               ),
