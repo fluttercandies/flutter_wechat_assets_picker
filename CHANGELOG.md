@@ -12,6 +12,7 @@ that can be found in the LICENSE file. -->
 **Fixes**
 
 - Refactor drag selection to work across all pages globally.
+- Fix "Bad state: No element" crash in `onAssetsChanged` when paths list is empty.
 
 ## 10.0.0
 
