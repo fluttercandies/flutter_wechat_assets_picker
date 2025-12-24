@@ -27,10 +27,6 @@ dependencies:
 dev_dependencies:
   flutter_lints: any
 
-dependency_overrides:
-  photo_manager:
-    path: ../../flutter_photo_manager
-
 flutter:
   uses-material-design: true
   generate: true
