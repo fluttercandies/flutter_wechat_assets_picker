@@ -1,5 +1,5 @@
 name: wechat_assets_picker
-version: 10.0.0
+version: 10.1.0
 description: |
   An image picker (also with videos and audio)
   for Flutter projects based on WeChat's UI,

@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None.*
+
+## 10.1.0
+
 **Fixes**
 
 - Refactor drag selection to work across all pages globally.
