@@ -422,7 +422,7 @@ class DefaultAssetPickerViewerBuilderDelegate<
   @override
   void selectAsset(AssetEntity asset) {
     super.selectAsset(asset);
-    selectedNotifier.value = selectedCount;
+    selectorProvider?.selectAsset(asset);
   }
 
   Widget assetSemanticsBuilder(BuildContext context, int index) {

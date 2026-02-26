@@ -239,9 +239,15 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// Select asset.
   /// 选中资源
   void selectAsset(Asset item) {
-    if (selectedAssets.length == maxAssets || selectedAssets.contains(item)) {
+    if (selectedAssets.length == maxAssets) {
       return;
     }
+
+    if (selectedAssets.contains(item)) {
+      notifyListeners();
+      return;
+    }
+
     final List<Asset> set = selectedAssets.toList();
     set.add(item);
     selectedAssets = set;
@@ -250,6 +256,11 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// Un-select asset.
   /// 取消选中资源
   void unSelectAsset(Asset item) {
+    if (!selectedAssets.contains(item)) {
+      notifyListeners();
+      return;
+    }
+
     final List<Asset> set = selectedAssets.toList();
     set.remove(item);
     selectedAssets = set;

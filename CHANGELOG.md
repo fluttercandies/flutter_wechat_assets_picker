@@ -4,12 +4,14 @@ that can be found in the LICENSE file. -->
 
 # Changelog
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > See the [Migration Guide](guides/migration_guide.md) for the details of breaking changes between versions.
 
 ## Unreleased
 
-*None.*
+**Fixes**
+
+- Fix selection syncing between the picker and the viewer.
 
 ## 10.1.0
 
