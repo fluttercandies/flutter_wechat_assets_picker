@@ -42,7 +42,7 @@ class AssetPickerViewerProvider<Asset> extends ChangeNotifier {
   /// Select asset.
   /// 选中资源
   void selectAsset(Asset item) {
-    if (currentlySelectedAssets.length == maxAssets ||
+    if (currentlySelectedAssets.length >= maxAssets ||
         currentlySelectedAssets.contains(item)) {
       return;
     }
