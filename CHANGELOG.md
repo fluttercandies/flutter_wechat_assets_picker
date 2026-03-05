@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None.*
+
+## 10.1.1
+
 **Fixes**
 
 - Fix selection syncing between the picker and the viewer.
