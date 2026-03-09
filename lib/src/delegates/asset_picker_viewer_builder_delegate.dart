@@ -260,19 +260,19 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path,
       ValueNotifier<int>(selectedCount);
 
   void unSelectAsset(Asset asset) {
-    provider?.unSelectAsset(asset);
     if (!isSelectedPreviewing) {
+      provider?.unSelectAsset(asset);
       selectedAssets?.remove(asset);
     }
     selectedNotifier.value = selectedCount;
   }
 
   void selectAsset(Asset asset) {
-    if (maxAssets != null && selectedCount > maxAssets!) {
+    if (maxAssets != null && selectedCount >= maxAssets!) {
       return;
     }
-    provider?.selectAsset(asset);
     if (!isSelectedPreviewing) {
+      provider?.selectAsset(asset);
       selectedAssets?.add(asset);
     }
     selectedNotifier.value = selectedCount;
@@ -755,10 +755,34 @@ class DefaultAssetPickerViewerBuilderDelegate<
             )
           : null,
       actions: [
-        if (provider != null)
-          Semantics(
-            sortKey: ordinalSortKey(0.2),
-            child: selectButton(context),
+        if (provider != null && !isSelectedPreviewing)
+          StreamBuilder(
+            initialData: currentIndex,
+            stream: pageStreamController.stream,
+            builder: (context, asyncSnapshot) {
+              return ValueListenableBuilder(
+                valueListenable: selectedNotifier,
+                builder: (context, value, child) {
+                  if (maxAssets == value) {
+                    final previewIndex = asyncSnapshot.data;
+                    if (previewIndex == null) {
+                      return const SizedBox();
+                    }
+                    final item = previewAssets[previewIndex];
+                    final selected = provider?.currentlySelectedAssets.contains(item) ?? false;
+                    if (selected) {
+                      return child!;
+                    }
+                    return const SizedBox();
+                  }
+                  return child!;
+                },
+                child: Semantics(
+                  sortKey: ordinalSortKey(0.2),
+                  child: selectButton(context),
+                ),
+              );
+            },
           ),
         const SizedBox(width: 14),
       ],
