@@ -9,9 +9,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1.2.0
       - name: Publish
-        uses: sakebook/actions-flutter-pub-publisher@v1.3.0
+        uses: sakebook/actions-flutter-pub-publisher@f4b291824616ce29423bc7b5bda4e83f7060c8be # v1.3.0
         with:
           credential: ${{ secrets.CREDENTIAL_JSON }}
           flutter_package: true
