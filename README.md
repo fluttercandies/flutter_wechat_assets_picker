@@ -192,14 +192,15 @@ Otherwise, no assets can be fetched on Android 13.
 
 #### Permissions
 
-| Name                     | Required | Declared | Max API Level | Others                       |
-|--------------------------|----------|----------|---------------|------------------------------|
-| `READ_EXTERNAL_STORAGE`  | YES      | YES      | 32            |                              |
-| `WRITE_EXTERNAL_STORAGE` | NO       | NO       | 29            |                              |
-| `ACCESS_MEDIA_LOCATION`  | YES*     | NO       | N/A           | Required when reading EXIF   |
-| `READ_MEDIA_IMAGES`      | YES*     | YES      | N/A           | Required when reading images | 
-| `READ_MEDIA_VIDEO`       | YES*     | YES      | N/A           | Required when reading videos | 
-| `READ_MEDIA_AUDIO`       | YES*     | YES      | N/A           | Required when reading audios | 
+| Name                              | Required | Declared | Max API Level | Others                              |
+|-----------------------------------|----------|----------|---------------|-------------------------------------|
+| `READ_EXTERNAL_STORAGE`           | YES      | YES      | 32            |                                     |
+| `WRITE_EXTERNAL_STORAGE`          | NO       | NO       | 29            |                                     |
+| `ACCESS_MEDIA_LOCATION`           | YES*     | NO       | N/A           | Required when reading EXIF          |
+| `READ_MEDIA_IMAGES`               | YES*     | YES      | N/A           | Required when reading images        | 
+| `READ_MEDIA_VIDEO`                | YES*     | YES      | N/A           | Required when reading videos        | 
+| `READ_MEDIA_AUDIO`                | YES*     | YES      | N/A           | Required when reading audios        | 
+| `READ_MEDIA_VISUAL_USER_SELECTED` | YES*     | YES      | 34            | Required when reading user selected |
 
 If you're targeting Android SDK 33+,
 and you don't need to load photos, videos or audios,
@@ -212,6 +213,8 @@ consider declare only relevant permission in your apps, more specifically:
     <!--Requesting access to images and videos.-->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <!--Requesting access to limited images by user selection when prompting permission.-->
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
     <!--When your app has no need to access audio, remove it or comment it out.-->
     <!--<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />-->
 </manifest>
