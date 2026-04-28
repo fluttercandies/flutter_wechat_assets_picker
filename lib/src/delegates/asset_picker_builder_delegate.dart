@@ -1675,7 +1675,7 @@ class DefaultAssetPickerBuilderDelegate<T extends DefaultAssetPickerProvider>
     final prependItems = specialItemsFinalized.where(
       (model) => model.position == SpecialItemPosition.prepend,
     );
-    return index - prependItems.length;
+    return index - prependItems.length + 1;
   }
 
   @override
