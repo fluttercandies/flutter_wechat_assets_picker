@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None.*
+
+## 10.1.2
+
 **Fixes**
 
 - Fix `assetGridItemSemanticIndex` returning a 0-based index, causing screen readers to announce assets as "Image 0, Image 1, ..." instead of "Image 1, Image 2, ...".
