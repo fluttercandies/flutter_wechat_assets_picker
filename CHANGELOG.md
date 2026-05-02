@@ -17,6 +17,9 @@ that can be found in the LICENSE file. -->
 
 - Fix `assetGridItemSemanticIndex` returning a 0-based index, causing screen readers to announce assets as "Image 0, Image 1, ..." instead of "Image 1, Image 2, ...".
 
+**Improvements**
+- Add doc declaration about `android.permission.READ_MEDIA_VISUAL_USER_SELECTED`.
+
 ## 10.1.1
 
 **Fixes**
