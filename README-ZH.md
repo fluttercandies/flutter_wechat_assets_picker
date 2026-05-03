@@ -188,14 +188,15 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 #### 权限
 
-| Name                     | 必需  | 已声明 | 最高 API 版本 | 其他          |
-|--------------------------|-----|-----|-----------|-------------|
-| `READ_EXTERNAL_STORAGE`  | 是   | 是   | 32        |             |
-| `WRITE_EXTERNAL_STORAGE` | 否   | 否   | 29        |             |
-| `ACCESS_MEDIA_LOCATION`  | 是*  | 否   | N/A       | 读取 EXIF 时必需 |
-| `READ_MEDIA_IMAGES`      | 是*  | 是   | N/A       | 读取图片时必需     | 
-| `READ_MEDIA_VIDEO`       | 是*  | 是   | N/A       | 读取视频时必需     | 
-| `READ_MEDIA_AUDIO`       | 是*  | 是   | N/A       | 读取音频时必需     |
+| Name                              | 必需  | 已声明 | 最高 API 版本 | 其他          |
+|-----------------------------------|-----|-----|-----------|-------------|
+| `READ_EXTERNAL_STORAGE`           | 是   | 是   | 32        |                  |
+| `WRITE_EXTERNAL_STORAGE`          | 否   | 否   | 29        |                  |
+| `ACCESS_MEDIA_LOCATION`           | 是*  | 否   | N/A       | 读取 EXIF 时必需      |
+| `READ_MEDIA_IMAGES`               | 是*  | 否   | N/A       | 读取图片时必需          | 
+| `READ_MEDIA_VIDEO`                | 是*  | 否   | N/A       | 读取视频时必需          | 
+| `READ_MEDIA_AUDIO`                | 是*  | 否   | N/A       | 读取音频时必需          |
+| `READ_MEDIA_VISUAL_USER_SELECTED` | 是*  | 否   | 34        | 读取用户选择的图片时必需 |
 
 如果你的目标 SDK 版本大于 33，且你不需要获取图片、视频或者音频，
 你可以考虑只声明需要的权限，具体如下：
@@ -209,6 +210,8 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <!--如果不需要获取音频，移除或者注释 READ_MEDIA_AUDIO-->
     <!--<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />-->
+    <!--读取仅用户选中可读的资源时需要声明-->
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 </manifest>
 ```
 
