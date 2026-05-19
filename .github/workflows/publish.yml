@@ -5,14 +5,18 @@ on:
     types: [ published ]
   workflow_dispatch:
 
+# Disable permissions for all of the available permissions
+permissions: {}
+
 jobs:
   publish:
+    if: github.repository == 'fluttercandies/flutter_wechat_assets_picker'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Publish
-        uses: k-paxian/dart-package-publisher@master
+        uses: k-paxian/dart-package-publisher@8fdba1dbf624c712706281a6f91cb50b6bfc2eaf
         with:
           credentialJson: ${{ secrets.CREDENTIAL_JSON }}
           flutter: true
