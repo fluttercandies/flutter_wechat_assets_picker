@@ -12,6 +12,9 @@ on:
     branches:
       - main
 
+# Disable permissions for all of the available permissions
+permissions: {}
+
 env:
   MINIMUM_FLUTTER_VERSION: '3.27.4'
 
@@ -24,12 +27,12 @@ jobs:
         os: [ ubuntu-latest ]
         flutter-version: [ min, latest ]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           distribution: 'zulu'
           java-version: '17'
-      - uses: flutter-actions/setup-flutter@v4
+      - uses: flutter-actions/setup-flutter@18c66a64fb6f6d3338c63cabbc5cd6da395e7f1d
         with:
           channel: stable
           version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || 'latest' }}
@@ -65,12 +68,12 @@ jobs:
       matrix:
         flutter-version: [ min, latest ]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           distribution: 'zulu'
           java-version: '17'
-      - uses: flutter-actions/setup-flutter@v4
+      - uses: flutter-actions/setup-flutter@18c66a64fb6f6d3338c63cabbc5cd6da395e7f1d
         with:
           channel: stable
           version: ${{ matrix.flutter-version == 'min' && env.MINIMUM_FLUTTER_VERSION || 'latest' }}
@@ -87,12 +90,12 @@ jobs:
       matrix:
         flutter-version: [ min, latest ]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
         with:
           distribution: 'zulu'
           java-version: '17'
-      - uses: flutter-actions/setup-flutter@v4
+      - uses: flutter-actions/setup-flutter@18c66a64fb6f6d3338c63cabbc5cd6da395e7f1d
         with:
           cache: true
           channel: stable
