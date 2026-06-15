@@ -217,6 +217,9 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   void _handleScrollNotification(ScrollNotification notification) {
+    if (!mounted) {
+      return;
+    }
     if (notification is ScrollStartNotification) {
       _scrolling = true;
     } else if (notification is ScrollEndNotification) {
@@ -225,6 +228,9 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
+    if (!mounted) {
+      return;
+    }
     final fraction = info.visibleFraction;
     if (fraction == 1 && !_showVideo.value && !_scrolling) {
       _showVideoAndPlay();
@@ -234,15 +240,21 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   Future<void> _notify() async {
-    if (_controller.value.position >= _controller.value.duration) {
-      await _controller.pause();
-      await _controller.seekTo(Duration.zero);
+    if (!mounted || _controller.value.position < _controller.value.duration) {
+      return;
+    }
+    await _controller.pause();
+    if (!mounted) {
+      return;
+    }
+    await _controller.seekTo(Duration.zero);
+    if (mounted) {
       _showVideo.value = false;
     }
   }
 
   Future<void> _showVideoAndPlay() async {
-    if (_controller.value.isPlaying) {
+    if (!mounted || _controller.value.isPlaying) {
       return;
     }
     HapticFeedback.lightImpact();
@@ -251,9 +263,18 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   Future<void> _hideVideoAndStop() async {
+    if (!mounted) {
+      return;
+    }
     _showVideo.value = false;
     await Future.delayed(kThemeChangeDuration);
+    if (!mounted) {
+      return;
+    }
     await _controller.pause();
+    if (!mounted) {
+      return;
+    }
     await _controller.seekTo(Duration.zero);
   }
 

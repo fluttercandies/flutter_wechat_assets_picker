@@ -9,7 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
-*None.*
+**Fixes**
+
+- Fix picker and viewer selection syncing when selecting the last allowed asset.
+- Fix Live Photo visibility callbacks updating video state after the widget is disposed.
 
 ## 10.1.2
 
