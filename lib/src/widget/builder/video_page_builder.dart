@@ -102,25 +102,35 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
     _isInitializing = true;
     _isLocallyAvailable = true;
     final String? url = await widget.asset.getMediaUrl();
+    if (!mounted) {
+      return;
+    }
     if (url == null) {
       hasErrorWhenInitializing = true;
       safeSetState(() {});
       return;
     }
     final Uri uri = Uri.parse(url);
-    if (Platform.isAndroid) {
-      _controller = VideoPlayerController.contentUri(uri);
-    } else {
-      _controller = VideoPlayerController.networkUrl(uri);
-    }
+    final VideoPlayerController localController = Platform.isAndroid
+        ? VideoPlayerController.contentUri(uri)
+        : VideoPlayerController.networkUrl(uri);
+    _controller = localController;
     try {
-      await controller.initialize();
+      await localController.initialize();
+      if (!mounted || !identical(_controller, localController)) {
+        // Widget was disposed or the asset was swapped mid-await. Release the
+        // orphaned controller so its player can't keep running in the
+        // background (e.g. iCloud video whose network fetch completed after
+        // the user left the preview).
+        await localController.dispose();
+        return;
+      }
       hasLoaded = true;
-      controller
+      localController
         ..addListener(videoPlayerListener)
         ..setLooping(widget.hasOnlyOneVideoAndMoment);
       if (widget.hasOnlyOneVideoAndMoment || widget.shouldAutoplayPreview) {
-        controller.play();
+        localController.play();
       }
     } catch (e, s) {
       FlutterError.presentError(
@@ -131,9 +141,15 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           silent: true,
         ),
       );
+      if (!mounted || !identical(_controller, localController)) {
+        await localController.dispose();
+        return;
+      }
       hasErrorWhenInitializing = true;
     } finally {
-      safeSetState(() {});
+      if (mounted && identical(_controller, localController)) {
+        safeSetState(() {});
+      }
     }
   }
 
@@ -243,7 +259,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           initializeVideoPlayerController();
         }
         if (!hasLoaded) {
-          return const SizedBox.shrink();
+          return const Center(child: PlatformProgressIndicator());
         }
         return Semantics(
           onLongPress: () {
