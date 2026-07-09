@@ -259,12 +259,7 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
           initializeVideoPlayerController();
         }
         if (!hasLoaded) {
-          return const Center(
-            child: SizedBox.square(
-              dimension: 24,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          );
+          return const Center(child: PlatformProgressIndicator());
         }
         return Semantics(
           onLongPress: () {
