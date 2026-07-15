@@ -240,6 +240,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   /// 选中资源
   void selectAsset(Asset item) {
     if (selectedAssets.length == maxAssets) {
+      notifyListeners();
       return;
     }
 
