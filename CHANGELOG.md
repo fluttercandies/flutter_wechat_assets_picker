@@ -13,6 +13,7 @@ that can be found in the LICENSE file. -->
 
 - Fix iCloud videos showing a black frame in the preview between `LocallyAvailableBuilder` completing and `VideoPlayerController.initialize()` finishing; a loading indicator now displays for the whole preparation window.
 - Fix `VideoPageBuilder` continuing to initialize and play a video after the widget was disposed or the previewed asset was swapped mid-load, which could leave iCloud videos playing audio in the background after the picker was closed.
+- Fix single-select mode where the grid UI stops refreshing and no other asset can be selected after selecting an asset from the preview page.
 
 ## 10.1.2
 
