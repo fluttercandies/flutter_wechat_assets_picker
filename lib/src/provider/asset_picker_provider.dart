@@ -234,18 +234,17 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   bool get isSelectedNotEmpty => selectedAssets.isNotEmpty;
 
   /// 是否已经选择了最大数量的资源
-  bool get selectedMaximumAssets => selectedAssets.length == maxAssets;
+  bool get selectedMaximumAssets => selectedAssets.length >= maxAssets;
 
   /// Select asset.
   /// 选中资源
   void selectAsset(Asset item) {
-    if (selectedAssets.length == maxAssets) {
+    if (selectedAssets.contains(item)) {
       notifyListeners();
       return;
     }
 
-    if (selectedAssets.contains(item)) {
-      notifyListeners();
+    if (selectedAssets.length >= maxAssets) {
       return;
     }
 

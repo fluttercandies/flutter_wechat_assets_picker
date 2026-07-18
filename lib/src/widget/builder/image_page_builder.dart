@@ -51,6 +51,7 @@ class ImagePageBuilder extends StatefulWidget {
 class _ImagePageBuilderState extends State<ImagePageBuilder> {
   bool _isLocallyAvailable = false;
   VideoPlayerController? _livePhotoVideoController;
+  int _livePhotoInitializationId = 0;
 
   bool get _isOriginal => widget.previewThumbnailSize == null;
 
@@ -64,6 +65,7 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
     super.didUpdateWidget(oldWidget);
     if (widget.asset != oldWidget.asset ||
         widget.previewThumbnailSize != oldWidget.previewThumbnailSize) {
+      _livePhotoInitializationId++;
       _isLocallyAvailable = false;
       _livePhotoVideoController
         ?..pause()
@@ -74,30 +76,45 @@ class _ImagePageBuilderState extends State<ImagePageBuilder> {
 
   @override
   void dispose() {
+    _livePhotoInitializationId++;
     _livePhotoVideoController?.dispose();
     super.dispose();
   }
 
   Future<void> _initializeLivePhoto() async {
+    final int initializationId = ++_livePhotoInitializationId;
     final File? file;
     if (_isOriginal) {
       file = await widget.asset.originFileWithSubtype;
     } else {
       file = await widget.asset.fileWithSubtype;
     }
-    if (!mounted || file == null) {
+    if (!mounted ||
+        initializationId != _livePhotoInitializationId ||
+        file == null) {
       return;
     }
-    final VideoPlayerController c = VideoPlayerController.file(
+    final VideoPlayerController localController = VideoPlayerController.file(
       file,
       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
     );
-    await c.initialize();
-    safeSetState(() {
-      _livePhotoVideoController = c;
+    try {
+      await localController.initialize();
+    } catch (_) {
+      await localController.dispose();
+      rethrow;
+    }
+    if (!mounted || initializationId != _livePhotoInitializationId) {
+      await localController.dispose();
+      return;
+    }
+    localController.addListener(() {
+      if (identical(_livePhotoVideoController, localController)) {
+        safeSetState(() {});
+      }
     });
-    c.addListener(() {
-      safeSetState(() {});
+    safeSetState(() {
+      _livePhotoVideoController = localController;
     });
   }
 
@@ -217,6 +234,9 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   void _handleScrollNotification(ScrollNotification notification) {
+    if (!mounted) {
+      return;
+    }
     if (notification is ScrollStartNotification) {
       _scrolling = true;
     } else if (notification is ScrollEndNotification) {
@@ -225,6 +245,9 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
+    if (!mounted) {
+      return;
+    }
     final fraction = info.visibleFraction;
     if (fraction == 1 && !_showVideo.value && !_scrolling) {
       _showVideoAndPlay();
@@ -234,15 +257,21 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   Future<void> _notify() async {
-    if (_controller.value.position >= _controller.value.duration) {
-      await _controller.pause();
-      await _controller.seekTo(Duration.zero);
+    if (!mounted || _controller.value.position < _controller.value.duration) {
+      return;
+    }
+    await _controller.pause();
+    if (!mounted) {
+      return;
+    }
+    await _controller.seekTo(Duration.zero);
+    if (mounted) {
       _showVideo.value = false;
     }
   }
 
   Future<void> _showVideoAndPlay() async {
-    if (_controller.value.isPlaying) {
+    if (!mounted || _controller.value.isPlaying) {
       return;
     }
     HapticFeedback.lightImpact();
@@ -251,9 +280,18 @@ class _LivePhotoWidgetState extends State<_LivePhotoWidget> {
   }
 
   Future<void> _hideVideoAndStop() async {
+    if (!mounted) {
+      return;
+    }
     _showVideo.value = false;
     await Future.delayed(kThemeChangeDuration);
+    if (!mounted) {
+      return;
+    }
     await _controller.pause();
+    if (!mounted) {
+      return;
+    }
     await _controller.seekTo(Duration.zero);
   }
 
