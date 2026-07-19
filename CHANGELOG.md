@@ -9,6 +9,10 @@ that can be found in the LICENSE file. -->
 
 ## Unreleased
 
+*None.*
+
+## 10.1.3
+
 **Fixes**
 
 - Fix picker and viewer selection syncing when selecting the last allowed asset.
