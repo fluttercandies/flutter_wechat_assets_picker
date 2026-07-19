@@ -948,6 +948,9 @@ class DefaultAssetPickerViewerBuilderDelegate<
           selector: (_, p) => p.currentlySelectedAssets,
           builder: (context, assets, _) {
             final bool isSelected = assets.contains(asset);
+            if (!isSelected && selectedMaximumAssets) {
+              return const SizedBox.shrink();
+            }
             return Semantics(
               selected: isSelected,
               label: semanticsTextDelegate.select,
