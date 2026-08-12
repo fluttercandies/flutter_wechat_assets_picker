@@ -14,6 +14,15 @@ on:
     paths-ignore:
       - '**.md'
 
+permissions:
+  # required for all workflows
+  security-events: write
+  # required to fetch internal or private CodeQL packs
+  packages: read
+  # only required for workflows in private repositories
+  actions: read
+  contents: read
+
 jobs:
   analyze:
     if: github.repository == 'fluttercandies/flutter_wechat_assets_picker'
@@ -24,14 +33,6 @@ jobs:
     #   - https://gh.io/using-larger-runners (GitHub.com only)
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    permissions:
-      # required for all workflows
-      security-events: write
-      # required to fetch internal or private CodeQL packs
-      packages: read
-      # only required for workflows in private repositories
-      actions: read
-      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -49,6 +50,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231
+      with:
+        persist-credentials: false
 
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
