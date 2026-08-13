@@ -14,6 +14,8 @@ on:
     paths-ignore:
       - '**.md'
 
+permissions: {}
+
 jobs:
   analyze:
     if: github.repository == 'fluttercandies/flutter_wechat_assets_picker'
@@ -49,6 +51,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231
+      with:
+        persist-credentials: false
 
     # Add any setup steps before running the `github/codeql-action/init` action.
     # This includes steps like installing compilers or runtimes (`actions/setup-node`
