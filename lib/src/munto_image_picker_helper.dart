@@ -20,6 +20,10 @@ class MuntoImagePickerHelper {
         maxAssets: maxAssets,
         requestType: RequestType.image,
         textDelegate: const korean.KoreanAssetPickerTextDelegate(),
+        // 사진 접근을 '선택한 사진만'으로 허용해도 고른 사진을 바로 보여준다.
+        // 기본값은 limited 일 때 그리드를 '사진을 확인할 수 없어요' 안내로 덮어서, 사진을 골랐는데도 못 고른 것처럼 보였다(MUN-510).
+        // 사진을 더 고르거나 설정을 바꾸는 건 하단 접근 제한 바로 할 수 있다.
+        limitedPermissionOverlayPredicate: (_) => false,
       ),
     );
   }
